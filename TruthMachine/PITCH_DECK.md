@@ -61,9 +61,19 @@
 *   **Canva Prompt:** *Clean tiered pricing table, three columns: Free, Pro, Enterprise, institutional flat design, checkmark icons for features, navy and white.*
 
 ### **Slide 10: Competition (The Calibration Edge)**
-*   **Text:** *"While others measure how people feel, we measure if they were right. Our 5-year historical head-start is a barrier to entry competitors cannot buy."*
-*   **Visual:** A comparison matrix (Check-mark grid) showing TruthMachine vs. TipRanks, SeekingAlpha, and NewsGuard. Key differentiator: *"Post-Factum Outcome Calibration."*
-*   **Canva Prompt:** *Standard business comparison matrix, check-mark grid, 'TruthMachine' column in navy blue, competitors like 'TipRanks' and 'NewsGuard' in light grey, highlighting 'Post-Factum Calibration' as the winning feature.*
+*   **Text:** *"While TipRanks tracks what Wall Street thinks of stocks, and NewsGuard tracks if a site is 'reputable,' **TruthMachine tracks the mathematical truth of public predictions.**"*
+*   **Visual:** A deep-dive comparison matrix (Check-mark grid):
+
+| **Feature** | **TruthMachine** | **TipRanks / SeekingAlpha** | **Sentiment Tools (Blackbird)** | **Reliability (NewsGuard)** | **Markets (Metaculus)** |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Narrative Tracking** | ✅ | ❌ | ✅ | ❌ | ❌ |
+| **Outcome Calibration** | **✅ (OSNC)** | ✅ (Finance only) | ❌ | ❌ | ❌ |
+| **Geopolitics/Society** | ✅ | ❌ | ✅ | ✅ | ✅ |
+| **Automated Brier Scoring** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Media Source Audit** | ✅ | ❌ | ✅ | ✅ | ❌ |
+
+*   **The Moat:** **Outcome-Supervised Narrative Calibration (OSNC).** We don't just cluster news; we close the loop. Every event in our matrix is a **Teacher**. By waiting for reality to happen, we generate high-fidelity "Ground Truth" labels to train our model. Competitors starting today face a **5-year historical head-start** that they cannot simply buy.
+*   **Canva Prompt:** *Business comparison matrix, check-mark grid with 5 columns of competitors, 'TruthMachine' column highlighted in navy blue, feature rows including 'Outcome-Supervised Narrative Calibration' and 'Automated Brier Scoring,' modern institutional data-visualisation style.*
 
 ### **Slide 11: Team & Mission**
 *   **Text:** *"To restore mathematical integrity to public discourse."*
