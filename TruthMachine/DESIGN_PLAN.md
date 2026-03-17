@@ -1,6 +1,6 @@
 # TruthMachine: Design Plan & Implementation Roadmap
 
-> **Working name:** TruthMachine | **Status:** MVP Design v3 | **Last updated:** 2026-03-17
+> **Working name:** TruthMachine | **Status:** MVP Design v4 | **Last updated:** 2026-03-17
 
 ---
 
@@ -60,11 +60,11 @@ Ynet, Haaretz, N12 (Mako), Israel Hayom, Globes, Kan 11, The Marker, Walla News,
 ### International Sources (6)
 BBC News, Al Jazeera, CNN, Reuters, Bloomberg, Wall Street Journal
 
+### TV & Media Handling
+For TV sources (N12, Kan 11, etc.), the MVP strictly processes **written web articles** only. Video and audio ingestion (transcripts/CC) are deferred to Phase 2.
+
 ### Auxiliary
 Polymarket — not a source, but `polymarket_prob` stored per prediction where a matching market exists. `NULL` when no market exists (expected for ~70% of Israeli events).
-
-### Phase 2 Additions
-Telegram channels (Abu Ali Express, Amit Segal), video/audio (Kan 11 segments, podcasts).
 
 ### Byline Handling
 Store journalist byline when available. Score at outlet level only when byline is absent (wire services, unsigned editorials).
@@ -87,21 +87,17 @@ Store journalist byline when available. Score at outlet level only when byline i
 | H — Israeli Tech & Cyber | 10 |
 | I — Energy & Climate | 5 |
 
-**Event selection criteria:**
-- Massively covered after it occurred by multiple sources
-- Considered a major event
-- Concrete and binary (e.g., "Did law X pass the Knesset?" not "Did the judicial reform succeed?")
-- High-coverage events decomposed into multiple sub-questions (first reading, second reading, final vote, court ruling)
-
-**Temporal scope:** MVP covers 2021–2026. Long-term target: 2005+. Sparse early coverage is acceptable.
+**Event selection criteria (MVP):**
+- **Objective & Binary:** Only events that clearly "happened" or "didn't happen" (e.g., "Did law X pass the Knesset?").
+- **Exclusions:** Vague or subjective events (e.g., "Did the protest movement succeed?") are excluded from the MVP.
+- **Massive Coverage:** Event must have been widely reported after its occurrence.
 
 ---
 
-## 4. Data Model: Predictions
+## 4. Data Model: Predictions & Events
 
-Each extracted prediction is stored as an **independent unit** — one article may produce multiple predictions, each scored separately.
-
-### Fields per prediction
+### Predictions
+Each extracted prediction is stored as an **independent unit**. One article may produce multiple predictions (usually <= 3), each treated as a separate data point for the ML model.
 
 | Field | Type | Description |
 |---|---|---|
@@ -118,18 +114,19 @@ Each extracted prediction is stored as an **independent unit** — one article m
 | `specificity` | float (0.0 to 1.0) | How concrete the prediction is |
 | `timing_stated` | bool | Did prediction specify a timeframe? |
 | `polymarket_prob` | float \| null | Market probability at publication date |
-| *(more TBD)* | | Additional forensic dimensions |
 
-> These intermediate metrics are **internal only** — clients never see them. They feed the model that produces oracle probabilities.
-
-### Vague predictions
-Not discarded — assigned low `specificity` and `certainty`, carry less weight in the model, but remain in the dataset.
+### Event Metadata (Ground Truth)
+To enable scoring and ingestion, each event requires:
+- `outcome`: Boolean (True if event happened).
+- `outcome_date`: The date the event was resolved.
+- `search_keywords`: List of terms for article ingestion (Hebrew/English).
+- `llm_referee_criteria`: Specific instructions to help LLM verify relevance.
 
 ---
 
 ## 5. LLM Pipeline & Prompt Strategy
 
-Two-stage filtering pipeline via OpenRouter to minimize cost.
+Two-stage filtering pipeline via OpenRouter.
 
 ### Stage 1: The Gatekeeper
 - **Model:** Nemotron 3 Nano (free / ultra-low cost)
@@ -138,11 +135,14 @@ Two-stage filtering pipeline via OpenRouter to minimize cost.
 
 ### Stage 2: Forensic Extraction
 - **Model:** DeepSeek V3.2 ($0.25/1M input tokens)
-- **Task:** Extract structured prediction metrics into Pydantic schema (via `instructor`)
-- **Output:** Full prediction JSON
+- **Task:** Extract structured prediction metrics into Pydantic schema (via `instructor`).
+- **Context:** The LLM is provided with the specific `event_name` and `event_description` to focus extraction on relevant predictions.
+- **Output:** Full prediction JSON.
 
-### Hebrew handling
-DeepSeek V3 handles Hebrew adequately. Do **not** default to English translations — Perigon's translations may shift nuance. Evaluate per-source during testing.
+### Logic Refinements
+- **Event-wise Iteration:** The pipeline iterates by event. Articles may be processed multiple times if relevant to multiple events.
+- **Independent Voices:** Article deduplication is not performed; wire stories are treated as independent "voices" for the outlet that chooses to publish them (often with added analysis).
+- **Publication Window:** **CRITICAL.** Only articles published *before* the event's `outcome_date` are processed.
 
 ---
 
@@ -161,93 +161,59 @@ The pipeline is a **standalone Python service** in the TruthMachine repo.
 | Package manager | `uv` | Fast, modern |
 | Testing | `pytest` + `pytest-asyncio` | Standard |
 
-**Folder:** `pipeline/` in the TruthMachine repo (not inside Daatan).
-
 ---
 
 ## 7. Output: Per-Event Pages
 
-The pipeline **automatically generates** a per-event page data file in `data/pages/` for every event. The Next.js UI renders these without manual intervention.
+The pipeline **automatically generates** a per-event page data file in `data/pages/` for every event.
 
-Page structure (based on existing prototype):
+Page structure:
 - Two-column verdict: accurate sources (YES) vs. inaccurate sources (NO)
 - Source name, headline, date, extracted quote
 - Detailed analysis section
 - Citations
 
-The `retro/prototype/page.tsx` and `data.ts` in the Daatan repo serve as the UI reference for this format.
-
 ---
 
 ## 8. Scoring & Reputation System
 
-### Two independent tracks
-- **Journalist score** — follows the person across outlets
-- **Outlet score** — reflects the publication's aggregate accuracy
-- Both scored **per domain** — domain specialization emerges naturally from writing patterns
+### Scoring tracks
+- **Journalist score** — follows the person across outlets.
+- **Outlet score** — publication's aggregate accuracy.
 
 ### Scoring methods
-
-**Brier Score** — primary calibration metric:
-```
-BS = (1/N) * Σ(f_t - o_t)²
-```
-Where `f_t` = derived probability (Stance × Certainty), `o_t` = binary ground truth.
-
-**Custom ELO variant** — zero-sum: journalists predicting the same event compete; correct predictors gain points from incorrect ones. Exact formula TBD.
-
-### Cold start
-New journalists default to outlet average score as prior. Full solution deferred.
+- **Brier Score:** Primary calibration metric.
+- **ELO Rating:** Zero-sum relative rank.
+- **No Manual Formula:** The ML model will learn the optimal weights for `stance`, `certainty`, `specificity`, etc., to derive the final probability used for Brier scoring.
 
 ---
 
 ## 9. Oracle Model
 
-Generates forward-looking probability estimates by:
-1. Aggregating predictions on a topic, **weighted by reputation score**
-2. Applying ML model trained on historical prediction → outcome pairs
-3. Model architecture (regression / neural net / LLM fine-tune) decided after sufficient labeled data exists
-
-**Update frequency:** Batch retraining for MVP. Real-time updates per major event as a later milestone.
-
-**No external signals** — oracle is derived purely from ingested publications + reputation scores + historical training.
+Generates probability estimates by aggregating predictions weighted by source reputation.
+- **ML Architecture:** Recommended **Bayesian Weighted Ensemble** using **XGBoost or LightGBM**. This approach is preferred over black-box LLMs for institutional trust, as it allows for explicit feature importance (showing which source's reputation drove the forecast).
+- **Training:** The model is trained on historical "Prediction → Post-Factum Truth" pairs (Yesterday's Truth is Tomorrow's Calibration).
+- **Data Density:** Handling of sparse data (low vs. high volume) to be decided in a later phase.
 
 ---
 
 ## 10. API Design
 
-The API is the product.
-
 | Endpoint type | Description |
 |---|---|
-| Event probability | `"What is the probability of X?"` *(primary)* |
+| Event probability | `"What is the probability of X?"` |
 | Journalist reputation | Score, domain breakdown, history |
 | Outlet reputation | Same at outlet level |
 
-**Auth & billing:** Deferred. MVP will be open/internal to validate the model first.
-
 ---
 
-## 11. Cost & Time Estimation
-
-### Build cost (25 sources × 125 events)
+## 11. Cost & Time Estimation (MVP)
 
 | Component | Provider | Estimated Cost |
 |---|---|---|
-| News Ingestion | Perigon (Plus) or Event Registry | $90 – $550/mo |
+| News Ingestion | TBD (Perigon / Event Registry / Custom) | $90 – $550/mo |
 | LLM Inference | OpenRouter (blended) | ~$25 |
 | AWS Hosting | t4g.small (free tier) | $0 |
-| **Total** | | **$115 – $575** |
-
-### Timeline
-
-| Phase | Duration |
-|---|---|
-| Infra & API polling setup | 10 days |
-| Event ground truth seeding | 3 days |
-| Matrix filling (parallel extraction) | 14 days |
-| Scoring & validation | 7 days |
-| **Total MVP** | **~4.5 weeks** |
 
 ---
 
@@ -255,29 +221,14 @@ The API is the product.
 
 | # | Problem | Status |
 |---|---|---|
-| 1 | Perigon/Event Registry Hebrew coverage quality | ⚠️ Needs validation before committing |
-| 2 | Oracle ML model architecture | Deferred — needs labeled data first |
+| 1 | Ingestion Provider Selection | **PENDING** |
+| 2 | Oracle ML model architecture | Deferred |
 | 3 | Exact ELO formula | Deferred |
-| 4 | Cold start for new journalists | Deferred — outlet average as likely prior |
+| 4 | Oracle Confidence/Density Score | Deferred |
 | 5 | Telegram/video ingestion | Phase 2 |
-| 6 | Journalist identity merging across platforms | Deferred to Phase 2 |
-| 7 | API auth & billing | Deferred — open/internal first |
-| 8 | Commercial branding | TBD (TruthMachine is working name) |
-| 9 | **Legal review** — Investment Adviser registration risk | ⚠️ Must resolve before commercial launch |
-| 10 | Orchestration layer (OpenClaw vs custom) | TBD during build |
-| 11 | Political lean axis learning (model-derived, not manual) | Phase 2 — model fills it |
-| 12 | Daatan ↔ TruthMachine API integration | Future — fully separate for now |
-| 13 | PulseNews integration | Future — product exists but not priority |
+| 6 | Journalist identity merging | Phase 2 |
+| 7 | Legal Review | **CRITICAL** |
 
 ---
 
-## 13. Trade-offs & Recommendations
-
-- **Hebrew accuracy:** DeepSeek V3 handles Hebrew well. Do not default to English translations — evaluate first.
-- **Data redundancy:** High-volume sources republish wire news. Use story clustering to deduplicate before LLM stage.
-- **Legal:** "Bona fide newspaper" defense is not solid protection for a B2B oracle. Legal counsel required before onboarding paying clients.
-- **Source diversity:** Financial institutions and think tanks compete on the same leaderboard as media — this is intentional and a product differentiator.
-
----
-
-*First priority: validate Perigon/EventRegistry Hebrew coverage, then build ingestion pipeline.*
+*First priority: Populate `EVENTS.md` metadata (outcome, dates, keywords).*
