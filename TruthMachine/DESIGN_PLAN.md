@@ -191,7 +191,8 @@ Page structure:
 ## 9. Oracle Model
 
 Generates probability estimates by aggregating predictions weighted by source reputation.
-- **ML Model:** Learns the relationship between extraction metrics and actual outcomes.
+- **ML Architecture:** Recommended **Bayesian Weighted Ensemble** using **XGBoost or LightGBM**. This approach is preferred over black-box LLMs for institutional trust, as it allows for explicit feature importance (showing which source's reputation drove the forecast).
+- **Training:** The model is trained on historical "Prediction → Post-Factum Truth" pairs (Yesterday's Truth is Tomorrow's Calibration).
 - **Data Density:** Handling of sparse data (low vs. high volume) to be decided in a later phase.
 
 ---
