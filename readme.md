@@ -1,55 +1,95 @@
 # Project Overview: Daatan
 
-**Daatan** is a data-driven reputation ledger and forecasting engine designed to bring objective measurement to public predictions. By operating at the intersection of AI data science, media analysis, and prediction markets, Daatan audits the historical accuracy of experts, journalists, and media outlets to uncover actionable quantitative alpha.
-
-### The Core Problem: The Signal-to-Noise Ratio
-Every day, a massive volume of predictions regarding geopolitical shifts, macroeconomic trends, and market movements is published across global media. The challenge is that the information ecosystem lacks a standardized mechanism to track the long-term accuracy of these forecasts. Consequently, market sentiment and decisions are frequently influenced by the reach and volume of a publication rather than its proven track record. Until now, there has been no scalable, objective method to separate reliable foresight from general commentary.
-
-### The Catalyst: Bypassing the "Cold Start" Problem
-Retro Analysis (בדיעבד) was originally born to solve a core challenge within Daatan Forecast—our active predictive modeling platform that sits alongside Daatan PulseNews for real-time monitoring. 
-
-Normally, for an expert or analyst to be ranked by a forecasting system, they must actively participate and log predictions over months or years to build a reputation score. Retro Analysis bypasses this limitation entirely. Instead of waiting for pundits to opt-in and make new predictions, we retroactively audit the massive public trail of forecasts they have *already* published. 
-
-We process this through a "100x100 Matrix" that plots major historical events against global media and analysts. Using proprietary LLM pipelines, Daatan extracts a forecaster's *Stance* and *Certainty*, compares it against verifiable ground truth, and assigns precise accuracy metrics (like Brier and Elo scores). The result is an immediate, objective leaderboard of predictive accuracy.
-
-### The Engine: Unlocking the Future Through the Past 
-Ranking the past is only the first step. By fully analyzing historical data, we unlock something much more powerful than a simple reputation ledger. 
-
-In Retro Analysis, the verifiable "ground truth" we use to grade a past prediction is essentially the *future* relative to that publication. By mapping this at scale, we generate a massive dataset of direct correlations between specific publications, expert sentiment, and actual outcomes. The 100x100 Matrix becomes a proprietary, high-signal training dataset for our core predictive engine: **The TruthMachine**.
-
-Because we mathematically understand how past language correlates with actual ground truth, The TruthMachine can analyze today's news and output precise probability scores for tomorrow's events. This shifts Daatan from a media-auditing tool into a predictive engine that provides quantifiable certainty. The primary use cases include:
-* **Quantitative Funds & Traders:** Providing API/DaaS access for untainted, high-signal alternative data.
-* **Prediction Markets:** Offering data-driven tooling to participants (such as volume traders on Polymarket) to gain a distinct edge over retail consensus.
-* **Enterprise Risk:** Equipping corporate officers with dashboards to navigate geopolitical and supply chain volatility.
-
-### The Vision
-Daatan's ultimate goal is to democratize alpha and create a definitive reliability layer for the internet. By objectively measuring predictive accuracy, we can filter out the noise, reward high-signal analysis, and provide the most reliable probabilities for tomorrow's most critical events.
+**Daatan** is a suite of tools designed to bring objective, mathematical measurement to public predictions — turning the unaccountable world of expert opinion into a scored, ranked, and queryable dataset.
 
 ---
 
-## Slide / Appendix A: The LLM & NLP Pipeline
-**Headline: Task-Specific Routing for Maximum Margin**
+### The Problem: Israeli Media Has Never Been Held to Account
 
-**Hybrid LLM Architecture:** We do not burn capital running every query through expensive, top-tier commercial APIs. We use a dynamic routing system, leveraging self-hosted, highly optimized local models for high-volume tasks, and only calling heavy commercial models for complex nuance resolution.
+For decades, Israeli journalists, analysts, and commentators have shaped public understanding of some of the most consequential events in the region — elections, wars, diplomatic breakthroughs, economic shocks. Yet there is no mechanism to track whether they were right.
 
-**Multilingual Alpha Extraction:** The English-speaking market is saturated. Our pipeline natively ingests and analyzes non-English media, capturing geopolitical and financial signals long before they hit US mainstream media.
+A columnist who confidently predicted the judicial reform would collapse, a security correspondent who dismissed the Hamas threat as managed, a financial analyst who called the Moody's downgrade "alarmist" — none of them are ever scored. Their reach and reputation are determined by their platform, not their track record.
 
-**The Extraction Engine:** We process articles with a specially developed but straightforward mathematical mechanism. For every article that qualifies as a prediction, the engine explicitly extracts a multidimensional vector of specific numerical values. This includes core metrics like Stance (the directional prediction), Sentiment (the underlying emotional or market tone), and Certainty (the degree of sureness), among other proprietary data points. These measurable metrics allow us to convert qualitative journalism into quantitative data.
+This is not only a problem of explicit predictions. Much of the signal is hidden: in the framing of a headline, the certainty of a source quoted, the sentiment underneath a neutral-sounding analysis. **Daatan extracts and scores all of it** — not just clear forecasts, but implied direction, vague sentiment, and the story being told between the lines.
 
-## Slide / Appendix B: The Mathematics of Truth
-**Headline: Eliminating Subjectivity through Strict Scoring**
+---
 
-Our TruthMachine converts those extracted metrics into quantitative vectors using two proven mathematical models.
+### The Daatan Suite
 
-**The Brier Score (Probabilistic Accuracy):** To measure how close a source's extracted prediction was to the absolute truth, we calculate their Brier Score. The formula strictly measures their forecasted probability (derived from their stance and certainty) against the actual binary outcome of the event.
+Daatan addresses this problem through three interconnected products:
 
-**The Elo Rating System (Relative Reputation):** We rank sources dynamically using a modified Elo algorithm. If an unknown blogger correctly predicts a rare event that a legacy newspaper gets wrong, the blogger absorbs a massive Elo rating increase, instantly surfacing hidden alpha.
+**Daatan NewsPulse** — A news portal covering Israeli and regional media. Readers don't just consume news: they engage with it by joining forecasts, staking positions, or flagging claims as wrong. This gamification layer passively generates reputation data — every interaction is a signal about source credibility, by topic, by domain, over time.
 
-## Slide / Appendix C: Lean Infrastructure Stack
-**Headline: Enterprise-Grade Data Velocity at Startup Costs**
+**Daatan Forecast** — An active prediction market where users, analysts, and bots make explicit forward-looking claims and stake reputation on them. Forecasts are resolved against real-world outcomes, building verifiable track records.
 
-**Self-Hosted Cloud Compute:** The backend is built on dedicated AWS EC2 instances, leveraging our AWS Activate tier to keep initial burn rates near zero.
+**Retro Analysis (בדיעבד)** — The retroactive audit engine. Rather than waiting for sources to opt in, Retro processes the five-year public trail of what Israeli and international media *already* published — and scores it. It bypasses the cold-start problem entirely: reputation scores are generated from history, not from future participation.
 
-**Orchestration:** We currently orchestrate our local LLMs via OpenClaw and custom wrappers.
+---
 
-**Scalability:** The architecture is designed to be lean. As the matrix expands from 100x100 to 200x200 and deeper, we have a clear, cost-effective path to horizontally scale up to multiple EC2 instances. This keeps our burn rate incredibly low while maintaining the data velocity we need to beat the market.
+### The Engine: From Audit to Oracle
+
+Retro Analysis is built around a **125-event × 25-source matrix**, cross-referencing major Israeli and global events (2021–2026) against media outlets, journalists, financial institutions, and think tanks.
+
+For every article in scope, a multi-stage LLM pipeline extracts a prediction vector:
+
+- **Stance** — directional outlook on the event (-1.0 bearish → +1.0 bullish)
+- **Certainty** — how linguistically confident the author is
+- **Sentiment** — the emotional charge beneath the words
+- **Specificity** — how falsifiable and concrete the claim is
+- **Contrarianism** — how far the prediction deviates from the consensus of peers at the same moment in time
+- ...and more proprietary dimensions
+
+Each prediction is matched to a seed event, scored against historical ground truth, and used to update the source's **Brier Score** (calibration accuracy) and **ELO rating** (relative rank against peers on the same event).
+
+The resulting dataset — thousands of scored predictions, ranked sources, and verified outcomes — becomes the training corpus for **The TruthMachine**: a predictive model that analyzes today's news and outputs calibrated probability estimates for tomorrow's events.
+
+---
+
+### The TruthMachine
+
+Because we mathematically understand how past language correlates with actual outcomes, The TruthMachine can read a cluster of articles published today and ask: *given who is saying what, and how accurate they have historically been, what is the probability this event occurs?*
+
+Output examples:
+- `"Chances Netanyahu survives no-confidence vote: 0.83"`
+- `"Probability of IDF ground operation in Lebanon within 30 days: 0.61"`
+- `"Likelihood of Moody's second downgrade by Q2: 0.44"`
+
+This shifts Daatan from a media-auditing tool into a forward-looking intelligence product. Primary clients:
+
+- **Quantitative funds & traders** — API access to high-signal alternative data on Israeli and regional events
+- **Prediction market participants** — data-driven edge for Polymarket and similar platforms
+- **Corporate & government risk desks** — calibrated probability estimates for geopolitical and economic planning
+
+---
+
+### The Vision
+
+Daatan's goal is to create a definitive reliability layer for the information ecosystem — starting with Israel. By objectively measuring who was right, who was wrong, and who saw it coming when no one else did, we surface hidden analytical talent, penalize confident noise, and provide the most honest probabilities available for the region's most consequential events.
+
+---
+
+## Appendix A: LLM & NLP Pipeline
+
+**Hybrid architecture:** High-volume filtering uses cheap or free models (Nemotron Nano); nuanced forensic extraction uses mid-tier models (DeepSeek V3.2 at $0.25/1M tokens). Heavy models are called only when necessary.
+
+**Multilingual extraction:** The pipeline natively processes Hebrew and English, capturing signals in Israeli media before they surface in international coverage.
+
+**Scope:** Every article that passes the prediction filter is processed — not just op-eds with explicit forecasts, but news analysis, commentary, sourced claims, and any text that implies a directional view on a future outcome.
+
+---
+
+## Appendix B: The Mathematics of Truth
+
+**Brier Score** — measures calibration: how close the extracted probability was to the actual binary outcome. Lower is better.
+
+**ELO Rating** — zero-sum relative ranking: sources that correctly predict events their peers got wrong absorb significant rating gains, instantly surfacing hidden analytical alpha regardless of platform size or brand recognition.
+
+---
+
+## Appendix C: Infrastructure
+
+**Compute:** AWS EC2 t4g.small (Graviton, ARM) — free-tier eligible through 2026. 40% better price-performance than T3 for this workload.
+
+**Storage (MVP):** Filesystem JSON — one file per event/source pair (~3,000 files). Migrates to PostgreSQL + pgvector as data volume and API demand grows.
+
+**Orchestration:** OpenClaw / custom Python async workers.
