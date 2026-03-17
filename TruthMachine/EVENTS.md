@@ -9,10 +9,12 @@
 - High-coverage events are decomposed into multiple sub-questions, each independently scored
 
 **Metadata fields** (to be filled per event):
-- `date` — when the outcome was determined
+- `outcome` — Boolean (True if event happened)
+- `outcome_date` — when the outcome was determined
+- `search_keywords` — terms for article ingestion (Hebrew/English)
+- `llm_referee_criteria` — instructions for relevance verification
 - `importance` — 1 (low) to 5 (high)
 - `domains` — tags (e.g., politics, military, economy, tech)
-- `related_events` — IDs of related events in this list
 
 Each event is a concrete, binary, scorable outcome. Sub-questions of major events are listed separately.
 
@@ -20,8 +22,8 @@ Each event is a concrete, binary, scorable outcome. Sub-questions of major event
 
 ## Domain A: Israeli Politics & Elections (25 events)
 
-| # | Event | Date | Importance | Domains | Related Events |
-|---|---|---|---|---|---|
+| # | Event | Outcome | Outcome Date | Search Keywords | LLM Referee Criteria |
+|---|---|---|---|---|---|---|
 | A01 | Bennett-Lapid coalition sworn in as government | | | | |
 | A02 | Bennett coalition loses Knesset majority | | | | |
 | A03 | Knesset dissolves — Lapid becomes caretaker PM | | | | |
