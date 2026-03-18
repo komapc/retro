@@ -1,16 +1,18 @@
-# Retro Analysis (בדיעבד) — Seed Pitch Deck
+# Bediavad — Seed Pitch Deck
 
-> **Format:** 9 slides, narrative-first | **Stage:** Seed | **Last updated:** 2026-03-18
+> **Format:** 10 slides, narrative-first | **Stage:** Seed | **Last updated:** 2026-03-18
 
 ---
 
 ## Slide 1: Title
 
-**Company:** Retro Analysis / בדיעבד
+**Company:** Bediavad (בדיעבד)
+
+**Tagline:** *Retroactive Media Analysis*
 
 **One-liner:** *We measure who to trust. Then we predict.*
 
-> _Visual: clean, dark background, company name + one-liner centered. No clutter._
+> _Visual: clean, dark background. "Bediavad" large, "Retroactive Media Analysis" smaller below, one-liner at bottom. No clutter._
 
 ---
 
@@ -31,7 +33,24 @@ But there is no score. No accountability. No way to know:
 
 ---
 
-## Slide 3: The Solution
+## Slide 3: Why Now?
+
+**Three forces converging — none of which existed five years ago.**
+
+**1. The post-truth crisis is measurable — and people are angry.**
+We live in an era of media manipulation, echo chambers, and outlets that write what users want to hear rather than what is true. But "post-truth" is a myth. Every factual claim, given enough time, is verifiable. The technology to do that verification at scale now exists. The demand for accountability has never been higher.
+
+**2. Prediction markets are a new, growing industry — and we are inside it.**
+Kalshi, Polymarket, and their successors are becoming a serious financial instrument. We are not just building a leaderboard — we are building the intelligence layer that prediction market participants, quant funds, and institutional desks will pay for. The market is forming now.
+
+**3. The LLM breakthrough made this possible.**
+Retroactive analysis of thousands of articles in Hebrew and English — extracting claims, scoring accuracy, calibrating models — was computationally and economically impossible five years ago. Today, cheap, high-quality LLMs make it an engineering problem. We are the first to apply this capability systematically to media credibility.
+
+> _Visual: three icons — broken megaphone (post-truth) / trading chart (prediction markets) / neural network (LLMs). Simple, bold._
+
+---
+
+## Slide 4: The Solution
 
 **We retroactively audit five years of Israeli and international media — and score every prediction.**
 
@@ -42,13 +61,13 @@ The result:
 - A **credibility layer** for the information ecosystem, built on mathematical ground truth
 - A **unique proprietary dataset** — thousands of scored predictions with verified outcomes, usable directly as source data and ground truth for ML model training. No one else has this.
 
-This is **Retro Analysis (בדיעבד)** — the first system to close the loop between what was said and what was true.
+This is **Bediavad** — the first system to close the loop between what was said and what was true.
 
 > _Visual: simple pipeline diagram — Articles → Extract → Score → Rank → Dataset._
 
 ---
 
-## Slide 4: The Secret (Our Unique Insight)
+## Slide 5: The Secret (Our Unique Insight)
 
 **Post-factum calibration is the moat.**
 
@@ -69,7 +88,7 @@ We call this **Outcome-Supervised Narrative Calibration (OSNC)** — and it powe
 
 ---
 
-## Slide 5: The Oracle (Product 2)
+## Slide 6: The Oracle (Product 2)
 
 **Because we know who was right in the past, we can predict the future better than anyone.**
 
@@ -88,7 +107,7 @@ This is **TruthMachine** — a calibrated oracle API for geopolitical and econom
 
 ---
 
-## Slide 6: Traction
+## Slide 7: Traction
 
 **The infrastructure is built. The first results are live.**
 
@@ -107,15 +126,15 @@ This is **TruthMachine** — a calibrated oracle API for geopolitical and econom
 
 ---
 
-## Slide 7: Business Model
+## Slide 8: Business Model
 
 **Freemium leaderboard → Institutional API**
 
 | Tier | Product | Price |
 |---|---|---|
-| **Free** | Public credibility leaderboard (journalist & outlet scores) | $0 |
-| **Pro** | Live Oracle API — probability estimates for current events | TBD |
-| **Enterprise** | Full raw forensic data, custom domain scoring, white-label | TBD |
+| **Free** | Public credibility leaderboard — journalist & outlet scores by domain | $0 |
+| **Pro** | Oracle API — real-time probability estimates for current events; full source credibility data | $299/year |
+| **Enterprise** | Raw forensic dataset, custom domain scoring, white-label, dedicated support | $2,400/year |
 
 The free leaderboard drives awareness and positions us as the credibility standard.
 The API is the revenue engine — sold to quant funds, prediction market traders, and government risk desks.
@@ -124,7 +143,7 @@ The API is the revenue engine — sold to quant funds, prediction market traders
 
 ---
 
-## Slide 8: Market
+## Slide 9: Market
 
 **Who pays for better predictions about Israel and the Middle East?**
 
@@ -146,26 +165,29 @@ This is feasible. The two-stage LLM pipeline (cheap filter → targeted extracto
 
 ---
 
-## Slide 9: Team & The Ask
+## Slide 10: Team & The Ask
 
 **Team**
 
-*(Founders — to be completed)*
+**Andrey** — Media analyst and content strategist; deep knowledge of Israeli press landscape; chess Candidate Master.
 
-We are building at the intersection of investigative journalism, quantitative finance, and AI infrastructure. The product requires domain expertise in Israeli media, LLM pipelines, and calibrated probabilistic modeling.
+**Marik** — 20+ years software engineering and DevOps; built and scaled TableSurfing (global P2P accommodation network); now building the pipeline end-to-end.
+
+We are building at the intersection of investigative journalism, quantitative finance, and AI infrastructure.
 
 ---
 
-**The Ask: $[X]**
+**The Ask: $100,000** *(6-month runway — then Series A)*
 
-| Use of funds | % |
-|---|---|
-| Data ingestion (Perigon / Event Registry) | 40% |
-| LLM inference (OpenRouter) | 15% |
-| Engineering (pipeline + API) | 35% |
-| Legal & compliance | 10% |
+| Use of funds | % | ~USD |
+|---|---|---|
+| Team (3 people, 6 months) | 66% | $66,000 |
+| Data ingestion (Perigon / Event Registry) | 18% | $18,000 |
+| Infrastructure, LLM & services | 7% | $7,000 |
+| Legal & compliance | 5% | $5,000 |
+| Reserve | 4% | $4,000 |
 
-**18-month goal:** 100×100 matrix complete, Oracle API in private beta, first paying institutional clients, provably beating market consensus on 3 major events.
+**6-month goal:** 5-year Middle East press analysis complete, Oracle API in private beta, first paying institutional clients — and a **statistically significant accuracy advantage** over Kalshi and Polymarket consensus on the same questions.
 
 > _Visual: simple pie chart + milestone timeline._
 
