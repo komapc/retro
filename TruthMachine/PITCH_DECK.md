@@ -38,12 +38,13 @@ But there is no score. No accountability. No way to know:
 Using an LLM pipeline, we process thousands of articles, extract every forward-looking claim (explicit or implied), and score each one against what actually happened.
 
 The result:
-- A **ranked leaderboard** of journalists and outlets by domain — who is actually reliable on security, economics, politics
+- A **competitive ranking** of journalists and outlets by domain — who is actually reliable on security, economics, politics
 - A **credibility layer** for the information ecosystem, built on mathematical ground truth
+- A **unique proprietary dataset** — thousands of scored predictions with verified outcomes, usable directly as source data and ground truth for ML model training. No one else has this.
 
 This is **Retro Analysis (בדיעבד)** — the first system to close the loop between what was said and what was true.
 
-> _Visual: simple pipeline diagram — Articles → Extract → Score → Rank._
+> _Visual: simple pipeline diagram — Articles → Extract → Score → Rank → Dataset._
 
 ---
 
@@ -129,9 +130,16 @@ The API is the revenue engine — sold to quant funds, prediction market traders
 - **Corporate & government risk desks** — geopolitical and supply chain scenario planning
 - **Media & PR** — organizations wanting to benchmark their own credibility
 
-The Israeli market is the proof of concept. The model expands to any region where media accountability is absent and stakes are high: Turkey, Gulf states, Eastern Europe.
+The Israeli market is the proof of concept. The long-term ambition is to expand monitoring in every direction simultaneously:
 
-> _Visual: concentric circles — Israel core → MENA → Global._
+- **More regions** — MENA, Eastern Europe, Gulf states, any high-stakes media ecosystem
+- **More languages** — Arabic, Farsi, Turkish, Russian
+- **More time** — historical archives going back decades, not just five years
+- **More coverage** — eventually, every published article, not just event-centric sampling
+
+This is feasible. The two-stage LLM pipeline (cheap filter → targeted extractor) keeps marginal cost per article near zero. The math scales linearly. With the right infrastructure, **total media coverage is not a moonshot — it is an engineering problem.**
+
+> _Visual: concentric circles expanding outward — Israel → MENA → Global → All Languages → All Time._
 
 ---
 
