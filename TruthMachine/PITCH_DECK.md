@@ -90,17 +90,20 @@ This is **TruthMachine** — a calibrated oracle API for geopolitical and econom
 
 ## Slide 6: Traction
 
-**The infrastructure is built. The matrix is filling.**
+**The infrastructure is built. The first results are live.**
 
 - ✅ Pipeline live: gatekeeper → forensic extractor → scoring (Hebrew + English)
 - ✅ 125 seed events defined across 9 domains (politics, war, economy, tech, energy)
 - ✅ 25 sources selected (15 Israeli, 6 international, Polymarket as auxiliary)
-- ✅ Prototype retro-analysis pages live (per-event accuracy reports)
+- ✅ **3 fully scored case studies published** — live at [komapc.github.io/retro](https://komapc.github.io/retro):
+  - 🇻🇪 **Operation Absolute Resolve** — US capture of Maduro; Bloomberg & Reuters called it, ynet/Israel Hayom missed it
+  - 📉 **Trump Trade Wars 2025** — tariff escalation & dollar decline; Haaretz called it, Calcalist dismissed it
+  - ⚡ **Energy Volatility 2026** — European gas price spike; TheMarker called it, Globes missed it
 - ✅ Repo public: github.com/komapc/retro
 
 **Next milestone:** First 20 events × 25 sources fully scored and published.
 
-> _Visual: matrix grid, partially filled with green/gray cells. Progress bar._
+> _Visual: screenshot of the live case study page — two columns (teal=accurate, rose=inaccurate), source quotes, outcome badge. Matrix grid with 3 cells filled._
 
 ---
 
