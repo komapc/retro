@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retro Analysis (בדיעבד) — Case Studies</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+    body { font-family: 'Inter', sans-serif; background: #f5f7fa; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    .card-item { transition: all 0.2s; }
+    .card-item:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body class="min-h-screen text-gray-800">
+
+<div class="max-w-6xl mx-auto p-4 md:p-8">
+
+  <!-- Site Header -->
+  <div class="text-center mb-10">
+    <a href="#" class="inline-block text-xs font-black tracking-[0.3em] text-gray-400 uppercase mb-2">DAATAN</a>
+    <h1 class="text-4xl font-black text-gray-900 tracking-tight">Retro Analysis <span class="text-gray-400 font-normal">/ בדיעבד</span></h1>
+    <p class="text-gray-500 text-sm mt-2">Post-factum media accuracy audits — who saw it coming, and who didn't</p>
+  </div>
+
+  <!-- Navigation -->
+  <div id="nav" class="flex flex-wrap gap-2 mb-10 justify-center"></div>
+
+  <!-- Content -->
+  <div id="content" class="fade-in"></div>
+
+  <!-- Footer -->
+  <div class="mt-16 text-center text-[10px] text-gray-400 uppercase tracking-[0.2em] font-bold">
+    DAATAN Retro-Analysis Archive &copy; 2026 &nbsp;·&nbsp;
+    <a href="https://github.com/komapc/retro" class="hover:text-gray-600 transition-colors">github.com/komapc/retro</a>
+  </div>
+</div>
+
+<script>
+const analyses = [
+  {
+    id: 'maduro',
+    navLabel: 'Venezuela 2026',
+    tag: 'POLITICAL FORECAST MARKET #882-VZ',
+    title: 'U.S. Military Extraction of Maduro',
+    description: 'Media Sentiment Analysis: 14 Days Preceding the Jan 2026 Operation. Hover over sources to view verified predictive quotes.',
+    left: {
+      label: 'YES / ACTION',
+      outcome: 'SUCCESS',
+      sublabel: 'ACCURATE ANALYTICAL FORECASTS',
+      items: [
+        { source: 'THE WALL STREET JOURNAL', headline: "Pentagon Weighs 'Kinetic Options' as Caracas Deadlock Hardens", date: 'Dec 29, 2025' },
+        { source: 'X — @SENTINELS_INTEL (OSINT)', headline: 'Unusual C-17 Activity at Guantanamo Bay', date: 'Jan 03, 2026' },
+        { source: 'MIAMI HERALD', headline: "White House Sources: 'Patience has Run Out' on Venezuela", date: 'Jan 05, 2026' },
+        { source: 'PANAM POST', headline: 'The Capture is the Only Way Out', date: 'Dec 30, 2025' },
+        { source: 'FOREIGN POLICY', headline: 'The End of Diplomacy in the Caribbean', date: 'Jan 02, 2026' },
+        { source: 'INFOBAE', headline: 'Navy Seals Training in Colombia?', date: 'Jan 04, 2026' },
+      ]
+    },
+    right: {
+      label: 'NO / DIPLOMACY',
+      outcome: 'FAILED',
+      sublabel: 'INACCURATE / DISMISSIVE FORECASTS',
+      items: [
+        { source: 'THE NEW YORK TIMES', headline: 'Why Military Intervention in Venezuela is Off the Table', date: 'Dec 29, 2025' },
+        { source: 'AL JAZEERA ENGLISH', headline: 'Regional Powers Rule Out Force', date: 'Jan 02, 2026' },
+        { source: 'THE GUARDIAN', headline: "Maduro's Grip Tightens Amid U.S. Indecision", date: 'Jan 04, 2026' },
+        { source: 'VENEZUELANALYSIS', headline: 'Invasion Rumors are Psychological Warfare', date: 'Dec 31, 2025' },
+        { source: 'THE WASHINGTON POST', headline: 'Editorial: Stick to the Sanctions', date: 'Jan 03, 2026' },
+        { source: 'REUTERS', headline: 'Backchannel Talks Continue in Barbados', date: 'Jan 05, 2026', quote: 'Diplomats from both sides report "significant progress" on an exit roadmap. The threat of force has been effectively sidelined by these productive negotiations.' },
+      ]
+    }
+  },
+  {
+    id: 'trump-wars',
+    navLabel: 'War Watch 2025',
+    tag: 'POLITICAL FORECAST MARKET #2025-WAR-WATCH',
+    title: "Trump's 'No New Wars' Pledge: A Predictive Sentiment Analysis",
+    description: "During the first year of the second Trump administration, global media and political analysts were sharply divided over the president's 'America First' promise to avoid foreign entanglements. While supporters pointed to polling data and isolationist rhetoric, critics warned that a new 'imperialist' doctrine was being codified in the 2025 National Security Strategy.",
+    left: {
+      label: 'YES / PEACE',
+      outcome: 'NO NEW WARS',
+      sublabel: 'PREDICTED OUTCOME (ISOLATIONISM)',
+      items: [
+        { source: 'GALLUP', headline: '"Biggest change since 2016 is increased belief Trump will avoid war" (55% public confidence)', date: 'Jan 02, 2025' },
+        { source: 'WALL STREET JOURNAL', headline: '"Trump\'s Best Foreign Policy? Not Starting Any Wars." — Endorsement by JD Vance', date: "Jan 31, 2023 / Ref'd 2025" },
+        { source: 'PRESIDENTIAL INAUGURAL', headline: '"My proudest legacy will be that of a peacemaker... the wars we never get into."', date: 'Jan 20, 2025' },
+        { source: 'DEFENSE SECRETARY HEGSETH', headline: '"The War Department will not be distracted by democracy-building... regime change."', date: 'Dec 06, 2025' },
+        { source: 'JAPAN FORWARD', headline: '"First Trump Administration... started no new wars — second will be even more effective."', date: 'Jan 01, 2025' },
+      ]
+    },
+    right: {
+      label: 'NO / INTERVENTION',
+      outcome: 'ESCALATION / WAR',
+      sublabel: 'PREDICTED OUTCOME (DOMINANCE)',
+      items: [
+        { source: 'THE NEW YORK TIMES', headline: '"Trump\'s increasing willingness to deploy military force underscores the broader change."', date: 'Oct 10, 2025' },
+        { source: 'ASSOCIATED PRESS', headline: '"President-elect has been embracing a new imperialist agenda... by military force."', date: 'Jan 09, 2025' },
+        { source: 'RESPONSIBLE STATECRAFT', headline: '"Reckless escalation with Venezuela... interdiction of vessels constitutes an act of war."', date: 'Sep 15, 2025' },
+        { source: 'FOREIGN POLICY', headline: '"Trump\'s new national security strategy goes full \'America First\'... portends substantial changes."', date: 'Dec 10, 2025' },
+        { source: 'QUINCY INSTITUTE', headline: '"Revival of the Monroe Doctrine... portends a new age of militaristic interventionism."', date: 'Dec 04, 2025' },
+      ]
+    },
+    analysis: [
+      {
+        title: 'The Case for Peace: Selective Engagement and Strategic Withdrawal',
+        content: [
+          'Public and Political Confidence: By the start of 2025, 55% of Americans believed Trump would keep the nation out of war, a 17-point increase since his first term. Vice President JD Vance\'s foundational endorsement was built on the premise that Trump would not "recklessly send Americans to fight overseas."',
+          'The "SCOPE" Strategy: Under Defense Secretary Pete Hegseth, the administration developed the "SCOPE" strategy, aimed at reducing troop numbers in the Middle East and shifting to "burden and risk sharing" with regional allies.',
+          'Negotiation-First Rhetoric: In the early months, Trump touted his ability to end the Russia-Ukraine war and brokered a significant ceasefire and hostage-release deal between Israel and Hamas in October 2025, reinforcing his "peacemaker" image.'
+        ]
+      },
+      {
+        title: 'The Case for Intervention: The "Donroe Doctrine" and Hemispheric Dominance',
+        content: [
+          'Imperialist Ambitions: Analysts flagged Trump\'s early threats to seize the Panama Canal and Greenland as a departure from traditional norms. By September 2025, Trump had already deployed 10% of the U.S. Navy fleet to the Caribbean.',
+          'The 2025 National Security Strategy (NSS): Published on December 4, 2025, the NSS codified the "Trump Corollary" to the Monroe Doctrine (often referred to as the "Donroe Doctrine"). It explicitly prioritized U.S. objectives in the Western Hemisphere and signaled a willingness to use force to ensure hemispheric dominance.',
+          'Incremental Military Action: Before the major Caracas operation, the U.S. conducted 35 strikes against drug-trafficking vessels in late 2025, resulting in 115 deaths. This "unrestrained" executive power was viewed by legal scholars as a precursor to full-scale intervention.'
+        ]
+      },
+      {
+        title: 'Historical Signposts for the Transition to War',
+        content: [
+          'Staffing for Action: Unlike his first term, Trump entered 2025 with a team of "loyalists" who viewed their jobs as facilitating the president\'s impulses rather than acting as "adults in the room" to restrain him.',
+          'Strategic Disengagement vs. Aggression: While Trump sought to disengage from European and North Asian alliances, he simultaneously "authorized attacks in eight nations" within his first year, approving more airstrikes in 2025 than his predecessor did in four years.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'energy-2026',
+    navLabel: 'Energy 2026',
+    tag: 'ENERGY FORECAST MARKET #Q1-2026-OIL',
+    title: 'Geopolitical Convergence and the Energy Volatility of 2026',
+    description: 'The global energy market in Q1 2026 was thrust into profound dislocation. This analysis synthesizes predictions from thirty major media outlets and financial institutions, filtered for clear sentiment regarding the trajectory of crude oil prices.',
+    left: {
+      label: 'BULLISH / SUPPLY SHOCK',
+      outcome: '$100 – $150 BBL',
+      sublabel: 'PREDICTED OUTCOME (SHOCK)',
+      items: [
+        { source: 'LITEFINANCE', headline: '"Buying Brent with targets at $125 and $130 remains relevant."', date: 'Mar 09, 2026' },
+        { source: 'KPLER', headline: '"Sees a potential range of $130–150."', date: 'Mar 09, 2026' },
+        { source: 'J.P. MORGAN', headline: '"Unprecedented disruption... potentially surging oil prices to $120."', date: 'Mar 06, 2026' },
+        { source: 'GOLDMAN SACHS', headline: '"Brent prices would likely reach $100" if disruption lasts 5 weeks.', date: 'Mar 06, 2026' },
+        { source: 'OCBC GROUP', headline: '"Expects prices to reach $140 per barrel."', date: 'Mar 09, 2026' },
+        { source: 'WOOD MACKENZIE', headline: '"Failure to re-establish flows... drive Brent prices well over $100."', date: 'Mar 02, 2026' },
+      ]
+    },
+    right: {
+      label: 'BEARISH / STRUCTURAL SURPLUS',
+      outcome: '$50 – $65 BBL',
+      sublabel: 'PREDICTED OUTCOME (STABILITY)',
+      items: [
+        { source: 'SBI RESEARCH', headline: '"Crude prices to soften... touch $50/barrel by June."', date: 'Jan 05, 2026' },
+        { source: 'U.S. EIA', headline: '"Brent crude spot prices to average $57.69 per barrel in 2026."', date: 'Feb 10, 2026' },
+        { source: 'BLOOMBERGNEF', headline: '"Estimates Brent crude to average $55 per barrel in 2026."', date: 'Jan 13, 2026' },
+        { source: 'REUTERS POLL', headline: '"Consensus estimate that Brent would average $63.85."', date: 'Feb 27, 2026' },
+        { source: 'WOOD MACKENZIE', headline: '"Incremental barrels... driving Brent below mid- to high-US$50/bbl."', date: 'Jan 06, 2026' },
+        { source: 'J.P. MORGAN (BASELINE)', headline: '"Brent crude averaging around $60/bbl in 2026."', date: 'Feb 27, 2026' },
+      ]
+    },
+    citations: [
+      'Oil Can Hit $91 a Barrel in Late 2026 on Iran Disruption | BloombergNEF, Mar 9, 2026',
+      'Venezuela is back in the oil game at a critical moment | TheStreet, Mar 9, 2026',
+      'What Does the Iran War Mean for Global Energy Markets? | CSIS, Mar 9, 2026',
+      'Oil Market Expectations Following the Venezuelan Intervention | TD Securities, Mar 9, 2026',
+      'Oil Sounds the Alarm. Forecast as of 09.03.2026 | LiteFinance',
+      'Goldman Sachs\' Contrarian Bullish Logic: Strait of Hormuz Recovery Timeline | Bitget News, Mar 9, 2026',
+      'Oil jumps above $105 on Middle East tensions | Anadolu Ajansı, Mar 9, 2026',
+      'Crude Oil Surge: Why Geopolitical Tensions in Iran are Driving Prices | deVere Group',
+      'Venezuela Regime Change: Impact on Oil Production | Wood Mackenzie, Mar 9, 2026',
+      'World shares tumble as Iran war pushes crude prices over $110 | Barchart, Mar 9, 2026',
+      'Oil Price Forecast 2026 | J.P. Morgan Global Research, Mar 9, 2026',
+      'Crude Prices to Soften in 2026, Touch $50/Barrel by Jun | Outlook Business',
+      'Spiking oil prices end any chance of market "melt-up" | Morningstar / MarketWatch',
+      'White House worries as gas prices jump amid US-Israel war on Iran | The Guardian, Mar 8, 2026',
+      'US shale offers no quick remedy to Iran war price spike | Argus Media',
+    ]
+  }
+];
+
+let activeId = analyses[0].id;
+
+function renderNav() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = analyses.map(a => `
+    <button
+      onclick="setActive('${a.id}')"
+      id="btn-${a.id}"
+      class="px-5 py-2 rounded-full text-xs font-black tracking-wide transition-all ${
+        a.id === activeId
+          ? 'bg-gray-900 text-white shadow-md scale-105'
+          : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+      }"
+    >${a.navLabel}</button>
+  `).join('');
+}
+
+function renderItem(item, color) {
+  const borderColor = color === 'teal' ? 'border-teal-600' : 'border-rose-600';
+  const sourceColor = color === 'teal' ? 'text-teal-700' : 'text-rose-700';
+  const hoverBg = color === 'teal' ? 'hover:bg-teal-50' : 'hover:bg-rose-50';
+  const quoteBg = color === 'teal' ? 'bg-teal-600' : 'bg-rose-600';
+  const quoteLabel = color === 'teal' ? 'text-teal-100' : 'text-rose-100';
+
+  return `
+    <div class="card-item p-4 bg-gray-50 rounded-lg border-l-4 ${borderColor} ${hoverBg} cursor-default">
+      <div class="flex justify-between items-start mb-2">
+        <p class="text-[10px] ${sourceColor} font-black uppercase tracking-tighter">${item.source}</p>
+        <p class="text-[10px] text-gray-400 font-bold ml-2 shrink-0">${item.date}</p>
+      </div>
+      <p class="text-sm font-bold text-gray-900 leading-snug">${item.headline}</p>
+      ${item.quote ? `
+        <div class="mt-3 p-3 ${quoteBg} rounded-md text-white text-xs shadow-inner">
+          <p class="${quoteLabel} text-[9px] font-black uppercase tracking-widest mb-1">EXACT QUOTE</p>
+          <p class="italic leading-relaxed">"${item.quote}"</p>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderAnalysis() {
+  const a = analyses.find(x => x.id === activeId);
+  const content = document.getElementById('content');
+
+  content.className = 'fade-in';
+  void content.offsetWidth; // trigger reflow for animation
+
+  content.innerHTML = `
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <span class="inline-block px-4 py-1 bg-gray-900 text-white text-[10px] tracking-widest font-bold rounded-full mb-4 uppercase">${a.tag}</span>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight leading-tight max-w-3xl mx-auto">${a.title}</h2>
+      <p class="text-gray-500 text-sm max-w-2xl mx-auto leading-relaxed">${a.description}</p>
+    </div>
+
+    <!-- Two Columns -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <!-- Left: Accurate -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+        <div class="bg-teal-600 p-5 flex justify-between items-center">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center bg-teal-700/30">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </span>
+            <span class="text-white font-bold italic tracking-wide text-lg">${a.left.label}</span>
+          </div>
+          <div class="text-right">
+            <p class="text-teal-100 text-[10px] uppercase tracking-widest font-bold">Predicted Outcome</p>
+            <p class="text-white font-black text-xl">${a.left.outcome}</p>
+          </div>
+        </div>
+        <div class="p-6 flex-grow">
+          <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-teal-500 inline-block"></span>
+            ${a.left.sublabel}
+          </p>
+          <div class="space-y-4">${a.left.items.map(i => renderItem(i, 'teal')).join('')}</div>
+        </div>
+      </div>
+
+      <!-- Right: Inaccurate -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+        <div class="bg-rose-600 p-5 flex justify-between items-center">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center bg-rose-700/30">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </span>
+            <span class="text-white font-bold italic tracking-wide text-lg">${a.right.label}</span>
+          </div>
+          <div class="text-right">
+            <p class="text-rose-100 text-[10px] uppercase tracking-widest font-bold">Predicted Outcome</p>
+            <p class="text-white font-black text-xl">${a.right.outcome}</p>
+          </div>
+        </div>
+        <div class="p-6 flex-grow">
+          <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span>
+            ${a.right.sublabel}
+          </p>
+          <div class="space-y-4">${a.right.items.map(i => renderItem(i, 'rose')).join('')}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Analysis -->
+    ${a.analysis ? `
+      <div class="mb-12 space-y-10">
+        <div class="text-center">
+          <h3 class="text-2xl font-black text-gray-900 uppercase tracking-tighter">Detailed Analysis of the Debate</h3>
+          <div class="w-24 h-1 bg-gray-900 mx-auto mt-4"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+          ${a.analysis.map((s, idx) => `
+            <div class="${idx === 2 ? 'md:col-span-2 max-w-3xl mx-auto' : ''}">
+              <h4 class="text-lg font-extrabold text-gray-900 mb-4 flex items-center gap-3">
+                <span class="flex-shrink-0 w-8 h-8 rounded bg-gray-900 text-white flex items-center justify-center text-sm">${idx + 1}</span>
+                ${s.title}
+              </h4>
+              <div class="space-y-3">
+                ${s.content.map(p => `<p class="text-gray-600 leading-relaxed text-sm">${p}</p>`).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+
+    <!-- Citations -->
+    ${a.citations ? `
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 mb-8">
+        <h3 class="text-lg font-black text-gray-900 uppercase tracking-widest mb-6 border-b pb-4">Works Cited</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+          ${a.citations.map((c, idx) => `
+            <div class="text-[11px] leading-relaxed text-gray-600">
+              <span class="text-gray-400 font-mono mr-2">[${String(idx + 1).padStart(2, '0')}]</span>${c}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+function setActive(id) {
+  activeId = id;
+  renderNav();
+  renderAnalysis();
+}
+
+// Init
+renderNav();
+renderAnalysis();
+</script>
+</body>
+</html>
