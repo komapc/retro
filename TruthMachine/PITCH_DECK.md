@@ -18,7 +18,7 @@
 
 ## Slide 2: The Problem
 
-**Israeli media shapes decisions — but no one measures if it was right.**
+**Israeli media shapes critical decisions — but no one measures if it was right.**
 
 Every day, journalists, analysts, and commentators publish predictions about elections, wars, economic shifts, and diplomatic moves. Governments, funds, and enterprises make decisions based on this coverage.
 
@@ -130,14 +130,14 @@ This is **TruthMachine** — a calibrated oracle API for geopolitical and econom
 
 **Freemium leaderboard → Institutional API**
 
-| Tier | Product | Price |
-|---|---|---|
-| **Free** | Public credibility leaderboard — journalist & outlet scores by domain | $0 |
-| **Pro** | Oracle API — real-time probability estimates for current events; full source credibility data | $299/year |
-| **Enterprise** | Raw forensic dataset, custom domain scoring, white-label, dedicated support | $2,400/year |
+| Tier | Audience | Product | Price |
+|---|---|---|---|
+| **Free** | Anyone | Public credibility leaderboard — journalist & outlet scores by domain | $0 |
+| **Pro** | Individual traders, analysts | Oracle API — probability estimates for current events; full source credibility data | $299/year |
+| **Enterprise** | Quant funds, government risk desks, media orgs | Raw forensic dataset, custom domain scoring, white-label, dedicated support | $2,400/year |
 
 The free leaderboard drives awareness and positions us as the credibility standard.
-The API is the revenue engine — sold to quant funds, prediction market traders, and government risk desks.
+The API is the revenue engine — individual traders at $299, institutions at $2,400.
 
 > _Visual: three-tier pricing table, clean._
 
@@ -177,7 +177,7 @@ We are building at the intersection of investigative journalism, quantitative fi
 
 ---
 
-**The Ask: $100,000** *(6-month runway — then Series A)*
+**The Ask: $100,000** *(Stage 1 — validation)*
 
 | Use of funds | % | ~USD |
 |---|---|---|
@@ -187,9 +187,13 @@ We are building at the intersection of investigative journalism, quantitative fi
 | Legal & compliance | 5% | $5,000 |
 | Reserve | 4% | $4,000 |
 
-**6-month goal:** 5-year Middle East press analysis complete, Oracle API in private beta, first paying institutional clients — and a **statistically significant accuracy advantage** over Kalshi and Polymarket consensus on the same questions.
+**Stage 1 — $100K — 6 months:**
+Prove the thesis. 5-year Israeli press analysis complete. Scoring system validated. Statistically significant accuracy advantage over Kalshi/Polymarket consensus demonstrated on the same questions.
 
-> _Visual: simple pie chart + milestone timeline._
+**Stage 2 — $300K — upon hitting Stage 1 milestones:**
+Build the product. Oracle API live. First paying institutional clients. Public credibility leaderboard launched.
+
+> _Visual: two-phase timeline. Stage 1: validate. Stage 2: build & sell._
 
 ---
 
