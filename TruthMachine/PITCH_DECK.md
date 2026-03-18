@@ -1,91 +1,163 @@
-# TruthMachine: Investor Pitch Deck (Visual & Content Specification)
+# Retro Analysis (בדיעבד) — Seed Pitch Deck
 
-> **Status:** Draft v2 (Finalized for Canva) | **Date:** 2026-03-17
-> **Aesthetic:** Institutional / Financial (Navy, White, Slate)
-> **Tone:** Analytical, Scientific, Authoritative
+> **Format:** 9 slides, narrative-first | **Stage:** Seed | **Last updated:** 2026-03-18
 
 ---
 
-### **Slide 1: The Vision**
-*   **Text:** *"TruthMachine: The Reliability Layer for the Information Ecosystem — Turning the Wisdom of Hindsight into the Power of Foresight."*
-*   **Visual:** A clean, high-contrast background featuring a subtle "Truth Table" grid. In the center, a minimalist "Oracle Eye" lens that looks like a camera aperture made of data points.
-*   **Canva Prompt:** *Minimalist institutional financial cover slide, navy blue and white, background pattern of a faded logic truth table grid, central icon of a high-tech camera aperture lens made of glowing data points, "TruthMachine" in bold sans-serif typography, clean professional aesthetic.*
+## Slide 1: Title
 
-### **Slide 2: The Problem (The Accountability Crisis)**
-*   **Text:** *"Israeli media shapes understanding, but is never scored for accuracy. We face a 'Confidence vs. Accuracy' gap where reach is prioritized over record."*
-*   **Visual:** A "Chaotic Headline Cloud" (Hebrew/English mixed) in the background. Superimposed on top is a sharp white "Normal Distribution" curve showing that most pundits are uncalibrated noise.
-*   **Canva Prompt:** *Analytical data slide, background of a blurred chaotic cloud of news headlines, foreground features a sharp white Bell Curve (Normal Distribution) graph, highlighting the 'uncalibrated middle,' professional financial presentation style, high contrast.*
+**Company:** Retro Analysis / בדיעבד
 
-### **Slide 3: Why Now? (The Perfect Storm)**
-*   **Text:** *"The convergence of unprecedented geopolitical volatility and the collapse of LLM inference costs ($0.25/1M tokens) makes forensic media auditing finally viable at scale."*
-*   **Visual:** Three converging elements: 1) A heat map of the Middle East, 2) A flickering real-time news ticker, 3) A logarithmic graph showing LLM costs dropping 100x.
-*   **Canva Prompt:** *Modern financial info-graphic, three panel convergence: 1. Heat map of Middle East in muted tones. 2. A digital news ticker line. 3. A sharp downward logarithmic cost curve. Theme: The Perfect Storm, navy and slate color palette.*
+**One-liner:** *We measure who to trust. Then we predict.*
 
-### **Slide 4: The Solution (The Oracle)**
-*   **Text:** *"Yesterday's Truth is Tomorrow's Calibration. We use the 'Ground Truth' of history to teach an ML model who to trust today."*
-*   **Visual:** A vertical "Refinery" stack. Bottom: The raw Matrix HTML tables from `retro/data`. Middle: An ML "Weighting Engine" with dials showing Source Reputation scores. Top: A large, central "Probability Oracle" showing a 76% forecast.
-*   **Canva Prompt:** *Professional software diagram, 'Data Refinery' concept, bottom layer showing rows of data tables, middle layer showing circular dials and gauge icons for 'Source Reputation,' top layer showing a large digital gauge at 76%, clean flat vector style, institutional colors.*
+> _Visual: clean, dark background, company name + one-liner centered. No clutter._
 
-### **Slide 5: The Daatan Ecosystem (The Information Bedrock)**
-*   **Text:** *"A self-reinforcing data moat built on three proprietary layers."*
-*   **Visual:** A 3-layer sandwich metaphor. 
-    *   **Layer 1 (The Bedrock):** Retro Analysis (Hourglass icon) - Historical audit.
-    *   **Layer 2 (The Pulse):** Daatan News & Forecast (Stake icon) - Real-time human validation.
-    *   **Layer 3 (The Intelligence):** TruthMachine (Oracle Eye) - The final API output.
-*   **Canva Prompt:** *Business ecosystem diagram, 'Information Bedrock' metaphor, 3-layer stack: Bottom layer 'Retro Analysis' with hourglass icon, middle layer 'Daatan News & Forecast' with pulse and stake icons, top layer 'TruthMachine' with oracle eye icon, professional gradient, institutional blue.*
+---
 
-### **Slide 6: Underlying Magic (The Linear Pipeline)**
-*   **Text:** *"From Raw News to Calibrated ELO Ratings."*
-*   **Visual:** A linear pipeline flowchart: *Raw Article* → *Nemotron (Gatekeeper)* → *DeepSeek (Extractor)* → *Brier Score (Validation)*. Includes a small JSON code snippet window showing `{"stance": 0.8, "certainty": 0.9}`.
-*   **Canva Prompt:** *Technical flowchart, linear horizontal pipeline, simple icons for 'Gatekeeper' and 'Extractor,' a small pop-out window showing a JSON code block in monospace font, sleek institutional UI design, navy and white.*
+## Slide 2: The Problem
 
-### **Slide 7: Traction (The Alpha Proof)**
-*   **Text:** *"We don't just measure sentiment; we measure calibration. In the MVP, we identified the 5% of outliers who correctly predicted [Event X] when the consensus failed."*
-*   **Visual:** A 10x10 Matrix Grid showing a heat map (Green/Red cells). One specific row is highlighted in gold: *"The Alpha Signal."*
-*   **Canva Prompt:** *Financial data grid, 10x10 heat-map of green and red cells, one row is glowing gold to highlight 'The Alpha Signal,' clean labels, professional quantitative trading aesthetic.*
+**Israeli media shapes decisions — but no one measures if it was right.**
 
-### **Slide 8: Target Market (User Journeys)**
-*   **Text:** *"Providing the Edge to Quant Funds, Traders, and Risk Desks."*
-*   **Visual:** Three persona columns:
-    1.  **Quant Fund:** Consuming via API/JSON.
-    2.  **Trader:** Consuming via Bloomberg-style Terminal.
-    3.  **Risk Desk:** Consuming via PDF/Briefing Report.
-*   **Canva Prompt:** *Three-column user journey slide, icons for API/Code, Financial Terminal, and Professional Report, clean separation, institutional blue and slate, professional icons.*
+Every day, journalists, analysts, and commentators publish predictions about elections, wars, economic shifts, and diplomatic moves. Governments, funds, and enterprises make decisions based on this coverage.
 
-### **Slide 9: Business Model (SaaS + API)**
-*   **Text:** *"Scaling from Open Leaderboards to Institutional Oracle Access."*
-*   **Visual:** A tiered pricing table: 
-    *   *Free:* Public Leaderboard. 
-    *   *Pro:* Live API Oracle. 
-    *   *Enterprise:* Full Raw Forensic Data.
-*   **Canva Prompt:** *Clean tiered pricing table, three columns: Free, Pro, Enterprise, institutional flat design, checkmark icons for features, navy and white.*
+But there is no score. No accountability. No way to know:
+- Who called the Oct 7 threat before it happened?
+- Which outlet predicted the Moody's downgrade — and which dismissed it as alarmist?
+- Who has been systematically wrong about Iranian escalation for five years?
 
-### **Slide 10: Competition (The Calibration Edge)**
-*   **Text:** *"While TipRanks tracks what Wall Street thinks of stocks, and NewsGuard tracks if a site is 'reputable,' **TruthMachine tracks the mathematical truth of public predictions.**"*
-*   **Visual:** A deep-dive comparison matrix (Check-mark grid):
+**Credibility is determined by reach, not by record.**
 
-| **Feature** | **TruthMachine** | **TipRanks / SeekingAlpha** | **Sentiment Tools (Blackbird)** | **Reliability (NewsGuard)** | **Markets (Metaculus)** |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Narrative Tracking** | ✅ | ❌ | ✅ | ❌ | ❌ |
-| **Outcome Calibration** | **✅ (OSNC)** | ✅ (Finance only) | ❌ | ❌ | ❌ |
-| **Geopolitics/Society** | ✅ | ❌ | ✅ | ✅ | ✅ |
-| **Automated Brier Scoring** | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Media Source Audit** | ✅ | ❌ | ✅ | ✅ | ❌ |
+> _Visual: side-by-side — "What media says" vs "What actually happened." Simple, stark._
 
-*   **The Moat:** **Outcome-Supervised Narrative Calibration (OSNC).** We don't just cluster news; we close the loop. Every event in our matrix is a **Teacher**. By waiting for reality to happen, we generate high-fidelity "Ground Truth" labels to train our model. Competitors starting today face a **5-year historical head-start** that they cannot simply buy.
-*   **Canva Prompt:** *Business comparison matrix, check-mark grid with 5 columns of competitors, 'TruthMachine' column highlighted in navy blue, feature rows including 'Outcome-Supervised Narrative Calibration' and 'Automated Brier Scoring,' modern institutional data-visualisation style.*
+---
 
-### **Slide 11: Team & Mission**
-*   **Text:** *"To restore mathematical integrity to public discourse."*
-*   **Visual:** Specialty badges for the founders: *[Media Insider] [AI Architect] [Quant Strategy]*. Placeholder for Advisory Board from Tier-1 Institutions.
-*   **Canva Prompt:** *Management team slide, minimalist profile placeholders with circular 'Specialty Badges' below each name, bold mission statement at the bottom, institutional and professional.*
+## Slide 3: The Solution
 
-### **Slide 12: Roadmap (The Universal Oracle)**
-*   **Text:** *"12-Month Goal: 100x100 Matrix, Rank all major media, and provably beat a market benchmark."*
-*   **Visual:** A 5-step upward "Escalation" timeline:
-    1.  **MVP:** Proof of Alpha.
-    2.  **Funding:** Hiring & Scale.
-    3.  **Expansion:** Arabic & Global Media (10yr horizon).
-    4.  **Real-Time:** Total Media Coverage.
-    5.  **The Universal Oracle.**
-*   **Canva Prompt:** *Upward diagonal roadmap, 5 steps with labels, 50/30/20 budget pie chart in the corner, clean professional timeline, institutional colors.*
+**We retroactively audit five years of Israeli and international media — and score every prediction.**
+
+Using an LLM pipeline, we process thousands of articles, extract every forward-looking claim (explicit or implied), and score each one against what actually happened.
+
+The result:
+- A **ranked leaderboard** of journalists and outlets by domain — who is actually reliable on security, economics, politics
+- A **credibility layer** for the information ecosystem, built on mathematical ground truth
+
+This is **Retro Analysis (בדיעבד)** — the first system to close the loop between what was said and what was true.
+
+> _Visual: simple pipeline diagram — Articles → Extract → Score → Rank._
+
+---
+
+## Slide 4: The Secret (Our Unique Insight)
+
+**Post-factum calibration is the moat.**
+
+Everyone else measures sentiment in real time. We wait for reality to happen — then use it as a teacher.
+
+Every historical event in our matrix is a labeled training example:
+- We know what was predicted
+- We know what actually occurred
+- We can calculate exactly how wrong (or right) each source was
+
+This generates something no competitor can buy: **a proprietary dataset of verified prediction accuracy going back five years**, across 125 events and 25 media sources.
+
+Starting today, a competitor would need five years to replicate it.
+
+We call this **Outcome-Supervised Narrative Calibration (OSNC)** — and it powers the second product.
+
+> _Visual: timeline showing predictions made → outcomes verified → model trained. One clear flow._
+
+---
+
+## Slide 5: The Oracle (Product 2)
+
+**Because we know who was right in the past, we can predict the future better than anyone.**
+
+Once the historical matrix is built and sources are scored, we train a model on one question:
+
+*Given who is saying what today — and how accurate they have historically been — what is the probability this event occurs?*
+
+Output:
+- `"Probability Netanyahu survives no-confidence vote: 0.83"`
+- `"Likelihood of IDF ground operation in Lebanon within 30 days: 0.61"`
+- `"Moody's second downgrade by Q2: 0.44"`
+
+This is **TruthMachine** — a calibrated oracle API for geopolitical and economic events, sold to institutional clients.
+
+> _Visual: large probability gauge at 0.76, surrounded by weighted source inputs._
+
+---
+
+## Slide 6: Traction
+
+**The infrastructure is built. The matrix is filling.**
+
+- ✅ Pipeline live: gatekeeper → forensic extractor → scoring (Hebrew + English)
+- ✅ 125 seed events defined across 9 domains (politics, war, economy, tech, energy)
+- ✅ 25 sources selected (15 Israeli, 6 international, Polymarket as auxiliary)
+- ✅ Prototype retro-analysis pages live (per-event accuracy reports)
+- ✅ Repo public: github.com/komapc/retro
+
+**Next milestone:** First 20 events × 25 sources fully scored and published.
+
+> _Visual: matrix grid, partially filled with green/gray cells. Progress bar._
+
+---
+
+## Slide 7: Business Model
+
+**Freemium leaderboard → Institutional API**
+
+| Tier | Product | Price |
+|---|---|---|
+| **Free** | Public credibility leaderboard (journalist & outlet scores) | $0 |
+| **Pro** | Live Oracle API — probability estimates for current events | TBD |
+| **Enterprise** | Full raw forensic data, custom domain scoring, white-label | TBD |
+
+The free leaderboard drives awareness and positions us as the credibility standard.
+The API is the revenue engine — sold to quant funds, prediction market traders, and government risk desks.
+
+> _Visual: three-tier pricing table, clean._
+
+---
+
+## Slide 8: Market
+
+**Who pays for better predictions about Israel and the Middle East?**
+
+- **Quantitative funds & traders** — Israeli equities, FX, energy exposure; need edge over consensus
+- **Prediction market participants** — Polymarket traders seeking data-driven advantage
+- **Corporate & government risk desks** — geopolitical and supply chain scenario planning
+- **Media & PR** — organizations wanting to benchmark their own credibility
+
+The Israeli market is the proof of concept. The model expands to any region where media accountability is absent and stakes are high: Turkey, Gulf states, Eastern Europe.
+
+> _Visual: concentric circles — Israel core → MENA → Global._
+
+---
+
+## Slide 9: Team & The Ask
+
+**Team**
+
+*(Founders — to be completed)*
+
+We are building at the intersection of investigative journalism, quantitative finance, and AI infrastructure. The product requires domain expertise in Israeli media, LLM pipelines, and calibrated probabilistic modeling.
+
+---
+
+**The Ask: $[X]**
+
+| Use of funds | % |
+|---|---|
+| Data ingestion (Perigon / Event Registry) | 40% |
+| LLM inference (OpenRouter) | 15% |
+| Engineering (pipeline + API) | 35% |
+| Legal & compliance | 10% |
+
+**18-month goal:** 100×100 matrix complete, Oracle API in private beta, first paying institutional clients, provably beating market consensus on 3 major events.
+
+> _Visual: simple pie chart + milestone timeline._
+
+---
+
+*"We measure who to trust. Then we predict."*
