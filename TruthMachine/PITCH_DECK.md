@@ -154,16 +154,26 @@ The API is the revenue engine — individual traders at $299, institutions at $2
 - **Corporate & government risk desks** — geopolitical and supply chain scenario planning
 - **Media & PR** — organizations wanting to benchmark their own credibility
 
-The Israeli market is the proof of concept. The long-term ambition is to expand monitoring in every direction simultaneously:
+**Market Size**
+
+| | |
+|---|---|
+| **TAM** | ~$500M — geopolitical intelligence + prediction market data globally |
+| **SAM** | ~$15M ARR — Middle East focus; 48K prediction market traders + 500 institutional clients |
+| **SOM (Year 1)** | ~$62K ARR — 1 enterprise client, 200 Pro subscribers |
+
+The market is forming now: Kalshi grew 8.5× in one year to 5.1M users. A single Iran strike market hit $188M in volume on Polymarket. We are building the intelligence layer this industry does not yet have.
+
+The Israeli market is the proof of concept. The long-term ambition is to expand in every direction simultaneously:
 
 - **More regions** — MENA, Eastern Europe, Gulf states, any high-stakes media ecosystem
 - **More languages** — Arabic, Farsi, Turkish, Russian
 - **More time** — historical archives going back decades, not just five years
 - **More coverage** — eventually, every published article, not just event-centric sampling
 
-This is feasible. The two-stage LLM pipeline (cheap filter → targeted extractor) keeps marginal cost per article near zero. The math scales linearly. With the right infrastructure, **total media coverage is not a moonshot — it is an engineering problem.**
+With the right infrastructure, **total media coverage is not a moonshot — it is an engineering problem.**
 
-> _Visual: concentric circles expanding outward — Israel → MENA → Global → All Languages → All Time._
+> _Visual: TAM/SAM/SOM table + concentric circles expanding outward — Israel → MENA → Global → All Languages → All Time._
 
 ---
 
