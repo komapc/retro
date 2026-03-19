@@ -92,9 +92,11 @@ We call this **Outcome-Supervised Narrative Calibration (OSNC)** — and it powe
 
 **Because we know who was right in the past, we can predict the future better than anyone.**
 
-Once the historical matrix is built and sources are scored, we train a model on one question:
+Once the historical matrix is built and sources are scored, we train a model directly on outcomes — not on human labels, not on consensus, but on what actually happened. Backpropagation from ground truth.
 
-*Given who is saying what today — and how accurate they have historically been — what is the probability this event occurs?*
+The model learns non-obvious patterns: which sources matter more in which domains, how combinations of signals interact, when contrarian voices outperform consensus. It is not a weighted average — it is a learned function trained on reality.
+
+The question it answers:
 
 Output:
 - `"Probability Netanyahu survives no-confidence vote: 0.83"`
