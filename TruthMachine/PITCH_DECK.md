@@ -40,8 +40,8 @@ But there is no score. No accountability. No way to know:
 **1. The post-truth crisis is measurable — and people are angry.**
 We live in an era of media manipulation, echo chambers, and outlets that write what users want to hear rather than what is true. But "post-truth" is a myth. Every factual claim, given enough time, is verifiable. The technology to do that verification at scale now exists. The demand for accountability has never been higher.
 
-**2. Prediction markets are a new, growing industry — and we are inside it.**
-Kalshi, Polymarket, and their successors are becoming a serious financial instrument. We are not just building a leaderboard — we are building the intelligence layer that prediction market participants, quant funds, and institutional desks will pay for. The market is forming now.
+**2. Institutional demand for accountable information has never been higher.**
+Funds, governments, and enterprises are making billion-dollar decisions based on media coverage — and getting burned. After Oct 7, after the Moody's downgrade, after every missed call, the question is the same: *who should we have been listening to?* There is no systematic answer. Until now.
 
 **3. The LLM breakthrough made this possible.**
 Retroactive analysis of thousands of articles in Hebrew and English — extracting claims, scoring accuracy, calibrating models — was computationally and economically impossible five years ago. Today, cheap, high-quality LLMs make it an engineering problem. We are the first to apply this capability systematically to media credibility.
