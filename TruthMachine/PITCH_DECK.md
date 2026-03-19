@@ -202,7 +202,14 @@ We are building at the intersection of investigative journalism, quantitative fi
 Prove the thesis. 5-year Israeli press analysis complete. Scoring system validated. Statistically significant accuracy advantage over Kalshi/Polymarket consensus demonstrated on the same questions.
 
 **Stage 2 — $300K — upon hitting Stage 1 milestones:**
-Build the product. Oracle API live. First paying institutional clients. Public credibility leaderboard launched.
+Build the product and expand the dataset. Oracle API live. First paying institutional clients. Public credibility leaderboard launched.
+
+Dataset expansion is a first-class goal — not a side effect:
+- **More time** — extend history from 5 to 10+ years
+- **More sources** — from 25 to 50+, adding Arabic and Farsi outlets
+- **More events** — from 125 to 500+, enabling statistically reliable model training
+
+The larger the dataset, the stronger the alpha. A Polymarket trader in New York cannot read Haaretz, Al-Monitor, and Al Arabiya simultaneously. We can — and we score all of them.
 
 > _Visual: two-phase timeline. Stage 1: validate. Stage 2: build & sell._
 
