@@ -63,6 +63,8 @@ The result:
 
 This is **Bediavad** — the first system to close the loop between what was said and what was true.
 
+*We are not a fact-checker. Fact-checkers verify what happened. We measure who predicted it correctly — before it happened. That is a different problem, a different dataset, and a different product.*
+
 > _Visual: simple pipeline diagram — Articles → Extract → Score → Rank → Dataset._
 
 ---
