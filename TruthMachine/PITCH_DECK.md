@@ -73,11 +73,11 @@ The result:
 
 **Because we know who was right in the past, we can predict the future more accurately than market consensus.**
 
-Once the historical matrix is built, we train a gradient-boosted model on the full forensic vector: 11 per-prediction metrics (stance, certainty, hedge ratio, specificity, contrarianism, and more), source track record by domain, time-to-event, and market-implied probability where available. Output: a calibrated probability. Explainable by design — every forecast shows which sources and signals drove it.
+Once the historical matrix is built, we train a gradient-boosted model on the full forensic vector: 11 per-prediction metrics (stance, certainty, hedge ratio, specificity, contrarianism, and more), source track record by domain, time-to-event, and market-implied probability where available. Every forecast is a calibrated probability — explainable by design, showing which sources and signals drove it.
 
 The model learns non-obvious patterns: which sources matter in which domains, how source combinations interact, when contrarian voices outperform consensus. Not a weighted average — a learned function trained on reality.
 
-Output:
+For example:
 - `"Probability Netanyahu survives no-confidence vote: 0.83"`
 - `"Likelihood of IDF ground operation in Lebanon within 30 days: 0.61"`
 - `"Moody's second downgrade by Q2: 0.44"`
