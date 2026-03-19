@@ -99,7 +99,6 @@ This is **TruthMachine** — a calibrated oracle API for geopolitical and econom
   - 🇻🇪 **Operation Absolute Resolve** — US capture of Maduro; Bloomberg & Reuters called it, ynet/Israel Hayom missed it
   - 📉 **Trump Trade Wars 2025** — tariff escalation & dollar decline; Haaretz called it, Calcalist dismissed it
   - ⚡ **Energy Volatility 2026** — European gas price spike; TheMarker called it, Globes missed it
-- ✅ Repo public: github.com/komapc/retro
 
 **Next milestone:** First 20 events × 25 sources fully scored and published.
 
