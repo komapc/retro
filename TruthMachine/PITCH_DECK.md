@@ -10,7 +10,7 @@
 
 **Tagline:** *Retroactive Media Analysis*
 
-**One-liner:** *We measure who to trust. Then we predict.*
+**One-liner:** *The past is our data. The future is our product.*
 
 > _Visual: clean, dark background. "Bediavad" large, "Retroactive Media Analysis" smaller below, one-liner at bottom. No clutter._
 
@@ -229,4 +229,4 @@ Build the product. Oracle API live. First paying institutional clients. Public c
 
 ---
 
-*"We measure who to trust. Then we predict."*
+*"The past is our data. The future is our product."*
