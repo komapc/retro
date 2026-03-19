@@ -71,13 +71,11 @@ The result:
 
 ## Slide 5: The Oracle (Product 2)
 
-**Because we know who was right in the past, we can predict the future better than anyone.**
+**Because we know who was right in the past, we can predict the future more accurately than market consensus.**
 
-Once the historical matrix is built and sources are scored, we train a model directly on outcomes — not on human labels, not on consensus, but on what actually happened. Backpropagation from ground truth.
+Once the historical matrix is built, we train a gradient-boosted model on the full forensic vector: 11 per-prediction metrics (stance, certainty, hedge ratio, specificity, contrarianism, and more), source track record by domain, time-to-event, and market-implied probability where available. Output: a calibrated probability. Explainable by design — every forecast shows which sources and signals drove it.
 
-The model learns non-obvious patterns: which sources matter more in which domains, how combinations of signals interact, when contrarian voices outperform consensus. It is not a weighted average — it is a learned function trained on reality.
-
-The question it answers:
+The model learns non-obvious patterns: which sources matter in which domains, how source combinations interact, when contrarian voices outperform consensus. Not a weighted average — a learned function trained on reality.
 
 Output:
 - `"Probability Netanyahu survives no-confidence vote: 0.83"`

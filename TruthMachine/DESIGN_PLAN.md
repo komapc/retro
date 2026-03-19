@@ -124,10 +124,36 @@ Multiple extractions for the same article (different models or refined prompts) 
 
 ## 9. Oracle Model
 
-Generates probability estimates by aggregating predictions weighted by source reputation.
-- **ML Architecture:** **Bayesian Weighted Ensemble** (XGBoost/LightGBM).
-- **Explainability:** This approach allows us to show "Feature Importance"—which specific source's historical record is driving the today's forecast.
-- **Training (OSNC):** The model is trained on historical "Prediction → Post-Factum Truth" pairs.
+Generates calibrated probability estimates from the full forensic feature vector.
+
+- **MVP Architecture:** **LightGBM** (gradient-boosted trees) — best-in-class for structured/tabular data at small-to-medium scale.
+- **Feature vector per prediction:**
+  - 11 forensic metrics: `stance`, `certainty`, `specificity`, `hedge_ratio`, `conditionality`, `magnitude`, `time_horizon_days`, `source_authority`, `prediction_type`, `contrarianism`, `sentiment`
+  - Source historical Brier score per domain
+  - Time-to-event (days between article and event resolution)
+  - Topic/domain tags
+  - Polymarket probability at publication time (where available)
+  - Source type (wire, newspaper, blog, TV)
+- **Calibration:** Isotonic regression applied post-training to ensure outputs are true probabilities, not just rankings.
+- **Explainability:** SHAP values expose which features drove each forecast ("Bloomberg's energy track record contributed +0.12 to this estimate").
+- **Training (OSNC):** Trained on historical "Prediction Vector → Outcome" pairs from the Factum Atlas.
+- **Phase 2:** Attention-based model once 1,000+ resolved events are available — learns cross-source interaction patterns automatically.
+
+---
+
+## 11. Integration with Daatan Infrastructure
+
+TruthMachine is designed to run within the broader **Daatan Infrastructure** (see `daatan/infra`).
+
+### Orchestration Layer (OpenClaw)
+- **Deployment:** TruthMachine services are deployed on AWS EC2 instances provisioned via Terraform.
+- **User Interface:** The **Corvus** agent (OpenClaw) serves as the primary interface, querying the TruthMachine Oracle API to provide users with calibrated forecasts.
+- **Automation:** A dedicated `retro-manager` skill enables the **DevOps** agent to trigger periodic Atlas syncs and vault ingestions.
+
+### Inference Layer (LiteLLM)
+- **Routing:** All LLM calls (Gatekeeper, Extractor) are proxied through **LiteLLM**.
+- **Cost Optimization:** LiteLLM dynamically routes requests to the most cost-effective models (e.g., DeepSeek V3.2 for extraction, Gemini Flash for filtering) based on current OpenRouter quotas.
+- **Fallback:** Automatic failover between providers (Bedrock, OpenRouter, Ollama) ensures pipeline resilience.
 
 ---
 
@@ -142,4 +168,4 @@ Generates probability estimates by aggregating predictions weighted by source re
 
 ---
 
-*The Factum Atlas: We measure who to trust. Then we predict.*
+*The Factum Atlas: The past is our data. The future is our product.*
