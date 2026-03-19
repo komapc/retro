@@ -1,6 +1,6 @@
 # Bediavad — Seed Pitch Deck
 
-> **Format:** 10 slides, narrative-first | **Stage:** Seed | **Last updated:** 2026-03-18
+> **Format:** 11 slides, narrative-first | **Stage:** Seed | **Last updated:** 2026-03-19
 
 ---
 
@@ -177,7 +177,25 @@ With the right infrastructure, **total media coverage is not a moonshot — it i
 
 ---
 
-## Slide 10: Team & The Ask
+## Slide 10: Competition
+
+**No one does both. We do.**
+
+| | Retroactive prediction scoring | Calibrated probability API | Media/journalist tracking |
+|---|---|---|---|
+| **Bediavad** | ✅ Outcome-based | ✅ Geopolitical oracle | ✅ Israeli + international |
+| TipRanks / Seeking Alpha | ✅ Finance only | ❌ | Partial (financial analysts) |
+| Good Judgment / Metaculus | Partial | ✅ Crowd-based | ❌ |
+| Eurasia Group / Oxford Analytica | ❌ | ❌ | ❌ |
+| NewsGuard / Biasly | ❌ Criteria-based | ❌ | ✅ Process-based |
+
+**Our position:** TipRanks for geopolitical media × Good Judgment for the Middle East.
+
+> _Visual: comparison table with checkmarks. Bediavad row highlighted._
+
+---
+
+## Slide 11: Team & The Ask
 
 **Team**
 
