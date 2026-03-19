@@ -47,7 +47,7 @@ Funds, governments, and enterprises are making billion-dollar decisions based on
 **3. The LLM breakthrough made this possible.**
 Retroactive analysis of thousands of articles in Hebrew and English — extracting claims, scoring accuracy, calibrating models — was computationally and economically impossible five years ago. Today, cheap, high-quality LLMs make it an engineering problem. We are the first to apply this capability systematically to media credibility.
 
-> _Visual: three icons — broken megaphone (post-truth) / trading chart (prediction markets) / neural network (LLMs). Simple, bold._
+> _Visual: three icons — broken megaphone (post-truth) / burning newspaper (institutional missed calls) / neural network (LLMs). Simple, bold._
 
 ---
 
@@ -181,6 +181,8 @@ With the right infrastructure, **total media coverage is not a moonshot — it i
 **Andrey** — Media analyst and content strategist; deep knowledge of Israeli press landscape; chess Candidate Master.
 
 **Marik** — 20+ years software engineering and DevOps; built and scaled TableSurfing (global P2P accommodation network); now building the pipeline end-to-end.
+
+We are hiring a third team member: a data analyst with NLP background to run the scoring pipeline.
 
 We are building at the intersection of investigative journalism, quantitative finance, and AI infrastructure.
 
