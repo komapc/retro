@@ -78,9 +78,9 @@ Every historical event in our matrix is a labeled training example:
 - We know what actually occurred
 - We can calculate exactly how wrong (or right) each source was
 
-This generates something no competitor can buy: **a proprietary dataset of verified prediction accuracy going back five years**, across 125 events and 25 media sources.
+This generates a **proprietary dataset of verified prediction accuracy**, across 125 events and 25 media sources — and it is already being built.
 
-Starting today, a competitor would need five years to replicate it.
+Our moat is not the technology — LLMs are available to everyone. It is the system we built on top: the event taxonomy, the scoring rubric, the source selection, the calibration methodology — and the labeled dataset we are already accumulating. A competitor can copy the approach, but they start from zero. We don't.
 
 We call this **Outcome-Supervised Narrative Calibration (OSNC)** — and it powers the second product.
 
