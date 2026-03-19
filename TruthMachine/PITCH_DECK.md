@@ -26,10 +26,11 @@ But there is no score. No accountability. No way to know:
 - Who called the Oct 7 threat before it happened?
 - Which outlet predicted the Moody's downgrade — and which dismissed it as alarmist?
 - Who has been systematically wrong about Iranian escalation for five years?
+- Which sources predicted the US capture of Maduro — and which called it impossible?
 
 **Credibility is determined by reach, not by record.**
 
-> _Visual: side-by-side — "What media says" vs "What actually happened." Simple, stark._
+> _Visual: screenshot of the Maduro case study page — teal column (WSJ, Miami Herald, PanamPost called it) vs red column (NYT, Al Jazeera, Reuters got it wrong). Outcome badge: SUCCESS. The product speaks for itself._
 
 ---
 
@@ -65,7 +66,7 @@ The result:
 
 **The moat:** Our advantage is not the technology — LLMs are available to everyone. It is the system we built on top: the event taxonomy, the scoring rubric, the source selection, and the Factum Atlas we are already accumulating. A competitor can copy the approach, but they start from zero. We don't.
 
-> _Visual: pipeline diagram (Articles → Extract → Score → Rank → Dataset) + moat callout box._
+> _Visual: pipeline diagram (Articles → Extract → Score → Rank → Dataset) + screenshot of actual case study page showing teal/red two-column layout with source quotes._
 
 ---
 
@@ -102,7 +103,7 @@ This is **TruthMachine** — a calibrated oracle API for geopolitical and econom
 
 **Next milestone:** First 20 events × 25 sources fully scored and published.
 
-> _Visual: screenshot of the live case study page — two columns (teal=accurate, rose=inaccurate), source quotes, outcome badge. Matrix grid with 3 cells filled._
+> _Visual: actual screenshot of the live case study — teal column (YES/ACTION → SUCCESS) vs red column (NO/DIPLOMACY → FAILED), source name + date + quote cards, "PREDICTED OUTCOME" badge. This is a real page, not a mockup._
 
 ---
 
