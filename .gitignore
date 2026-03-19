@@ -1,0 +1,18 @@
+# Data
+data/atlas/
+data/events/
+data/sources/
+data/pages/
+data/vault/
+data/progress.json
+*.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Skills
+*.skill
