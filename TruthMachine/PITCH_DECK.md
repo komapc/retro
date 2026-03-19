@@ -59,11 +59,11 @@ Using an LLM pipeline, we process thousands of articles, extract every forward-l
 The result:
 - A **competitive ranking** of journalists and outlets by domain — who is actually reliable on security, economics, politics
 - A **credibility layer** for the information ecosystem, built on mathematical ground truth
-- A **proprietary labeled dataset** — 125 events × 25 sources, scored predictions with verified outcomes, already being built
+- The **Factum Atlas** — a proprietary labeled dataset of 125 events × 25 sources, scored predictions with verified outcomes, already being built
 
 *We are not a fact-checker. Fact-checkers verify what happened. We measure who predicted it correctly — before it happened.*
 
-**The moat:** Our advantage is not the technology — LLMs are available to everyone. It is the system we built on top: the event taxonomy, the scoring rubric, the source selection, and the dataset we are already accumulating. A competitor can copy the approach, but they start from zero. We don't.
+**The moat:** Our advantage is not the technology — LLMs are available to everyone. It is the system we built on top: the event taxonomy, the scoring rubric, the source selection, and the Factum Atlas we are already accumulating. A competitor can copy the approach, but they start from zero. We don't.
 
 > _Visual: pipeline diagram (Articles → Extract → Score → Rank → Dataset) + moat callout box._
 
@@ -73,7 +73,7 @@ The result:
 
 **Because we know who was right in the past, we can predict the future more accurately than market consensus.**
 
-Once the historical matrix is built, we train a gradient-boosted model on the full forensic vector: 11 per-prediction metrics (stance, certainty, hedge ratio, specificity, contrarianism, and more), source track record by domain, time-to-event, and market-implied probability where available. Every forecast is a calibrated probability — explainable by design, showing which sources and signals drove it.
+Once the Factum Atlas is built, we train a gradient-boosted model on the full forensic vector: 11 per-prediction metrics (stance, certainty, hedge ratio, specificity, contrarianism, and more), source track record by domain, time-to-event, and market-implied probability where available. Every forecast is a calibrated probability — explainable by design, showing which sources and signals drove it.
 
 The model learns non-obvious patterns: which sources matter in which domains, how source combinations interact, when contrarian voices outperform consensus. Not a weighted average — a learned function trained on reality.
 
