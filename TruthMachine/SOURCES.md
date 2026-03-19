@@ -7,7 +7,7 @@
 
 ## Selection Criteria
 
-A source is included in TruthMachine if it meets **all** of the following:
+A source is included in the **Factum Atlas** if it meets **all** of the following:
 
 1. **Publishes predictions** — makes forward-looking statements about events, not just factual reporting
 2. **Publicly accessible** — articles are accessible via web, API, or archive

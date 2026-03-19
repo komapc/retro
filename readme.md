@@ -18,19 +18,19 @@ This is not only a problem of explicit predictions. Much of the signal is hidden
 
 Daatan addresses this problem through three interconnected products:
 
-**Daatan NewsPulse** — A news portal covering Israeli and regional media. Readers don't just consume news: they engage with it by joining forecasts, staking positions, or flagging claims as wrong. This gamification layer passively generates reputation data — every interaction is a signal about source credibility, by topic, by domain, over time.
+**Daatan News** — A news portal covering Israeli and regional media. Readers don't just consume news: they engage with it by joining forecasts, staking positions, or flagging claims as wrong. This gamification layer passively generates reputation data — every interaction is a signal about source credibility, by topic, by domain, over time.
 
 **Daatan Forecast** — An active prediction market where users, analysts, and bots make explicit forward-looking claims and stake reputation on them. Forecasts are resolved against real-world outcomes, building verifiable track records.
 
-**Retro Analysis (בדיעבד)** — The retroactive audit engine. Rather than waiting for sources to opt in, Retro processes the five-year public trail of what Israeli and international media *already* published — and scores it. It bypasses the cold-start problem entirely: reputation scores are generated from history, not from future participation.
+**Retro Analysis (בדיעבד)** — The retroactive audit engine. Rather than waiting for sources to opt in, Retro processes the public trail of what media *already* published — and scores it. It bypasses the cold-start problem entirely: reputation scores are generated from history, not from future participation.
 
 ---
 
-### The Engine: From Audit to Oracle
+### The Engine: The Factum Atlas
 
-Retro Analysis is built around a **125-event × 25-source matrix**, cross-referencing major Israeli and global events (2021–2026) against media outlets, journalists, financial institutions, and think tanks.
+Retro Analysis is built around **The Factum Atlas**, a definitive map of historical reality against which all media claims are measured. It cross-references major events against media outlets, journalists, and think tanks.
 
-For every article in scope, a multi-stage LLM pipeline extracts a prediction vector:
+For every article in scope, a multi-stage LLM pipeline extracts a forensic prediction vector:
 
 - **Stance** — directional outlook on the event (-1.0 bearish → +1.0 bullish)
 - **Certainty** — how linguistically confident the author is
@@ -39,15 +39,15 @@ For every article in scope, a multi-stage LLM pipeline extracts a prediction vec
 - **Contrarianism** — how far the prediction deviates from the consensus of peers at the same moment in time
 - ...and more proprietary dimensions
 
-Each prediction is matched to a seed event, scored against historical ground truth, and used to update the source's **Brier Score** (calibration accuracy) and **ELO rating** (relative rank against peers on the same event).
+Each prediction is matched to a seed event, scored against historical ground truth, and used to update the source's **Brier Score** (calibration accuracy) and **ELO rating** (relative rank).
 
-The resulting dataset — thousands of scored predictions, ranked sources, and verified outcomes — becomes the training corpus for **The TruthMachine**: a predictive model that analyzes today's news and outputs calibrated probability estimates for tomorrow's events.
+The resulting dataset — thousands of scored predictions, ranked sources, and verified outcomes — becomes the training corpus for **The TruthMachine**.
 
----
-
-### The TruthMachine
+### Outcome-Supervised Narrative Calibration (OSNC)
 
 Because we mathematically understand how past language correlates with actual outcomes, The TruthMachine can read a cluster of articles published today and ask: *given who is saying what, and how accurate they have historically been, what is the probability this event occurs?*
+
+This methodology, **Outcome-Supervised Narrative Calibration (OSNC)**, allows the TruthMachine to identify the specific "linguistic signatures" of accuracy.
 
 Output examples:
 - `"Chances Netanyahu survives no-confidence vote: 0.83"`
