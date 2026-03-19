@@ -1,6 +1,6 @@
 # Bediavad — Seed Pitch Deck
 
-> **Format:** 11 slides, narrative-first | **Stage:** Seed | **Last updated:** 2026-03-19
+> **Format:** 10 slides, narrative-first | **Stage:** Seed | **Last updated:** 2026-03-19
 
 ---
 
@@ -50,47 +50,26 @@ Retroactive analysis of thousands of articles in Hebrew and English — extracti
 
 ---
 
-## Slide 4: The Solution
+## Slide 4: The Solution & The Moat
 
 **We retroactively audit five years of Israeli and international media — and score every prediction.**
 
-Using an LLM pipeline, we process thousands of articles, extract every forward-looking claim (explicit or implied), and score each one against what actually happened.
+Using an LLM pipeline, we process thousands of articles, extract every forward-looking claim (explicit or implied), and score each one against what actually happened. We call this **Outcome-Supervised Narrative Calibration (OSNC)**.
 
 The result:
 - A **competitive ranking** of journalists and outlets by domain — who is actually reliable on security, economics, politics
 - A **credibility layer** for the information ecosystem, built on mathematical ground truth
-- A **unique proprietary dataset** — thousands of scored predictions with verified outcomes, usable directly as source data and ground truth for ML model training. No one else has this.
+- A **proprietary labeled dataset** — 125 events × 25 sources, scored predictions with verified outcomes, already being built
 
-This is **Bediavad** — the first system to close the loop between what was said and what was true.
+*We are not a fact-checker. Fact-checkers verify what happened. We measure who predicted it correctly — before it happened.*
 
-*We are not a fact-checker. Fact-checkers verify what happened. We measure who predicted it correctly — before it happened. That is a different problem, a different dataset, and a different product.*
+**The moat:** Our advantage is not the technology — LLMs are available to everyone. It is the system we built on top: the event taxonomy, the scoring rubric, the source selection, and the dataset we are already accumulating. A competitor can copy the approach, but they start from zero. We don't.
 
-> _Visual: simple pipeline diagram — Articles → Extract → Score → Rank → Dataset._
-
----
-
-## Slide 5: The Secret (Our Unique Insight)
-
-**Post-factum calibration is the moat.**
-
-Everyone else measures sentiment in real time. We wait for reality to happen — then use it as a teacher.
-
-Every historical event in our matrix is a labeled training example:
-- We know what was predicted
-- We know what actually occurred
-- We can calculate exactly how wrong (or right) each source was
-
-This generates a **proprietary dataset of verified prediction accuracy**, across 125 events and 25 media sources — and it is already being built.
-
-Our moat is not the technology — LLMs are available to everyone. It is the system we built on top: the event taxonomy, the scoring rubric, the source selection, the calibration methodology — and the labeled dataset we are already accumulating. A competitor can copy the approach, but they start from zero. We don't.
-
-We call this **Outcome-Supervised Narrative Calibration (OSNC)** — and it powers the second product.
-
-> _Visual: timeline showing predictions made → outcomes verified → model trained. One clear flow._
+> _Visual: pipeline diagram (Articles → Extract → Score → Rank → Dataset) + moat callout box._
 
 ---
 
-## Slide 6: The Oracle (Product 2)
+## Slide 5: The Oracle (Product 2)
 
 **Because we know who was right in the past, we can predict the future better than anyone.**
 
@@ -111,7 +90,7 @@ This is **TruthMachine** — a calibrated oracle API for geopolitical and econom
 
 ---
 
-## Slide 7: Traction
+## Slide 6: Traction
 
 **The infrastructure is built. The first results are live.**
 
@@ -130,7 +109,7 @@ This is **TruthMachine** — a calibrated oracle API for geopolitical and econom
 
 ---
 
-## Slide 8: Business Model
+## Slide 7: Business Model
 
 **Freemium leaderboard → Institutional API**
 
@@ -147,7 +126,7 @@ The API is the revenue engine — individual traders at $299, institutions at $2
 
 ---
 
-## Slide 9: Market
+## Slide 8: Market
 
 **Who pays for better predictions about Israel and the Middle East?**
 
@@ -179,7 +158,7 @@ With the right infrastructure, **total media coverage is not a moonshot — it i
 
 ---
 
-## Slide 10: Competition
+## Slide 9: Competition
 
 **No one does both. We do.**
 
@@ -197,7 +176,7 @@ With the right infrastructure, **total media coverage is not a moonshot — it i
 
 ---
 
-## Slide 11: Team & The Ask
+## Slide 10: Team & The Ask
 
 **Team**
 
