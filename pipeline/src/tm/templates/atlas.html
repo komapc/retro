@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TruthMachine — Factum Atlas</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    :root {{
+      --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+      --border: #30363d; --text: #e6edf3; --muted: #848d97;
+      --green: #3fb950; --red: #f85149; --blue: #58a6ff;
+      --font: 'Segoe UI', system-ui, sans-serif;
+    }}
+    html {{ scroll-behavior: smooth; }}
+    body {{ background: var(--bg); color: var(--text); font-family: var(--font);
+            font-size: 14px; line-height: 1.6; }}
+    a {{ color: var(--blue); text-decoration: none; }}
+    a:hover {{ text-decoration: underline; }}
+
+    /* ── Layout ── */
+    .container {{ max-width: 1280px; margin: 0 auto; padding: 24px; }}
+    header {{ border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 32px; }}
+    header h1 {{ font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }}
+    header p {{ color: var(--muted); margin-top: 4px; }}
+    .stats {{ display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }}
+    .stat {{ background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+             padding: 12px 20px; }}
+    .stat-n {{ font-size: 24px; font-weight: 700; color: var(--blue); }}
+    .stat-l {{ font-size: 11px; color: var(--muted); text-transform: uppercase;
+               letter-spacing: 0.5px; }}
+
+    /* ── Section headings ── */
+    .section-title {{ font-size: 18px; font-weight: 600; margin: 32px 0 16px;
+                      border-bottom: 1px solid var(--border); padding-bottom: 8px; }}
+
+    /* ── Legend boxes ── */
+    .legend-box {{
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px 18px; margin-bottom: 16px; font-size: 12px;
+    }}
+    .legend-box .legend-title {{ font-weight: 600; margin-bottom: 8px; color: var(--text); }}
+    .legend-grid {{ display: flex; gap: 32px; flex-wrap: wrap; color: var(--muted); }}
+    .legend-col {{ min-width: 180px; }}
+    .legend-col .col-title {{ font-weight: 500; color: var(--text); margin-bottom: 4px; }}
+    .legend-row {{ display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }}
+    .legend-swatch {{ width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }}
+    .cell-demo {{
+      border-radius: 4px; width: 44px; height: 32px;
+      display: inline-flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 1px; flex-shrink: 0;
+    }}
+    .cell-demo .n {{ font-size: 15px; font-weight: 700; color: #e6edf3; }}
+    .cell-demo .s {{ font-size: 9px; color: rgba(255,255,255,0.5); }}
+
+    /* ── Coverage Matrix ── */
+    .matrix-wrap {{ overflow-x: auto; }}
+    .matrix {{ border-collapse: collapse; font-size: 12px; }}
+    .matrix th, .matrix td {{ border: 1px solid var(--border); padding: 0; }}
+    .matrix th {{ background: var(--bg2); padding: 6px 10px; white-space: nowrap;
+                  font-weight: 500; color: var(--muted); }}
+    .matrix .event-label {{ max-width: 220px; text-align: left; padding: 6px 10px;
+                             font-size: 11px; }}
+    .matrix .event-name  {{ display: block; overflow: hidden; text-overflow: ellipsis;
+                             white-space: nowrap; max-width: 210px; }}
+    .matrix .event-id {{ font-family: monospace; font-weight: 700; color: var(--blue);
+                          margin-right: 6px; }}
+    .outcome-badge {{ display: inline-block; font-size: 9px; font-weight: 700;
+                      padding: 1px 5px; border-radius: 3px; margin-left: 4px; }}
+    .badge-true  {{ background: #1a3a2a; color: var(--green); }}
+    .badge-false {{ background: #3a1a1a; color: var(--red); }}
+    .cell {{ width: 90px; height: 52px; text-align: center; vertical-align: middle;
+             cursor: default; position: relative; }}
+    .cell.has-data {{ cursor: pointer; }}
+    .cell.has-data:hover {{ filter: brightness(1.3); }}
+    .cell-inner {{ display: flex; flex-direction: column; align-items: center;
+                   justify-content: center; height: 100%; gap: 2px; }}
+    .cell-count  {{ font-size: 16px; font-weight: 700; }}
+    .cell-stance {{ font-size: 10px; color: rgba(255,255,255,0.6); }}
+    .cell-empty  {{ color: var(--border); font-size: 18px; }}
+    .cell-searched {{ background: #161b22; }}
+    .cell-empty.searched {{ color: #444c56; font-size: 14px; font-weight: 600; }}
+
+    /* ── Event sections ── */
+    .event-section {{ margin-bottom: 48px; scroll-margin-top: 80px; }}
+    .event-header {{ display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }}
+    .event-header h2 {{ font-size: 16px; font-weight: 600; }}
+    .event-meta {{ font-size: 12px; color: var(--muted); }}
+    .chart-wrap {{ background: var(--bg2); border: 1px solid var(--border);
+                   border-radius: 8px; padding: 16px; margin-bottom: 16px; }}
+    .chart-container {{ position: relative; height: 280px; }}
+    .no-data {{ color: var(--muted); font-style: italic; padding: 32px; text-align: center; }}
+
+    /* ── Predictions table ── */
+    .pred-table {{ width: 100%; border-collapse: collapse; font-size: 12px;
+                   background: var(--bg2); border-radius: 8px; overflow: hidden; }}
+    .pred-table th {{ background: var(--bg3); padding: 8px 12px; text-align: left;
+                      color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); }}
+    .pred-table td {{ padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }}
+    .pred-table tr:last-child td {{ border-bottom: none; }}
+    .source-dot  {{ display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }}
+    .stance-bar  {{ display: inline-block; height: 10px; border-radius: 2px; }}
+    .metric-pill {{ display: inline-block; font-size: 10px; padding: 1px 6px;
+                    border-radius: 10px; background: var(--bg3); margin: 1px; }}
+    .quote-text  {{ color: var(--muted); font-style: italic; font-size: 11px;
+                    border-left: 2px solid var(--border); padding-left: 8px; margin-top: 4px; }}
+
+    /* ── Filter bar ── */
+    .filter-bar {{ display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }}
+    .filter-bar label {{ font-size: 12px; color: var(--muted); }}
+    .filter-bar select,
+    .filter-bar input {{
+      background: var(--bg2); border: 1px solid var(--border); color: var(--text);
+      padding: 4px 8px; border-radius: 4px; font-size: 12px;
+    }}
+
+    /* ── Sticky event nav ── */
+    .event-nav {{ position: sticky; top: 0; background: var(--bg); z-index: 10;
+                  border-bottom: 1px solid var(--border); padding: 8px 0;
+                  margin-bottom: 24px; overflow-x: auto; white-space: nowrap; }}
+    .event-nav a {{ font-size: 11px; font-family: monospace; margin-right: 8px;
+                    color: var(--muted); padding: 2px 6px; border-radius: 4px;
+                    border: 1px solid transparent; }}
+    .event-nav a:hover {{ border-color: var(--border); color: var(--text); text-decoration: none; }}
+
+    footer {{ text-align: center; color: var(--muted); font-size: 11px;
+              margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); }}
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>TruthMachine — Factum Atlas</h1>
+    <p>Outcome-Supervised Narrative Calibration &nbsp;·&nbsp; 25 events &nbsp;·&nbsp; 5 sources</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-n">{stats_events}</div><div class="stat-l">Events</div></div>
+      <div class="stat"><div class="stat-n">{stats_articles}</div><div class="stat-l">Articles</div></div>
+      <div class="stat"><div class="stat-n">{stats_preds}</div><div class="stat-l">Predictions</div></div>
+      <div class="stat"><div class="stat-n">{stats_cells}</div><div class="stat-l">Cells Covered</div></div>
+      <div class="stat"><div class="stat-n">{stats_pm}</div><div class="stat-l">Polymarket Matches</div></div>
+    </div>
+  </header>
+
+  <!-- ── Coverage Matrix ── -->
+  <div class="section-title">Coverage Matrix</div>
+
+  <div class="legend-box">
+    <div class="legend-title">How to read the matrix</div>
+    <div class="legend-grid">
+
+      <div class="legend-col">
+        <div class="col-title">Each cell = one source × event pair</div>
+        <div class="legend-row">
+          <span class="cell-demo" style="background:#0d3320;border:1px solid #3fb950">
+            <span class="n">3</span><span class="s">+0.62</span>
+          </span>
+          <span><strong style="color:var(--text)">Big number</strong> = articles scraped for this cell</span>
+        </div>
+        <div class="legend-row">
+          <span class="cell-demo" style="background:#3a0d14;border:1px solid #f85149">
+            <span class="n">2</span><span class="s">−0.45</span>
+          </span>
+          <span><strong style="color:var(--text)">Small number</strong> = average stance (−1 to +1)</span>
+        </div>
+        <div class="legend-row">
+          <span class="cell-demo" style="background:#161b22;border:1px solid #30363d">
+            <span style="color:#444c56;font-size:14px;font-weight:600">—</span>
+          </span>
+          <span>Dash = searched, nothing found</span>
+        </div>
+        <div class="legend-row">
+          <span class="cell-demo" style="background:#21262d;border:1px solid #30363d">
+            <span style="color:#30363d;font-size:18px">·</span>
+          </span>
+          <span>Dot = not searched yet</span>
+        </div>
+      </div>
+
+      <div class="legend-col">
+        <div class="col-title">Cell colour = predicted direction</div>
+        <div class="legend-row">
+          <span class="legend-swatch" style="background:rgb(30,190,70)"></span>
+          <span><strong style="color:#3fb950">Green</strong> — bullish / positive outcome predicted</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-swatch" style="background:rgb(190,30,50)"></span>
+          <span><strong style="color:#f85149">Red</strong> — bearish / negative outcome predicted</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-swatch" style="background:rgb(50,55,70)"></span>
+          <span><strong style="color:#848d97">Grey</strong> — neutral / ambiguous</span>
+        </div>
+        <div style="margin-top:6px">
+          <span class="outcome-badge badge-false">FALSE</span> badge shown only when event did <em>not</em> happen
+        </div>
+      </div>
+
+      <div class="legend-col">
+        <div class="col-title">Stance scale (−1 to +1)</div>
+        <div style="margin-bottom:3px"><strong style="color:#3fb950">+1.0</strong> — strongly predicts positive/bullish outcome</div>
+        <div style="margin-bottom:3px"><span style="color:#848d97">  0.0</span> — neutral, no directional view</div>
+        <div style="margin-bottom:6px"><strong style="color:#f85149">−1.0</strong> — strongly predicts negative/bearish outcome</div>
+        <div style="padding-top:6px;border-top:1px solid var(--border)">
+          Column headers are colour-coded by source. Click a cell to jump to its time-series chart.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="matrix-wrap">{matrix_html}</div>
+
+  <!-- ── Event Time Series ── -->
+  <div class="section-title">Event Time Series</div>
+
+  <div class="legend-box">
+    <div class="legend-title">How to read the charts</div>
+    <div class="legend-grid">
+
+      <div class="legend-col">
+        <div class="col-title">Axes</div>
+        <div style="margin-bottom:3px">
+          <strong style="color:var(--text)">X-axis</strong> — days before the event
+          (right edge = day of event, further left = earlier)
+        </div>
+        <div style="margin-bottom:3px">
+          <strong style="color:var(--text)">Left Y-axis</strong> — stance scaled to −100 → +100<br>
+          &nbsp;&nbsp;<strong style="color:#3fb950">+100</strong> = predicted strongly positive outcome<br>
+          &nbsp;&nbsp;<span style="color:#848d97">0</span> = neutral<br>
+          &nbsp;&nbsp;<strong style="color:#f85149">−100</strong> = predicted strongly negative outcome
+        </div>
+        <div>
+          <strong style="color:rgba(255,255,255,0.4)">Right Y-axis</strong> —
+          Polymarket probability % (white shaded area, where available)
+        </div>
+      </div>
+
+      <div class="legend-col">
+        <div class="col-title">Elements</div>
+        <div style="margin-bottom:3px">Each <strong style="color:var(--text)">coloured line</strong> = one news source; each dot = one extracted prediction</div>
+        <div style="margin-bottom:3px">The <strong style="color:rgba(255,255,255,0.5)">white shaded area</strong> (if present) = Polymarket contract probability</div>
+        <div>Hover a dot to see the source quote and certainty</div>
+      </div>
+
+      <div class="legend-col">
+        <div class="col-title">Metrics (predictions table below)</div>
+        <div style="margin-bottom:3px"><strong style="color:var(--text)">Certainty</strong> — how confident the author sounds (0% = heavily hedged → 100% = absolute)</div>
+        <div style="margin-bottom:3px"><strong style="color:var(--text)">Hedge</strong> — share of hedging language ("might", "could", "possibly")</div>
+        <div><strong style="color:var(--text)">Days Before</strong> — how far in advance this prediction was published</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="event-nav">
+    {event_nav_links}
+  </div>
+
+  {event_sections_html}
+
+  <!-- ── All Predictions Table ── -->
+  <div class="section-title">All Extracted Predictions</div>
+  <div class="filter-bar">
+    <label>Event:</label>
+    <select id="filterEvent" onchange="filterTable()">
+      <option value="">All</option>
+      {event_options}
+    </select>
+    <label>Source:</label>
+    <select id="filterSource" onchange="filterTable()">
+      <option value="">All</option>
+      {source_options}
+    </select>
+    <label>Min certainty:</label>
+    <input type="range" id="filterCertainty" min="0" max="100" value="0"
+           oninput="document.getElementById('certVal').textContent=this.value+'%'; filterTable()">
+    <span id="certVal" style="font-size:12px;color:var(--muted)">0%</span>
+  </div>
+  <table class="pred-table" id="predsTable">
+    <thead>
+      <tr>
+        <th>Event</th><th>Source</th><th>Date</th><th>Days Before</th>
+        <th>Stance</th><th>Certainty</th><th>Hedge</th><th>Quote / Claim</th>
+      </tr>
+    </thead>
+    <tbody id="predsBody"></tbody>
+  </table>
+
+  <!-- ── Scoring ── -->
+  <div class="section-title">Media Accuracy Scoring</div>
+  {scoring_html}
+
+  <footer>Factum Atlas &nbsp;·&nbsp; Generated {run_date} &nbsp;·&nbsp; TruthMachine OSNC Pipeline</footer>
+</div>
+
+<script>
+const SOURCE_COLORS = {source_colors_js};
+const CHART_DATA    = {chart_data_js};
+const PREDICTIONS   = {predictions_js};
+
+// ── render charts ─────────────────────────────────────────────────────────────
+function renderChart(eid) {{
+  const ctx = document.getElementById('chart-' + eid);
+  if (!ctx) return;
+  const data = CHART_DATA[eid];
+  if (!data) return;
+
+  const datasets = [];
+
+  for (const [sid, points] of Object.entries(data.sources)) {{
+    if (!points.length) continue;
+    datasets.push({{
+      label: sid,
+      data: points.map(p => ({{ x: p.x, y: p.y }})),
+      borderColor: SOURCE_COLORS[sid] || '#888',
+      backgroundColor: 'transparent',
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      borderWidth: 2,
+      tension: 0.3,
+      yAxisID: 'yStance',
+    }});
+  }}
+
+  if (data.polymarket && data.polymarket.length) {{
+    datasets.push({{
+      label: 'Polymarket %',
+      data: data.polymarket.map(p => ({{ x: p.x, y: p.y }})),
+      borderColor: 'rgba(255,255,255,0.3)',
+      backgroundColor: 'rgba(255,255,255,0.06)',
+      fill: true,
+      borderWidth: 1,
+      pointRadius: 2,
+      tension: 0.4,
+      yAxisID: 'yPM',
+    }});
+  }}
+
+  if (!datasets.length) {{
+    ctx.parentElement.innerHTML = '<p class="no-data">No data yet for this event.</p>';
+    return;
+  }}
+
+  new Chart(ctx, {{
+    type: 'line',
+    data: {{ datasets }},
+    options: {{
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {{ mode: 'index', intersect: false }},
+      plugins: {{
+        legend: {{
+          labels: {{ color: '#848d97', font: {{ size: 11 }} }}
+        }},
+        tooltip: {{
+          callbacks: {{
+            label: ctx => {{
+              const val = ctx.parsed.y.toFixed(1);
+              if (ctx.dataset.yAxisID === 'yPM') return `Polymarket: ${{val}}%`;
+              return `${{ctx.dataset.label}}: ${{val > 0 ? '+' : ''}}${{val}} stance`;
+            }}
+          }}
+        }}
+      }},
+      scales: {{
+        x: {{
+          type: 'linear',
+          title: {{ display: true, text: 'Days before event', color: '#848d97' }},
+          reverse: true,
+          ticks: {{ color: '#848d97' }},
+          grid:  {{ color: 'rgba(48,54,61,0.6)' }},
+        }},
+        yStance: {{
+          type: 'linear',
+          position: 'left',
+          title: {{ display: true, text: 'Stance (−100 bearish → +100 bullish)', color: '#848d97' }},
+          min: -100, max: 100,
+          ticks: {{ color: '#848d97' }},
+          grid:  {{ color: 'rgba(48,54,61,0.6)' }},
+        }},
+        yPM: {{
+          type: 'linear',
+          position: 'right',
+          title: {{ display: true, text: 'Polymarket probability %', color: 'rgba(255,255,255,0.3)' }},
+          min: 0, max: 100,
+          ticks: {{ color: 'rgba(255,255,255,0.3)' }},
+          grid:  {{ drawOnChartArea: false }},
+        }},
+      }},
+    }},
+  }});
+}}
+
+document.addEventListener('DOMContentLoaded', () => {{
+  for (const eid of Object.keys(CHART_DATA)) renderChart(eid);
+  renderPredictions(PREDICTIONS);
+}});
+
+// ── predictions table ─────────────────────────────────────────────────────────
+function renderPredictions(rows) {{
+  const tbody = document.getElementById('predsBody');
+  tbody.innerHTML = rows.map(r => {{
+    const color     = SOURCE_COLORS[r.sid] || '#888';
+    const stanceW   = Math.abs(r.stance) * 60;
+    const stanceClr = r.stance > 0.15 ? '#3fb950' : r.stance < -0.15 ? '#f85149' : '#848d97';
+    const text      = r.claim || r.quote || '—';
+    return `<tr data-eid="${{r.eid}}" data-sid="${{r.sid}}" data-certainty="${{Math.round(r.certainty*100)}}">
+      <td>
+        <span style="font-family:monospace;color:#58a6ff">${{r.eid}}</span>
+        <div style="font-size:10px;color:#848d97">${{r.event_name.slice(0,40)}}</div>
+      </td>
+      <td><span class="source-dot" style="background:${{color}}"></span>${{r.source_name}}</td>
+      <td style="white-space:nowrap">${{r.date}}</td>
+      <td style="text-align:center">${{r.days_before}}d</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span class="stance-bar" style="width:${{stanceW}}px;background:${{stanceClr}}"></span>
+          <span style="color:${{stanceClr}};font-weight:600">${{r.stance > 0 ? '+' : ''}}${{(r.stance*100).toFixed(0)}}</span>
+        </div>
+      </td>
+      <td><span class="metric-pill">${{Math.round(r.certainty*100)}}%</span></td>
+      <td><span class="metric-pill">${{Math.round(r.hedge_index*100)}}%</span></td>
+      <td>
+        ${{r.headline ? `<div style="font-size:11px;font-weight:500;margin-bottom:2px">${{r.headline.slice(0,60)}}</div>` : ''}}
+        <div class="quote-text">${{text.slice(0,140)}}${{text.length > 140 ? '…' : ''}}</div>
+      </td>
+    </tr>`;
+  }}).join('');
+}}
+
+function filterTable() {{
+  const eid     = document.getElementById('filterEvent').value;
+  const sid     = document.getElementById('filterSource').value;
+  const minCert = parseInt(document.getElementById('filterCertainty').value);
+  document.querySelectorAll('#predsBody tr').forEach(row => {{
+    row.style.display = (
+      (!eid  || row.dataset.eid === eid) &&
+      (!sid  || row.dataset.sid === sid) &&
+      (parseInt(row.dataset.certainty) >= minCert)
+    ) ? '' : 'none';
+  }});
+}}
+</script>
+</body>
+</html>

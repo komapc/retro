@@ -4,7 +4,7 @@ from .models import GatekeeperOutput
 from .config import settings
 
 litellm.api_key = settings.openrouter_api_key
-_client = instructor.from_litellm(litellm.acompletion)
+_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.MD_JSON)
 
 PROMPT = """\
 You are a forensic analyst screening news articles for predictive content.
@@ -25,7 +25,7 @@ Exclude:
 - Rhetorical questions without answers
 - Pure opinion with no predictive content
 
-Article snippet (first 800 chars):
+Article snippet:
 <article>
 {article_text}
 </article>
@@ -49,7 +49,7 @@ async def check_is_prediction(
             {
                 "role": "user",
                 "content": PROMPT.format(
-                    article_text=article_text[:800],
+                    article_text=article_text[200:2700],
                     source_name=source_name,
                     article_date=article_date,
                     event_name=event_name,
