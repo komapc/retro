@@ -35,13 +35,27 @@ console = Console()
 
 GNEWS_BASE = "https://news.google.com/rss/search"
 
-SOURCES = {
-    "toi":     "timesofisrael.com",
-    "jpost":   "jpost.com",
-    "haaretz": "haaretz.com",
-    "reuters": "reuters.com",
-    "globes":  "en.globes.co.il",
+# domain + GNews locale per source
+# lang="en" → ASCII keyword, en-US GNews params
+# lang="he" → first Hebrew keyword, iw-IL GNews params
+SOURCES_CONFIG: Dict[str, Dict] = {
+    "toi":          {"domain": "timesofisrael.com",  "lang": "en"},
+    "jpost":        {"domain": "jpost.com",          "lang": "en"},
+    "haaretz":      {"domain": "haaretz.com",        "lang": "en"},
+    "reuters":      {"domain": "reuters.com",        "lang": "en"},
+    "globes":       {"domain": "en.globes.co.il",    "lang": "en"},
+    "ynet":         {"domain": "ynetnews.com",       "lang": "en"},
+    "israel_hayom": {"domain": "israelhayom.com",    "lang": "en"},
+    "walla":        {"domain": "walla.co.il",        "lang": "he"},
 }
+
+GNEWS_LOCALE = {
+    "en": {"hl": "en-US", "gl": "US", "ceid": "US:en"},
+    "he": {"hl": "iw-IL", "gl": "IL", "ceid": "IL:iw"},
+}
+
+# Keep the old flat dict for backwards-compat callsites
+SOURCES = {sid: cfg["domain"] for sid, cfg in SOURCES_CONFIG.items()}
 
 MVP_EVENTS = [
     "C05", "C06", "C07", "C08", "C09",
@@ -88,30 +102,43 @@ def search_gnews_rss(
     start_date: datetime,
     end_date: datetime,
     max_results: int = 10,
+    lang: str = "en",
 ) -> List[Dict]:
     """
     Query Google News RSS for article titles in the date window.
     Returns list of {title, published_at}.
+    lang="en" uses the first ASCII keyword + en-US locale.
+    lang="he" uses the first non-ASCII (Hebrew) keyword + iw-IL locale.
     """
-    ascii_kws = [k.strip('"') for k in keywords if _is_ascii(k) and k.strip('"')]
-    if not ascii_kws:
+    if lang == "he":
+        kws = [k.strip('"') for k in keywords if not _is_ascii(k) and k.strip('"')]
+    else:
+        kws = [k.strip('"') for k in keywords if _is_ascii(k) and k.strip('"')]
+
+    if not kws:
         return []
 
-    # Use only the most specific single keyword phrase for GNews (more gives 0 results)
-    kw_part = ascii_kws[0] if ascii_kws else ""
     after = (start_date - timedelta(days=1)).strftime("%Y-%m-%d")
     before = (end_date + timedelta(days=1)).strftime("%Y-%m-%d")
-    query = f"{kw_part} after:{after} before:{before} site:{domain}"
+    locale = GNEWS_LOCALE.get(lang, GNEWS_LOCALE["en"])
 
-    params = {"q": query, "hl": "en-US", "gl": "US", "ceid": "US:en"}
+    # Try each keyword in order; stop at the first that returns results
+    r = None
+    for kw_part in kws:
+        query = f"{kw_part} after:{after} before:{before} site:{domain}"
+        params = {"q": query, **locale}
+        try:
+            r = httpx.get(GNEWS_BASE, params=params, headers=HEADERS, timeout=20, follow_redirects=True)
+            if r.status_code != 200:
+                continue
+            # Peek at item count before full parse
+            if "<item>" in r.text:
+                break
+        except Exception as e:
+            console.print(f"    [dim red]GNews RSS error: {e}[/dim red]")
+            r = None
 
-    try:
-        r = httpx.get(GNEWS_BASE, params=params, headers=HEADERS, timeout=20, follow_redirects=True)
-        if r.status_code != 200:
-            console.print(f"    [dim red]GNews RSS {r.status_code}[/dim red]")
-            return []
-    except Exception as e:
-        console.print(f"    [dim red]GNews RSS error: {e}[/dim red]")
+    if r is None or r.status_code != 200:
         return []
 
     articles = []
@@ -159,16 +186,14 @@ def _title_slug(title: str) -> str:
 
 
 def _construct_url(title: str, domain: str) -> Optional[str]:
-    """Construct a probable article URL from title for known domains."""
+    """Construct a probable article URL from title for domains with predictable slugs.
+    Only TOI is reliable; all others fall through to DDG.
+    """
     slug = _title_slug(title)
     if not slug:
         return None
     if domain == "timesofisrael.com":
         return f"https://www.timesofisrael.com/{slug}/"
-    # JPost URLs: /article/{slug} or /israel-news/{slug} — try /article/ first
-    if domain == "jpost.com":
-        return f"https://www.jpost.com/article/{slug}"
-    # Reuters: /world/middle-east/{slug}-{date} — harder to construct, skip
     return None
 
 
@@ -279,9 +304,11 @@ async def ingest_cell(
     if existing and not force:
         return len(existing)
 
-    domain = SOURCES.get(source_id)
-    if not domain:
+    cfg = SOURCES_CONFIG.get(source_id)
+    if not cfg:
         return 0
+    domain = cfg["domain"]
+    lang = cfg.get("lang", "en")
 
     outcome_dt = datetime.strptime(event["outcome_date"], "%Y-%m-%d")
     window = int(event.get("predictive_window_days", 14))
@@ -292,6 +319,7 @@ async def ingest_cell(
         keywords=event.get("search_keywords", []),
         start_date=start_dt,
         end_date=outcome_dt,
+        lang=lang,
     )
 
     if not candidates:
@@ -348,7 +376,7 @@ async def run_batch(
         else:
             console.print(f"[yellow]Event {eid} not found, skipping[/yellow]")
 
-    sources = [s for s in SOURCES if source_filter is None or s in source_filter]
+    sources = [s for s in SOURCES_CONFIG if source_filter is None or s in source_filter]
     total = len(events) * len(sources)
 
     console.print(

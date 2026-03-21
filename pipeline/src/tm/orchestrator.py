@@ -78,7 +78,8 @@ class Orchestrator:
             with open(source_file, "r") as f:
                 source = json.load(f)
             
-            if source["id"] not in ["ynet", "haaretz", "toi", "globes", "reuters", "jpost"]:
+            if source["id"] not in ["ynet", "haaretz", "toi", "globes", "reuters", "jpost",
+                                    "israel_hayom", "walla"]:
                 continue
 
             state = load_state()
