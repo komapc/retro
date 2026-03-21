@@ -4,7 +4,7 @@ from .models import ExtractionOutput
 from .config import settings
 
 litellm.api_key = settings.openrouter_api_key
-_client = instructor.from_litellm(litellm.acompletion)
+_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.MD_JSON)
 
 PROMPT = """\
 You are a forensic prediction analyst. Extract every distinct forward-looking prediction \
@@ -43,6 +43,31 @@ Related event: {event_name} — {event_description}
 Return up to 10 predictions. If more exist, take the most specific ones.
 Do not translate the quote field — keep it in the original language.
 The claim field must be in English.
+
+CRITICAL: Each prediction must be a complete JSON object with ALL of these fields:
+  quote (string), claim (string), stance (float -1 to 1), sentiment (float 0-1),
+  certainty (float 0-1), specificity (float 0-1), hedge_ratio (float 0-1),
+  conditionality (float 0-1), magnitude (float 0-1),
+  time_horizon (one of: "days"/"weeks"/"months"/"years"/"unspecified"),
+  time_horizon_days (integer or null), prediction_type (one of: "binary"/"continuous"/"range"/"trend"),
+  source_authority (float 0-1)
+
+Example prediction object:
+{{
+  "quote": "Iran could launch strikes within 48 hours",
+  "claim": "Iran will launch a military strike on Israel within 48 hours",
+  "stance": -0.8,
+  "sentiment": 0.7,
+  "certainty": 0.6,
+  "specificity": 0.7,
+  "hedge_ratio": 0.3,
+  "conditionality": 0.2,
+  "magnitude": 0.9,
+  "time_horizon": "days",
+  "time_horizon_days": 2,
+  "prediction_type": "binary",
+  "source_authority": 0.8
+}}
 """
 
 

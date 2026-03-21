@@ -134,7 +134,18 @@ class Orchestrator:
         if search_path.exists():
             for art_file in search_path.glob("*.json"):
                 with open(art_file, "r") as f:
-                    articles.append(json.load(f))
+                    art = json.load(f)
+                url = art.get("url", "")
+                text = art.get("text", "")
+                # Skip liveblogs (day-long rolling updates starting with photo captions)
+                if "liveblog" in url.lower():
+                    console.print(f"    [dim]Skipping liveblog: {url[:60]}[/dim]")
+                    continue
+                # Skip very short articles (paywalled stubs)
+                if len(text) < 500:
+                    console.print(f"    [dim]Skipping stub ({len(text)} chars): {art.get('headline','')[:50]}[/dim]")
+                    continue
+                articles.append(art)
         return articles
 
     async def process_article(self, raw_art: dict, event: dict, source: dict):
