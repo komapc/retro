@@ -5,11 +5,12 @@
   "outcome_date": "2024-05-08",
   "predictive_window_days": 14,
   "search_keywords": [
-    "ארה\"ב נשק ישראל רפיח",
-    "ביידן עצירת נשק ישראל",
-    "Biden Israel arms weapons Rafah",
-    "US weapons Israel Congress pressure",
-    "Israel US military aid halt"
+    "מחסור תחמושת לישראל",
+    "עיכוב משלוחי נשק",
+    "יחסי ארצות הברית ישראל",
+    "US Israel relations strained",
+    "delay arms shipment Israel",
+    "US halts weapons aid"
   ],
   "llm_referee_criteria": "B, E"
 }

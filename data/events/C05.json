@@ -5,12 +5,11 @@
   "outcome_date": "2024-04-14",
   "predictive_window_days": 7,
   "search_keywords": [
-    "איראן תקיפה ישראל",
-    "מתקפה איראנית ישראל",
-    "מתקפה איראנית ישירה",
-    "Iran missile attack Israel",
-    "retaliation odds",
-    "April escalation"
+    "איראן תוקפת את ישראל",
+    "מלחמה בין ישראל לאיראן",
+    "תגובה איראנית",
+    "Iran Israel tensions",
+    "Iran threatens retaliation"
   ],
   "llm_referee_criteria": "Must focus on the April 14 multi-drone/missile barrage."
 }

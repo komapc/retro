@@ -5,11 +5,12 @@
   "outcome_date": "2023-11-30",
   "predictive_window_days": 14,
   "search_keywords": [
-    "שחרור חטופים עסקה ראשונה",
-    "הפסקת אש עזה חטופים",
-    "hostage release Gaza deal November",
-    "Gaza ceasefire hostage deal",
-    "Hamas hostage exchange Qatar"
+    "עסקת שבויים",
+    "הפסקת אש הומניטרית",
+    "חמאס משחרר חטופים",
+    "hostage release deal",
+    "humanitarian pause negotiation",
+    "Qatar mediation Hamas Israel"
   ],
   "llm_referee_criteria": "B"
 }

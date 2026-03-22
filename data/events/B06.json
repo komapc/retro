@@ -5,11 +5,11 @@
   "outcome_date": "2023-12-01",
   "predictive_window_days": 14,
   "search_keywords": [
-    "חידוש הלחימה עזה הפסקת אש",
-    "פקיעת הפסקת אש עזה",
-    "Gaza fighting resumes ceasefire end",
-    "Gaza truce expires December 2023",
-    "Israel Hamas ceasefire collapse"
+    "הפסקת אש בסכנה",
+    "חמאס הפרת הסכם",
+    "חידוש הלחימה בעזה",
+    "end of truce",
+    "imminent conflict resumption"
   ],
   "llm_referee_criteria": "B"
 }

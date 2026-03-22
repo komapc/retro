@@ -5,11 +5,12 @@
   "outcome_date": "2023-11-22",
   "predictive_window_days": 14,
   "search_keywords": [
-    "עסקת חטופים הפסקת אש",
-    "שחרור חטופים עזה",
-    "hostage deal Gaza ceasefire pause",
-    "hostages release negotiations Qatar",
-    "Gaza fighting pause humanitarian"
+    "עסקת חטופים",
+    "הפסקת אש הומניטרית",
+    "חמאס משחרר חטופים",
+    "hostage release deal",
+    "humanitarian pause negotiations",
+    "gaza hostage negotiations"
   ],
   "llm_referee_criteria": "Must focus on the Nov 22 hostage deal and pause in fighting."
 }

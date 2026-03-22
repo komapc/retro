@@ -5,9 +5,12 @@
   "outcome_date": "2021-06-13",
   "predictive_window_days": 30,
   "search_keywords": [
-    "\u05d4\u05e2\u05e8\u05db\u05d5\u05ea \u05d4\u05e7\u05de\u05ea \u05de\u05de\u05e9\u05dc\u05ea \u05d1\u05e0\u05d8",
-    "polls Bennett-Lapid coalition",
-    "government formation odds"
+    " ממשלת בנט לפיד ",
+    " יאיר לפיד ",
+    " נפתלי בנט ",
+    "Bennett Lapid government formation",
+    "Netanyahu ouster attempts",
+    "Israeli coalition prospects"
   ],
   "llm_referee_criteria": "Must discuss the formation of the 36th government."
 }

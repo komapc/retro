@@ -5,11 +5,12 @@
   "outcome_date": "2023-10-07",
   "predictive_window_days": 14,
   "search_keywords": [
-    "חמאס תקיפה ישראל הפתעה",
-    "מתקפה עוטף עזה",
-    "Hamas attack Israel surprise",
-    "Gaza border attack Israel",
-    "Hamas escalation October 2023"
+    "הסלמה בדרום",
+    "עזה הסלמה",
+    "תגובה מעזה",
+    "Gaza escalation",
+    "Hamas threat",
+    "Israel Gaza tensions"
   ],
   "llm_referee_criteria": "B, C"
 }

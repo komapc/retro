@@ -1,13 +1,16 @@
 {
   "id": "A03",
-  "name": "Knesset dissolves \u2014 Lapid becomes caretaker PM",
+  "name": "Knesset dissolves — Lapid becomes caretaker PM",
   "outcome": true,
   "outcome_date": "2022-06-30",
   "predictive_window_days": 14,
   "search_keywords": [
-    "\u05d4\u05e2\u05e8\u05db\u05d5\u05ea \u05e4\u05d9\u05d6\u05d5\u05e8 \u05d4\u05db\u05e0\u05e1\u05ea",
-    "date of Knesset dissolution speculation",
-    "Lapid caretaker chances"
+    "פיזור הכנסת",
+    "בחירות בזק",
+    "ממשלה חלופית",
+    "coalition instability",
+    "government collapse",
+    "Lapid prime minister"
   ],
   "llm_referee_criteria": "Must discuss the bill to dissolve or the transition to Lapid."
 }

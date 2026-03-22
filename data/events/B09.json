@@ -5,11 +5,12 @@
   "outcome_date": "2024-07-31",
   "predictive_window_days": 14,
   "search_keywords": [
-    "הנייה נרצח טהרן",
-    "חמאס מנהיג איראן",
-    "Haniyeh Tehran ceasefire Hamas",
-    "Hamas leader Iran talks",
-    "Israel Hamas escalation retaliation"
+    "חמאס טהרן",
+    "חיסול חמאס",
+    "ישראל איראן",
+    "Hamas Tehran relations",
+    "Hamas leader assassination",
+    "Israel Iran conflict"
   ],
   "llm_referee_criteria": "B, C"
 }

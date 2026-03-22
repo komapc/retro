@@ -5,11 +5,12 @@
   "outcome_date": "2024-05-07",
   "predictive_window_days": 14,
   "search_keywords": [
-    "מבצע רפיח כניסה קרקעית",
-    "צה\"ל רפיח עזה",
-    "IDF Rafah ground operation May",
-    "Israel Rafah offensive ground troops",
-    "Rafah invasion IDF operation"
+    "רפיח פעולה קרקעית",
+    "צבא כניסה לרפיח",
+    "התקפה ברפיח",
+    "Rafah ground operation",
+    "IDF Rafah incursion",
+    "military offensive Gaza"
   ],
   "llm_referee_criteria": "B, E"
 }

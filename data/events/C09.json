@@ -5,10 +5,12 @@
   "outcome_date": "2024-12-08",
   "predictive_window_days": 14,
   "search_keywords": [
-    "אסד נפל סוריה",
-    "משטר אסד קרס",
+    "סוריה אסד",
     "נפילת אסד",
-    "Assad regime falls Syria"
+    "סוף שלטון אסד",
+    "Assad regime collapse",
+    "Syria civil war escalation",
+    "Syria regime change"
   ],
   "llm_referee_criteria": "Must focus on the Dec 8 total collapse."
 }

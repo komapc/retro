@@ -5,11 +5,12 @@
   "outcome_date": "2023-10-08",
   "predictive_window_days": 14,
   "search_keywords": [
-    "ישראל מצב מלחמה הכרזה",
-    "קבינט מלחמה ישראל",
-    "Israel war declaration cabinet",
-    "Israel state of war October 2023",
-    "Israel military response Hamas"
+    "מלחמה בעזה",
+    "הסלמה בדרום",
+    "עזה הסלמה",
+    "gaza escalation",
+    "israel gaza tensions",
+    "hamas attack threat"
   ],
   "llm_referee_criteria": "B, A"
 }

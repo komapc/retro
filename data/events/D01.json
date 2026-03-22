@@ -5,8 +5,12 @@
   "outcome_date": "2023-10-16",
   "predictive_window_days": 14,
   "search_keywords": [
-    "\u05d3\u05d5\u05dc\u05e8 \u05de\u05e2\u05dc 4 \u05e9\u05e7\u05dc\u05d9\u05dd",
-    "Shekel below 4.0 USD"
+    "שער הדולר",
+    "שקל דולר",
+    "ייסוף שקל",
+    "shekel dollar rate",
+    "nis usd exchange rate",
+    "weakening shekel"
   ],
   "llm_referee_criteria": "Must focus on the exchange rate milestone."
 }

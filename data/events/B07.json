@@ -5,11 +5,12 @@
   "outcome_date": "2023-12-05",
   "predictive_window_days": 14,
   "search_keywords": [
-    "כניסה לחאן יונס",
-    "לחימה בחאן יונס",
-    "IDF Khan Yunis operation December",
-    "Israel troops Khan Yunis Gaza",
-    "Khan Yunis IDF advance southern Gaza"
+    "חאן יונס",
+    "מרכז חאן יונס",
+    "כניסת צהל לחאן יונס",
+    "Khan Yunis",
+    "IDF Khan Yunis operation",
+    "Gaza ground offensive"
   ],
   "llm_referee_criteria": "B"
 }

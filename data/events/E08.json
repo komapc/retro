@@ -5,8 +5,10 @@
   "outcome_date": "2024-09-18",
   "predictive_window_days": 14,
   "search_keywords": [
-    "\u05d4\u05e4\u05d3 \u05de\u05d5\u05e8\u05d9\u05d3 \u05e8\u05d9\u05d1\u05d9\u05ea",
-    "Fed first rate cut 2024"
+    "Federal Reserve interest rates",
+    "US interest rate cut",
+    "Jerome Powell dovish stance",
+    "inflation economic outlook"
   ],
   "llm_referee_criteria": "Must focus on the Sept 18 first cut announcement."
 }
