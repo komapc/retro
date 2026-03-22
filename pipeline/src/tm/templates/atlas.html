@@ -105,6 +105,8 @@
                     border-radius: 10px; background: var(--bg3); margin: 1px; }}
     .quote-text  {{ color: var(--muted); font-style: italic; font-size: 11px;
                     border-left: 2px solid var(--border); padding-left: 8px; margin-top: 4px; }}
+    .cell-brier  {{ display: block; font-size: 9px; font-weight: 600; letter-spacing: 0.02em;
+                    margin-top: 2px; opacity: 0.9; }}
 
     /* ── Filter bar ── */
     .filter-bar {{ display: flex; gap: 8px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }}
@@ -282,7 +284,7 @@
     <thead>
       <tr>
         <th>Event</th><th>Source</th><th>Date</th><th>Days Before</th>
-        <th>Stance</th><th>Certainty</th><th>Hedge</th><th>Quote / Claim</th>
+        <th>Stance</th><th>Certainty</th><th>Hedge</th><th>Article / Quote</th>
       </tr>
     </thead>
     <tbody id="predsBody"></tbody>
@@ -423,7 +425,15 @@ function renderPredictions(rows) {{
       <td><span class="metric-pill">${{Math.round(r.certainty*100)}}%</span></td>
       <td><span class="metric-pill">${{Math.round(r.hedge_index*100)}}%</span></td>
       <td>
-        ${{r.headline ? `<div style="font-size:11px;font-weight:500;margin-bottom:2px">${{r.headline.slice(0,60)}}</div>` : ''}}
+        ${{r.headline
+          ? `<div style="font-size:11px;font-weight:500;margin-bottom:2px">${{
+              r.url
+                ? `<a href="${{r.url}}" target="_blank" rel="noopener"
+                      style="color:#58a6ff;text-decoration:none"
+                      title="${{r.url}}">${{r.headline.slice(0,60)}}</a>`
+                : r.headline.slice(0,60)
+            }}</div>`
+          : ''}}
         <div class="quote-text">${{text.slice(0,140)}}${{text.length > 140 ? '…' : ''}}</div>
       </td>
     </tr>`;

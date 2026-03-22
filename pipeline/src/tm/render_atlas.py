@@ -8,9 +8,10 @@ Usage:
 
 import json
 import os
-from datetime import datetime
+from dataclasses import dataclass
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 # ── palette ───────────────────────────────────────────────────────────────────
 SOURCE_COLORS = {
@@ -46,6 +47,26 @@ MVP_EVENTS = [
 TEMPLATE_PATH = Path(__file__).parent / "templates" / "atlas.html"
 
 
+# ── scoring configuration ──────────────────────────────────────────────────────
+
+@dataclass
+class ScoringConfig:
+    """Controls competitive Brier scoring logic.
+
+    window_hours:      Predictions published within this span compete against each other.
+                       With current daily-granularity data, windows < 24 h effectively
+                       group by calendar day; sub-daily timestamps will be used when
+                       available.
+    min_per_window:    Minimum number of *distinct sources* required in a window for any
+                       predictions in that window to be scored.  Windows with fewer
+                       sources are silently skipped (no single-source Brier credit).
+    """
+    window_hours: int = 48
+    min_per_window: int = 2
+
+SCORING_CONFIG = ScoringConfig()
+
+
 # ── data helpers ──────────────────────────────────────────────────────────────
 
 def load_json(p: Path) -> Any:
@@ -62,6 +83,23 @@ def stance_to_color(stance: float) -> str:
         r = int(80 + 110 * min(-stance, 1))
         return f"rgb({r},30,50)"
     return "rgb(50,55,70)"
+
+
+def load_vault_urls(data_dir: Path) -> dict[str, str]:
+    """Return {article_hash: url} for all articles in vault2/articles/."""
+    urls: dict[str, str] = {}
+    vault_dir = data_dir / "vault2" / "articles"
+    if not vault_dir.exists():
+        return urls
+    for fp in vault_dir.glob("*.json"):
+        try:
+            d = load_json(fp)
+            url = d.get("url", "")
+            if url:
+                urls[fp.stem] = url
+        except Exception:
+            pass
+    return urls
 
 
 def load_atlas_data(data_dir: Path) -> dict:
@@ -95,7 +133,9 @@ def load_atlas_data(data_dir: Path) -> dict:
                 if d.get("prices"):
                     polymarket[eid] = d["prices"]
 
-    return dict(events=events, sources=sources, cells=cells, polymarket=polymarket)
+    vault_urls = load_vault_urls(data_dir)
+    return dict(events=events, sources=sources, cells=cells,
+                polymarket=polymarket, vault_urls=vault_urls)
 
 
 def load_search_status(data_dir: Path) -> dict[tuple, str]:
@@ -116,10 +156,12 @@ def load_search_status(data_dir: Path) -> dict[tuple, str]:
     return result
 
 
-def build_timeseries(cells: dict, events: dict, eid: str) -> dict:
+def build_timeseries(cells: dict, events: dict, eid: str,
+                     vault_urls: Optional[dict] = None) -> dict:
     ev = events.get(eid)
     if not ev:
         return {}
+    vault_urls = vault_urls or {}
     outcome_dt = datetime.strptime(ev["outcome_date"], "%Y-%m-%d")
     series = {}
     for sid in SOURCES:
@@ -133,6 +175,8 @@ def build_timeseries(cells: dict, events: dict, eid: str) -> dict:
             days_before = (outcome_dt - art_dt).days
             if days_before < 0:
                 continue
+            art_hash = entry.get("article_hash", "")
+            url = vault_urls.get(art_hash, "")
             for p in entry.get("predictions", []):
                 points.append({
                     "days_before": days_before,
@@ -143,6 +187,7 @@ def build_timeseries(cells: dict, events: dict, eid: str) -> dict:
                     "quote": p.get("quote", "")[:120],
                     "claim": p.get("claim", ""),
                     "headline": entry.get("headline", ""),
+                    "url": url,
                 })
         if points:
             series[sid] = sorted(points, key=lambda x: -x["days_before"])
@@ -209,9 +254,74 @@ def compute_brier_scores(cells: dict, events: dict) -> dict:
                 overall=dict(n=len(all_scores), brier=overall_brier, skill=skill))
 
 
+def compute_competitive_scores(
+    cells: dict,
+    events: dict,
+    config: ScoringConfig,
+) -> dict[tuple, dict]:
+    """
+    Competitive Brier scoring: only predictions from windows where
+    ≥ config.min_per_window distinct sources competed are scored.
+
+    Returns {(eid, sid): {"n": int, "brier": float, "skill": float}}.
+    """
+    window_td = timedelta(hours=config.window_hours)
+    result: dict[tuple, list] = {}
+
+    for eid in MVP_EVENTS:
+        ev = events.get(eid)
+        if not ev:
+            continue
+        outcome = 1.0 if ev.get("outcome") else 0.0
+
+        # Collect (date, sid, stance) for all predictions in this event
+        raw: list[tuple[datetime, str, float]] = []
+        for sid in SOURCES:
+            for entry in cells.get((eid, sid), []):
+                date_str = entry.get("article_date", "")
+                try:
+                    art_dt = datetime.strptime(date_str[:10], "%Y-%m-%d")
+                except ValueError:
+                    continue
+                for pred in entry.get("predictions", []):
+                    raw.append((art_dt, sid, pred.get("stance", 0.0)))
+
+        if not raw:
+            continue
+
+        raw.sort(key=lambda x: x[0])
+
+        # Sliding-window grouping: anchor each window at the earliest un-grouped pred
+        i = 0
+        while i < len(raw):
+            anchor_dt = raw[i][0]
+            window_preds = [(dt, sid, st) for dt, sid, st in raw
+                            if anchor_dt <= dt <= anchor_dt + window_td]
+            distinct_sources = {sid for _, sid, _ in window_preds}
+
+            if len(distinct_sources) >= config.min_per_window:
+                for _, sid, stance in window_preds:
+                    p = (stance + 1.0) / 2.0
+                    bs = (p - outcome) ** 2
+                    result.setdefault((eid, sid), []).append(bs)
+
+            # Advance past all predictions covered by this window
+            i += sum(1 for dt, _, _ in raw[i:] if dt <= anchor_dt + window_td)
+
+    return {
+        key: {
+            "n": len(scores),
+            "brier": round(sum(scores) / len(scores), 3),
+            "skill": round(1 - (sum(scores) / len(scores)) / 0.25, 3),
+        }
+        for key, scores in result.items()
+    }
+
+
 # ── HTML fragments ─────────────────────────────────────────────────────────────
 
-def _render_matrix(matrix_rows: list, search_status: dict) -> str:
+def _render_matrix(matrix_rows: list, search_status: dict,
+                   competitive_scores: Optional[dict] = None) -> str:
     parts = [
         '<table class="matrix"><thead><tr>',
         '<th class="event-label">Event</th>',
@@ -243,7 +353,21 @@ def _render_matrix(matrix_rows: list, search_status: dict) -> str:
             if cell["article_count"] > 0:
                 bg = stance_to_color(cell["avg_stance"] or 0)
                 stance_str = f'{cell["avg_stance"]:+.2f}' if cell["avg_stance"] is not None else "—"
+                comp = (competitive_scores or {}).get((eid, sid))
+                brier_html = ""
+                if comp:
+                    skill = comp["skill"]
+                    clr = "#3fb950" if skill > 0 else "#f85149"
+                    brier_n = comp["n"]
+                    brier_v = comp["brier"]
+                    brier_html = (
+                        f'<span class="cell-brier" style="color:{clr}" '
+                        f'title="Competitive Brier {brier_v} (n={brier_n})">'
+                        f'B={brier_v:.2f}</span>'
+                    )
                 title = f'{cell["pred_count"]} predictions, avg stance {stance_str}'
+                if comp:
+                    title += f', competitive Brier {comp["brier"]:.3f} (skill {comp["skill"]:+.3f})'
                 onclick = f"document.getElementById('event-{eid}').scrollIntoView({{behavior:'smooth'}})"
                 parts.append(
                     f'<td class="cell has-data" style="background:{bg}"'
@@ -251,6 +375,7 @@ def _render_matrix(matrix_rows: list, search_status: dict) -> str:
                     f'<div class="cell-inner">'
                     f'<span class="cell-count">{cell["article_count"]}</span>'
                     f'<span class="cell-stance">{stance_str}</span>'
+                    f'{brier_html}'
                     f'</div></td>'
                 )
             elif status in ("no_predictions", "done", "failed"):
@@ -402,9 +527,11 @@ def _render_scoring(scores: dict, events: dict) -> str:
 
 # ── main render ───────────────────────────────────────────────────────────────
 
-def render(data_dir: Path, output_path: Path):
+def render(data_dir: Path, output_path: Path,
+           config: ScoringConfig = SCORING_CONFIG):
     d = load_atlas_data(data_dir)
     events, sources, cells, polymarket = d["events"], d["sources"], d["cells"], d["polymarket"]
+    vault_urls = d["vault_urls"]
     search_status = load_search_status(data_dir)
 
     total_articles = sum(len(v) for v in cells.values())
@@ -432,6 +559,9 @@ def render(data_dir: Path, output_path: Path):
             })
         matrix_rows.append(row)
 
+    # ── competitive scoring ──
+    competitive_scores = compute_competitive_scores(cells, events, config)
+
     # ── chart + predictions data ──
     chart_data = {}
     all_preds = []
@@ -440,7 +570,7 @@ def render(data_dir: Path, output_path: Path):
         ev = events.get(eid)
         if not ev:
             continue
-        series = build_timeseries(cells, events, eid)
+        series = build_timeseries(cells, events, eid, vault_urls)
         outcome_dt = datetime.strptime(ev["outcome_date"], "%Y-%m-%d")
 
         pm_series = []
@@ -483,6 +613,7 @@ def render(data_dir: Path, output_path: Path):
                     "quote": pt["quote"],
                     "claim": pt["claim"],
                     "headline": pt["headline"],
+                    "url": pt["url"],
                 })
 
     all_preds.sort(key=lambda x: (x["eid"], x["days_before"]))
@@ -501,7 +632,7 @@ def render(data_dir: Path, output_path: Path):
         stats_cells=len(cells),
         stats_pm=len(polymarket),
         run_date=datetime.now().strftime("%Y-%m-%d %H:%M"),
-        matrix_html=_render_matrix(matrix_rows, search_status),
+        matrix_html=_render_matrix(matrix_rows, search_status, competitive_scores),
         event_sections_html=_render_event_sections(MVP_EVENTS, events, polymarket),
         scoring_html=scoring_html,
         event_nav_links=''.join(
