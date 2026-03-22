@@ -23,9 +23,10 @@ class SearchMode(str, Enum):
     api = "api"
 
 class Orchestrator:
-    def __init__(self, data_dir: Path, mode: SearchMode = SearchMode.mock):
+    def __init__(self, data_dir: Path, mode: SearchMode = SearchMode.mock, force_reextract: bool = False):
         self.data_dir = data_dir
         self.mode = mode
+        self.force_reextract = force_reextract
         from .config import settings
         _vault_default = str(settings.vault_dir) if settings.vault_dir != Path("") else str(data_dir / "vault2")
         self.vault_dir = Path(os.environ.get("VAULT_DIR", _vault_default))
@@ -161,9 +162,11 @@ class Orchestrator:
         model_v = "v1" 
         extract_path = self.vault_dir / "extractions" / f"{art_hash}_{event['id']}_{model_v}.json"
         
-        if extract_path.exists():
+        if extract_path.exists() and not self.force_reextract:
             self.create_atlas_link(event["id"], source["id"], art_hash, extract_path, raw_art, event.get("outcome_date", ""))
             return
+        elif extract_path.exists() and self.force_reextract:
+            console.print(f"    [yellow]--force-reextract: re-running LLM for {art_hash[:8]}[/yellow]")
 
         article_input = ArticleInput(
             text=text,
@@ -219,25 +222,35 @@ class Orchestrator:
 
 async def main():
     import sys
-    mode = SearchMode.mock
-    if len(sys.argv) > 1:
-        mode = SearchMode(sys.argv[1])
+    import argparse
 
-    console.print(f"[bold green]Starting TruthMachine Orchestrator in {mode.value} mode...[/bold green]")
+    parser = argparse.ArgumentParser(description="TruthMachine Orchestrator")
+    parser.add_argument("mode", nargs="?", default="mock",
+                        choices=["mock", "local_file", "api"],
+                        help="Search mode (default: mock)")
+    parser.add_argument("--force-reextract", action="store_true",
+                        help="Ignore vault cache and re-run LLM extraction for all articles. "
+                             "Use after updating the extractor prompt.")
+    parser.add_argument("--events", nargs="+", default=None,
+                        help="Specific event IDs to process (default: all in data/events/)")
+    args = parser.parse_args()
+
+    mode = SearchMode(args.mode)
     data_dir = Path(os.environ.get("DATA_DIR", "/app/data"))
-    orch = Orchestrator(data_dir, mode=mode)
 
-    events = [
-        "C05", "C06", "C07", "C08", "C09",                           # Iran / Regional
-        "B01", "B02", "B03", "B04", "B05", "B06", "B07",             # Gaza (early)
-        "B08", "B09", "B10", "B11", "B12", "B13",                    # Gaza (late)
-        "A04", "A12", "A13", "A14", "A15", "A19",                    # Israeli Politics
-        "D02", "D03",                                                  # Economy
-        "E07", "E08",                                                  # Global
-        "G02", "G05", "G06",                                          # Tech / AI
-        "F04", "F05",                                                  # Society
-    ]
+    console.print(f"[bold green]TruthMachine Orchestrator — {mode.value} mode[/bold green]")
+    if args.force_reextract:
+        console.print("[yellow]--force-reextract: vault cache will be ignored[/yellow]")
 
+    orch = Orchestrator(data_dir, mode=mode, force_reextract=args.force_reextract)
+
+    # Auto-discover events from data/events/ or use CLI filter
+    if args.events:
+        events = args.events
+    else:
+        events = sorted(p.stem for p in (data_dir / "events").glob("*.json"))
+
+    console.print(f"Processing {len(events)} events...")
     for eid in events:
         await orch.run_event(eid)
 

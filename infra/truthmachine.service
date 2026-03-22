@@ -1,0 +1,17 @@
+[Unit]
+Description=TruthMachine Pipeline Loop
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/truthmachine
+ExecStart=/bin/bash /home/ubuntu/truthmachine/infra/ec2_run.sh
+Restart=always
+RestartSec=30
+StandardOutput=append:/home/ubuntu/truthmachine/pipeline_log.txt
+StandardError=append:/home/ubuntu/truthmachine/pipeline_log.txt
+
+[Install]
+WantedBy=multi-user.target
