@@ -59,12 +59,12 @@ SOURCES = {sid: cfg["domain"] for sid, cfg in SOURCES_CONFIG.items()}
 
 MVP_EVENTS = [
     "C05", "C06", "C07", "C08", "C09",
-    "B04", "B08", "B09", "B10", "B11", "B13",
+    "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B09", "B10", "B11", "B12", "B13",
     "A04", "A12", "A13", "A14", "A15", "A19",
     "D02", "D03",
     "E07", "E08",
     "G02", "G05", "G06",
-    "F05",
+    "F04", "F05",
 ]
 
 HEADERS = {
