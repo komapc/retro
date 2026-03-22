@@ -143,6 +143,17 @@ resource "aws_instance" "openclaw" {
   }
 }
 
+# --- TruthMachine pipeline secrets (referenced by ec2_bootstrap.sh) ---
+# These must be created manually before running bootstrap:
+#   aws secretsmanager create-secret --region eu-central-1 \
+#     --name openclaw/github-pat \
+#     --secret-string "ghp_YOUR_TOKEN_HERE"
+#
+# Required secrets:
+#   openclaw/openrouter-api-key  — LLM inference via OpenRouter
+#   openclaw/brave-api-key       — Brave Search API (optional, DDG fallback)
+#   openclaw/github-pat          — GitHub PAT (repo scope) for atlas push
+
 resource "aws_eip" "openclaw" {
   instance = aws_instance.openclaw.id
   domain   = "vpc"
