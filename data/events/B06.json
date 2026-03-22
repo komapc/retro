@@ -1,0 +1,15 @@
+{
+  "id": "B06",
+  "name": "Fighting resumes after first deal pause",
+  "outcome": true,
+  "outcome_date": "2023-12-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "חידוש הלחימה עזה הפסקת אש",
+    "פקיעת הפסקת אש עזה",
+    "Gaza fighting resumes ceasefire end",
+    "Gaza truce expires December 2023",
+    "Israel Hamas ceasefire collapse"
+  ],
+  "llm_referee_criteria": "B"
+}

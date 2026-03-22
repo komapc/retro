@@ -1,0 +1,15 @@
+{
+  "id": "B01",
+  "name": "Hamas launches mass surprise attack (Oct 7)",
+  "outcome": true,
+  "outcome_date": "2023-10-07",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "חמאס תקיפה ישראל הפתעה",
+    "מתקפה עוטף עזה",
+    "Hamas attack Israel surprise",
+    "Gaza border attack Israel",
+    "Hamas escalation October 2023"
+  ],
+  "llm_referee_criteria": "B, C"
+}

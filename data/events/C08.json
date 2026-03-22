@@ -1,0 +1,14 @@
+{
+  "id": "C08",
+  "name": "Lebanon ceasefire agreement reached",
+  "outcome": true,
+  "outcome_date": "2024-11-27",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "הפסקת אש לבנון ישראל",
+    "הסכם לבנון חיזבאללה",
+    "הפסקת אש בלבנון",
+    "Lebanon ceasefire 2024"
+  ],
+  "llm_referee_criteria": "Must focus on the Nov 27 effective date."
+}

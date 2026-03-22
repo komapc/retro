@@ -1,0 +1,15 @@
+{
+  "id": "F05",
+  "name": "Ultra-orthodox draft evasion ruling by Supreme Court",
+  "outcome": true,
+  "outcome_date": "2024-06-25",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "גיוס חרדים בג\"ץ פסיקה",
+    "דחיית גיוס בית משפט עליון",
+    "Israel ultra-orthodox draft exemption court",
+    "Haredi military service Supreme Court",
+    "IDF ultra-orthodox conscription ruling"
+  ],
+  "llm_referee_criteria": "F, A"
+}

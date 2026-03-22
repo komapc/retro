@@ -1,0 +1,12 @@
+{
+  "id": "A12",
+  "name": "Supreme Court strikes down reasonableness clause",
+  "outcome": true,
+  "outcome_date": "2024-01-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "\u05d1\u05d2\\\"\u05e5 \u05d1\u05d9\u05d8\u05d5\u05dc \u05e2\u05d9\u05dc\u05ea \u05d4\u05e1\u05d1\u05d9\u05e8\u05d5\u05ea",
+    "Court strikes down reasonableness"
+  ],
+  "llm_referee_criteria": "Must focus on the Jan 1 historic 8-7 ruling."
+}

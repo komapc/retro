@@ -1,0 +1,15 @@
+{
+  "id": "B05",
+  "name": "First phase hostage releases completed",
+  "outcome": true,
+  "outcome_date": "2023-11-30",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "שחרור חטופים עסקה ראשונה",
+    "הפסקת אש עזה חטופים",
+    "hostage release Gaza deal November",
+    "Gaza ceasefire hostage deal",
+    "Hamas hostage exchange Qatar"
+  ],
+  "llm_referee_criteria": "B"
+}

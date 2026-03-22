@@ -1,0 +1,13 @@
+{
+  "id": "walla",
+  "name": "Walla News",
+  "url": "https://news.walla.co.il",
+  "country": "IL",
+  "language": "he",
+  "type": "newspaper",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": ""
+}

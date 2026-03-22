@@ -1,0 +1,15 @@
+{
+  "id": "B12",
+  "name": "Hamas operational after 1 year (Oct 7, 2024)",
+  "outcome": true,
+  "outcome_date": "2024-10-07",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "חמאס שנה לחימה עזה",
+    "שנה למלחמה עזה",
+    "Hamas one year October 7 anniversary",
+    "Gaza war anniversary Hamas fighting",
+    "Hamas operational year Gaza"
+  ],
+  "llm_referee_criteria": "B"
+}

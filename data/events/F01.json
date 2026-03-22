@@ -1,0 +1,11 @@
+{
+  "id": "F01",
+  "name": "Judicial reform protest movement reaches 100K+ weekly",
+  "outcome": true,
+  "outcome_date": "2023-02-11",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "Must cite crowd estimates of 100K+ in a single event."
+  ],
+  "llm_referee_criteria": "F, A"
+}

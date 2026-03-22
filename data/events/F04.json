@@ -1,0 +1,15 @@
+{
+  "id": "F04",
+  "name": "Israel-diaspora relations crisis over Kotel agreement cancellation",
+  "outcome": true,
+  "outcome_date": "2023-07-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "כותל הסכם ביטול",
+    "רפורמים כותל ישראל",
+    "Kotel agreement cancelled diaspora Israel",
+    "Western Wall deal cancellation Reform",
+    "Israel diaspora relations Kotel crisis"
+  ],
+  "llm_referee_criteria": "F, A"
+}

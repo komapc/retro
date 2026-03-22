@@ -1,0 +1,12 @@
+{
+  "id": "G03",
+  "name": "Nvidia market cap exceeds $1 trillion USD",
+  "outcome": true,
+  "outcome_date": "2023-05-30",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "\u05d0\u05e0\u05d1\u05d9\u05d3\u05d9\u05d4 \u05d8\u05e8\u05d9\u05dc\u05d9\u05d5\u05df \u05d3\u05d5\u05dc\u05e8",
+    "Nvidia 1 trillion market cap"
+  ],
+  "llm_referee_criteria": "Must focus on the May 30 valuation milestone."
+}

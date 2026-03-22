@@ -1,0 +1,13 @@
+{
+  "id": "toi",
+  "name": "Times of Israel",
+  "url": "https://www.timesofisrael.com",
+  "country": "IL",
+  "language": "en",
+  "type": "newspaper",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "English-language Israeli outlet"
+}

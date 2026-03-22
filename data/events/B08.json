@@ -1,0 +1,15 @@
+{
+  "id": "B08",
+  "name": "IDF begins Rafah ground operation",
+  "outcome": true,
+  "outcome_date": "2024-05-07",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "מבצע רפיח כניסה קרקעית",
+    "צה\"ל רפיח עזה",
+    "IDF Rafah ground operation May",
+    "Israel Rafah offensive ground troops",
+    "Rafah invasion IDF operation"
+  ],
+  "llm_referee_criteria": "B, E"
+}

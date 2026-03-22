@@ -1,0 +1,15 @@
+{
+  "id": "B10",
+  "name": "Sinwar killed in Gaza",
+  "outcome": true,
+  "outcome_date": "2024-10-16",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "סינוואר נהרג עזה",
+    "מפקד חמאס נהרג",
+    "Sinwar killed Gaza",
+    "Yahya Sinwar death",
+    "Hamas leader Gaza strike"
+  ],
+  "llm_referee_criteria": "B"
+}

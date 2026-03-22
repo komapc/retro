@@ -1,0 +1,13 @@
+{
+  "id": "G06",
+  "name": "EU AI Act formally adopted",
+  "outcome": true,
+  "outcome_date": "2024-03-13",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "EU AI Act vote adopted",
+    "European AI regulation law passed",
+    "EU artificial intelligence law"
+  ],
+  "llm_referee_criteria": "Must focus on the European Parliament vote on March 13."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "B09",
+  "name": "Haniyeh assassinated in Tehran",
+  "outcome": true,
+  "outcome_date": "2024-07-31",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "הנייה נרצח טהרן",
+    "חמאס מנהיג איראן",
+    "Haniyeh Tehran ceasefire Hamas",
+    "Hamas leader Iran talks",
+    "Israel Hamas escalation retaliation"
+  ],
+  "llm_referee_criteria": "B, C"
+}

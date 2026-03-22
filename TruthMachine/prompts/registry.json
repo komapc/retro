@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "prompts": {
+    "gatekeeper_v1": {
+      "file": "01_gatekeeper.md",
+      "model": "google/gemini-2.0-flash-lite-001",
+      "description": "Standard prediction filter"
+    },
+    "extract_v1": {
+      "file": "02_forensic_extraction.md",
+      "model": "deepseek/deepseek-chat",
+      "description": "OSNC forensic vector extraction"
+    },
+    "consensus_v1": {
+      "file": "03_consensus_meter.md",
+      "model": "deepseek/deepseek-reasoner",
+      "description": "Contrarianism and Alpha calculation"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "C05",
+  "name": "Iran launches direct missile attack on Israel",
+  "outcome": true,
+  "outcome_date": "2024-04-14",
+  "predictive_window_days": 7,
+  "search_keywords": [
+    "איראן תקיפה ישראל",
+    "מתקפה איראנית ישראל",
+    "מתקפה איראנית ישירה",
+    "Iran missile attack Israel",
+    "retaliation odds",
+    "April escalation"
+  ],
+  "llm_referee_criteria": "Must focus on the April 14 multi-drone/missile barrage."
+}

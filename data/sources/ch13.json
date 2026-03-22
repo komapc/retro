@@ -1,0 +1,13 @@
+{
+  "id": "ch13",
+  "name": "Channel 13 News",
+  "url": "https://13tv.co.il",
+  "country": "IL",
+  "language": "he",
+  "type": "tv",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": ""
+}

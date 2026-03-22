@@ -1,0 +1,12 @@
+{
+  "id": "D06",
+  "name": "Israeli unemployment reaches 4.5%+ during war",
+  "outcome": true,
+  "outcome_date": "2024-01-15",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "\u05d0\u05d1\u05d8\u05dc\u05d4 \u05d9\u05e9\u05e8\u05d0\u05dc \u05de\u05dc\u05d7\u05de\u05d4",
+    "Israel unemployment war spike"
+  ],
+  "llm_referee_criteria": "Must focus on official CBS data showing spike above 4.5%."
+}

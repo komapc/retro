@@ -1,0 +1,11 @@
+{
+  "id": "F02",
+  "name": "Israeli Arab MK joins coalition (Ra'am)",
+  "outcome": true,
+  "outcome_date": "2021-06-13",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "Must confirm Ra'am's formal entry into the 36th government."
+  ],
+  "llm_referee_criteria": "F, A"
+}

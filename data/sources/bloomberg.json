@@ -1,0 +1,13 @@
+{
+  "id": "bloomberg",
+  "name": "Bloomberg",
+  "url": "https://www.bloomberg.com",
+  "country": "US",
+  "language": "en",
+  "type": "financial_news",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": ""
+}

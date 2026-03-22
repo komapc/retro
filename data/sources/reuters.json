@@ -1,0 +1,13 @@
+{
+  "id": "reuters",
+  "name": "Reuters",
+  "url": "https://www.reuters.com",
+  "country": "GB",
+  "language": "en",
+  "type": "wire",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "Wire service; strong Middle East desk"
+}

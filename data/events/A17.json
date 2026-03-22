@@ -1,0 +1,12 @@
+{
+  "id": "A17",
+  "name": "Budget 2024 passes Knesset",
+  "outcome": true,
+  "outcome_date": "2024-03-13",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "\u05ea\u05e7\u05e6\u05d9\u05d1 2024 \u05e2\u05d1\u05e8",
+    "Israel budget 2024 passed"
+  ],
+  "llm_referee_criteria": "Must discuss the March 13 legislative approval."
+}

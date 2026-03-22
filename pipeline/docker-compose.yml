@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  truthmachine-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: truthmachine-pipeline
+    volumes:
+      - .:/app
+      - ../data:/app/data
+    env_file:
+      - .env
+    network_mode: host # Allows access to local LiteLLM proxy if running

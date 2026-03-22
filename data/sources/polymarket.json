@@ -1,0 +1,13 @@
+{
+  "id": "polymarket",
+  "name": "Polymarket",
+  "url": "https://polymarket.com",
+  "country": "US",
+  "language": "en",
+  "type": "prediction_market",
+  "api_provider": "gamma-api.polymarket.com",
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "Auxiliary data only \u2014 not scored. Provides polymarket_prob per prediction where market exists. NULL expected for ~70% of Israeli events."
+}

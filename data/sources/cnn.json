@@ -1,0 +1,13 @@
+{
+  "id": "cnn",
+  "name": "CNN",
+  "url": "https://www.cnn.com",
+  "country": "US",
+  "language": "en",
+  "type": "tv",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": ""
+}

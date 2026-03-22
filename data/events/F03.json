@@ -1,0 +1,11 @@
+{
+  "id": "F03",
+  "name": "Mass emigration wave reported post-Oct 7 (yerida spike)",
+  "outcome": true,
+  "outcome_date": "2024-03-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "Must cite official CBS or airport data showing spike."
+  ],
+  "llm_referee_criteria": "F, B"
+}
