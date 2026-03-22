@@ -1,12 +1,15 @@
 """
-Google News RSS + DDG batch ingestor — no API keys, no rate limits.
+Google News RSS + Brave/DDG batch ingestor.
 
 Step 1: Query Google News RSS with date operators to find article titles
         from the event's predictive window.
-Step 2: Resolve each title to a real URL via DuckDuckGo site-search.
-Step 3: Scrape full article text and save to data/raw_ingest/.
+Step 2: Resolve each title to a real URL via Brave Search API (primary)
+        or DuckDuckGo (fallback if no BRAVE_API_KEY).
+Step 3: Scrape full article text via trafilatura (primary) with
+        BeautifulSoup fallback, and save to data/raw_ingest/.
 
-Sources: toi, jpost, haaretz, reuters, globes
+Sources: toi, jpost, haaretz, reuters, globes, ynet, israel_hayom,
+         walla, n12, maariv, ch13, ch14, kan11  (Hebrew sources included)
 
 Usage:
     DATA_DIR=/path/to/data uv run python -m tm.gnews_ingest
@@ -25,6 +28,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 
 import httpx
+import trafilatura
 from bs4 import BeautifulSoup
 from ddgs import DDGS
 from rich.console import Console
@@ -39,6 +43,7 @@ GNEWS_BASE = "https://news.google.com/rss/search"
 # lang="en" → ASCII keyword, en-US GNews params
 # lang="he" → first Hebrew keyword, iw-IL GNews params
 SOURCES_CONFIG: Dict[str, Dict] = {
+    # English sources
     "toi":          {"domain": "timesofisrael.com",  "lang": "en"},
     "jpost":        {"domain": "jpost.com",          "lang": "en"},
     "haaretz":      {"domain": "haaretz.com",        "lang": "en"},
@@ -46,8 +51,13 @@ SOURCES_CONFIG: Dict[str, Dict] = {
     "globes":       {"domain": "en.globes.co.il",    "lang": "en"},
     "ynet":         {"domain": "ynetnews.com",       "lang": "en"},
     "israel_hayom": {"domain": "israelhayom.com",    "lang": "en"},
-    "walla":        {"domain": "walla.co.il",        "lang": "he"},
+    # Hebrew-native sources
+    "walla":        {"domain": "news.walla.co.il",   "lang": "he"},
     "haaretz_he":   {"domain": "www.haaretz.co.il",  "lang": "he"},  # Hebrew edition — less paywalled than haaretz.com
+    "n12":          {"domain": "www.mako.co.il",     "lang": "he"},
+    "maariv":       {"domain": "www.maariv.co.il",   "lang": "he"},
+    "ch13":         {"domain": "13tv.co.il",         "lang": "he"},
+    "kan11":        {"domain": "www.kan.org.il",     "lang": "he"},
 }
 
 GNEWS_LOCALE = {
@@ -79,6 +89,9 @@ HEADERS = {
 
 _DDG_LAST_CALL: float = 0.0
 DDG_MIN_INTERVAL = 2.0  # seconds between DDG calls
+
+BRAVE_API_KEY: Optional[str] = os.environ.get("BRAVE_API_KEY")
+BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search"
 
 
 def _is_ascii(s: str) -> bool:
@@ -209,15 +222,79 @@ def _url_date(url: str) -> Optional[datetime]:
     return None
 
 
+def _filter_url(href: str, domain: str, expected_date: Optional[datetime]) -> bool:
+    """Return True if the URL is a valid article candidate."""
+    _BAD_PATHS = ("/authors/", "/author/", "/topics/", "/tag/", "/category/",
+                  "/section/", "/search/", "/video/")
+    if domain not in href:
+        return False
+    if any(p in href for p in _BAD_PATHS):
+        return False
+    if expected_date:
+        url_dt = _url_date(href)
+        if url_dt and abs((url_dt - expected_date).days) > 30:
+            return False
+    return True
+
+
+def resolve_url_via_brave(
+    title: str, domain: str, expected_date: Optional[datetime] = None
+) -> Optional[str]:
+    """Resolve article URL using Brave Search API (no rate limiting, higher quality)."""
+    if not BRAVE_API_KEY:
+        return None
+    query = f'site:{domain} {title[:80]}'
+    try:
+        r = httpx.get(
+            BRAVE_SEARCH_URL,
+            params={"q": query, "count": 5, "search_lang": "en"},
+            headers={"Accept": "application/json", "X-Subscription-Token": BRAVE_API_KEY},
+            timeout=10,
+        )
+        if r.status_code != 200:
+            return None
+        results = r.json().get("web", {}).get("results", [])
+        for res in results:
+            href = res.get("url", "")
+            if _filter_url(href, domain, expected_date):
+                return href
+    except Exception as e:
+        console.print(f"    [dim red]Brave error: {e}[/dim red]")
+    return None
+
+
+def resolve_url_via_ddg(
+    title: str, domain: str, expected_date: Optional[datetime] = None
+) -> Optional[str]:
+    """Fallback: resolve article URL via DuckDuckGo (rate-limited, free)."""
+    global _DDG_LAST_CALL
+    elapsed = time.time() - _DDG_LAST_CALL
+    if elapsed < DDG_MIN_INTERVAL:
+        time.sleep(DDG_MIN_INTERVAL - elapsed)
+    query = f'site:{domain} "{title[:60]}"'
+    try:
+        with DDGS() as d:
+            results = list(d.text(query, max_results=5))
+        _DDG_LAST_CALL = time.time()
+        for r in results:
+            href = r.get("href", "")
+            if _filter_url(href, domain, expected_date):
+                return href
+    except Exception as e:
+        console.print(f"    [dim red]DDG error: {e}[/dim red]")
+        _DDG_LAST_CALL = time.time()
+    return None
+
+
 def resolve_url(
     title: str, domain: str, expected_date: Optional[datetime] = None
 ) -> Optional[str]:
     """
-    Find the real article URL. Tries:
-      1. Construct URL directly from title slug (fast, works for TOI/JPost)
-      2. DDG site search as fallback
+    Find the real article URL. Tries in order:
+      1. Construct URL directly from title slug (instant, works for TOI)
+      2. Brave Search API (fast, reliable, no rate limits)
+      3. DuckDuckGo (free fallback, rate-limited)
     """
-    # Try direct URL construction first (no network for TOI/JPost)
     direct = _construct_url(title, domain)
     if direct:
         try:
@@ -227,38 +304,30 @@ def resolve_url(
         except Exception:
             pass
 
-    # Fall back to DDG
+    url = resolve_url_via_brave(title, domain, expected_date)
+    if url:
+        return url
+
     return resolve_url_via_ddg(title, domain, expected_date)
 
 
 def resolve_url_via_ddg(
     title: str, domain: str, expected_date: Optional[datetime] = None
 ) -> Optional[str]:
-    """Find the real article URL using DDG title search.
-    Optionally verify that the URL's date is within ±30 days of expected_date."""
+    """Fallback: resolve article URL via DuckDuckGo (rate-limited, free)."""
     global _DDG_LAST_CALL
     elapsed = time.time() - _DDG_LAST_CALL
     if elapsed < DDG_MIN_INTERVAL:
         time.sleep(DDG_MIN_INTERVAL - elapsed)
-
     query = f'site:{domain} "{title[:60]}"'
     try:
         with DDGS() as d:
             results = list(d.text(query, max_results=5))
         _DDG_LAST_CALL = time.time()
-        _BAD_PATHS = ("/authors/", "/author/", "/topics/", "/tag/", "/category/",
-                      "/section/", "/search/", "/video/")
         for r in results:
             href = r.get("href", "")
-            if domain not in href:
-                continue
-            if any(p in href for p in _BAD_PATHS):
-                continue
-            if expected_date:
-                url_dt = _url_date(href)
-                if url_dt and abs((url_dt - expected_date).days) > 30:
-                    continue  # date mismatch — skip
-            return href
+            if _filter_url(href, domain, expected_date):
+                return href
     except Exception as e:
         console.print(f"    [dim red]DDG error: {e}[/dim red]")
         _DDG_LAST_CALL = time.time()
@@ -269,7 +338,16 @@ PAYWALL_THRESHOLD = 500  # chars — below this, try Wayback Machine
 
 
 async def _scrape_html(html: str) -> str:
-    """Extract article body from raw HTML using BeautifulSoup."""
+    """Extract article body: trafilatura primary, BeautifulSoup fallback."""
+    text = trafilatura.extract(
+        html,
+        include_comments=False,
+        include_tables=False,
+        no_fallback=False,
+        favor_precision=False,
+    )
+    if text and len(text) > 300:
+        return text
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(["script", "style", "nav", "footer", "header", "aside", "iframe", "figure"]):
         tag.extract()
@@ -284,11 +362,7 @@ async def _scrape_html(html: str) -> str:
 
 
 async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
-    """
-    Try Wayback Machine for a cached version of a paywalled/blocked URL.
-    Requests https://web.archive.org/web/{url} which auto-redirects to the
-    closest available snapshot — no API needed.
-    """
+    """Try Wayback Machine for a cached copy of a paywalled/blocked URL."""
     try:
         wb_url = f"https://web.archive.org/web/{url}"
         r = await client.get(wb_url, timeout=20, follow_redirects=True)
@@ -303,7 +377,7 @@ async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
 async def fetch_article_text(url: str) -> str:
     """
     Scrape full article text from URL.
-    1. Direct scrape via BeautifulSoup
+    1. trafilatura (primary) + BeautifulSoup fallback
     2. If result < PAYWALL_THRESHOLD chars → try Wayback Machine cached copy
     """
     try:
