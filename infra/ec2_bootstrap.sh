@@ -83,4 +83,14 @@ mkdir -p "$WORKDIR/data/events" \
          "$WORKDIR/data/vault2/extractions" \
          "$WORKDIR/data/atlas"
 
-log "Bootstrap complete. Run: bash $WORKDIR/infra/ec2_run.sh"
+# ── 7. Install systemd service ────────────────────────────────────────────────
+log "Installing systemd service..."
+sudo cp "$WORKDIR/infra/truthmachine.service" /etc/systemd/system/truthmachine.service
+sudo systemctl daemon-reload
+sudo systemctl enable truthmachine
+sudo systemctl start truthmachine
+log "Service status: $(sudo systemctl is-active truthmachine)"
+
+log "Bootstrap complete."
+log "Monitor: sudo journalctl -u truthmachine -f"
+log "Or:      tail -f $WORKDIR/pipeline_log.txt"

@@ -47,6 +47,7 @@ SOURCES_CONFIG: Dict[str, Dict] = {
     "ynet":         {"domain": "ynetnews.com",       "lang": "en"},
     "israel_hayom": {"domain": "israelhayom.com",    "lang": "en"},
     "walla":        {"domain": "walla.co.il",        "lang": "he"},
+    "haaretz_he":   {"domain": "www.haaretz.co.il",  "lang": "he"},  # Hebrew edition — less paywalled than haaretz.com
 }
 
 GNEWS_LOCALE = {
@@ -264,8 +265,47 @@ def resolve_url_via_ddg(
     return None
 
 
+PAYWALL_THRESHOLD = 500  # chars — below this, try Wayback Machine
+
+
+async def _scrape_html(html: str) -> str:
+    """Extract article body from raw HTML using BeautifulSoup."""
+    soup = BeautifulSoup(html, "html.parser")
+    for tag in soup(["script", "style", "nav", "footer", "header", "aside", "iframe", "figure"]):
+        tag.extract()
+    for sel in ["article", "main", ".article-body", ".article-content", ".post-content",
+                '[class*="article"]', '[class*="story"]']:
+        el = soup.select_one(sel)
+        if el:
+            t = el.get_text(separator=" ", strip=True)
+            if len(t) > 300:
+                return t
+    return soup.get_text(separator=" ", strip=True)
+
+
+async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
+    """
+    Try Wayback Machine for a cached version of a paywalled/blocked URL.
+    Requests https://web.archive.org/web/{url} which auto-redirects to the
+    closest available snapshot — no API needed.
+    """
+    try:
+        wb_url = f"https://web.archive.org/web/{url}"
+        r = await client.get(wb_url, timeout=20, follow_redirects=True)
+        if r.status_code != 200:
+            return ""
+        return await _scrape_html(r.text)
+    except Exception as e:
+        console.print(f"    [dim]Wayback failed: {e}[/dim]")
+        return ""
+
+
 async def fetch_article_text(url: str) -> str:
-    """Scrape full article text from URL."""
+    """
+    Scrape full article text from URL.
+    1. Direct scrape via BeautifulSoup
+    2. If result < PAYWALL_THRESHOLD chars → try Wayback Machine cached copy
+    """
     try:
         async with httpx.AsyncClient(
             headers=HEADERS, timeout=25, follow_redirects=True
@@ -273,17 +313,16 @@ async def fetch_article_text(url: str) -> str:
             r = await client.get(url)
             if r.status_code != 200:
                 return ""
-        soup = BeautifulSoup(r.text, "html.parser")
-        for tag in soup(["script", "style", "nav", "footer", "header", "aside", "iframe", "figure"]):
-            tag.extract()
-        for sel in ["article", "main", ".article-body", ".article-content", ".post-content",
-                    '[class*="article"]', '[class*="story"]', '[class*="content"]']:
-            el = soup.select_one(sel)
-            if el:
-                t = el.get_text(separator=" ", strip=True)
-                if len(t) > 300:
-                    return t
-        return soup.get_text(separator=" ", strip=True)
+            text = await _scrape_html(r.text)
+
+            if len(text) < PAYWALL_THRESHOLD:
+                console.print(f"    [dim]Short article ({len(text)} chars), trying Wayback...[/dim]")
+                wb_text = await _fetch_wayback(url, client)
+                if len(wb_text) > len(text):
+                    console.print(f"    [dim green]Wayback: {len(wb_text)} chars[/dim green]")
+                    return wb_text
+
+            return text
     except Exception as e:
         console.print(f"    [dim red]scrape error: {e}[/dim red]")
         return ""
