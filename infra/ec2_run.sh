@@ -10,6 +10,9 @@
 # Stop:     kill $(cat ~/truthmachine/run.pid)
 set -euo pipefail
 
+# Ensure uv is on PATH (not set in non-interactive SSM shells)
+export PATH="$HOME/.local/bin:$PATH"
+
 WORKDIR="$HOME/truthmachine"
 DATA_DIR="$WORKDIR/data"
 PIPELINE_DIR="$WORKDIR/pipeline"

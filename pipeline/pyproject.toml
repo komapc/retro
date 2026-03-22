@@ -15,6 +15,7 @@ dependencies = [
     "lightgbm>=4.0.0",
     "numpy>=1.26.0",
     "beautifulsoup4>=4.14.3",
+    "ddgs>=9.0.0",
 ]
 
 [project.optional-dependencies]
