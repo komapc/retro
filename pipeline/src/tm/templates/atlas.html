@@ -128,9 +128,45 @@
 
     footer {{ text-align: center; color: var(--muted); font-size: 11px;
               margin-top: 48px; padding: 24px 0; border-top: 1px solid var(--border); }}
+
+    /* ── Cell popup modal ── */
+    .popup-overlay {{
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      z-index: 1000; align-items: center; justify-content: center;
+    }}
+    .popup-overlay.open {{ display: flex; }}
+    .popup-box {{
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 20px 24px; max-width: 560px; width: 90%; max-height: 80vh;
+      overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }}
+    .popup-title {{ font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--text); }}
+    .popup-sub   {{ font-size: 11px; color: var(--muted); margin-bottom: 16px; }}
+    .popup-art   {{ padding: 8px 0; border-bottom: 1px solid var(--border); }}
+    .popup-art:last-child {{ border-bottom: none; }}
+    .popup-art a {{ color: #58a6ff; text-decoration: none; font-size: 13px; font-weight: 500; }}
+    .popup-art a:hover {{ text-decoration: underline; }}
+    .popup-art .no-link {{ color: var(--text); font-size: 13px; }}
+    .popup-art .meta {{ font-size: 11px; color: var(--muted); margin-top: 2px; }}
+    .popup-close {{
+      float: right; background: none; border: none; color: var(--muted);
+      font-size: 18px; cursor: pointer; padding: 0 4px; line-height: 1;
+    }}
+    .popup-close:hover {{ color: var(--text); }}
   </style>
 </head>
 <body>
+
+<!-- ── Cell article popup ── -->
+<div class="popup-overlay" id="cellPopup" onclick="if(event.target===this)closeCellPopup()">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closeCellPopup()">&#x2715;</button>
+    <div class="popup-title" id="popupTitle"></div>
+    <div class="popup-sub" id="popupSub"></div>
+    <div id="popupArts"></div>
+  </div>
+</div>
+
 <div class="container">
 
   <header>
@@ -452,6 +488,43 @@ function filterTable() {{
     ) ? '' : 'none';
   }});
 }}
+
+// ── Cell article popup ─────────────────────────────────────────────────────────
+function openCellPopup(td) {{
+  const eid  = td.dataset.eid;
+  const sid  = td.dataset.sid;
+  const arts = JSON.parse(td.dataset.arts || '[]');
+  const srcColors = SOURCE_COLORS;
+  const color = srcColors[sid] || '#888';
+
+  document.getElementById('popupTitle').innerHTML =
+    `<span style="font-family:monospace;color:#58a6ff">${{eid}}</span>
+     &nbsp;/&nbsp;
+     <span style="color:${{color}}">${{sid}}</span>`;
+  document.getElementById('popupSub').textContent =
+    `${{arts.length}} article${{arts.length !== 1 ? 's' : ''}} · click headline to open original`;
+
+  document.getElementById('popupArts').innerHTML = arts.map(a => {{
+    const headline = a.headline || '(no headline)';
+    const headlineEl = a.url
+      ? `<a href="${{a.url}}" target="_blank" rel="noopener">${{headline}}</a>`
+      : `<span class="no-link">${{headline}}</span>`;
+    return `<div class="popup-art">
+      ${{headlineEl}}
+      <div class="meta">${{a.date}} &nbsp;·&nbsp; ${{a.pred_count}} prediction${{a.pred_count !== 1 ? 's' : ''}}</div>
+    </div>`;
+  }}).join('');
+
+  document.getElementById('cellPopup').classList.add('open');
+}}
+
+function closeCellPopup() {{
+  document.getElementById('cellPopup').classList.remove('open');
+}}
+
+document.addEventListener('keydown', e => {{
+  if (e.key === 'Escape') closeCellPopup();
+}});
 </script>
 </body>
 </html>

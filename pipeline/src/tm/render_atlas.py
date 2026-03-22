@@ -321,7 +321,12 @@ def compute_competitive_scores(
 # ── HTML fragments ─────────────────────────────────────────────────────────────
 
 def _render_matrix(matrix_rows: list, search_status: dict,
-                   competitive_scores: Optional[dict] = None) -> str:
+                   competitive_scores: Optional[dict] = None,
+                   cell_articles: Optional[dict] = None) -> str:
+    """
+    cell_articles: {(eid, sid): [{"headline", "url", "date", "pred_count"}]}
+                   Used to populate the article popup on cell click.
+    """
     parts = [
         '<table class="matrix"><thead><tr>',
         '<th class="event-label">Event</th>',
@@ -368,10 +373,14 @@ def _render_matrix(matrix_rows: list, search_status: dict,
                 title = f'{cell["pred_count"]} predictions, avg stance {stance_str}'
                 if comp:
                     title += f', competitive Brier {comp["brier"]:.3f} (skill {comp["skill"]:+.3f})'
-                onclick = f"document.getElementById('event-{eid}').scrollIntoView({{behavior:'smooth'}})"
+                # Build popup article data attribute
+                arts = (cell_articles or {}).get((eid, sid), [])
+                arts_json = json.dumps(arts).replace('"', '&quot;')
                 parts.append(
                     f'<td class="cell has-data" style="background:{bg}"'
-                    f' onclick="{onclick}" title="{title}">'
+                    f' title="{title}"'
+                    f' data-eid="{eid}" data-sid="{sid}" data-arts="{arts_json}"'
+                    f' onclick="openCellPopup(this)">'
                     f'<div class="cell-inner">'
                     f'<span class="cell-count">{cell["article_count"]}</span>'
                     f'<span class="cell-stance">{stance_str}</span>'
@@ -390,6 +399,34 @@ def _render_matrix(matrix_rows: list, search_status: dict,
                 # Never searched
                 parts.append('<td class="cell"><div class="cell-empty">·</div></td>')
 
+        parts.append('</tr>')
+
+    # ── bottom Brier summary row ──
+    if competitive_scores:
+        # Aggregate per source across all events
+        src_scores: dict[str, list] = {}
+        for (eid, sid), s in competitive_scores.items():
+            src_scores.setdefault(sid, []).extend([s["brier"]] * s["n"])
+
+        parts.append(
+            '<tr style="border-top:2px solid #30363d">'
+            '<td class="event-label" style="color:var(--muted);font-size:11px;padding:6px 8px">'
+            'Competitive Brier ↓</td>'
+        )
+        for sid in SOURCES:
+            scores_list = src_scores.get(sid, [])
+            if scores_list:
+                avg = sum(scores_list) / len(scores_list)
+                skill = 1 - avg / 0.25
+                clr = "#3fb950" if skill > 0 else "#f85149"
+                parts.append(
+                    f'<td class="cell" style="text-align:center;padding:6px 2px" '
+                    f'title="avg Brier={avg:.3f}, skill={skill:+.3f}, n={len(scores_list)}">'
+                    f'<span style="color:{clr};font-size:10px;font-weight:700">{avg:.2f}</span>'
+                    f'</td>'
+                )
+            else:
+                parts.append('<td class="cell"><div class="cell-empty">·</div></td>')
         parts.append('</tr>')
 
     parts.append('</tbody></table>')
@@ -540,8 +577,9 @@ def render(data_dir: Path, output_path: Path,
         for v in cells.values()
     )
 
-    # ── matrix rows ──
+    # ── matrix rows + cell article lists for popup ──
     matrix_rows = []
+    cell_articles: dict[tuple, list] = {}
     for eid in MVP_EVENTS:
         ev = events.get(eid)
         if not ev:
@@ -557,6 +595,16 @@ def render(data_dir: Path, output_path: Path,
                 "pred_count": len(stances),
                 "avg_stance": round(sum(stances) / len(stances), 2) if stances else None,
             })
+            if entries:
+                cell_articles[(eid, sid)] = [
+                    {
+                        "headline": e.get("headline", ""),
+                        "url": vault_urls.get(e.get("article_hash", ""), ""),
+                        "date": e.get("article_date", "")[:10],
+                        "pred_count": len(e.get("predictions", [])),
+                    }
+                    for e in entries
+                ]
         matrix_rows.append(row)
 
     # ── competitive scoring ──
@@ -632,7 +680,7 @@ def render(data_dir: Path, output_path: Path,
         stats_cells=len(cells),
         stats_pm=len(polymarket),
         run_date=datetime.now().strftime("%Y-%m-%d %H:%M"),
-        matrix_html=_render_matrix(matrix_rows, search_status, competitive_scores),
+        matrix_html=_render_matrix(matrix_rows, search_status, competitive_scores, cell_articles),
         event_sections_html=_render_event_sections(MVP_EVENTS, events, polymarket),
         scoring_html=scoring_html,
         event_nav_links=''.join(
