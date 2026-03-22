@@ -1,0 +1,14 @@
+{
+  "id": "G07",
+  "name": "GPT-4 released publicly",
+  "outcome": true,
+  "outcome_date": "2023-03-14",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "OpenAI GPT-4 release date",
+    "GPT-4 launch predictions",
+    "next generation language model",
+    "large language model capabilities"
+  ],
+  "llm_referee_criteria": "Must focus on the March 14 public launch."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "D01",
+  "name": "Shekel drops below 4.0 NIS/USD",
+  "outcome": true,
+  "outcome_date": "2023-10-16",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "שער הדולר",
+    "שקל דולר",
+    "ייסוף שקל",
+    "shekel dollar rate",
+    "nis usd exchange rate",
+    "weakening shekel"
+  ],
+  "llm_referee_criteria": "Must focus on the exchange rate milestone."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "A19",
+  "name": "ICC issues arrest warrant for Netanyahu",
+  "outcome": true,
+  "outcome_date": "2024-11-21",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "בית הדין הפלילי הבינלאומי נתניהו",
+    "צו מעצר נתניהו",
+    "האג נתניהו",
+    "ICC arrest warrant Netanyahu",
+    "International Criminal Court Israel",
+    "Netanyahu war crimes investigation"
+  ],
+  "llm_referee_criteria": "Must focus on the official warrant issuance on Nov 21."
+}

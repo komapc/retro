@@ -1,0 +1,13 @@
+{
+  "id": "aljazeera",
+  "name": "Al Jazeera",
+  "url": "https://www.aljazeera.com",
+  "country": "QA",
+  "language": "en",
+  "type": "newspaper",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": ""
+}

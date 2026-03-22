@@ -1,0 +1,16 @@
+{
+  "id": "C01",
+  "name": "JCPOA revival negotiations collapse",
+  "outcome": true,
+  "outcome_date": "2022-09-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "משא ומתן גרעיני",
+    "חזרה להסכם הגרעין",
+    "איראן גרעין",
+    "Iran nuclear deal revival",
+    "JCPOA negotiations",
+    "US Iran relations"
+  ],
+  "llm_referee_criteria": "Must focus on the late 2022 impasse."
+}

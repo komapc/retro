@@ -1,0 +1,16 @@
+{
+  "id": "B03",
+  "name": "IDF ground invasion of Gaza begins",
+  "outcome": true,
+  "outcome_date": "2023-10-27",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "כניסה קרקעית לעזה",
+    "פלישה קרקעית",
+    "עזה הסלמה",
+    "Gaza ground operation",
+    "IDF Gaza incursion",
+    "Gaza escalation"
+  ],
+  "llm_referee_criteria": "B"
+}

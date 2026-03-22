@@ -1,0 +1,16 @@
+{
+  "id": "A03",
+  "name": "Knesset dissolves — Lapid becomes caretaker PM",
+  "outcome": true,
+  "outcome_date": "2022-06-30",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "פיזור הכנסת",
+    "בחירות בזק",
+    "ממשלה חלופית",
+    "coalition instability",
+    "government collapse",
+    "Lapid prime minister"
+  ],
+  "llm_referee_criteria": "Must discuss the bill to dissolve or the transition to Lapid."
+}

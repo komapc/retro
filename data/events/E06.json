@@ -1,0 +1,14 @@
+{
+  "id": "E06",
+  "name": "Trump indicted (first federal indictment)",
+  "outcome": true,
+  "outcome_date": "2023-06-09",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "Trump criminal charges",
+    "Trump indictment",
+    "Trump investigation",
+    "Justice Department probe"
+  ],
+  "llm_referee_criteria": "Must focus on the June 9 federal charges."
+}

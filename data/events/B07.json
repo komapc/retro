@@ -1,0 +1,16 @@
+{
+  "id": "B07",
+  "name": "IDF enters and controls central Khan Yunis",
+  "outcome": true,
+  "outcome_date": "2023-12-05",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "חאן יונס",
+    "מרכז חאן יונס",
+    "כניסת צהל לחאן יונס",
+    "Khan Yunis",
+    "IDF Khan Yunis operation",
+    "Gaza ground offensive"
+  ],
+  "llm_referee_criteria": "B"
+}

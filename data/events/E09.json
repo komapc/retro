@@ -1,0 +1,14 @@
+{
+  "id": "E09",
+  "name": "UK PM Liz Truss resigns after 45 days",
+  "outcome": true,
+  "outcome_date": "2022-10-20",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "Liz Truss leadership challenge",
+    "Truss under pressure",
+    "Conservative party infighting",
+    "UK government crisis"
+  ],
+  "llm_referee_criteria": "Must focus on the Oct 20 resignation announcement."
+}

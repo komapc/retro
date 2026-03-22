@@ -1,0 +1,14 @@
+{
+  "id": "E02",
+  "name": "Ukraine recaptures Kherson city",
+  "outcome": true,
+  "outcome_date": "2022-11-11",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "Kherson counteroffensive",
+    "fighting near Kherson",
+    "Russian troops Kherson",
+    "Ukraine war south"
+  ],
+  "llm_referee_criteria": "Must focus on the Nov 11 Ukrainian flag raising."
+}

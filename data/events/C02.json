@@ -1,0 +1,16 @@
+{
+  "id": "C02",
+  "name": "Mahsa Amini protests erupt in Iran",
+  "outcome": true,
+  "outcome_date": "2022-09-16",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "מחאה איראן",
+    "זכויות נשים איראן",
+    "איראן חיג'אב",
+    "Iran women rights",
+    "Iran morality police",
+    "Iran protests"
+  ],
+  "llm_referee_criteria": "Must focus on the start of the movement in Sept 2022."
+}

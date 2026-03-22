@@ -1,0 +1,16 @@
+{
+  "id": "A13",
+  "name": "Gantz joins emergency war cabinet",
+  "outcome": true,
+  "outcome_date": "2023-10-12",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "ממשלת חירום לאומית",
+    "בני גנץ הצטרף",
+    "אחדות לאומית",
+    "emergency unity government",
+    "Gantz joining government",
+    "Israeli political crisis"
+  ],
+  "llm_referee_criteria": "Must discuss the swearing-in after the Oct 7 attack."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "A15",
+  "name": "Gallant fired as Defense Minister (second time)",
+  "outcome": true,
+  "outcome_date": "2024-11-05",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "פיטורי גלנט",
+    "הדחת גלנט",
+    "נתניהו גלנט",
+    "Gallant dismissal",
+    "Netanyahu Gallant tensions",
+    "Defense Minister crisis"
+  ],
+  "llm_referee_criteria": "Must focus on the Nov 5 dismissal by Netanyahu."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "A01",
+  "name": "Bennett-Lapid coalition sworn in as government",
+  "outcome": true,
+  "outcome_date": "2021-06-13",
+  "predictive_window_days": 30,
+  "search_keywords": [
+    " ממשלת בנט לפיד ",
+    " יאיר לפיד ",
+    " נפתלי בנט ",
+    "Bennett Lapid government formation",
+    "Netanyahu ouster attempts",
+    "Israeli coalition prospects"
+  ],
+  "llm_referee_criteria": "Must discuss the formation of the 36th government."
+}

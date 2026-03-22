@@ -1,0 +1,16 @@
+{
+  "id": "A09",
+  "name": "Reasonableness clause passes final vote",
+  "outcome": true,
+  "outcome_date": "2023-07-24",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "ביטול עילת הסבירות",
+    "חוק הסבירות",
+    "עילת הסבירות",
+    "reasonableness standard",
+    "override clause",
+    "judicial overhaul"
+  ],
+  "llm_referee_criteria": "Must discuss the 64-0 passage on July 24."
+}

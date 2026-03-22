@@ -1,0 +1,13 @@
+{
+  "id": "ch14",
+  "name": "Channel 14 (Now 14)",
+  "url": "https://www.now14.co.il",
+  "country": "IL",
+  "language": "he",
+  "type": "tv",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "Right-leaning; high prediction volume on security/political topics"
+}

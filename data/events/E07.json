@@ -1,0 +1,14 @@
+{
+  "id": "E07",
+  "name": "Trump wins 2024 US presidential election",
+  "outcome": true,
+  "outcome_date": "2024-11-06",
+  "predictive_window_days": 90,
+  "search_keywords": [
+    "Trump campaign",
+    "Trump 2024",
+    "2024 presidential election",
+    "US election polls"
+  ],
+  "llm_referee_criteria": "Must focus on the Nov 6 projection/call of the race."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "A06",
+  "name": "Ben Gvir appointed National Security Minister",
+  "outcome": true,
+  "outcome_date": "2022-12-29",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "איתמר בן גביר השר",
+    "בן גביר ממשלה",
+    "ממשלת נתניהו השישית",
+    "Ben Gvir minister",
+    "Netanyahu coalition negotiations"
+  ],
+  "llm_referee_criteria": "Must confirm appointment as part of government formation."
+}

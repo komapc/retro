@@ -1,0 +1,13 @@
+{
+  "id": "haaretz",
+  "name": "Haaretz",
+  "url": "https://www.haaretz.co.il",
+  "country": "IL",
+  "language": "he",
+  "type": "newspaper",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "Also publishes English edition \u2014 ingest Hebrew for consistency"
+}

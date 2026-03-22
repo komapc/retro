@@ -1,0 +1,16 @@
+{
+  "id": "F04",
+  "name": "Israel-diaspora relations crisis over Kotel agreement cancellation",
+  "outcome": true,
+  "outcome_date": "2023-07-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "הסכם הכותל",
+    "יהדות התפוצות",
+    "קרן היסוד",
+    "Kotel agreement",
+    "diaspora Jewry relations",
+    "Western Wall compromise"
+  ],
+  "llm_referee_criteria": "F, A"
+}

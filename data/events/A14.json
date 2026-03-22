@@ -1,0 +1,16 @@
+{
+  "id": "A14",
+  "name": "Gantz leaves emergency war cabinet",
+  "outcome": true,
+  "outcome_date": "2024-06-09",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "גנץ פרישה מהממשלה",
+    "חילוקי דעות בקבינט המלחמה",
+    "התפטרות גנץ",
+    "Gantz resigns ultimatum",
+    "Israeli war cabinet tensions",
+    "Netanyahu Gantz disagreement"
+  ],
+  "llm_referee_criteria": "Must focus on Gantz's official exit on June 9."
+}

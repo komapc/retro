@@ -1,0 +1,16 @@
+{
+  "id": "C06",
+  "name": "Israel retaliates with strike inside Iran",
+  "outcome": true,
+  "outcome_date": "2024-04-19",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "תקיפה ישראלית באיראן",
+    "איום ישראלי לאיראן",
+    "מלחמה בין ישראל לאיראן",
+    "Israeli strike on Iran",
+    "Israel Iran conflict",
+    "increasing middle east tensions"
+  ],
+  "llm_referee_criteria": "Must focus on the specific April 19 response."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "C04",
+  "name": "Saudi-Iran normalization deal signed (Beijing)",
+  "outcome": true,
+  "outcome_date": "2023-03-10",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "הסכם נורמליזציה איראן סעודיה",
+    "חידוש יחסים איראן סעודיה",
+    "דיאלוג איראני סעודי",
+    "saudi iran detente",
+    "iran saudi rapprochement",
+    "saudi iran talks"
+  ],
+  "llm_referee_criteria": "Must focus on the March 10 signing."
+}

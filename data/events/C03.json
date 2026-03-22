@@ -1,0 +1,16 @@
+{
+  "id": "C03",
+  "name": "Iran confirmed supplying drones to Russia",
+  "outcome": true,
+  "outcome_date": "2022-11-05",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "מלטים איראניים",
+    "רוסיה איראן שיתוף פעולה",
+    "נשק איראני",
+    "iran russia drone cooperation",
+    "iranian drone program",
+    "iranian military aid"
+  ],
+  "llm_referee_criteria": "Must focus on the official confirmation in Nov 2022."
+}

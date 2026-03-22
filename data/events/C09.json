@@ -1,0 +1,16 @@
+{
+  "id": "C09",
+  "name": "Assad regime falls in Syria",
+  "outcome": true,
+  "outcome_date": "2024-12-08",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "סוריה אסד",
+    "נפילת אסד",
+    "סוף שלטון אסד",
+    "Assad regime collapse",
+    "Syria civil war escalation",
+    "Syria regime change"
+  ],
+  "llm_referee_criteria": "Must focus on the Dec 8 total collapse."
+}

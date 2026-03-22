@@ -1,0 +1,16 @@
+{
+  "id": "A11",
+  "name": "Histadrut declares general strike against reform",
+  "outcome": true,
+  "outcome_date": "2023-03-27",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "הסתדרות שביתה כללית",
+    "הסתדרות לרסק את המדינה",
+    "היסטדרות השבתה",
+    "general strike threat",
+    "Histadrut labor action",
+    "judicial reform opposition"
+  ],
+  "llm_referee_criteria": "Must discuss the nationwide shutdown on March 27."
+}

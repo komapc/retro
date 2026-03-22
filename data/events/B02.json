@@ -1,0 +1,16 @@
+{
+  "id": "B02",
+  "name": "Israel formally declares state of war",
+  "outcome": true,
+  "outcome_date": "2023-10-08",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "מלחמה בעזה",
+    "הסלמה בדרום",
+    "עזה הסלמה",
+    "gaza escalation",
+    "israel gaza tensions",
+    "hamas attack threat"
+  ],
+  "llm_referee_criteria": "B, A"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "B12",
+  "name": "Hamas operational after 1 year (Oct 7, 2024)",
+  "outcome": true,
+  "outcome_date": "2024-10-07",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "חמאס מוכן",
+    "עזה הסלמה",
+    "מבצע צבאי בעזה",
+    "gaza military operation",
+    "hamas readiness",
+    "escalation with hamas"
+  ],
+  "llm_referee_criteria": "B"
+}

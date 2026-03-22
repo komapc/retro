@@ -1,0 +1,13 @@
+{
+  "id": "kan11",
+  "name": "Kan 11",
+  "url": "https://www.kan.org.il",
+  "country": "IL",
+  "language": "he",
+  "type": "tv",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "Web articles only in MVP; video ingestion Phase 2"
+}

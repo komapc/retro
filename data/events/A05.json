@@ -1,0 +1,15 @@
+{
+  "id": "A05",
+  "name": "Netanyahu forms new government (6th government)",
+  "outcome": true,
+  "outcome_date": "2022-12-29",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "ממשלת ימין מלא מלא",
+    "איוש משרדי ממשלה",
+    "הסכמים קואליציוניים",
+    "Netanyahu coalition negotiations",
+    "Likud government formation"
+  ],
+  "llm_referee_criteria": "Must discuss the swearing-in of the 37th government."
+}

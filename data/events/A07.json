@@ -1,0 +1,16 @@
+{
+  "id": "A07",
+  "name": "Smotrich West Bank civilian powers transferred",
+  "outcome": true,
+  "outcome_date": "2023-02-23",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "סמכויות אזרחיות",
+    "יהודה ושומרון",
+    "בצלאל סמוטריץ",
+    "civilian authority",
+    "west bank",
+    "smotrich powers"
+  ],
+  "llm_referee_criteria": "Must discuss the specific Feb 23 transfer agreement."
+}

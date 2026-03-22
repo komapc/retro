@@ -15,10 +15,27 @@ Extract ALL predictions — not just explicit forecasts, but also:
 - Vague sentiment that implies an outcome ("things are deteriorating")
 - Predictions hidden between the lines in analysis or sourced commentary
 
+STANCE DEFINITION — this is the most important field:
+  stance measures how strongly the prediction implies the RELATED EVENT will occur.
+  +1.0 = the author is certain the related event WILL happen
+  -1.0 = the author is certain the related event WILL NOT happen
+   0.0 = neutral / genuinely uncertain
+
+  The related event is given below. Ask yourself: does this prediction imply the
+  event is more likely (+) or less likely (-) to happen?
+
+  Example: related event = "Assad regime falls in Syria"
+    "Rebel forces are closing in on Hama" → stance +0.7  (implies Assad will fall)
+    "Assad's army is holding the line"    → stance -0.6  (implies Assad will NOT fall)
+    "The outcome remains uncertain"       → stance  0.0
+
+  Do NOT use stance to indicate whether the outcome is good or bad.
+  Use stance ONLY to indicate whether the prediction points toward the event happening.
+
 For each prediction:
 - quote: exact sentence(s) from the article
 - claim: one-sentence neutral summary in English (even if article is in Hebrew)
-- stance: -1.0 (bearish/negative outcome) to +1.0 (bullish/positive outcome)
+- stance: -1.0 (event will NOT happen) to +1.0 (event WILL happen)
 - sentiment: 0.0 (cold/analytical) to 1.0 (highly charged/alarmed)
 - certainty: 0.0 (very hedged) to 1.0 (absolute confidence)
 - specificity: 0.0 (vague) to 1.0 (precise, named actors, dates, thresholds)
@@ -52,21 +69,21 @@ CRITICAL: Each prediction must be a complete JSON object with ALL of these field
   time_horizon_days (integer or null), prediction_type (one of: "binary"/"continuous"/"range"/"trend"),
   source_authority (float 0-1)
 
-Example prediction object:
+Example — related event: "Assad regime falls in Syria":
 {{
-  "quote": "Iran could launch strikes within 48 hours",
-  "claim": "Iran will launch a military strike on Israel within 48 hours",
-  "stance": -0.8,
-  "sentiment": 0.7,
+  "quote": "Syrian rebel forces pushed close on Tuesday to the major city of Hama",
+  "claim": "Rebel advances toward Hama make Assad's fall increasingly likely",
+  "stance": 0.7,
+  "sentiment": 0.6,
   "certainty": 0.6,
   "specificity": 0.7,
-  "hedge_ratio": 0.3,
-  "conditionality": 0.2,
+  "hedge_ratio": 0.2,
+  "conditionality": 0.1,
   "magnitude": 0.9,
-  "time_horizon": "days",
-  "time_horizon_days": 2,
+  "time_horizon": "weeks",
+  "time_horizon_days": 14,
   "prediction_type": "binary",
-  "source_authority": 0.8
+  "source_authority": 0.6
 }}
 """
 

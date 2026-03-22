@@ -1,0 +1,14 @@
+{
+  "id": "G02",
+  "name": "OpenAI board fires then reinstates Sam Altman",
+  "outcome": true,
+  "outcome_date": "2023-11-22",
+  "predictive_window_days": 5,
+  "search_keywords": [
+    "OpenAI leadership dispute",
+    "Sam Altman stepping down",
+    "OpenAI board concerns",
+    "OpenAI internal conflict"
+  ],
+  "llm_referee_criteria": "Must focus on the Nov 2023 crisis and resolution."
+}

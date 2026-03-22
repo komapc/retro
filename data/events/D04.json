@@ -1,0 +1,16 @@
+{
+  "id": "D04",
+  "name": "Bank of Israel raises interest rate to 4.75%",
+  "outcome": true,
+  "outcome_date": "2023-05-22",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "ריבית בנק ישראל",
+    "העלאת ריבית",
+    "אינפלציה בישראל",
+    "bank of israel interest rate",
+    "interest rate hike",
+    "israel inflation rate"
+  ],
+  "llm_referee_criteria": "Must focus on the May 22 peak rate hike."
+}

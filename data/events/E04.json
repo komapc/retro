@@ -1,0 +1,14 @@
+{
+  "id": "E04",
+  "name": "FTX collapses — SBF arrested",
+  "outcome": true,
+  "outcome_date": "2022-11-11",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "FTX liquidity issues",
+    "Sam Bankman Fried worried",
+    "FTX solvency concerns",
+    "crypto exchange trouble"
+  ],
+  "llm_referee_criteria": "Must focus on the exchange halt and SBF's arrest."
+}

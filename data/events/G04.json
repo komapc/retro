@@ -1,0 +1,13 @@
+{
+  "id": "G04",
+  "name": "Elon Musk completes acquisition of Twitter (X)",
+  "outcome": true,
+  "outcome_date": "2022-10-27",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "Musk Twitter deal",
+    "Elon Musk Twitter",
+    "Twitter acquisition"
+  ],
+  "llm_referee_criteria": "Must focus on the Oct 27 finalization."
+}

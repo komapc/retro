@@ -1,0 +1,16 @@
+{
+  "id": "A12",
+  "name": "Supreme Court strikes down reasonableness clause",
+  "outcome": true,
+  "outcome_date": "2024-01-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "ביטול עילת הסבירות",
+    "חוק עילת הסבירות",
+    "בגץ עילת הסבירות",
+    "reasonableness standard law",
+    "judicial overhaul criticism",
+    "high court override"
+  ],
+  "llm_referee_criteria": "Must focus on the Jan 1 historic 8-7 ruling."
+}

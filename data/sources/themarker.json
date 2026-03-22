@@ -1,0 +1,13 @@
+{
+  "id": "themarker",
+  "name": "The Marker",
+  "url": "https://www.themarker.com",
+  "country": "IL",
+  "language": "he",
+  "type": "financial_news",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "Part of Haaretz group; focused on business/economy"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "B06",
+  "name": "Fighting resumes after first deal pause",
+  "outcome": true,
+  "outcome_date": "2023-12-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "הפסקת אש בסכנה",
+    "חמאס הפרת הסכם",
+    "חידוש הלחימה בעזה",
+    "end of truce",
+    "imminent conflict resumption"
+  ],
+  "llm_referee_criteria": "B"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "D06",
+  "name": "Israeli unemployment reaches 4.5%+ during war",
+  "outcome": true,
+  "outcome_date": "2024-01-15",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "אבטלה בישראל",
+    "מלחמת חרבות ברזל השפעה כלכלית",
+    "מלחמת עזה השפעה תעסוקה",
+    "israel unemployment rate forecast",
+    "economic impact gaza conflict",
+    "israel war job losses"
+  ],
+  "llm_referee_criteria": "Must focus on official CBS data showing spike above 4.5%."
+}

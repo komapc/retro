@@ -1,0 +1,14 @@
+{
+  "id": "E03",
+  "name": "US midterm elections — Democrats retain Senate",
+  "outcome": true,
+  "outcome_date": "2022-11-12",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "Senate race predictions",
+    "battle for the Senate",
+    "midterm election forecast",
+    "2022 midterm polls"
+  ],
+  "llm_referee_criteria": "Must focus on final Senate majority determination."
+}

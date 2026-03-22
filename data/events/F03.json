@@ -1,0 +1,16 @@
+{
+  "id": "F03",
+  "name": "Mass emigration wave reported post-Oct 7 (yerida spike)",
+  "outcome": true,
+  "outcome_date": "2024-03-01",
+  "predictive_window_days": 14,
+  "search_keywords": [
+    "עזיבת ישראלים",
+    "בריחת מוחות מישראל",
+    "רילוקיישן מישראל",
+    "israeli expatriation",
+    "aliyah decline",
+    "brain drain israel"
+  ],
+  "llm_referee_criteria": "F, B"
+}
