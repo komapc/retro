@@ -78,7 +78,8 @@ class Orchestrator:
             with open(source_file, "r") as f:
                 source = json.load(f)
             
-            if source["id"] not in ["ynet", "haaretz", "toi", "globes", "reuters", "jpost"]:
+            if source["id"] not in ["ynet", "haaretz", "toi", "globes", "reuters", "jpost",
+                                    "israel_hayom", "walla"]:
                 continue
 
             state = load_state()
@@ -226,15 +227,15 @@ async def main():
     data_dir = Path(os.environ.get("DATA_DIR", "/app/data"))
     orch = Orchestrator(data_dir, mode=mode)
 
-    # 25 events with likely Polymarket coverage across all domains
     events = [
-        "C05", "C06", "C07", "C08", "C09",          # Iran / Regional
-        "B04", "B08", "B09", "B10", "B11", "B13",   # Gaza
-        "A04", "A12", "A13", "A14", "A15", "A19",   # Israeli Politics
-        "D02", "D03",                                 # Economy
-        "E07", "E08",                                 # Global
-        "G02", "G05", "G06",                         # Tech / AI
-        "F05",                                        # Society
+        "C05", "C06", "C07", "C08", "C09",                           # Iran / Regional
+        "B01", "B02", "B03", "B04", "B05", "B06", "B07",             # Gaza (early)
+        "B08", "B09", "B10", "B11", "B12", "B13",                    # Gaza (late)
+        "A04", "A12", "A13", "A14", "A15", "A19",                    # Israeli Politics
+        "D02", "D03",                                                  # Economy
+        "E07", "E08",                                                  # Global
+        "G02", "G05", "G06",                                          # Tech / AI
+        "F04", "F05",                                                  # Society
     ]
 
     for eid in events:
