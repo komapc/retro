@@ -292,3 +292,153 @@ The mathematician/data engineer leads this track. Existing prototype: `backtest.
 ---
 
 *This plan is a living document. Update after each monthly review.*
+
+---
+
+---
+
+# Phase 2 — Worldwide Expansion ($1,000,000 budget, Months 7–18)
+
+**Trigger:** Phase 1 complete — ME retro live, Daatan Forecast on Android, traction proven.
+**Goal:** Global coverage (5 regions), 10M MAU, B2B revenue stream open, Series A ready.
+**Budget:** $1,000,000
+**Team:** Grow from 3 to ~10 people.
+
+---
+
+## Budget Allocation
+
+| Category | Amount | % |
+|---|---|---|
+| Personnel (scale team to ~10) | $580,000 | 58% |
+| Global content acquisition | $80,000 | 8% |
+| Campaigns & growth marketing | $150,000 | 15% |
+| Cloud infrastructure (global scale) | $60,000 | 6% |
+| Translation infrastructure | $40,000 | 4% |
+| Legal / IP (international) | $40,000 | 4% |
+| B2B product development | $30,000 | 3% |
+| Data feeds (global markets) | $20,000 | 2% |
+| **Total** | **$1,000,000** | **100%** |
+
+---
+
+## Team Expansion (Months 7–18)
+
+| Role | Start | Salary (NIS/mo) | Rationale |
+|---|---|---|---|
+| Mathematician / data engineer (already hired) | Month 4 | 20,000 | TruthMachine |
+| Backend engineer #2 | Month 7 | 30,000 | API scale + B2B integrations |
+| Mobile developer (Android + iOS) | Month 8 | 30,000 | iOS launch, global app stores |
+| Growth / community manager | Month 8 | 20,000 | Campaign execution |
+| Data researcher (global events) | Month 9 | 22,000 | Expand event matrix beyond ME |
+| Arabic / Turkish content specialist | Month 9 | 20,000 | Translation QA + source expansion |
+| B2B sales / partnerships | Month 10 | 25,000 + commission | Enterprise deals |
+| DevOps / infrastructure | Month 10 | 30,000 | Multi-region AWS |
+| **Total monthly at full team (Mo 12+)** | | **~₪197,000 (~$53,000/mo)** | |
+
+---
+
+## Month 7–8 — iOS + Europe Launch
+
+**Theme: Double the platform. Enter a second geography.**
+
+- [ ] Launch iOS app (App Store) — same feature set as Android
+- [ ] Choose second geography: **Europe** (Ukraine/Russia conflict coverage) or **Latin America** (Venezuela, Brazil elections)
+- [ ] Begin Europe/LATAM event matrix: 50 events × 50 sources as pilot
+- [ ] Hire backend engineer #2 and mobile developer
+- [ ] Growth budget: $20,000 — targeted social ads (Meta, X) in target geographies
+- [ ] B2B: first paid pilot agreement with a think tank or news organization (~$10k deal)
+- [ ] TruthMachine v2: retrain on global data, add region as a feature
+
+**Deliverable:** iOS live · Second region pipeline running · First B2B revenue
+
+---
+
+## Month 9–10 — Three Regions + B2B Product
+
+**Theme: Prove the model scales beyond the Middle East.**
+
+- [ ] Add third region: **East Asia** (Taiwan, Korea, China — high Polymarket signal density)
+- [ ] 100×100 matrix per region — standardize event taxonomy globally
+- [ ] Launch B2B product: white-label forecast widget, API access, custom matrix exports
+- [ ] B2B pricing: $15,000–50,000/year depending on region and data volume
+- [ ] Target 5 B2B clients signed by Month 10
+- [ ] Arabic RTL + Turkish localization fully polished
+- [ ] Campaign: $30,000 — influencer partnerships in ME + Europe political analysis communities
+- [ ] Milestone: **1,000,000 MAU**
+
+**Deliverable:** 3 regions live · B2B product launched · 5 clients · 1M MAU
+
+---
+
+## Month 11–12 — Global Matrix + Series A Prep
+
+**Theme: Establish global credibility. Raise the next round.**
+
+- [ ] Add regions 4 and 5: **Sub-Saharan Africa** + **South/Southeast Asia**
+- [ ] Full global matrix: ~500 events × ~150 sources across 5 regions
+- [ ] TruthMachine v3: cross-region model — does consensus across geographies improve accuracy?
+- [ ] Publish public accuracy report: Brier scores by region, event type, time horizon — this is the investor and press hook
+- [ ] Campaign: $50,000 — PR push targeting mainstream financial and political media (Bloomberg, FT, Politico)
+- [ ] B2B: 15+ clients, $200k+ ARR
+- [ ] Milestone: **5,000,000 MAU**
+- [ ] Series A deck: $5–10M raise, positioned as infrastructure layer for geopolitical intelligence
+
+**Deliverable:** 5 regions · 5M MAU · $200k ARR · Series A process started
+
+---
+
+## Month 13–18 — Scale to 10M MAU + Series A Close
+
+**Theme: Grow into the raise. Become the default geopolitical forecast layer.**
+
+- [ ] Complete global coverage: add remaining high-signal regions (Central Asia, Balkans, West Africa)
+- [ ] Premium subscription tiers: individual ($9/mo), professional ($49/mo), institutional ($199/mo)
+- [ ] B2B enterprise tier: custom data pipelines, dedicated analyst support
+- [ ] iOS + Android: widgets, Apple Watch / WearOS, news app integrations
+- [ ] Prediction league: global leaderboard, public forecaster reputation scores
+- [ ] Partner integrations: embed Daatan forecasts in news publishers, research platforms
+- [ ] Campaign: $100,000 total across months 13–18 — performance marketing + conference presence (Davos, AIPAC, SXSW)
+- [ ] Milestone: **10,000,000 MAU** by Month 18
+- [ ] Series A close: $5–10M to fund global team, enterprise sales, and model R&D
+
+**Deliverable:** 10M MAU · Series A closed · $1M+ ARR · Global brand established
+
+---
+
+## Monthly Burn (Phase 2)
+
+| Period | Personnel | Infra | Marketing | Other | Monthly Total |
+|---|---|---|---|---|---|
+| Mo 7–8 | $25,000 | $3,000 | $10,000 | $5,000 | ~$43,000 |
+| Mo 9–10 | $38,000 | $5,000 | $15,000 | $6,000 | ~$64,000 |
+| Mo 11–12 | $48,000 | $7,000 | $25,000 | $7,000 | ~$87,000 |
+| Mo 13–18 | $53,000 | $8,000 | $17,000 | $5,000 | ~$83,000 |
+| **Total Phase 2** | **~$580,000** | **~$60,000** | **~$150,000** | **~$80,000** | **~$870,000** |
+
+> Remaining ~$130,000 held as reserve for unexpected content licensing, legal, or hiring costs.
+
+---
+
+## Risk Register (Phase 2)
+
+| Risk | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| 10M MAU not reached without paid acquisition | High | High | Series A funds performance marketing; viral loop must be proven before Mo 12 |
+| B2B sales cycle longer than expected | Medium | High | Start outreach Month 7; close first paid pilot before building full B2B product |
+| TruthMachine accuracy degrades on non-ME regions | Medium | Medium | Train region-specific models; don't force one global model prematurely |
+| Content licensing becomes a legal bottleneck at scale | Medium | High | Engage IP counsel Month 7 for international framework |
+| Key hire (B2B sales) fails to close deals | Medium | High | Founders lead first 3 B2B deals before delegating |
+| Competitor (Metaculus, Manifold, PredictIt) copies ME matrix format | Low | Medium | Speed + language coverage + retro depth are the moat — publish accuracy reports early |
+
+---
+
+## Combined Budget Summary
+
+| Phase | Period | Budget | Primary goal |
+|---|---|---|---|
+| Phase 1 — MVP | Months 1–6 | ~$113,500 (YC) | ME retro + 200k MAU |
+| Phase 2 — Worldwide | Months 7–18 | ~$1,000,000 (Series A) | 5 regions + 10M MAU + B2B |
+| **Total** | **18 months** | **~$1,113,500** | **Global geopolitical forecast platform** |
+
+*This plan is a living document. Update after each monthly review.*
