@@ -529,36 +529,37 @@ async def ingest_cell(
     cell_dir.mkdir(parents=True, exist_ok=True)
     saved = 0
 
-    if candidates:
+    for art in candidates[:5]:
         # ── GNews path: resolve URL then scrape ──────────────────────────────
-        for art in candidates[:5]:
-            expected_dt = datetime.strptime(art["published_at"], "%Y-%m-%d")
-            loop = asyncio.get_event_loop()
-            url = await loop.run_in_executor(
-                None, resolve_url, art["title"], domain, expected_dt
-            )
-            if not url:
-                console.print(f"    [dim]No URL for '{art['title'][:50]}'[/dim]")
-                continue
+        expected_dt = datetime.strptime(art["published_at"], "%Y-%m-%d")
+        loop = asyncio.get_event_loop()
+        url = await loop.run_in_executor(
+            None, resolve_url, art["title"], domain, expected_dt
+        )
+        if not url:
+            console.print(f"    [dim]No URL for '{art['title'][:50]}'[/dim]")
+            continue
 
-            await asyncio.sleep(1.0)
-            text = await fetch_article_text(url)
-            if len(text) < 250:
-                continue
+        await asyncio.sleep(1.0)
+        text = await fetch_article_text(url)
+        if len(text) < 250:
+            continue
 
-            article = {
-                "headline": art["title"],
-                "text":     text,
-                "published_at": art["published_at"],
-                "author":   "Unknown",
-                "url":      url,
-            }
-            out = cell_dir / f"article_{saved+1:02d}.json"
-            out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
-            saved += 1
-    else:
+        article = {
+            "headline": art["title"],
+            "text":     text,
+            "published_at": art["published_at"],
+            "author":   "Unknown",
+            "url":      url,
+        }
+        out = cell_dir / f"article_{saved+1:02d}.json"
+        out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
+        saved += 1
+
+    if saved == 0:
         # ── CDX fallback: enumerate Wayback archives ─────────────────────────
-        console.print(f"    [dim]GNews empty → CDX fallback for {source_id}/{event['id']}[/dim]")
+        # Triggered when GNews found no titles OR found titles but URL resolution failed.
+        console.print(f"    [dim]CDX fallback for {source_id}/{event['id']}[/dim]")
         cdx_arts = await search_wayback_cdx(domain, start_dt, outcome_dt, keywords)
         for art in cdx_arts:
             article = {

@@ -16,7 +16,7 @@ export PATH="$HOME/.local/bin:$PATH"
 WORKDIR="$HOME/truthmachine"
 DATA_DIR="$WORKDIR/data"
 PIPELINE_DIR="$WORKDIR/pipeline"
-SLEEP_INTERVAL=3600  # seconds between cycles (1 hour)
+SLEEP_INTERVAL=300   # seconds between cycles (5 min — short pause to avoid hammering APIs)
 
 # Load secrets
 set -a; source "$WORKDIR/.env"; set +a
@@ -76,7 +76,7 @@ PY
 # ── Main loop ─────────────────────────────────────────────────────────────────
 log "=== TruthMachine pipeline starting ==="
 log "DATA_DIR=$DATA_DIR"
-log "Cycle interval: ${SLEEP_INTERVAL}s"
+log "Cycle interval: ${SLEEP_INTERVAL}s (5 min)"
 
 while true; do
   log "─── Cycle start ───────────────────────────────────"
