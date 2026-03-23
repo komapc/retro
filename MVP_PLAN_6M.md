@@ -2,7 +2,7 @@
 
 **Goal A:** 100×200 Middle East matrix, 5+ years retro, fully operational.
 **Goal B:** Daatan Forecast Android app live, 200k MAU.
-**Budget:** ~$124,000 — fits YC $125k program (see INVESTOR_COSTS.md)
+**Budget:** ~$262,000 (see INVESTOR_COSTS.md)
 **Team:** 2 founders + 1 mathematician/data engineer (to hire)
 **Revenue in period:** $0 (MVP phase)
 
@@ -24,8 +24,8 @@ These must be done before the clock starts on salaries.
 - [ ] Write job description for mathematician / data engineer
 - [ ] Post on: LinkedIn, Facebook ML Israel group, JobMaster, academic ML dept boards (TAU, Technion, Hebrew U, BGU)
 - [ ] Target profile: probability theory background + Python/LightGBM/scikit-learn + interest in forecasting
-- [ ] **Start date: Month 4** — recruit in Phase 0 and Months 1–2, but salary clock starts Month 4
-- [ ] Consider part-time consulting arrangement in Months 2–3 (feature design only, low cost) before full hire
+- [ ] **Months 1–3: paid consultant** (~₪15,000/mo freelance) — feature design, model architecture, TruthMachine spec
+- [ ] **Month 4: transitions to full-time employee** at ₪45,000/mo
 
 ---
 
@@ -279,13 +279,13 @@ The mathematician/data engineer leads this track. Existing prototype: `backtest.
 
 | Month | Personnel | Infra | Other | Total |
 |---|---|---|---|---|
-| 1 | $13,800 (2 founders) | $300 | $6,500 (incorporation + 1-mo subscriptions) | ~$20,600 |
-| 2 | $13,800 | $400 | $3,000 (translation retro run 1) | ~$17,200 |
-| 3 | $13,800 | $500 | $2,000 (translation + QA) | ~$16,300 |
-| 4 | $20,800 (+ engineer) | $700 | $1,500 (legal final + QA) | ~$23,000 |
-| 5 | $20,800 | $900 | $1,000 (translation top-up) | ~$22,700 |
-| 6 | $20,800 | $1,200 | $500 | ~$22,500 |
-| **Total** | **$103,800** | **$4,000** | **$13,500** | **~$121,300** |
+| 1 | $31,100 (2 founders) + $3,300 (consultant) | $300 | $6,500 (incorporation + 1-mo subscriptions) | ~$41,200 |
+| 2 | $31,100 + $3,300 (consultant) | $400 | $3,000 (translation retro run 1) | ~$37,800 |
+| 3 | $31,100 + $3,300 (consultant) | $500 | $2,000 (translation + QA) | ~$36,900 |
+| 4 | $46,700 (+ full hire) | $700 | $1,500 | ~$48,900 |
+| 5 | $46,700 | $900 | $1,000 (translation top-up) | ~$48,600 |
+| 6 | $46,700 | $1,200 | $500 | ~$48,400 |
+| **Total** | **$245,700** | **$4,000** | **$14,500** | **~$264,200** |
 
 > LLM API costs (~$700 total) absorbed into "Other" above. Translation front-loaded in months 2–3 during retro fill.
 
@@ -437,8 +437,8 @@ The mathematician/data engineer leads this track. Existing prototype: `backtest.
 
 | Phase | Period | Budget | Primary goal |
 |---|---|---|---|
-| Phase 1 — MVP | Months 1–6 | ~$113,500 (YC) | ME retro + 200k MAU |
+| Phase 1 — MVP | Months 1–6 | ~$264,000 (pre-seed / YC batch) | ME retro + 200k MAU |
 | Phase 2 — Worldwide | Months 7–18 | ~$1,000,000 (Series A) | 5 regions + 10M MAU + B2B |
-| **Total** | **18 months** | **~$1,113,500** | **Global geopolitical forecast platform** |
+| **Total** | **18 months** | **~$1,264,000** | **Global geopolitical forecast platform** |
 
 *This plan is a living document. Update after each monthly review.*

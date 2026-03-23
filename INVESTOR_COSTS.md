@@ -9,13 +9,14 @@
 
 Three people: 2 founders (full market salary) + 1 mathematician / data engineer (new hire).
 
-| Role | Gross salary (NIS/mo) | Duration | Total incl. employer costs (~28%) |
-|---|---|---|---|
-| Founder × 2 | 20,000 each = 40,000 | 6 months | ~₪307,000 (~$83,000) |
-| Mathematician / data engineer | 20,000 | Months 4–6 only | ~₪77,000 (~$20,800) |
-| **Total personnel** | | | **~$103,800** |
+| Role | Arrangement | NIS/mo | Duration | Total |
+|---|---|---|---|---|
+| Founder × 2 | Employee | 45,000 each = 90,000 | 6 months | ~₪691,000 (~$186,800) incl. employer costs |
+| Math consultant | Freelance | ~15,000 | Months 1–3 | ~₪45,000 (~$12,200) no employer costs |
+| Mathematician (full hire) | Employee | 45,000 | Months 4–6 | ~₪173,000 (~$46,700) incl. employer costs |
+| **Total personnel** | | | | **~$245,700** |
 
-> Third hire joins Month 4 once retro fill is underway and TruthMachine design is ready to implement.
+> Mathematician engaged as a paid consultant in months 1–3 (feature design, model architecture) then transitions to full-time employee from month 4.
 > Israeli employer costs include bituach leumi, pension (6.5%), advanced training fund (7.5%).
 > Exchange rate assumed: ₪3.7 = $1.
 
@@ -113,16 +114,18 @@ Polymarket currently scraped free. Minimal additional feeds needed for ME matrix
 
 | Category | Low | High |
 |---|---|---|
-| Personnel (2 founders 6mo + 1 engineer months 4–6) | $103,800 | $103,800 |
+| Personnel (2 founders 6mo + consultant 1–3 + engineer 4–6) | $245,700 | $245,700 |
 | Paid content access (1-month scrape) | $500 | $1,200 |
 | Cloud infrastructure (AWS) | $3,000 | $5,500 |
 | Translation API | $5,000 | $8,500 |
 | Legal / incorporation | $5,000 | $10,500 |
 | LLM API (Gemini Flash Lite) | $500 | $700 |
 | Data feeds | $500 | $2,000 |
-| **Total** | **$108,800** | **$118,500** |
+| **Total** | **$255,000** | **$268,000** |
 
-**Working figure: ~$113,500 for 6 months — comfortably within YC $125k program.**
+**Working figure: ~$262,000 for 6 months.**
+
+> Note: at ₪45,000 founder salaries this exceeds the YC $125k program. Suitable for a pre-seed or angel round, or YC standard batch ($500k for 7%).
 
 ---
 
