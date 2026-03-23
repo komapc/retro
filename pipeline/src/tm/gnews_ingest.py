@@ -1,15 +1,12 @@
 """
-Google News RSS + Wayback CDX batch ingestor.
+Google News RSS + Brave/DDG batch ingestor.
 
-Step 1a: Query Google News RSS with date operators to find article titles
-         from the event's predictive window.
-Step 1b: If GNews returns nothing → query Wayback CDX API to enumerate all
-         archived article URLs from the domain in the date range (fallback).
-Step 2:  Resolve each GNews title to a real URL via Brave Search API (primary)
-         or DuckDuckGo (fallback).  CDX results already have URLs.
-Step 3:  Scrape full article text via trafilatura (primary) with
-         BeautifulSoup fallback.  CDX articles are fetched directly from
-         Wayback to maximise historical coverage.
+Step 1: Query Google News RSS with date operators to find article titles
+        from the event's predictive window.
+Step 2: Resolve each title to a real URL via Brave Search API (primary)
+        or DuckDuckGo (fallback if no BRAVE_API_KEY).
+Step 3: Scrape full article text via trafilatura (primary) with
+        BeautifulSoup fallback, and save to data/raw_ingest/.
 
 Sources: toi, jpost, haaretz, reuters, globes, ynet, israel_hayom,
          walla, n12, maariv, ch13, ch14, kan11  (Hebrew sources included)
@@ -312,6 +309,29 @@ def resolve_url(
         return url
 
     return resolve_url_via_ddg(title, domain, expected_date)
+
+
+def resolve_url_via_ddg(
+    title: str, domain: str, expected_date: Optional[datetime] = None
+) -> Optional[str]:
+    """Fallback: resolve article URL via DuckDuckGo (rate-limited, free)."""
+    global _DDG_LAST_CALL
+    elapsed = time.time() - _DDG_LAST_CALL
+    if elapsed < DDG_MIN_INTERVAL:
+        time.sleep(DDG_MIN_INTERVAL - elapsed)
+    query = f'site:{domain} "{title[:60]}"'
+    try:
+        with DDGS() as d:
+            results = list(d.text(query, max_results=5))
+        _DDG_LAST_CALL = time.time()
+        for r in results:
+            href = r.get("href", "")
+            if _filter_url(href, domain, expected_date):
+                return href
+    except Exception as e:
+        console.print(f"    [dim red]DDG error: {e}[/dim red]")
+        _DDG_LAST_CALL = time.time()
+    return None
 
 
 PAYWALL_THRESHOLD = 500  # chars — below this, try Wayback Machine
