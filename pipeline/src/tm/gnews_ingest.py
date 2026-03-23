@@ -1,12 +1,15 @@
 """
-Google News RSS + Brave/DDG batch ingestor.
+Google News RSS + Wayback CDX batch ingestor.
 
-Step 1: Query Google News RSS with date operators to find article titles
-        from the event's predictive window.
-Step 2: Resolve each title to a real URL via Brave Search API (primary)
-        or DuckDuckGo (fallback if no BRAVE_API_KEY).
-Step 3: Scrape full article text via trafilatura (primary) with
-        BeautifulSoup fallback, and save to data/raw_ingest/.
+Step 1a: Query Google News RSS with date operators to find article titles
+         from the event's predictive window.
+Step 1b: If GNews returns nothing → query Wayback CDX API to enumerate all
+         archived article URLs from the domain in the date range (fallback).
+Step 2:  Resolve each GNews title to a real URL via Brave Search API (primary)
+         or DuckDuckGo (fallback).  CDX results already have URLs.
+Step 3:  Scrape full article text via trafilatura (primary) with
+         BeautifulSoup fallback.  CDX articles are fetched directly from
+         Wayback to maximise historical coverage.
 
 Sources: toi, jpost, haaretz, reuters, globes, ynet, israel_hayom,
          walla, n12, maariv, ch13, ch14, kan11  (Hebrew sources included)
@@ -311,29 +314,6 @@ def resolve_url(
     return resolve_url_via_ddg(title, domain, expected_date)
 
 
-def resolve_url_via_ddg(
-    title: str, domain: str, expected_date: Optional[datetime] = None
-) -> Optional[str]:
-    """Fallback: resolve article URL via DuckDuckGo (rate-limited, free)."""
-    global _DDG_LAST_CALL
-    elapsed = time.time() - _DDG_LAST_CALL
-    if elapsed < DDG_MIN_INTERVAL:
-        time.sleep(DDG_MIN_INTERVAL - elapsed)
-    query = f'site:{domain} "{title[:60]}"'
-    try:
-        with DDGS() as d:
-            results = list(d.text(query, max_results=5))
-        _DDG_LAST_CALL = time.time()
-        for r in results:
-            href = r.get("href", "")
-            if _filter_url(href, domain, expected_date):
-                return href
-    except Exception as e:
-        console.print(f"    [dim red]DDG error: {e}[/dim red]")
-        _DDG_LAST_CALL = time.time()
-    return None
-
-
 PAYWALL_THRESHOLD = 500  # chars — below this, try Wayback Machine
 
 
@@ -372,6 +352,115 @@ async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
     except Exception as e:
         console.print(f"    [dim]Wayback failed: {e}[/dim]")
         return ""
+
+
+CDX_API = "http://web.archive.org/cdx/search/cdx"
+CDX_FETCH_LIMIT = 15   # max candidates to actually fetch per cell
+CDX_SCAN_LIMIT  = 150  # max CDX rows to download before filtering
+
+
+async def search_wayback_cdx(
+    domain: str,
+    start_date: datetime,
+    end_date: datetime,
+    keywords: List[str],
+    max_results: int = 5,
+) -> List[Dict]:
+    """
+    Enumerate archived article URLs for *domain* in [start_date, end_date]
+    via the Wayback CDX API, then fetch up to *max_results* articles from
+    Wayback.  Used as a fallback when Google News RSS returns nothing.
+
+    Returns list of {url, published_at, headline, text}.
+    """
+    # Strip www. — matchType=domain covers all subdomains
+    cdx_domain = re.sub(r"^www\.", "", domain)
+    params = [
+        ("url",       cdx_domain),
+        ("matchType", "domain"),
+        ("output",    "json"),
+        ("from",      start_date.strftime("%Y%m%d")),
+        ("to",        end_date.strftime("%Y%m%d")),
+        ("limit",     str(CDX_SCAN_LIMIT)),
+        ("filter",    "mimetype:text/html"),
+        ("filter",    "statuscode:200"),
+        ("fl",        "original,timestamp"),
+        ("collapse",  "urlkey"),
+    ]
+
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            r = await client.get(CDX_API, params=params)
+        if r.status_code != 200:
+            return []
+        rows = r.json()
+    except Exception as e:
+        console.print(f"    [dim red]CDX error: {e}[/dim red]")
+        return []
+
+    if len(rows) < 2:   # first row is header ["original","timestamp"]
+        return []
+
+    # ── Filter to article-like URLs ──────────────────────────────────────────
+    candidates: List[tuple] = []
+    for original, timestamp in rows[1:]:
+        if not _filter_url(original, domain, None):
+            continue
+        try:
+            pub_dt = datetime.strptime(timestamp[:8], "%Y%m%d")
+        except ValueError:
+            continue
+        if not (start_date <= pub_dt <= end_date):
+            continue
+        candidates.append((original, timestamp, pub_dt))
+
+    if not candidates:
+        return []
+
+    # ── Score by keyword presence in URL path ────────────────────────────────
+    ascii_kws = [k.lower() for k in keywords if _is_ascii(k)]
+    if ascii_kws:
+        def _score(url: str) -> int:
+            u = url.lower()
+            return sum(1 for kw in ascii_kws if kw.replace(" ", "-") in u or kw.replace(" ", "") in u)
+        candidates.sort(key=lambda x: -_score(x[0]))
+
+    fetch_pool = candidates[:CDX_FETCH_LIMIT]
+    console.print(f"    [dim]CDX: {len(candidates)} candidates → fetching {len(fetch_pool)}[/dim]")
+
+    # ── Fetch from Wayback ───────────────────────────────────────────────────
+    results: List[Dict] = []
+    async with httpx.AsyncClient(headers=HEADERS, timeout=30, follow_redirects=True) as client:
+        for original, timestamp, pub_dt in fetch_pool:
+            if len(results) >= max_results:
+                break
+            wb_url = f"https://web.archive.org/web/{timestamp}/{original}"
+            try:
+                r = await client.get(wb_url)
+                if r.status_code != 200:
+                    continue
+                html = r.text
+
+                # Extract headline via trafilatura metadata
+                meta = trafilatura.extract_metadata(html)
+                headline = (meta.title or "") if meta else ""
+
+                text = await _scrape_html(html)
+                if len(text) < 300:
+                    continue
+
+                results.append({
+                    "url":          original,
+                    "published_at": pub_dt.strftime("%Y-%m-%d"),
+                    "headline":     headline,
+                    "text":         text,
+                })
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                console.print(f"    [dim]CDX fetch failed: {e}[/dim]")
+                continue
+
+    return results
 
 
 async def fetch_article_text(url: str) -> str:
@@ -427,47 +516,61 @@ async def ingest_cell(
     window = int(event.get("predictive_window_days", 14))
     start_dt = outcome_dt - timedelta(days=window)
 
+    keywords = event.get("search_keywords", [])
+
     candidates = search_gnews_rss(
         domain=domain,
-        keywords=event.get("search_keywords", []),
+        keywords=keywords,
         start_date=start_dt,
         end_date=outcome_dt,
         lang=lang,
     )
 
-    if not candidates:
-        return 0
-
     cell_dir.mkdir(parents=True, exist_ok=True)
     saved = 0
 
-    for i, art in enumerate(candidates[:5]):
-        # Resolve real URL (try direct construction first, then DDG)
-        expected_dt = datetime.strptime(art["published_at"], "%Y-%m-%d")
-        loop = asyncio.get_event_loop()
-        url = await loop.run_in_executor(
-            None, resolve_url, art["title"], domain, expected_dt
-        )
-        if not url:
-            console.print(f"    [dim]DDG: no URL for '{art['title'][:50]}'[/dim]")
-            continue
+    if candidates:
+        # ── GNews path: resolve URL then scrape ──────────────────────────────
+        for art in candidates[:5]:
+            expected_dt = datetime.strptime(art["published_at"], "%Y-%m-%d")
+            loop = asyncio.get_event_loop()
+            url = await loop.run_in_executor(
+                None, resolve_url, art["title"], domain, expected_dt
+            )
+            if not url:
+                console.print(f"    [dim]No URL for '{art['title'][:50]}'[/dim]")
+                continue
 
-        await asyncio.sleep(1.0)
+            await asyncio.sleep(1.0)
+            text = await fetch_article_text(url)
+            if len(text) < 250:
+                continue
 
-        text = await fetch_article_text(url)
-        if len(text) < 250:
-            continue
-
-        article = {
-            "headline": art["title"],
-            "text": text,
-            "published_at": art["published_at"],
-            "author": "Unknown",
-            "url": url,
-        }
-        out = cell_dir / f"article_{saved+1:02d}.json"
-        out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
-        saved += 1
+            article = {
+                "headline": art["title"],
+                "text":     text,
+                "published_at": art["published_at"],
+                "author":   "Unknown",
+                "url":      url,
+            }
+            out = cell_dir / f"article_{saved+1:02d}.json"
+            out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
+            saved += 1
+    else:
+        # ── CDX fallback: enumerate Wayback archives ─────────────────────────
+        console.print(f"    [dim]GNews empty → CDX fallback for {source_id}/{event['id']}[/dim]")
+        cdx_arts = await search_wayback_cdx(domain, start_dt, outcome_dt, keywords)
+        for art in cdx_arts:
+            article = {
+                "headline": art["headline"],
+                "text":     art["text"],
+                "published_at": art["published_at"],
+                "author":   "Unknown",
+                "url":      art["url"],
+            }
+            out = cell_dir / f"article_{saved+1:02d}.json"
+            out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
+            saved += 1
 
     return saved
 
