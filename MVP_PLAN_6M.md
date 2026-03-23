@@ -1,0 +1,294 @@
+# TruthMachine / Factum Atlas — 6-Month MVP Execution Plan
+
+**Goal A:** 100×200 Middle East matrix, 5+ years retro, fully operational.
+**Goal B:** Daatan Forecast Android app live, 200k MAU.
+**Budget:** ~$124,000 — fits YC $125k program (see INVESTOR_COSTS.md)
+**Team:** 2 founders + 1 mathematician/data engineer (to hire)
+**Revenue in period:** $0 (MVP phase)
+
+---
+
+## Phase 0 — Pre-Start (Before Month 1)
+
+These must be done before the clock starts on salaries.
+
+### Legal & Corporate
+- [ ] Choose company structure (Ltd. in Israel — *Chevra Bet* is standard for tech startups)
+- [ ] Engage startup-focused Israeli lawyer (referral from accelerator network or F6S)
+- [ ] Incorporate: ~1–2 weeks, ~₪8,000–12,000 all-in
+- [ ] Open business bank account (Leumi Tech or Discount startup tracks)
+- [ ] Draft founder agreement: equity split, vesting schedule (4 years, 1-year cliff)
+- [ ] Assign IP to company (critical before any investor conversation)
+
+### Hiring
+- [ ] Write job description for mathematician / data engineer
+- [ ] Post on: LinkedIn, Facebook ML Israel group, JobMaster, academic ML dept boards (TAU, Technion, Hebrew U, BGU)
+- [ ] Target profile: probability theory background + Python/LightGBM/scikit-learn + interest in forecasting
+- [ ] **Start date: Month 4** — recruit in Phase 0 and Months 1–2, but salary clock starts Month 4
+- [ ] Consider part-time consulting arrangement in Months 2–3 (feature design only, low cost) before full hire
+
+---
+
+## Month 1 — Pipeline Repair & Foundation
+
+**Theme: Fix the data gap. Nothing else matters until cells are filling.**
+
+### Pipeline (Priority 1)
+The current pipeline has an 83% "no predictions" rate (218/264 cells). Root causes to diagnose and fix:
+
+- [ ] Audit `no_predictions` cells: are articles being fetched at all, or fetched but empty?
+- [ ] Fix CDX scan: increase `CDX_SCAN_LIMIT` (currently 150) and `CDX_FETCH_LIMIT` (currently 15) for historical queries
+- [ ] Haaretz: test Wayback snapshot quality; if consistently paywalled, subscribe to Haaretz digital archive (~$150/mo)
+- [ ] Globes / Calcalist: identify if paywall is blocking Wayback snapshots; add direct subscription if needed
+- [ ] Reuters: low `done` rate despite being a major source — investigate URL pattern issues in CDX
+- [ ] Add per-cell diagnostic logging: distinguish "no articles found" vs "articles found but gatekeeper rejected all"
+- [ ] Fix the 5 `failed` cells (JSON parse errors from Gemini) — add retry with stricter prompt
+
+### Matrix Definition
+- [ ] Define the canonical list of 200 Middle East events (event taxonomy: war, elections, diplomatic, economic, terror incidents)
+- [ ] Define the canonical list of 100 sources (Israeli Hebrew, Israeli English, Arabic, Turkish, international wire)
+- [ ] Identify which ~20 sources need paid access — subscribe to those before retro fill begins
+- [ ] Confirm date range: 5 years back = 2021–2026; extend to 7 years (2019–2026) if CDX coverage allows at no extra cost
+
+### Translation Pipeline
+- [ ] Integrate Google Translate API into `gnews_ingest.py` for Arabic and Turkish sources
+- [ ] Add language detection (langdetect library) before translation call to avoid billing for already-English content
+- [ ] Test on 3 Arabic sources + 2 Turkish sources
+
+### Infrastructure
+- [ ] Set up separate AWS environments: `dev` and `prod`
+- [ ] Enable AWS Cost Explorer alerts at $200/mo and $500/mo thresholds
+- [ ] Set up pipeline monitoring: failed cell alerts via email/Telegram
+
+### Deliverable: end of Month 1
+- Pipeline filling cells at >50% rate (down from 17% currently)
+- 200 events + 100 sources defined and locked
+- Mathematician/data engineer hired and onboarded
+
+---
+
+## Month 2 — Retro Fill Begins + TruthMachine Design
+
+**Theme: Get data flowing. Mathematician designs the model architecture.**
+
+### Retro Fill
+- [ ] Begin systematic retro fill: run pipeline on full 100×200 grid, 2021–2026
+- [ ] Process in batches by year: start with 2024–2025 (freshest CDX coverage), then go backward
+- [ ] Target: 5,000+ cells with predictions by end of month (25% of matrix)
+- [ ] Monitor translation costs weekly — pause and optimize if Google Translate spend exceeds $500 in first run
+
+### TruthMachine — R&D Phase
+The mathematician/data engineer leads this track. Existing prototype: `backtest.py` uses `lgb.LGBMClassifier`.
+
+- [ ] Audit existing `backtest.py`: understand current feature set, label definition, train/test split
+- [ ] Define the prediction target formally: what exactly is TruthMachine predicting? (probability that a claim resolves true, given source stance scores + metadata)
+- [ ] Design feature matrix:
+  - Stance scores (mean, variance, skew across sources)
+  - Source authority weights
+  - Sentiment + certainty + hedge_ratio from extractor
+  - Time horizon, prediction type
+  - Cross-source agreement/disagreement signals
+  - Polymarket baseline (where available)
+- [ ] Identify minimum viable training set size: how many labeled (claim → outcome) pairs are needed?
+- [ ] Map existing Polymarket data (`polymarket.py`) to resolved events — this is the ground truth source
+
+### Legal
+- [ ] App privacy policy + Terms of Service drafted (covers data collection, prediction disclaimers)
+- [ ] GDPR-light compliance review (Israeli Privacy Law 5741 + EU users if any)
+- [ ] Review top 5 source ToS for scraping/extraction legality — flag any red lines
+
+### Daatan Forecast — Spec
+- [ ] Write product spec: what does the app show? (event list, source comparison, forecast probability, historical accuracy)
+- [ ] Design Android app wireframes
+- [ ] Define data API: what endpoints does the app need from the backend?
+
+### Deliverable: end of Month 2
+- 5,000+ cells filled
+- TruthMachine feature spec finalized
+- App wireframes approved
+- Legal foundation complete
+
+---
+
+## Month 3 — Retro Fill 50% + TruthMachine Alpha Training
+
+**Theme: First model. First working app screen.**
+
+### Retro Fill
+- [ ] Continue fill: target 10,000+ cells by end of month (50% of matrix)
+- [ ] Cover years 2022–2023 in this month
+- [ ] QA spot-check: human review of 200 random extracted predictions for accuracy
+- [ ] Fix any systematic extraction errors found in QA
+
+### TruthMachine — Alpha
+- [ ] Assemble training dataset: join extracted predictions with Polymarket resolved outcomes
+- [ ] Minimum target: 500 labeled examples (claim + features → binary outcome)
+- [ ] Train first LightGBM model on available data
+- [ ] Evaluate: Brier score, calibration curve, feature importance
+- [ ] Iterate: add/remove features based on importance; retrain
+- [ ] Document model card: what the model predicts, training data, known limitations
+
+### Daatan Forecast — Android Development
+- [ ] Set up Android project (Kotlin + Jetpack Compose)
+- [ ] Google Play Developer account ($25 one-time)
+- [ ] Backend API: FastAPI or Flask serving pre-computed forecast data
+- [ ] Screen 1: Event list with forecast probability badges
+- [ ] Screen 2: Event detail — source breakdown, TruthMachine score, historical chart
+- [ ] Auth: simple email/password or Google Sign-In
+
+### Infrastructure
+- [ ] Set up production database (RDS PostgreSQL) for forecast data
+- [ ] Set up S3 bucket for pre-computed results
+- [ ] Automate weekly pipeline re-run for new events (cron)
+
+### Deliverable: end of Month 3
+- 10,000 cells filled (50% retro complete)
+- TruthMachine alpha: Brier score baseline established
+- Android app: 2 core screens working against real data
+
+---
+
+## Month 4 — Retro Fill 80% + Model Integration + App Beta
+
+**Theme: Connect everything. Internal testing.**
+
+### Retro Fill
+- [ ] Push to 16,000+ cells (80%) — cover 2019–2021 (older CDX, expect lower coverage)
+- [ ] Identify structural gaps: events with <5 sources covered — flag for manual archive research
+- [ ] Handle Arabic/Turkish gaps: if Google Translate quality is poor for certain source styles, add post-translation cleanup
+
+### TruthMachine — Beta Model
+- [ ] Retrain on expanded dataset (now ~2,000+ labeled examples as retro fill grows)
+- [ ] Add cross-validation: 5-fold CV to check for overfitting
+- [ ] Tune hyperparameters: LightGBM num_leaves, learning_rate, min_data_in_leaf
+- [ ] Integrate model into backend API: `/api/forecast/{event_id}` returns TruthMachine score
+- [ ] Calibration: apply isotonic regression or Platt scaling to output probabilities
+
+### Daatan Forecast — Beta
+- [ ] Internal beta: founders + 10–20 trusted testers (journalists, analysts)
+- [ ] Collect feedback: UI clarity, trust in forecasts, missing features
+- [ ] Performance: ensure app loads in <2 seconds for any event
+- [ ] Push notifications: alert users when a forecast changes by >10 points
+- [ ] Android widget (optional stretch goal for virality)
+
+### Content Access
+- [ ] Review Wayback coverage for 2019–2021 — if gaps are critical, evaluate Factiva or LexisNexis trial access
+- [ ] Finalize content budget: if paid archive spend is tracking above $5,000, reprioritize sources
+
+### Deliverable: end of Month 4
+- 80% retro matrix complete
+- TruthMachine beta: calibrated model in production
+- Android app beta: tested by 20+ users
+- All legal docs live on app store listing
+
+---
+
+## Month 5 — Full Matrix + Soft Launch
+
+**Theme: Ship it. Controlled growth.**
+
+### Retro Fill — Completion
+- [ ] Push to 100% of reachable cells (expect ~18,000–19,000 of 20,000 due to genuine coverage gaps)
+- [ ] Document unreachable cells: which events × sources have zero historical coverage and why
+- [ ] Generate retro analysis pages (using `render_atlas.py`) for all completed cells
+- [ ] QA final pass: 500-sample human review of extraction quality across Arabic, Turkish, Hebrew, English
+
+### TruthMachine — Production
+- [ ] Final model trained on full retro dataset
+- [ ] Backtest report: accuracy by event category, by source language, by time horizon
+- [ ] Model versioning: store model artifacts in S3 with version tags
+- [ ] Automated weekly retraining as new resolved events accumulate
+
+### Daatan Forecast — Soft Launch
+- [ ] Submit to Google Play (expect 2–3 day review)
+- [ ] Soft launch: no press, share only in targeted communities
+  - Israeli forecasting / rationalist communities (Facebook, Telegram)
+  - Arabic-language political analysis groups
+  - Political science Twitter/X accounts covering ME
+- [ ] Target: 1,000–5,000 installs in soft launch
+- [ ] Monitor: crash rate, retention (Day 1, Day 7), session length
+- [ ] Fix any critical bugs from real-user data
+
+### Infrastructure — Scale Prep
+- [ ] Load test: simulate 50k concurrent users
+- [ ] Set up auto-scaling group on AWS
+- [ ] CloudFront CDN for static assets and pre-computed forecast pages
+- [ ] Set up error alerting (Sentry or AWS CloudWatch)
+
+### Deliverable: end of Month 5
+- Full ME retro matrix live
+- App on Google Play
+- 1,000–5,000 real installs
+- Infrastructure ready for viral load
+
+---
+
+## Month 6 — Growth Push & B2B Groundwork
+
+**Theme: Hit 200k MAU. Open the B2B door.**
+
+### Daatan Forecast — Growth
+- [ ] Identify what drove installs in Month 5 — double down on those channels
+- [ ] Viral mechanics:
+  - Shareable forecast cards (image export of event forecast for social media)
+  - "Was I right?" notifications when events resolve
+  - Leaderboard: top forecasters (user predictions vs TruthMachine)
+- [ ] Localization: Arabic UI (RTL layout) — significant for ME audience
+- [ ] Press outreach: 3–5 Israeli tech/media journalists; 2–3 Arabic-language tech media
+- [ ] Target: 200,000 MAU by end of Month 6 (**this requires a viral event or significant press coverage — the single biggest execution risk in this plan**)
+
+### B2B Groundwork
+- [ ] Identify first 10 B2B targets: think tanks, NGOs, news organizations, financial institutions tracking ME risk
+- [ ] Build B2B demo: custom event matrix export, API access, white-label forecast widget
+- [ ] Price anchoring: B2B annual license at $10,000–50,000/year depending on data volume
+- [ ] Reach out to 10 targets with personalized demos
+
+### TruthMachine — Continuous Improvement
+- [ ] Integrate user prediction data (from app leaderboard) as additional signal
+- [ ] Explore ensemble: LightGBM + logistic regression as a simple ensemble
+- [ ] Publish accuracy report publicly: transparent Brier scores build trust
+
+### Investor Prep
+- [ ] Metrics deck: DAU/MAU, retention curves, retro matrix coverage stats, TruthMachine Brier score
+- [ ] Pipeline due diligence package: architecture diagram, data sourcing methodology, legal status of content access
+- [ ] Series A / seed pitch: position as "Bloomberg Terminal for geopolitical forecasting"
+
+### Deliverable: end of Month 6
+- 200k MAU (or documented path to it with current growth rate)
+- Full ME retro public
+- B2B pipeline: 10 prospects contacted, 2–3 demos delivered
+- Investor pitch deck ready
+
+---
+
+## Risk Register
+
+| Risk | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| 200k MAU target not hit organically | High | High | Lower target to 50k MAU; add budget for targeted ads ($5–15k) |
+| Retro fill coverage below 80% due to CDX gaps | Medium | Medium | Budget $3–5k additional for paid archive access |
+| Mathematician/data engineer hire takes >6 weeks | Medium | High | Start recruiting in Phase 0, before salaries begin |
+| TruthMachine Brier score not competitive vs naive baseline | Medium | High | Pivot to displaying raw source disagreement (no ML needed for v1 value) |
+| Arabic/Turkish extraction quality poor post-translation | Medium | Medium | Add human QA for these languages; reduce scope to Hebrew/English only for retro v1 |
+| Legal challenge from a paywalled Israeli publisher | Low | High | Proactive ToS review in Month 2; content access via subscriptions not scraping |
+| AWS costs exceed budget at 200k MAU scale | Low | Medium | Cost alerts + auto-scaling caps; pre-computed data model limits per-request cost |
+
+---
+
+## Monthly Budget Burn
+
+| Month | Personnel | Infra | Other | Total |
+|---|---|---|---|---|
+| 1 | $13,800 (2 founders) | $300 | $8,000 (incorporation + subscriptions) | ~$22,100 |
+| 2 | $13,800 | $400 | $3,000 (translation retro run 1) | ~$17,200 |
+| 3 | $13,800 | $500 | $2,000 (translation + QA) | ~$16,300 |
+| 4 | $20,800 (+ engineer) | $700 | $1,500 (legal final + QA) | ~$23,000 |
+| 5 | $20,800 | $900 | $1,000 (translation top-up) | ~$22,700 |
+| 6 | $20,800 | $1,200 | $500 | ~$22,500 |
+| **Total** | **$103,800** | **$4,000** | **$16,000** | **~$123,800** |
+
+> LLM API costs (~$700 total) absorbed into "Other" above. Translation front-loaded in months 2–3 during retro fill.
+
+---
+
+*This plan is a living document. Update after each monthly review.*
