@@ -26,13 +26,15 @@ Three people: 2 founders (full market salary) + 1 mathematician / data engineer 
 ~20 of 100 sources require paid access (Haaretz archive, Calcalist, Globes, key Arabic sources).
 CDX/Wayback covers the remaining ~80% for historical content.
 
-| Item | 6-month cost |
+| Item | Cost (1-month subscription, scrape & cancel) |
 |---|---|
-| Haaretz digital archive / API | $800–2,000 |
-| Hebrew business press (Globes, Calcalist) | $600–1,500 |
-| Arabic source archives (2–3 key outlets) | $500–1,500 |
-| Contingency (paywall gaps in retro fill) | $1,000–3,000 |
-| **Total** | **$3,000–8,000** |
+| Haaretz digital archive | $150–300 |
+| Hebrew business press (Globes, Calcalist) | $100–200 |
+| Arabic source archives (2–3 key outlets) | $100–300 |
+| Contingency (additional sources) | $150–400 |
+| **Total** | **$500–1,200** |
+
+> One month only — subscribe, run retro scrape, cancel. No ongoing commitment.
 
 ---
 
@@ -90,18 +92,6 @@ Company not yet incorporated.
 
 ---
 
-## 7. Human QA / annotation
-
-Journalism and domain expertise covered internally. Budget is for ML output spot-checks only.
-
-| Item | Cost |
-|---|---|
-| Freelance spot-check annotators (Arabic, Turkish) | $1,000–2,000 |
-| TruthMachine output validation (edge cases) | $500–1,500 |
-| **Total** | **$1,500–3,500** |
-
----
-
 ## 8. Prediction market & financial data feeds
 
 Polymarket currently scraped free. Minimal additional feeds needed for ME matrix.
@@ -124,16 +114,15 @@ Polymarket currently scraped free. Minimal additional feeds needed for ME matrix
 | Category | Low | High |
 |---|---|---|
 | Personnel (2 founders 6mo + 1 engineer months 4–6) | $103,800 | $103,800 |
-| Paid content access | $3,000 | $8,000 |
+| Paid content access (1-month scrape) | $500 | $1,200 |
 | Cloud infrastructure (AWS) | $3,000 | $5,500 |
 | Translation API | $5,000 | $8,500 |
 | Legal / incorporation | $5,000 | $10,500 |
 | LLM API (Gemini Flash Lite) | $500 | $700 |
-| Human QA / annotation | $1,500 | $3,500 |
 | Data feeds | $500 | $2,000 |
-| **Total** | **$112,800** | **$128,800** |
+| **Total** | **$108,800** | **$118,500** |
 
-**Working figure: ~$124,000 for 6 months — fits within YC $125k program.**
+**Working figure: ~$113,500 for 6 months — comfortably within YC $125k program.**
 
 ---
 

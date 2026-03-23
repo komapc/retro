@@ -269,7 +269,7 @@ The mathematician/data engineer leads this track. Existing prototype: `backtest.
 | Retro fill coverage below 80% due to CDX gaps | Medium | Medium | Budget $3–5k additional for paid archive access |
 | Mathematician/data engineer hire takes >6 weeks | Medium | High | Start recruiting in Phase 0, before salaries begin |
 | TruthMachine Brier score not competitive vs naive baseline | Medium | High | Pivot to displaying raw source disagreement (no ML needed for v1 value) |
-| Arabic/Turkish extraction quality poor post-translation | Medium | Medium | Add human QA for these languages; reduce scope to Hebrew/English only for retro v1 |
+| Arabic/Turkish extraction quality poor post-translation | Medium | Medium | Reduce scope to Hebrew/English only for retro v1 if quality is unacceptable |
 | Legal challenge from a paywalled Israeli publisher | Low | High | Proactive ToS review in Month 2; content access via subscriptions not scraping |
 | AWS costs exceed budget at 200k MAU scale | Low | Medium | Cost alerts + auto-scaling caps; pre-computed data model limits per-request cost |
 
@@ -279,13 +279,13 @@ The mathematician/data engineer leads this track. Existing prototype: `backtest.
 
 | Month | Personnel | Infra | Other | Total |
 |---|---|---|---|---|
-| 1 | $13,800 (2 founders) | $300 | $8,000 (incorporation + subscriptions) | ~$22,100 |
+| 1 | $13,800 (2 founders) | $300 | $6,500 (incorporation + 1-mo subscriptions) | ~$20,600 |
 | 2 | $13,800 | $400 | $3,000 (translation retro run 1) | ~$17,200 |
 | 3 | $13,800 | $500 | $2,000 (translation + QA) | ~$16,300 |
 | 4 | $20,800 (+ engineer) | $700 | $1,500 (legal final + QA) | ~$23,000 |
 | 5 | $20,800 | $900 | $1,000 (translation top-up) | ~$22,700 |
 | 6 | $20,800 | $1,200 | $500 | ~$22,500 |
-| **Total** | **$103,800** | **$4,000** | **$16,000** | **~$123,800** |
+| **Total** | **$103,800** | **$4,000** | **$13,500** | **~$121,300** |
 
 > LLM API costs (~$700 total) absorbed into "Other" above. Translation front-loaded in months 2–3 during retro fill.
 
