@@ -346,7 +346,7 @@ def _render_matrix(matrix_rows: list, search_status: dict,
             f'<td class="event-label">'
             f'<span class="event-name">'
             f'<span class="event-id">{eid}</span>'
-            f'<a href="#event-{eid}">{row["name"][:42]}</a>'
+            f'<a href="#event-{eid}">{row["name"]}</a>'
             f'</span>'
             f'{badge}'
             f'</td>'
@@ -433,7 +433,8 @@ def _render_matrix(matrix_rows: list, search_status: dict,
     return ''.join(parts)
 
 
-def _render_event_sections(event_ids: list, events: dict, polymarket: dict) -> str:
+def _render_event_sections(event_ids: list, events: dict, polymarket: dict,
+                           cell_articles: Optional[dict] = None) -> str:
     parts = []
     for eid in event_ids:
         ev = events.get(eid)
@@ -450,6 +451,47 @@ def _render_event_sections(event_ids: list, events: dict, polymarket: dict) -> s
                     f' &nbsp;<span style="color:#a78bfa;font-size:11px">'
                     f'Polymarket final: {last_prob*100:.0f}%</span>'
                 )
+
+        # Description block
+        description = ev.get("description") or ev.get("llm_referee_criteria") or ""
+        desc_html = (
+            f'<div class="event-desc">{description}</div>'
+            if description else ""
+        )
+
+        # Article list grouped by source
+        articles_html = ""
+        if cell_articles:
+            rows = []
+            for sid in SOURCES:
+                arts = (cell_articles or {}).get((eid, sid), [])
+                if not arts:
+                    continue
+                color = SOURCE_COLORS.get(sid, "#888")
+                art_items = "".join(
+                    f'<div class="art-item">'
+                    f'{"<a href=" + repr(a["url"]) + " target=_blank rel=noopener>" if a["url"] else ""}'
+                    f'{a["headline"] or "(no headline)"}'
+                    f'{"</a>" if a["url"] else ""}'
+                    f'<span class="art-meta">{a["date"]} · {a["pred_count"]} pred{"s" if a["pred_count"]!=1 else ""}</span>'
+                    f'</div>'
+                    for a in arts
+                )
+                rows.append(
+                    f'<div class="art-source">'
+                    f'<span class="source-dot" style="background:{color}"></span>'
+                    f'<strong style="color:{color}">{sid}</strong>'
+                    f'{art_items}'
+                    f'</div>'
+                )
+            if rows:
+                articles_html = (
+                    f'<div class="art-list">'
+                    f'<div class="art-list-title">Articles</div>'
+                    f'{"".join(rows)}'
+                    f'</div>'
+                )
+
         parts.append(
             f'<div class="event-section" id="event-{eid}">'
             f'<div class="event-header">'
@@ -458,9 +500,11 @@ def _render_event_sections(event_ids: list, events: dict, polymarket: dict) -> s
             f'<span class="outcome-badge {badge_cls}">{badge_txt}</span>'
             f'<span class="event-meta">{ev["outcome_date"]}{pm_note}</span>'
             f'</div>'
+            f'{desc_html}'
             f'<div class="chart-wrap">'
             f'<div class="chart-container"><canvas id="chart-{eid}"></canvas></div>'
             f'</div>'
+            f'{articles_html}'
             f'</div>'
         )
     return ''.join(parts)
@@ -526,8 +570,8 @@ def _render_scoring(scores: dict, events: dict) -> str:
         p_clr = "#3fb950" if s["implied_p"] >= 50 else "#f85149"
         html += (
             f'<tr>'
-            f'<td><span style="font-family:monospace;color:#58a6ff">{eid}</span>'
-            f' <span style="color:var(--muted);font-size:11px">{ev_name[:40]}</span></td>'
+            f'<td><a href="#event-{eid}" style="font-family:monospace;color:#58a6ff">{eid}</a>'
+            f' <span style="color:var(--muted);font-size:11px">{ev_name}</span></td>'
             f'<td>{outcome_badge}</td>'
             f'<td style="text-align:center">{s["n"]}</td>'
             f'<td style="text-align:center;color:{p_clr}">{s["implied_p"]:.1f}%</td>'
@@ -681,7 +725,7 @@ def render(data_dir: Path, output_path: Path,
         stats_pm=len(polymarket),
         run_date=datetime.now().strftime("%Y-%m-%d %H:%M"),
         matrix_html=_render_matrix(matrix_rows, search_status, competitive_scores, cell_articles),
-        event_sections_html=_render_event_sections(MVP_EVENTS, events, polymarket),
+        event_sections_html=_render_event_sections(MVP_EVENTS, events, polymarket, cell_articles),
         scoring_html=scoring_html,
         event_nav_links=''.join(
             f'<a href="#event-{eid}">{eid}</a>' for eid in MVP_EVENTS if eid in events

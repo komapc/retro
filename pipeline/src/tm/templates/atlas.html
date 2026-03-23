@@ -60,10 +60,9 @@
     .matrix th, .matrix td {{ border: 1px solid var(--border); padding: 0; }}
     .matrix th {{ background: var(--bg2); padding: 6px 10px; white-space: nowrap;
                   font-weight: 500; color: var(--muted); }}
-    .matrix .event-label {{ max-width: 220px; text-align: left; padding: 6px 10px;
-                             font-size: 11px; }}
-    .matrix .event-name  {{ display: block; overflow: hidden; text-overflow: ellipsis;
-                             white-space: nowrap; max-width: 210px; }}
+    .matrix .event-label {{ max-width: 280px; min-width: 180px; text-align: left;
+                             padding: 6px 10px; font-size: 11px; }}
+    .matrix .event-name  {{ display: block; word-break: break-word; }}
     .matrix .event-id {{ font-family: monospace; font-weight: 700; color: var(--blue);
                           margin-right: 6px; }}
     .outcome-badge {{ display: inline-block; font-size: 9px; font-weight: 700;
@@ -84,9 +83,25 @@
 
     /* ── Event sections ── */
     .event-section {{ margin-bottom: 48px; scroll-margin-top: 80px; }}
-    .event-header {{ display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }}
+    .event-header {{ display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px;
+                     flex-wrap: wrap; }}
     .event-header h2 {{ font-size: 16px; font-weight: 600; }}
     .event-meta {{ font-size: 12px; color: var(--muted); }}
+    .event-desc {{ font-size: 12px; color: var(--muted); margin-bottom: 14px;
+                   border-left: 3px solid var(--border); padding-left: 10px; line-height: 1.5; }}
+
+    /* ── Article list in event section ── */
+    .art-list {{ margin-top: 12px; background: var(--bg2); border: 1px solid var(--border);
+                 border-radius: 8px; padding: 12px 16px; font-size: 12px; }}
+    .art-list-title {{ font-weight: 600; color: var(--muted); font-size: 11px;
+                       text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }}
+    .art-source {{ margin-bottom: 10px; }}
+    .art-source:last-child {{ margin-bottom: 0; }}
+    .art-item {{ margin-left: 18px; margin-top: 4px; }}
+    .art-item a {{ color: var(--blue); font-size: 12px; }}
+    .art-item a:hover {{ text-decoration: underline; }}
+    .art-meta {{ display: inline-block; color: var(--muted); font-size: 10px;
+                 margin-left: 8px; }}
     .chart-wrap {{ background: var(--bg2); border: 1px solid var(--border);
                    border-radius: 8px; padding: 16px; margin-bottom: 16px; }}
     .chart-container {{ position: relative; height: 280px; }}
@@ -446,8 +461,8 @@ function renderPredictions(rows) {{
     const text      = r.claim || r.quote || '—';
     return `<tr data-eid="${{r.eid}}" data-sid="${{r.sid}}" data-certainty="${{Math.round(r.certainty*100)}}">
       <td>
-        <span style="font-family:monospace;color:#58a6ff">${{r.eid}}</span>
-        <div style="font-size:10px;color:#848d97">${{r.event_name.slice(0,40)}}</div>
+        <a href="#event-${{r.eid}}" style="font-family:monospace;color:#58a6ff">${{r.eid}}</a>
+        <div style="font-size:10px;color:#848d97">${{r.event_name}}</div>
       </td>
       <td><span class="source-dot" style="background:${{color}}"></span>${{r.source_name}}</td>
       <td style="white-space:nowrap">${{r.date}}</td>
