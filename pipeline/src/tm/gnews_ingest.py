@@ -90,11 +90,12 @@ HEADERS = {
 _DDG_LAST_CALL: float = 0.0
 DDG_MIN_INTERVAL = 2.0  # seconds between DDG calls
 
-BRAVE_API_KEY: Optional[str] = os.environ.get("BRAVE_API_KEY")
-BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search"
-
-SERPER_API_KEY: Optional[str] = os.environ.get("SERPER_API_KEY")
-SERPER_SEARCH_URL = "https://serpapi.com/search.json"
+# Search backend API keys — set whichever you have, others are skipped.
+# Priority order: Brave → SerpApi → Serper.dev → DDG
+BRAVE_API_KEY:  Optional[str] = os.environ.get("BRAVE_API_KEY")   # api.search.brave.com
+SERPAPI_KEY:    Optional[str] = os.environ.get("SERPAPI_KEY") \
+                              or os.environ.get("SERPER_API_KEY")   # serpapi.com (backwards-compat)
+SERPERDEV_KEY:  Optional[str] = os.environ.get("SERPERDEV_KEY")   # serper.dev
 
 
 def _is_ascii(s: str) -> bool:
@@ -244,86 +245,71 @@ def _filter_url(href: str, domain: str, expected_date: Optional[datetime]) -> bo
     return True
 
 
-def resolve_url_via_brave(
-    title: str, domain: str, expected_date: Optional[datetime] = None
-) -> Optional[str]:
-    """Resolve article URL using Brave Search API (no rate limiting, higher quality)."""
-    if not BRAVE_API_KEY:
-        return None
-    query = f'site:{domain} {title[:80]}'
-    try:
-        r = httpx.get(
-            BRAVE_SEARCH_URL,
-            params={"q": query, "count": 5, "search_lang": "en"},
-            headers={"Accept": "application/json", "X-Subscription-Token": BRAVE_API_KEY},
-            timeout=10,
-        )
-        if r.status_code == 402:
-            console.print(f"    [yellow]Brave: quota exhausted (402)[/yellow]")
-            return None
-        if r.status_code != 200:
-            console.print(f"    [dim red]Brave: HTTP {r.status_code}[/dim red]")
-            return None
-        results = r.json().get("web", {}).get("results", [])
-        for res in results:
-            href = res.get("url", "")
-            if _filter_url(href, domain, expected_date):
-                return href
-        console.print(f"    [dim]Brave: no matching results for '{title[:40]}'[/dim]")
-    except Exception as e:
-        console.print(f"    [dim red]Brave error: {type(e).__name__}: {e}[/dim red]")
+def _search_brave(query: str, domain: str, expected_date: Optional[datetime]) -> Optional[str]:
+    r = httpx.get(
+        "https://api.search.brave.com/res/v1/web/search",
+        params={"q": query, "count": 5, "search_lang": "en"},
+        headers={"Accept": "application/json", "X-Subscription-Token": BRAVE_API_KEY},
+        timeout=10,
+    )
+    if r.status_code == 402:
+        raise RuntimeError("quota exhausted (402)")
+    r.raise_for_status()
+    for res in r.json().get("web", {}).get("results", []):
+        if _filter_url(res.get("url", ""), domain, expected_date):
+            return res["url"]
     return None
 
 
-def resolve_url_via_serper(
-    title: str, domain: str, expected_date: Optional[datetime] = None
-) -> Optional[str]:
-    """Resolve article URL using SerpApi (Google Search, 250 free/mo then $50/5000)."""
-    if not SERPER_API_KEY:
-        return None
-    query = f'site:{domain} {title[:80]}'
-    try:
-        r = httpx.get(
-            SERPER_SEARCH_URL,
-            params={"engine": "google", "q": query, "num": 5, "api_key": SERPER_API_KEY},
-            timeout=10,
-        )
-        if r.status_code != 200:
-            console.print(f"    [dim red]SerpApi: HTTP {r.status_code}[/dim red]")
-            return None
-        results = r.json().get("organic_results", [])
-        for res in results:
-            href = res.get("link", "")
-            if _filter_url(href, domain, expected_date):
-                return href
-        console.print(f"    [dim]SerpApi: no matching results for '{title[:40]}'[/dim]")
-    except Exception as e:
-        console.print(f"    [dim red]SerpApi error: {type(e).__name__}: {e}[/dim red]")
+def _search_serpapi(query: str, domain: str, expected_date: Optional[datetime]) -> Optional[str]:
+    r = httpx.get(
+        "https://serpapi.com/search.json",
+        params={"engine": "google", "q": query, "num": 5, "api_key": SERPAPI_KEY},
+        timeout=10,
+    )
+    r.raise_for_status()
+    for res in r.json().get("organic_results", []):
+        if _filter_url(res.get("link", ""), domain, expected_date):
+            return res["link"]
     return None
 
 
-def resolve_url_via_ddg(
-    title: str, domain: str, expected_date: Optional[datetime] = None
-) -> Optional[str]:
-    """Fallback: resolve article URL via DuckDuckGo (rate-limited, free)."""
+def _search_serperdev(query: str, domain: str, expected_date: Optional[datetime]) -> Optional[str]:
+    r = httpx.post(
+        "https://google.serper.dev/search",
+        json={"q": query, "num": 5},
+        headers={"X-API-KEY": SERPERDEV_KEY, "Content-Type": "application/json"},
+        timeout=10,
+    )
+    r.raise_for_status()
+    for res in r.json().get("organic", []):
+        if _filter_url(res.get("link", ""), domain, expected_date):
+            return res["link"]
+    return None
+
+
+def _search_ddg(query: str, domain: str, expected_date: Optional[datetime]) -> Optional[str]:
     global _DDG_LAST_CALL
     elapsed = time.time() - _DDG_LAST_CALL
     if elapsed < DDG_MIN_INTERVAL:
         time.sleep(DDG_MIN_INTERVAL - elapsed)
-    query = f'site:{domain} "{title[:60]}"'
-    try:
-        with DDGS() as d:
-            results = list(d.text(query, max_results=5))
-        _DDG_LAST_CALL = time.time()
-        for r in results:
-            href = r.get("href", "")
-            if _filter_url(href, domain, expected_date):
-                return href
-        console.print(f"    [dim]DDG: no results for '{title[:40]}'[/dim]")
-    except Exception as e:
-        console.print(f"    [dim red]DDG error: {type(e).__name__}: {e}[/dim red]")
-        _DDG_LAST_CALL = time.time()
+    with DDGS() as d:
+        results = list(d.text(f'site:{domain} "{query[:60]}"', max_results=5))
+    _DDG_LAST_CALL = time.time()
+    for r in results:
+        if _filter_url(r.get("href", ""), domain, expected_date):
+            return r["href"]
     return None
+
+
+# Registry: (name, key_or_None, search_fn)
+# Entries with no key are skipped; DDG has no key so always attempted last.
+_SEARCH_BACKENDS = [
+    ("Brave",    lambda: BRAVE_API_KEY,  _search_brave),
+    ("SerpApi",  lambda: SERPAPI_KEY,    _search_serpapi),
+    ("Serper",   lambda: SERPERDEV_KEY,  _search_serperdev),
+    ("DDG",      lambda: True,           _search_ddg),
+]
 
 
 def resolve_url(
@@ -332,42 +318,41 @@ def resolve_url(
 ) -> Optional[str]:
     """
     Find the real article URL. Tries in order:
-      1. Construct URL directly from title slug (instant, works for TOI/Reuters)
-      2. Brave Search API (fast, but quota-limited)
-      3. Serper.dev Google Search API (~$1/1000, 2500 free)
-      4. DuckDuckGo (free fallback, blocked on EC2 datacenters)
+      1. Construct URL directly from title slug (TOI, Reuters)
+      2. Each configured search backend (Brave → SerpApi → Serper.dev → DDG)
+    Backends with no API key are skipped automatically.
     """
-    short = title[:50]
     direct = _construct_url(title, domain, expected_date)
     if direct:
         try:
             r = httpx.get(direct, headers=HEADERS, timeout=10, follow_redirects=True)
             if r.status_code == 200 and len(r.text) > 500:
-                console.print(f"    [dim green]URL via slug: {direct}[/dim green]")
+                console.print(f"    [dim green]URL via slug[/dim green]")
                 return str(r.url)
             else:
-                console.print(f"    [dim]Slug {direct} → HTTP {r.status_code}[/dim]")
+                console.print(f"    [dim]Slug → HTTP {r.status_code}[/dim]")
         except Exception as e:
             console.print(f"    [dim]Slug failed: {type(e).__name__}[/dim]")
 
-    if BRAVE_API_KEY:
-        url = resolve_url_via_brave(title, domain, expected_date)
-        if url:
-            console.print(f"    [dim green]URL via Brave: {url}[/dim green]")
-            return url
+    query = f'site:{domain} {title[:80]}'
+    for name, has_key, search_fn in _SEARCH_BACKENDS:
+        if not has_key():
+            continue
+        try:
+            url = search_fn(query, domain, expected_date)
+            if url:
+                console.print(f"    [dim green]URL via {name}[/dim green]")
+                return url
+            console.print(f"    [dim]{name}: no results[/dim]")
+        except RuntimeError as e:
+            console.print(f"    [yellow]{name}: {e}[/yellow]")
+        except Exception as e:
+            console.print(f"    [dim red]{name} error: {type(e).__name__}: {e}[/dim red]")
+        finally:
+            if name == "DDG":
+                _DDG_LAST_CALL = time.time()
 
-    if SERPER_API_KEY:
-        url = resolve_url_via_serper(title, domain, expected_date)
-        if url:
-            console.print(f"    [dim green]URL via Serper: {url}[/dim green]")
-            return url
-
-    url = resolve_url_via_ddg(title, domain, expected_date)
-    if url:
-        console.print(f"    [dim green]URL via DDG: {url}[/dim green]")
-        return url
-
-    console.print(f"    [red]URL resolve failed for '{short}' on {domain}[/red]")
+    console.print(f"    [red]resolve failed: '{title[:50]}' on {domain}[/red]")
     return None
 
 
