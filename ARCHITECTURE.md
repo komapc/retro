@@ -16,7 +16,7 @@ TruthMachine (Factum Atlas) is a retroactive media analysis pipeline that:
 retro/
 ├── pipeline/                    # Python pipeline (uv project)
 │   ├── src/tm/
-│   │   ├── gnews_ingest.py      # Article ingest: GNews RSS + Brave/DDG + trafilatura
+│   │   ├── gnews_ingest.py      # Article ingest: GNews RSS + multi-backend URL resolution + trafilatura
 │   │   ├── gatekeeper.py        # LLM: does this article contain predictions?
 │   │   ├── extractor.py         # LLM: extract structured predictions from article
 │   │   ├── orchestrator.py      # Orchestrates ingest → extract → vault → atlas
@@ -44,7 +44,7 @@ retro/
 │   ├── ec2_bootstrap.sh         # One-time EC2 setup script
 │   ├── ec2_run.sh               # Hourly pipeline loop (runs on EC2)
 │   ├── monitor.sh               # Local monitoring script (polls EC2 via SSM)
-│   └── openclaw/terraform/      # Terraform for EC2 instance (eu-central-1)
+│   └── openclaw/terraform/      # Terraform for EC2 instance (us-east-1)
 ├── .github/workflows/
 │   └── deploy-atlas.yml         # GitHub Actions: deploy factum_atlas.html to Pages
 └── factum_atlas.html            # Generated atlas (committed by EC2 after each cycle)
@@ -92,8 +92,9 @@ Each prediction has: `quote`, `claim`, `stance` (−1 to +1, event probability),
 ```
 gnews_ingest.py
   │  GNews RSS → titles in date window
-  │  Brave Search API → resolve title to URL  (fallback: DDG)
-  │  trafilatura → clean article text          (fallback: BeautifulSoup)
+  │  URL resolution chain: slug → Brave → SerpApi → Serper.dev → DDG
+  │  trafilatura → clean article text  (fallback: BeautifulSoup)
+  │  If 0 articles: CDX/Wayback fallback enumerates archived URLs
   │  Save to data/raw_ingest/{source}/{event}/article_NN.json
   ▼
 orchestrator.py  (local_file mode)
@@ -164,17 +165,19 @@ SCORING_CONFIG = ScoringConfig(window_hours=48, min_per_window=2)
 ## Deployment
 
 ### Infrastructure
-- **EC2**: `t3.large` (2 vCPU, 8GB RAM), Ubuntu 24.04, `eu-central-1`
+- **EC2**: `t4g.medium` (2 vCPU, 4GB RAM), Ubuntu 24.04 arm64, `us-east-1`
 - **Access**: AWS SSM Session Manager (no SSH port needed)
 - **Instance name**: `openclaw-worker` (`i-0f1ba4900a0a7af14`)
-- **Static IP**: `63.182.142.184`
+- **Static IP**: `35.174.46.160`
 - **Terraform**: `infra/openclaw/terraform/`
 
-### Required Secrets (AWS Secrets Manager, `eu-central-1`)
+### Required Secrets (AWS Secrets Manager, `us-east-1`)
 | Secret name | Used by |
 |---|---|
-| `openclaw/openrouter-api-key` | LLM inference |
-| `openclaw/brave-api-key` | Article URL resolution (fallback: DDG) |
+| `openclaw/openrouter-api-key` | LLM inference via OpenRouter |
+| `openclaw/brave-api-key` | URL resolution — Brave Search (optional) |
+| `openclaw/serpapi-key` | URL resolution — SerpApi/Google (optional) |
+| `openclaw/serperdev-key` | URL resolution — Serper.dev/Google (optional) |
 | `openclaw/github-pat` | Push `factum_atlas.html` to repo |
 
 ### Deploy to a New Server
@@ -185,7 +188,7 @@ cd infra/openclaw/terraform
 terraform init && terraform apply
 
 # 2. Create required secrets in Secrets Manager
-aws secretsmanager create-secret --region eu-central-1 \
+aws secretsmanager create-secret --region us-east-1 \
   --name openclaw/github-pat --secret-string "ghp_YOUR_TOKEN"
 # (openrouter and brave keys should already exist)
 
@@ -194,7 +197,7 @@ aws ssm start-session \
   --target $(aws ec2 describe-instances \
     --filters "Name=tag:Name,Values=openclaw-worker" \
     --query "Reservations[0].Instances[0].InstanceId" --output text) \
-  --region eu-central-1
+  --region us-east-1
 
 # 4. Bootstrap (run once on the instance)
 curl -sSL https://raw.githubusercontent.com/komapc/retro/main/infra/ec2_bootstrap.sh | bash

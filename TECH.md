@@ -69,7 +69,7 @@
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                    AWS EC2 (t3.small)                           │
-│                    eu-central-1 (Frankfurt)                     │
+│                    us-east-1 (N. Virginia)                     │
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │                    Docker Compose                         │  │
 │  │  ┌─────────────────────────────────────────────────────┐  │  │
@@ -341,7 +341,7 @@ src/
 
 | Component | Value |
 |-----------|-------|
-| Region | `eu-central-1` (Frankfurt) |
+| Region | `us-east-1` (N. Virginia) |
 | SSL Certificate | Valid until April 17, 2026 |
 
 ### Network & DNS
@@ -788,7 +788,7 @@ GOOGLE_CLIENT_SECRET=<google-oauth-client-secret>
 POSTGRES_PASSWORD=<secure-password>
 GEMINI_API_KEY=<gemini-api-key>
 BOT_RUNNER_SECRET=<shared-secret-for-cron-endpoint>
-AWS_REGION=eu-central-1
+AWS_REGION=us-east-1
 AWS_PROFILE=daatan
 ```
 

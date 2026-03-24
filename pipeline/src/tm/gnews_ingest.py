@@ -1,15 +1,24 @@
 """
-Google News RSS + Brave/DDG batch ingestor.
+Google News RSS ingestor with multi-backend URL resolution.
 
 Step 1: Query Google News RSS with date operators to find article titles
         from the event's predictive window.
-Step 2: Resolve each title to a real URL via Brave Search API (primary)
-        or DuckDuckGo (fallback if no BRAVE_API_KEY).
+Step 2: Resolve each title to a real URL via a chain of search backends
+        tried in order until one succeeds:
+          1. Direct slug construction (instant, works for TOI/Reuters)
+          2. Brave Search API        (BRAVE_API_KEY)
+          3. SerpApi                 (SERPAPI_KEY  — serpapi.com)
+          4. Serper.dev              (SERPERDEV_KEY — serper.dev)
+          5. DuckDuckGo              (free, blocked on EC2 datacenters)
+        Backends with no key set are skipped automatically.
 Step 3: Scrape full article text via trafilatura (primary) with
         BeautifulSoup fallback, and save to data/raw_ingest/.
+        If text < 500 chars (paywall), tries Wayback Machine cached copy.
+Step 4: CDX fallback — if GNews finds no titles OR URL resolution fails,
+        enumerate Wayback CDX archives for the domain in the date window.
 
 Sources: toi, jpost, haaretz, reuters, globes, ynet, israel_hayom,
-         walla, n12, maariv, ch13, ch14, kan11  (Hebrew sources included)
+         walla, haaretz_he, n12, maariv, ch13, kan11  (Hebrew sources included)
 
 Usage:
     DATA_DIR=/path/to/data uv run python -m tm.gnews_ingest
