@@ -3,13 +3,9 @@
   "name": "Iran launches direct missile attack on Israel",
   "outcome": true,
   "outcome_date": "2024-04-14",
-  "predictive_window_days": 7,
   "search_keywords": [
-    "איראן תוקפת את ישראל",
-    "מלחמה בין ישראל לאיראן",
-    "תגובה איראנית",
-    "Iran Israel tensions",
-    "Iran threatens retaliation"
+    "\u05de\u05ea\u05e7\u05e4\u05d4 \u05d0\u05d9\u05e8\u05d0\u05e0\u05d9\u05ea \u05d9\u05e9\u05d9\u05e8\u05d4",
+    "Iran missile attack Israel"
   ],
   "llm_referee_criteria": "Must focus on the April 14 multi-drone/missile barrage."
 }

@@ -3,14 +3,9 @@
   "name": "Hamas operational after 1 year (Oct 7, 2024)",
   "outcome": true,
   "outcome_date": "2024-10-07",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "חמאס מוכן",
-    "עזה הסלמה",
-    "מבצע צבאי בעזה",
-    "gaza military operation",
-    "hamas readiness",
-    "escalation with hamas"
+    "\u05d7\u05de\u05d0\u05e1 \u05d0\u05d7\u05e8\u05d9 \u05e9\u05e0\u05d4 \u05dc\u05de\u05dc\u05d7\u05de\u05d4",
+    "Hamas status Oct 2024"
   ],
-  "llm_referee_criteria": "B"
+  "llm_referee_criteria": "Must discuss Hamas still fighting/ruling parts of Gaza."
 }

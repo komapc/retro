@@ -3,12 +3,9 @@
   "name": "Russia launches full-scale invasion of Ukraine",
   "outcome": true,
   "outcome_date": "2022-02-24",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "Russia Ukraine tensions",
-    "NATO military buildup",
-    "Donetsk Luhansk escalation",
-    "Ukraine border crisis"
+    "\u05e4\u05dc\u05d9\u05e9\u05d4 \u05e8\u05d5\u05e1\u05d9\u05d4 \u05d0\u05d5\u05e7\u05e8\u05d0\u05d9\u05e0\u05d4",
+    "Russia invades Ukraine full-scale"
   ],
   "llm_referee_criteria": "Must focus on the Feb 24 ground offensive start."
 }

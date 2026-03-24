@@ -3,12 +3,9 @@
   "name": "ChatGPT launches publicly (OpenAI)",
   "outcome": true,
   "outcome_date": "2022-11-30",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "OpenAI chatbot",
-    "generative AI",
-    "large language model",
-    "AI writing tool"
+    "\u05d4\u05e9\u05e7\u05ea \u05e6'\u05d0\u05d8 GPT",
+    "ChatGPT launch"
   ],
   "llm_referee_criteria": "Must focus on the Nov 30 public release."
 }

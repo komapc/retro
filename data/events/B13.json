@@ -3,14 +3,9 @@
   "name": "US halts weapons shipment to Israel",
   "outcome": true,
   "outcome_date": "2024-05-08",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "מחסור תחמושת לישראל",
-    "עיכוב משלוחי נשק",
-    "יחסי ארצות הברית ישראל",
-    "US Israel relations strained",
-    "delay arms shipment Israel",
-    "US halts weapons aid"
+    "\u05e2\u05d9\u05db\u05d5\u05d1 \u05de\u05e9\u05dc\u05d5\u05d7\u05d9 \u05e0\u05e9\u05e7 \u05d0\u05e8\u05d4\\\"\u05d1",
+    "US halts weapons shipment"
   ],
-  "llm_referee_criteria": "B, E"
+  "llm_referee_criteria": "Must focus on the May 8 confirmation of the pause."
 }

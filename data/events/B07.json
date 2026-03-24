@@ -3,14 +3,9 @@
   "name": "IDF enters and controls central Khan Yunis",
   "outcome": true,
   "outcome_date": "2023-12-05",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "חאן יונס",
-    "מרכז חאן יונס",
-    "כניסת צהל לחאן יונס",
-    "Khan Yunis",
-    "IDF Khan Yunis operation",
-    "Gaza ground offensive"
+    "\u05e6\u05d4\\\"\u05dc \u05d1\u05de\u05e8\u05db\u05d6 \u05d7\u05d0\u05df \u05d9\u05d5\u05e0\u05e1",
+    "IDF central Khan Yunis"
   ],
-  "llm_referee_criteria": "B"
+  "llm_referee_criteria": "Must focus on the entry into the city's heart."
 }

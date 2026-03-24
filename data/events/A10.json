@@ -3,14 +3,9 @@
   "name": "Netanyahu pauses judicial reform after strike",
   "outcome": true,
   "outcome_date": "2023-03-27",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "הרפורמה המשפטית",
-    "הפגנות נגד הממשלה",
-    "משבר פוליטי",
-    "judicial reform pause",
-    "Netanyahu stepping down",
-    "political instability Israel"
+    "\u05e0\u05ea\u05e0\u05d9\u05d4\u05d5 \u05d4\u05e9\u05d4\u05d9\u05d9\u05ea \u05d4\u05d7\u05e7\u05d9\u05e7\u05d4",
+    "Netanyahu pause reform"
   ],
   "llm_referee_criteria": "Must focus on the March 27 announcement after mass protests."
 }

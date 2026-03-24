@@ -3,14 +3,9 @@
   "name": "Judicial reform protest movement reaches 100K+ weekly",
   "outcome": true,
   "outcome_date": "2023-02-11",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "הרפורמה המשפטית הפגנות",
-    "מחאת הרפורמה המשפטית",
-    "רפורמה משפטית מחאה",
-    "judicial reform protests",
-    "anti government protests",
-    "Netanyahu government criticism"
+    "\u05de\u05d0\u05d4 \u05d0\u05dc\u05e3 \u05de\u05e4\u05d2\u05d9\u05e0\u05d9\u05dd",
+    "100000 protesters judicial reform"
   ],
-  "llm_referee_criteria": "F, A"
+  "llm_referee_criteria": "Must cite crowd estimates of 100K+ in a single event."
 }

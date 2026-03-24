@@ -3,14 +3,9 @@
   "name": "Budget 2023 passes Knesset",
   "outcome": true,
   "outcome_date": "2023-05-24",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "הצבעה על התקציב",
-    "אישור תקציב המדינה",
-    "תקציב המדינה 2023",
-    "state budget approval",
-    "coalition stability",
-    "budget negotiations"
+    "\u05d0\u05d9\u05e9\u05d5\u05e8 \u05ea\u05e7\u05e6\u05d9\u05d1 \u05d4\u05de\u05d3\u05d9\u05e0\u05d4 2023",
+    "Israel budget 2023 passed"
   ],
   "llm_referee_criteria": "Must discuss the final passage of the 2023 budget."
 }

@@ -3,14 +3,9 @@
   "name": "First hostage deal reached (pause in fighting)",
   "outcome": true,
   "outcome_date": "2023-11-22",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "עסקת חטופים",
-    "הפסקת אש הומניטרית",
-    "חמאס משחרר חטופים",
-    "hostage release deal",
-    "humanitarian pause negotiations",
-    "gaza hostage negotiations"
+    "\u05e2\u05e1\u05e7\u05ea \u05d7\u05d8\u05d5\u05e4\u05d9\u05dd \u05e8\u05d0\u05e9\u05d5\u05e0\u05d4",
+    "first hostage deal"
   ],
-  "llm_referee_criteria": "Must focus on the Nov 22 hostage deal and pause in fighting."
+  "llm_referee_criteria": "Must focus on the agreement reached on Nov 22."
 }

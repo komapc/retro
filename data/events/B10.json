@@ -3,14 +3,9 @@
   "name": "Sinwar killed in Gaza",
   "outcome": true,
   "outcome_date": "2024-10-16",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "יחיא סינוואר חיסול",
-    "סינוואר מטרה",
-    "חיסול ממוקד עזה",
-    "Sinwar targeted killing",
-    "Hamas leader assassination",
-    "Gaza targeted operations"
+    "\u05d7\u05d9\u05e1\u05d5\u05dc \u05e1\u05d9\u05e0\u05d5\u05d5\u05d0\u05e8",
+    "Sinwar killed Gaza"
   ],
-  "llm_referee_criteria": "B"
+  "llm_referee_criteria": "Must focus on the Oct 16 confirmation of his death."
 }

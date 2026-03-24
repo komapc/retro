@@ -3,14 +3,9 @@
   "name": "Haniyeh assassinated in Tehran",
   "outcome": true,
   "outcome_date": "2024-07-31",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "חמאס טהרן",
-    "חיסול חמאס",
-    "ישראל איראן",
-    "Hamas Tehran relations",
-    "Hamas leader assassination",
-    "Israel Iran conflict"
+    "\u05d7\u05d9\u05e1\u05d5\u05dc \u05d4\u05e0\u05d9\u05d9\u05d4 \u05d1\u05d8\u05d4\u05e8\u05df",
+    "Haniyeh assassinated Tehran"
   ],
-  "llm_referee_criteria": "B, C"
+  "llm_referee_criteria": "Must focus on the July 31 event in Iran."
 }

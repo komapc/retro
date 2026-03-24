@@ -3,14 +3,9 @@
   "name": "Hamas launches mass surprise attack (Oct 7)",
   "outcome": true,
   "outcome_date": "2023-10-07",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "הסלמה בדרום",
-    "עזה הסלמה",
-    "תגובה מעזה",
-    "Gaza escalation",
-    "Hamas threat",
-    "Israel Gaza tensions"
+    "\u05de\u05ea\u05e7\u05e4\u05ea \u05d7\u05de\u05d0\u05e1 7 \u05d1\u05d0\u05d5\u05e7\u05d8\u05d5\u05d1\u05e8",
+    "Hamas surprise attack"
   ],
-  "llm_referee_criteria": "B, C"
+  "llm_referee_criteria": "Must focus on the initial infiltration and attack."
 }

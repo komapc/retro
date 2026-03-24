@@ -3,14 +3,9 @@
   "name": "Lebanon ceasefire agreement reached",
   "outcome": true,
   "outcome_date": "2024-11-27",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "הסכם הפסקת אש לבנון",
-    "משא ומתן הפסקת אש",
-    "רגיעה בגבול הצפון",
-    "Lebanon ceasefire negotiations",
-    "Israel Hezbollah tensions",
-    "diplomatic efforts Lebanon"
+    "\u05d4\u05e4\u05e1\u05e7\u05ea \u05d0\u05e9 \u05d1\u05dc\u05d1\u05e0\u05d5\u05df",
+    "Lebanon ceasefire 2024"
   ],
   "llm_referee_criteria": "Must focus on the Nov 27 effective date."
 }

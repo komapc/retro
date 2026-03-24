@@ -3,12 +3,9 @@
   "name": "Finland joins NATO",
   "outcome": true,
   "outcome_date": "2023-04-04",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "Finland NATO membership",
-    "Finland NATO application",
-    "Finland security policy",
-    "NATO expansion"
+    "\u05e4\u05d9\u05e0\u05dc\u05e0\u05d3 \u05e0\u05d0\u05d8\u05d5",
+    "Finland joins NATO"
   ],
   "llm_referee_criteria": "Must focus on the April 4 accession ceremony."
 }

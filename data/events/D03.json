@@ -3,14 +3,9 @@
   "name": "S&P downgrades Israel credit rating",
   "outcome": true,
   "outcome_date": "2024-04-19",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "דירוג אשראי",
-    "מיתון כלכלי",
-    "S&P תחזית",
-    "Israel credit rating",
-    "S&P outlook",
-    "economic forecast Israel"
+    "S&P \u05d4\u05d5\u05e8\u05d3\u05ea \u05d3\u05d9\u05e8\u05d5\u05d2",
+    "S&P downgrade Israel"
   ],
   "llm_referee_criteria": "Must focus on the April 2024 downgrade."
 }

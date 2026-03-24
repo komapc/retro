@@ -3,14 +3,9 @@
   "name": "ICJ orders Israel to prevent genocide / halt Rafah",
   "outcome": true,
   "outcome_date": "2024-05-24",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "צווי ביניים האג",
-    "רפיח פעולה",
-    "בית הדין הבינלאומי בהאג",
-    "ICJ provisional measures",
-    "Rafah operation",
-    "genocide prevention"
+    "\u05e6\u05d5 \u05d1\u05d9\u05ea \u05d4\u05d3\u05d9\u05df \u05d1\u05d4\u05d0\u05d2 \u05e8\u05e4\u05d9\u05d7",
+    "ICJ Rafah order"
   ],
-  "llm_referee_criteria": "B, E"
+  "llm_referee_criteria": "Must focus on the May 24 ruling."
 }

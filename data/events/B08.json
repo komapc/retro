@@ -3,14 +3,9 @@
   "name": "IDF begins Rafah ground operation",
   "outcome": true,
   "outcome_date": "2024-05-07",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "רפיח פעולה קרקעית",
-    "צבא כניסה לרפיח",
-    "התקפה ברפיח",
-    "Rafah ground operation",
-    "IDF Rafah incursion",
-    "military offensive Gaza"
+    "\u05e4\u05e2\u05d5\u05dc\u05d4 \u05d1\u05e8\u05e4\u05d9\u05d7",
+    "Rafah operation begins"
   ],
-  "llm_referee_criteria": "B, E"
+  "llm_referee_criteria": "Must focus on the start of the ground offensive in Rafah."
 }

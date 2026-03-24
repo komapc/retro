@@ -3,14 +3,9 @@
   "name": "Israel formally declares state of war",
   "outcome": true,
   "outcome_date": "2023-10-08",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "מלחמה בעזה",
-    "הסלמה בדרום",
-    "עזה הסלמה",
-    "gaza escalation",
-    "israel gaza tensions",
-    "hamas attack threat"
+    "\u05d4\u05db\u05e8\u05d6\u05ea \u05de\u05dc\u05d7\u05de\u05d4 \u05d9\u05e9\u05e8\u05d0\u05dc",
+    "Israel declares war Article 40"
   ],
-  "llm_referee_criteria": "B, A"
+  "llm_referee_criteria": "Must focus on the cabinet's formal invocation."
 }

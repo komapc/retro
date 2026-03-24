@@ -3,14 +3,9 @@
   "name": "Nasrallah assassinated",
   "outcome": true,
   "outcome_date": "2024-09-27",
-  "predictive_window_days": 14,
   "search_keywords": [
-    "נסראללה חיסול",
-    "חיסול בלבנון",
-    "הסלמה בצפון",
-    "Hezbollah leader assassination",
-    "Nasrallah death threats",
-    "Israel Hezbollah conflict"
+    "\u05d7\u05d9\u05e1\u05d5\u05dc \u05e0\u05e1\u05e8\u05d0\u05dc\u05dc\u05d4",
+    "Nasrallah assassinated"
   ],
   "llm_referee_criteria": "Must focus on the Sept 27 strike in Beirut."
 }
