@@ -151,7 +151,8 @@ resource "aws_instance" "openclaw" {
 #
 # Required secrets:
 #   openclaw/openrouter-api-key  — LLM inference via OpenRouter
-#   openclaw/brave-api-key       — Brave Search API (optional, DDG fallback)
+#   openclaw/brave-api-key       — Brave Search API (optional)
+#   openclaw/serper-api-key      — Serper.dev Google Search API (optional, URL resolution)
 #   openclaw/github-pat          — GitHub PAT (repo scope) for atlas push
 
 resource "aws_eip" "openclaw" {
