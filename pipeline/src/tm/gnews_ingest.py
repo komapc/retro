@@ -94,7 +94,7 @@ BRAVE_API_KEY: Optional[str] = os.environ.get("BRAVE_API_KEY")
 BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search"
 
 SERPER_API_KEY: Optional[str] = os.environ.get("SERPER_API_KEY")
-SERPER_SEARCH_URL = "https://google.serper.dev/search"
+SERPER_SEARCH_URL = "https://serpapi.com/search.json"
 
 
 def _is_ascii(s: str) -> bool:
@@ -278,28 +278,27 @@ def resolve_url_via_brave(
 def resolve_url_via_serper(
     title: str, domain: str, expected_date: Optional[datetime] = None
 ) -> Optional[str]:
-    """Resolve article URL using Serper.dev (Google Search API, ~$1/1000 queries)."""
+    """Resolve article URL using SerpApi (Google Search, 250 free/mo then $50/5000)."""
     if not SERPER_API_KEY:
         return None
     query = f'site:{domain} {title[:80]}'
     try:
-        r = httpx.post(
+        r = httpx.get(
             SERPER_SEARCH_URL,
-            json={"q": query, "num": 5},
-            headers={"X-API-KEY": SERPER_API_KEY, "Content-Type": "application/json"},
+            params={"engine": "google", "q": query, "num": 5, "api_key": SERPER_API_KEY},
             timeout=10,
         )
         if r.status_code != 200:
-            console.print(f"    [dim red]Serper: HTTP {r.status_code}[/dim red]")
+            console.print(f"    [dim red]SerpApi: HTTP {r.status_code}[/dim red]")
             return None
-        results = r.json().get("organic", [])
+        results = r.json().get("organic_results", [])
         for res in results:
             href = res.get("link", "")
             if _filter_url(href, domain, expected_date):
                 return href
-        console.print(f"    [dim]Serper: no matching results for '{title[:40]}'[/dim]")
+        console.print(f"    [dim]SerpApi: no matching results for '{title[:40]}'[/dim]")
     except Exception as e:
-        console.print(f"    [dim red]Serper error: {type(e).__name__}: {e}[/dim red]")
+        console.print(f"    [dim red]SerpApi error: {type(e).__name__}: {e}[/dim red]")
     return None
 
 
