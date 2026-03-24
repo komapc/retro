@@ -1,6 +1,6 @@
 #!/bin/bash
 # EC2 user_data: install Docker, fetch secrets, set up OpenClaw + LiteLLM.
-# Templated by Terraform — variables in ${} are replaced at plan time.
+# Templated by Terraform — variables in $${} are replaced at plan time.
 
 set -euo pipefail
 exec > >(tee /var/log/user-data.log) 2>&1

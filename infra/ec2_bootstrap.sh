@@ -1,9 +1,13 @@
 #!/bin/bash
 # TruthMachine EC2 Bootstrap — run once on a fresh instance.
-# Access via SSM: aws ssm start-session --target <instance-id> --region eu-central-1
+# Access via SSM: aws ssm start-session --target <instance-id> --region us-east-1
 set -euo pipefail
 
-REGION="eu-central-1"
+# Auto-detect region from EC2 metadata (IMDSv2), fallback to us-east-1
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 60" 2>/dev/null || true)
+REGION=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+  "http://169.254.169.254/latest/meta-data/placement/region" 2>/dev/null || echo "us-east-1")
 REPO="https://github.com/komapc/retro.git"
 WORKDIR="$HOME/truthmachine"
 
