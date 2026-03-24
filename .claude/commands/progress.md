@@ -1,6 +1,6 @@
-Check the status of the Factum Atlas pipeline running on the EC2 server (openclaw-worker, ubuntu@63.182.142.184).
+Check the status of the Factum Atlas pipeline running on the EC2 server (openclaw-worker, ubuntu@35.174.46.160).
 
-SSH into the server using `ssh -i ~/.ssh/daatan-key.pem -o StrictHostKeyChecking=no ubuntu@63.182.142.184` and run this single command block:
+SSH into the server using `ssh -i ~/.ssh/daatan-key.pem -o StrictHostKeyChecking=no ubuntu@35.174.46.160` and run this single command block:
 
 ```bash
 python3 - <<'PY'
