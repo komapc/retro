@@ -16,7 +16,17 @@ log() { echo "[bootstrap] $*"; }
 # ── 1. System dependencies ────────────────────────────────────────────────────
 log "Installing system packages..."
 sudo apt-get update -q
-sudo apt-get install -y git curl python3-pip python3-venv jq
+sudo apt-get install -y git curl python3-pip python3-venv jq unzip
+
+# AWS CLI v2 (not in apt on Ubuntu 24.04 arm64)
+if ! command -v aws &>/dev/null; then
+  log "Installing AWS CLI v2..."
+  curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o /tmp/awscliv2.zip
+  unzip -q /tmp/awscliv2.zip -d /tmp
+  sudo /tmp/aws/install
+  rm -rf /tmp/aws /tmp/awscliv2.zip
+fi
+log "AWS CLI $(aws --version 2>&1 | head -1)"
 
 # Install uv (fast Python package manager)
 if ! command -v uv &>/dev/null; then
