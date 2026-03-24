@@ -5,21 +5,28 @@ cd ~/projects/retro
 echo "=== PIPELINE START $(date) ==="
 
 python3 -c "
-import json
-with open('data/progress.json') as f: state = json.load(f)
+import json, os
+path = 'data/progress.json'
+if not os.path.exists(path):
+    with open(path, 'w') as f: json.dump({'cells': {}}, f)
+with open(path) as f: state = json.load(f)
 cells = state.get('cells', {})
 n = sum(1 for v in cells.values() if v['status'] == 'no_predictions')
 for v in cells.values():
     if v['status'] == 'no_predictions': v['status'] = 'pending'
-with open('data/progress.json', 'w') as f: json.dump({'cells': cells}, f)
+with open(path, 'w') as f: json.dump({'cells': cells}, f)
 print(f'Reset {n} cells to pending')
 "
 
 cd pipeline
-DATA_DIR=/home/ubuntu/projects/retro/data uv run python -m tm.gnews_ingest --force
-DATA_DIR=/home/ubuntu/projects/retro/data uv run python -m tm.orchestrator local_file
-DATA_DIR=/home/ubuntu/projects/retro/data uv run python -m tm.render_atlas
+echo '--- gnews ingest ---'
+DATA_DIR=/home/ubuntu/projects/retro/data uv run python -m tm.gnews_ingest --force 2>&1
+echo '--- orchestrator ---'
+DATA_DIR=/home/ubuntu/projects/retro/data uv run python -m tm.orchestrator local_file 2>&1
+echo '--- render atlas ---'
+DATA_DIR=/home/ubuntu/projects/retro/data uv run python -m tm.render_atlas 2>&1
 cd ..
+echo '--- commit & push ---'
 git add -A
 git commit -m "atlas: pipeline run $(date +%Y-%m-%dT%H:%M)" && git push origin main || echo no_changes
 echo "=== DONE $(date) ==="
