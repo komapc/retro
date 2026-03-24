@@ -442,7 +442,7 @@ async def search_wayback_cdx(
     ]
 
     try:
-        async with httpx.AsyncClient(timeout=30) as client:
+        async with httpx.AsyncClient(timeout=8) as client:
             r = await client.get(CDX_API, params=params)
         if r.status_code != 200:
             console.print(f"    [dim red]CDX error: HTTP {r.status_code}[/dim red]")
@@ -612,7 +612,11 @@ async def ingest_cell(
 
     if saved == 0:
         # ── CDX fallback: enumerate Wayback archives ─────────────────────────
-        # Triggered when GNews found no titles OR found titles but URL resolution failed.
+        # Disabled: Wayback CDX silently drops connections from AWS EC2 IPs
+        # (accepts TCP/HTTP but returns 0 bytes on domain+date queries → 30s timeout per cell).
+        # Re-enable by setting ENABLE_CDX=1 in environment.
+        if not os.environ.get("ENABLE_CDX"):
+            return 0
         console.print(f"    [dim]CDX fallback for {source_id}/{event['id']}[/dim]")
         cdx_arts = await search_wayback_cdx(domain, start_dt, outcome_dt, keywords)
         for art in cdx_arts:
