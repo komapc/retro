@@ -179,7 +179,8 @@ def search_gnews_rss(
                 continue
 
             pub_str = pub_dt.strftime("%Y-%m-%d") if pub_dt else start_date.strftime("%Y-%m-%d")
-            articles.append({"title": title, "published_at": pub_str})
+            gnews_link = item.findtext("link", "") or item.findtext("guid", "")
+            articles.append({"title": title, "published_at": pub_str, "gnews_link": gnews_link})
 
             if len(articles) >= max_results:
                 break
@@ -199,15 +200,18 @@ def _title_slug(title: str) -> str:
     return re.sub(r"-+", "-", t)
 
 
-def _construct_url(title: str, domain: str) -> Optional[str]:
-    """Construct a probable article URL from title for domains with predictable slugs.
-    Only TOI is reliable; all others fall through to DDG.
-    """
+def _construct_url(title: str, domain: str, expected_date: Optional[datetime] = None) -> Optional[str]:
+    """Construct a probable article URL from title for domains with predictable slugs."""
     slug = _title_slug(title)
     if not slug:
         return None
     if domain == "timesofisrael.com":
         return f"https://www.timesofisrael.com/{slug}/"
+    # Reuters: caller will try each candidate URL via httpx; return all options
+    # as a list is not supported — just return the most likely one
+    if domain == "reuters.com" and expected_date:
+        date_str = expected_date.strftime("%Y-%m-%d")
+        return f"https://www.reuters.com/world/middle-east/{slug}-{date_str}/"
     return None
 
 
@@ -287,15 +291,17 @@ def resolve_url_via_ddg(
 
 
 def resolve_url(
-    title: str, domain: str, expected_date: Optional[datetime] = None
+    title: str, domain: str, expected_date: Optional[datetime] = None,
+    gnews_link: Optional[str] = None,
 ) -> Optional[str]:
     """
     Find the real article URL. Tries in order:
-      1. Construct URL directly from title slug (instant, works for TOI)
-      2. Brave Search API (fast, reliable, no rate limits)
-      3. DuckDuckGo (free fallback, rate-limited)
+      1. Construct URL directly from title slug (instant, works for TOI/Reuters)
+      2. Decode GNews CBMi... token via gnewsdecoder (free, no rate limit)
+      3. Brave Search API (fast, but quota-limited)
+      4. DuckDuckGo (free fallback, blocked on EC2 datacenters)
     """
-    direct = _construct_url(title, domain)
+    direct = _construct_url(title, domain, expected_date)
     if direct:
         try:
             r = httpx.get(direct, headers=HEADERS, timeout=10, follow_redirects=True)
@@ -310,28 +316,6 @@ def resolve_url(
 
     return resolve_url_via_ddg(title, domain, expected_date)
 
-
-def resolve_url_via_ddg(
-    title: str, domain: str, expected_date: Optional[datetime] = None
-) -> Optional[str]:
-    """Fallback: resolve article URL via DuckDuckGo (rate-limited, free)."""
-    global _DDG_LAST_CALL
-    elapsed = time.time() - _DDG_LAST_CALL
-    if elapsed < DDG_MIN_INTERVAL:
-        time.sleep(DDG_MIN_INTERVAL - elapsed)
-    query = f'site:{domain} "{title[:60]}"'
-    try:
-        with DDGS() as d:
-            results = list(d.text(query, max_results=5))
-        _DDG_LAST_CALL = time.time()
-        for r in results:
-            href = r.get("href", "")
-            if _filter_url(href, domain, expected_date):
-                return href
-    except Exception as e:
-        console.print(f"    [dim red]DDG error: {e}[/dim red]")
-        _DDG_LAST_CALL = time.time()
-    return None
 
 
 PAYWALL_THRESHOLD = 500  # chars — below this, try Wayback Machine
@@ -393,8 +377,9 @@ async def search_wayback_cdx(
 
     Returns list of {url, published_at, headline, text}.
     """
-    # Strip www. — matchType=domain covers all subdomains
-    cdx_domain = re.sub(r"^www\.", "", domain)
+    # Strip leading subdomain (www., news., en.) so CDX matchType=domain
+    # covers all subdomains. E.g. news.walla.co.il → walla.co.il
+    cdx_domain = re.sub(r"^(?:www|news|en)\.", "", domain)
     params = [
         ("url",       cdx_domain),
         ("matchType", "domain"),
@@ -412,10 +397,11 @@ async def search_wayback_cdx(
         async with httpx.AsyncClient(timeout=30) as client:
             r = await client.get(CDX_API, params=params)
         if r.status_code != 200:
+            console.print(f"    [dim red]CDX error: HTTP {r.status_code}[/dim red]")
             return []
         rows = r.json()
     except Exception as e:
-        console.print(f"    [dim red]CDX error: {e}[/dim red]")
+        console.print(f"    [dim red]CDX error: {type(e).__name__}: {e}[/dim red]")
         return []
 
     if len(rows) < 2:   # first row is header ["original","timestamp"]
@@ -554,7 +540,7 @@ async def ingest_cell(
         expected_dt = datetime.strptime(art["published_at"], "%Y-%m-%d")
         loop = asyncio.get_event_loop()
         url = await loop.run_in_executor(
-            None, resolve_url, art["title"], domain, expected_dt
+            None, resolve_url, art["title"], domain, expected_dt, art.get("gnews_link")
         )
         if not url:
             console.print(f"    [dim]No URL for '{art['title'][:50]}'[/dim]")
