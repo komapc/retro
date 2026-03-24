@@ -24,53 +24,89 @@ export DATA_DIR
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
 
+cell_stats() {
+  python3 - <<'PY'
+import json, os
+p = os.path.join(os.environ["DATA_DIR"], "progress.json")
+try:
+    s = json.load(open(p))
+    cells = s.get("cells", {})
+    done  = sum(1 for v in cells.values() if v.get("status") == "done")
+    nopred= sum(1 for v in cells.values() if v.get("status") == "no_predictions")
+    fail  = sum(1 for v in cells.values() if v.get("status") == "failed")
+    pend  = sum(1 for v in cells.values() if v.get("status") == "pending")
+    total = len(cells)
+    print(f"{done}/{total} done | {nopred} no_pred | {fail} failed | {pend} pending")
+except Exception:
+    print("?/? (progress.json unreadable)")
+PY
+}
+
+commit_and_push() {
+  local msg="$1"
+  cd "$WORKDIR"
+  # Render latest atlas before committing
+  uv run --project "$PIPELINE_DIR" python -m tm.render_atlas 2>&1 | tail -5
+  STATS=$(cell_stats)
+  git add factum_atlas.html data/progress.json 2>/dev/null || true
+  if ! git diff --cached --quiet; then
+    git commit -m "atlas: ${msg} — ${STATS}"
+    git push origin main
+    log "Pushed: ${msg} — ${STATS}"
+  fi
+}
+
 run_pipeline() {
   cd "$WORKDIR"
 
   # ── 1. Pull latest event/source definitions ───────────────────────────────
   log "Pulling latest from main..."
   git fetch origin main
-  # Only fast-forward — never overwrite local data dirs
   git merge --ff-only origin/main || log "Already up to date"
 
   # ── 2. Ingest: fetch articles for pending cells ───────────────────────────
-  log "Running gnews_ingest..."
-  uv run --project "$PIPELINE_DIR" python -m tm.gnews_ingest 2>&1 | tail -30
-  log "Ingest complete."
+  log "Ingest starting — $(cell_stats)"
+  uv run --project "$PIPELINE_DIR" python -m tm.gnews_ingest 2>&1
+  log "Ingest complete — $(cell_stats)"
 
-  # ── 3. Extract: run orchestrator on all pending cells ─────────────────────
-  log "Running orchestrator (local_file mode)..."
-  uv run --project "$PIPELINE_DIR" python -m tm.orchestrator local_file 2>&1 | tail -40
-  log "Extraction complete."
+  # ── 3. Extract: run orchestrator in batches of 5 events, commit after each ─
+  log "Extraction starting — $(cell_stats)"
 
-  # ── 4. Render atlas HTML ──────────────────────────────────────────────────
-  log "Rendering atlas..."
-  uv run --project "$PIPELINE_DIR" python -m tm.render_atlas
-  log "Atlas rendered."
+  # Get all event IDs that have articles in raw_ingest
+  EVENTS=$(python3 -c "
+import os, pathlib
+raw = pathlib.Path(os.environ['DATA_DIR']) / 'raw_ingest'
+events = set()
+if raw.exists():
+    for src_dir in raw.iterdir():
+        for evt_dir in src_dir.iterdir():
+            if any(evt_dir.glob('*.json')):
+                events.add(evt_dir.name)
+print(' '.join(sorted(events)))
+" 2>/dev/null)
 
-  # ── 5. Push if atlas changed ──────────────────────────────────────────────
-  if ! git diff --quiet factum_atlas.html 2>/dev/null; then
-    # Count completed cells for commit message
-    DONE=$(python3 - <<'PY'
-import json, os
-p = os.path.join(os.environ["DATA_DIR"], "progress.json")
-try:
-    s = json.load(open(p))
-    cells = s.get("cells", {})
-    done = sum(1 for v in cells.values() if v.get("status") == "done")
-    total = len(cells)
-    print(f"{done}/{total}")
-except Exception:
-    print("?/?")
-PY
-)
-    git add factum_atlas.html
-    git commit -m "atlas: ${DONE} cells complete"
-    git push origin main
-    log "Pushed atlas — ${DONE} cells done. GitHub Actions deploying to Pages."
+  if [[ -z "$EVENTS" ]]; then
+    log "No raw_ingest articles found — skipping orchestrator."
   else
-    log "No changes to atlas, skipping push."
+    read -ra EVENT_ARR <<< "$EVENTS"
+    TOTAL_EVENTS=${#EVENT_ARR[@]}
+    log "Orchestrating ${TOTAL_EVENTS} events in batches of 5..."
+
+    BATCH=0
+    for (( i=0; i<TOTAL_EVENTS; i+=5 )); do
+      BATCH=$((BATCH + 1))
+      BATCH_EVENTS=("${EVENT_ARR[@]:i:5}")
+      log "Batch ${BATCH}: events ${BATCH_EVENTS[*]}"
+
+      uv run --project "$PIPELINE_DIR" python -m tm.orchestrator local_file \
+        --events "${BATCH_EVENTS[@]}" 2>&1
+
+      log "Batch ${BATCH} done — $(cell_stats)"
+      commit_and_push "batch ${BATCH} (${BATCH_EVENTS[*]})"
+    done
   fi
+
+  log "Extraction complete — $(cell_stats)"
 }
 
 # ── Main loop ─────────────────────────────────────────────────────────────────
