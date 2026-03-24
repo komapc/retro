@@ -46,7 +46,8 @@ get_secret() {
 
 OPENROUTER_KEY=$(get_secret "openclaw/openrouter-api-key")
 BRAVE_KEY=$(get_secret "openclaw/brave-api-key")
-SERPER_KEY=$(get_secret "openclaw/serper-api-key")
+SERPAPI_KEY=$(get_secret "openclaw/serpapi-key")
+SERPERDEV_KEY=$(get_secret "openclaw/serperdev-key")
 GH_TOKEN=$(get_secret "openclaw/github-pat")
 
 if [[ -z "$OPENROUTER_KEY" ]]; then
@@ -83,7 +84,8 @@ log "Writing .env..."
 cat > "$WORKDIR/.env" <<EOF
 OPENROUTER_API_KEY=${OPENROUTER_KEY}
 BRAVE_API_KEY=${BRAVE_KEY}
-SERPER_API_KEY=${SERPER_KEY}
+SERPAPI_KEY=${SERPAPI_KEY}
+SERPERDEV_KEY=${SERPERDEV_KEY}
 EOF
 chmod 600 "$WORKDIR/.env"
 
