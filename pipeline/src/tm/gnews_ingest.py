@@ -313,11 +313,13 @@ def _search_ddg(query: str, domain: str, expected_date: Optional[datetime]) -> O
 
 # Registry: (name, key_or_None, search_fn)
 # Entries with no key are skipped; DDG has no key so always attempted last.
+# SerpApi (serpapi.com) omitted — free tier rate-limits aggressively (429 on
+# nearly every call), adding latency with no benefit since Serper.dev works.
+# Re-add ("SerpApi", lambda: SERPAPI_KEY, _search_serpapi) if plan is upgraded.
 _SEARCH_BACKENDS = [
-    ("Brave",    lambda: BRAVE_API_KEY,  _search_brave),
-    ("SerpApi",  lambda: SERPAPI_KEY,    _search_serpapi),
-    ("Serper",   lambda: SERPERDEV_KEY,  _search_serperdev),
-    ("DDG",      lambda: True,           _search_ddg),
+    ("Brave",  lambda: BRAVE_API_KEY, _search_brave),
+    ("Serper", lambda: SERPERDEV_KEY, _search_serperdev),
+    ("DDG",    lambda: True,          _search_ddg),
 ]
 
 
