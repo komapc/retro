@@ -1,0 +1,42 @@
+[
+  {
+    "id": "israel_hayom",
+    "name": "Israel Hayom",
+    "brier_score": 0.0531,
+    "elo": 1284.0,
+    "predictions": 9,
+    "events": 13
+  },
+  {
+    "id": "globes",
+    "name": "Globes",
+    "brier_score": 0.0625,
+    "elo": 1278.0,
+    "predictions": 9,
+    "events": 13
+  },
+  {
+    "id": "ynet",
+    "name": "Ynet",
+    "brier_score": 0.0521,
+    "elo": 1242.0,
+    "predictions": 6,
+    "events": 8
+  },
+  {
+    "id": "haaretz",
+    "name": "Haaretz",
+    "brier_score": 0.178,
+    "elo": 1217.0,
+    "predictions": 5,
+    "events": 9
+  },
+  {
+    "id": "n12",
+    "name": "N12 (Mako)",
+    "brier_score": 0.0625,
+    "elo": 1214.0,
+    "predictions": 2,
+    "events": 9
+  }
+]

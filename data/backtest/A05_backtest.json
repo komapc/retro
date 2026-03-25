@@ -1,0 +1,11 @@
+{
+  "event_id": "A05",
+  "outcome": true,
+  "domain": "general",
+  "entry_count": 1,
+  "polymarket_price": null,
+  "source_contributions": {
+    "haaretz": -0.375
+  },
+  "our_prediction": 0.25
+}
