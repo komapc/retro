@@ -4,7 +4,7 @@ from .models import ExtractionOutput
 from .config import settings
 
 litellm.api_key = settings.openrouter_api_key
-_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.JSON)
+_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.TOOLS)
 
 PROMPT = """\
 You are a forensic prediction analyst. Extract every distinct forward-looking prediction \
@@ -112,5 +112,5 @@ async def extract_predictions(
                 ),
             }
         ],
-        max_tokens=3000,
+        max_tokens=6000,
     )
