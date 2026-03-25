@@ -8,7 +8,8 @@ from typing import List, Optional
 from enum import Enum
 
 from rich.console import Console
-from .models import CellStatus, ExtractionOutput
+from .models import CellStatus, ExtractionOutput, PredictionExtraction
+from .aggregator import aggregate_predictions
 from .runner import run_article, ArticleInput
 from .progress import update_cell, load_state
 from .ingestor import BraveIngestor, GDELTIngestor, DDGIngestor
@@ -98,6 +99,8 @@ class Orchestrator:
 
             for raw_art in articles:
                 await self.process_article(raw_art, event, source)
+
+            self._write_cell_signal(event["id"], source["id"])
 
     async def search_articles(self, source: dict, event: dict, start: datetime, end: datetime) -> List[dict]:
         if self.mode == SearchMode.local_file:
@@ -201,6 +204,29 @@ class Orchestrator:
                 console.print(f"    [bold red]Failed to save to vault:[/bold red] {str(e)}")
         else:
             console.print(f"    [yellow]Extraction resulted in 0 predictions.[/yellow]")
+
+    def _write_cell_signal(self, eid: str, sid: str):
+        """Aggregate all predictions for this cell and write cell_signal.json."""
+        cell_dir = self.atlas_dir / eid / sid
+        if not cell_dir.exists():
+            return
+        all_predictions: list[PredictionExtraction] = []
+        for entry_file in cell_dir.glob("entry_*.json"):
+            try:
+                data = json.loads(entry_file.read_text())
+                for p in data.get("predictions", []):
+                    all_predictions.append(PredictionExtraction(**p))
+            except Exception:
+                continue
+        if not all_predictions:
+            return
+        try:
+            signal = aggregate_predictions(all_predictions)
+            (cell_dir / "cell_signal.json").write_text(
+                json.dumps(signal.model_dump(), indent=2, ensure_ascii=False)
+            )
+        except Exception as e:
+            console.print(f"    [dim red]cell_signal failed {eid}/{sid}: {e}[/dim red]")
 
     def create_atlas_link(self, eid: str, sid: str, art_hash: str, extract_path: Path, raw_art: dict, event_date: str = ""):
         link_dir = self.atlas_dir / eid / sid

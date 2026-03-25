@@ -38,6 +38,29 @@ class ExtractionOutput(BaseModel):
     predictions: list[PredictionExtraction]
 
 
+class CellSignal(BaseModel):
+    """
+    Aggregated signal for one (event, source) cell.
+    Computed from all predictions across all articles for the cell.
+    Continuous metrics are weighted mean (weight = certainty × specificity).
+    Categorical fields use majority vote. Median for time_horizon_days.
+    """
+    claim_count:      int
+    stance:           float
+    sentiment:        float
+    certainty:        float
+    specificity:      float
+    hedge_ratio:      float
+    conditionality:   float
+    magnitude:        float
+    source_authority: float
+    time_horizon:     str
+    time_horizon_days: Optional[int]
+    prediction_type:  str
+    quotes:           list[str]
+    claims:           list[str]
+
+
 # --- Matrix Progress Tracking ---
 
 class CellStatus(str, Enum):
