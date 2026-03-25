@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
-from typing import Optional
+import json as _json
+from pydantic import BaseModel, Field, model_validator
+from typing import Optional, Any
 from enum import Enum
 
 
@@ -36,6 +37,23 @@ class PredictionExtraction(BaseModel):
 
 class ExtractionOutput(BaseModel):
     predictions: list[PredictionExtraction]
+
+    @model_validator(mode="before")
+    @classmethod
+    def _deserialize_string_predictions(cls, data: Any) -> Any:
+        """
+        Some models (in TOOLS mode) double-serialize nested objects as strings.
+        E.g. predictions: ["{\"quote\": ...}", ...] instead of [{...}, ...].
+        Parse any string entries back to dicts before Pydantic validates them.
+        """
+        if isinstance(data, dict) and "predictions" in data:
+            preds = data["predictions"]
+            if isinstance(preds, list):
+                data["predictions"] = [
+                    _json.loads(p) if isinstance(p, str) else p
+                    for p in preds
+                ]
+        return data
 
 
 class CellSignal(BaseModel):
