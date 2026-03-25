@@ -119,6 +119,20 @@ while true; do
 
   run_pipeline || log "ERROR: cycle failed, will retry next interval"
 
-  log "─── Cycle done. Sleeping ${SLEEP_INTERVAL}s... ────"
-  sleep "$SLEEP_INTERVAL"
+  # Skip sleep if there are still failed cells to retry
+  FAILED=$(python3 -c "
+import json, os
+from pathlib import Path
+p = Path(os.environ['DATA_DIR']) / 'progress.json'
+try:
+    cells = json.loads(p.read_text()).get('cells', {})
+    print(sum(1 for v in cells.values() if v.get('status') == 'failed'))
+except: print(0)
+" 2>/dev/null)
+  if [[ "${FAILED:-0}" -gt 0 ]]; then
+    log "─── Cycle done. ${FAILED} failed cells — retrying immediately ────"
+  else
+    log "─── Cycle done. Sleeping ${SLEEP_INTERVAL}s... ────"
+    sleep "$SLEEP_INTERVAL"
+  fi
 done
