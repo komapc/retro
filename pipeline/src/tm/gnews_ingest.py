@@ -44,6 +44,9 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, MofNCompleteColumn
 from rich.table import Table
 
+from .models import CellStatus
+from .progress import load_state
+
 console = Console()
 
 GNEWS_BASE = "https://news.google.com/rss/search"
@@ -663,6 +666,8 @@ async def run_batch(
 
     results: dict[str, dict] = {}
 
+    state = load_state()
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -676,6 +681,12 @@ async def run_batch(
             results[eid] = {}
             for sid in sources:
                 progress.update(task, description=f"[cyan]{eid}[/cyan]/[blue]{sid}[/blue]")
+                # Skip cells already in a terminal state — no new articles expected
+                cell = state.get(eid, sid)
+                if not force and cell.status in (CellStatus.done, CellStatus.no_predictions):
+                    results[eid][sid] = 0
+                    progress.advance(task)
+                    continue
                 count = await ingest_cell(event, sid, raw_ingest_dir, force)
                 results[eid][sid] = count
                 label = f"[green]{count} art[/green]" if count else "[dim]0[/dim]"
