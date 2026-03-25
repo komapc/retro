@@ -4,7 +4,7 @@ from .models import GatekeeperOutput
 from .config import settings
 
 litellm.api_key = settings.openrouter_api_key
-_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.MD_JSON)
+_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.JSON)
 
 PROMPT = """\
 You are a forensic analyst screening news articles for predictive content.
