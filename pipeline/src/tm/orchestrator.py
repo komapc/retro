@@ -87,13 +87,13 @@ class Orchestrator:
 
             state = load_state()
             cell = state.get(event_id, source["id"])
-            if cell.status == CellStatus.done:
+            if cell.status in (CellStatus.done, CellStatus.no_predictions):
                 continue
 
             console.print(f"  [bold]Source:[/bold] {source['name']}")
-            
+
             articles = await self.search_articles(source, event, start_date, outcome_date)
-            
+
             if not articles:
                 update_cell(event_id, source["id"], CellStatus.no_predictions)
                 continue
@@ -102,6 +102,15 @@ class Orchestrator:
                 await self.process_article(raw_art, event, source)
 
             self._write_cell_signal(event["id"], source["id"])
+            # Mark as no_predictions if LLM found nothing (prevents re-running next cycle)
+            cell_dir = self.atlas_dir / event_id / source["id"]
+            has_predictions = any(
+                json.loads(f.read_text()).get("predictions")
+                for f in cell_dir.glob("entry_*.json")
+                if f.exists()
+            ) if cell_dir.exists() else False
+            if not has_predictions:
+                update_cell(event_id, source["id"], CellStatus.no_predictions)
 
     async def search_articles(self, source: dict, event: dict, start: datetime, end: datetime) -> List[dict]:
         if self.mode == SearchMode.local_file:
