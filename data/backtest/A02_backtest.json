@@ -1,0 +1,11 @@
+{
+  "event_id": "A02",
+  "outcome": true,
+  "domain": "general",
+  "entry_count": 1,
+  "polymarket_price": null,
+  "source_contributions": {
+    "israel_hayom": 0.75
+  },
+  "our_prediction": 1.0
+}
