@@ -43,16 +43,37 @@ class ExtractionOutput(BaseModel):
     def _deserialize_string_predictions(cls, data: Any) -> Any:
         """
         Some models (in TOOLS mode) double-serialize nested objects as strings.
-        E.g. predictions: ["{\"quote\": ...}", ...] instead of [{...}, ...].
-        Parse any string entries back to dicts before Pydantic validates them.
+        Handles two observed variants:
+          1. Valid JSON strings:   '{"quote": "...", ...}'
+          2. YAML-style strings:   'quote: ... source_authority: 0.8'
         """
         if isinstance(data, dict) and "predictions" in data:
             preds = data["predictions"]
-            if isinstance(preds, list):
-                data["predictions"] = [
-                    _json.loads(p) if isinstance(p, str) else p
-                    for p in preds
-                ]
+            if not isinstance(preds, list):
+                return data
+            parsed = []
+            for p in preds:
+                if not isinstance(p, str):
+                    parsed.append(p)
+                    continue
+                # Try JSON first
+                try:
+                    parsed.append(_json.loads(p))
+                    continue
+                except _json.JSONDecodeError:
+                    pass
+                # Try YAML-style "key: value" lines
+                try:
+                    import yaml as _yaml
+                    obj = _yaml.safe_load(p)
+                    if isinstance(obj, dict):
+                        parsed.append(obj)
+                        continue
+                except Exception:
+                    pass
+                # Give up — keep as-is and let Pydantic report the error
+                parsed.append(p)
+            data["predictions"] = parsed
         return data
 
 
