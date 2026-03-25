@@ -39,9 +39,10 @@ class Orchestrator:
         for d in [self.vault_dir / "articles", self.vault_dir / "extractions", self.raw_ingest_dir]:
             d.mkdir(parents=True, exist_ok=True)
 
-        # DDG is the default free ingestor; Brave used if key present
+        # Use DDG as primary ingestor; Brave demoted to fallback (quota exhausted)
+        self.ingestor = DDGIngestor()
         brave_key = os.environ.get("BRAVE_API_KEY", settings.brave_api_key)
-        self.ingestor = BraveIngestor(brave_key) if brave_key else DDGIngestor()
+        self.brave = BraveIngestor(brave_key) if brave_key else None
         self.ddg = DDGIngestor()  # always available as fallback
 
     def get_article_hash(self, text: str) -> str:
