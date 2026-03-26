@@ -681,12 +681,21 @@ async def run_batch(
             results[eid] = {}
             for sid in sources:
                 progress.update(task, description=f"[cyan]{eid}[/cyan]/[blue]{sid}[/blue]")
-                # Skip cells already in a terminal state — no new articles expected
+                # Skip done cells (predictions extracted — no need to re-fetch)
+                # Skip no_pred cells only if articles already exist in raw_ingest
+                # (articles were genuinely non-predictive); retry if no articles yet
                 cell = state.get(eid, sid)
-                if not force and cell.status in (CellStatus.done, CellStatus.no_predictions):
+                if not force and cell.status == CellStatus.done:
                     results[eid][sid] = 0
                     progress.advance(task)
                     continue
+                if not force and cell.status == CellStatus.no_predictions:
+                    cell_dir = raw_ingest_dir / sid / eid
+                    has_articles = cell_dir.exists() and any(cell_dir.glob("article_*.json"))
+                    if has_articles:
+                        results[eid][sid] = 0
+                        progress.advance(task)
+                        continue
                 count = await ingest_cell(event, sid, raw_ingest_dir, force)
                 results[eid][sid] = count
                 label = f"[green]{count} art[/green]" if count else "[dim]0[/dim]"
