@@ -64,9 +64,29 @@ run_pipeline() {
   git fetch origin main
   git merge --ff-only origin/main || log "Already up to date"
 
-  # ── 2. Ingest: fetch articles for pending cells ───────────────────────────
+  # ── 2. Ingest: fetch articles in batches of 10 events per cycle ─────────
   log "Ingest starting — $(cell_stats)"
-  uv run --project "$PIPELINE_DIR" python -m tm.gnews_ingest 2>&1
+  ALL_EVENTS=$(python3 -c "
+import pathlib, os, json
+events_dir = pathlib.Path(os.environ['DATA_DIR']) / 'events'
+print(' '.join(sorted(p.stem for p in events_dir.glob('*.json'))))
+" 2>/dev/null)
+  read -ra ALL_ARR <<< "$ALL_EVENTS"
+  TOTAL_ALL=${#ALL_ARR[@]}
+  BATCH_SIZE=10
+  OFFSET_FILE="$DATA_DIR/ingest_offset"
+  OFFSET=$(cat "$OFFSET_FILE" 2>/dev/null || echo 0)
+  OFFSET=$(( OFFSET % TOTAL_ALL ))
+  INGEST_EVENTS=("${ALL_ARR[@]:OFFSET:BATCH_SIZE}")
+  # wrap around if batch crosses end of list
+  REMAINING=$(( BATCH_SIZE - ${#INGEST_EVENTS[@]} ))
+  if [[ $REMAINING -gt 0 ]]; then
+    INGEST_EVENTS+=("${ALL_ARR[@]:0:REMAINING}")
+  fi
+  NEW_OFFSET=$(( (OFFSET + BATCH_SIZE) % TOTAL_ALL ))
+  echo "$NEW_OFFSET" > "$OFFSET_FILE"
+  log "Ingesting events ${INGEST_EVENTS[*]} (offset $OFFSET/$TOTAL_ALL)"
+  uv run --project "$PIPELINE_DIR" python -m tm.gnews_ingest --events "${INGEST_EVENTS[@]}" 2>&1
   log "Ingest complete — $(cell_stats)"
 
   # ── 3. Extract: run orchestrator in batches of 5 events, commit after each ─
