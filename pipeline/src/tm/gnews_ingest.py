@@ -731,7 +731,11 @@ def main():
     args = p.parse_args()
 
     data_dir = Path(os.environ.get("DATA_DIR", "/app/data"))
-    asyncio.run(run_batch(data_dir, args.events, args.sources, args.force))
+    # If no explicit --events, discover all event files on disk (not just MVP_EVENTS)
+    event_ids = args.events if args.events != MVP_EVENTS else sorted(
+        p.stem for p in (data_dir / "events").glob("*.json")
+    ) or MVP_EVENTS
+    asyncio.run(run_batch(data_dir, event_ids, args.sources, args.force))
 
 
 if __name__ == "__main__":
