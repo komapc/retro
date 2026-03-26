@@ -118,8 +118,9 @@ print(' '.join(sorted(events)))
       BATCH_EVENTS=("${EVENT_ARR[@]:i:5}")
       log "Batch ${BATCH}: events ${BATCH_EVENTS[*]}"
 
-      uv run --project "$PIPELINE_DIR" python -m tm.orchestrator local_file \
-        --events "${BATCH_EVENTS[@]}" 2>&1
+      timeout 600 uv run --project "$PIPELINE_DIR" python -m tm.orchestrator local_file \
+        --events "${BATCH_EVENTS[@]}" 2>&1 \
+        || log "WARNING: orchestrator batch ${BATCH} timed out or failed — continuing"
 
       log "Batch ${BATCH} done — $(cell_stats)"
       commit_and_push "batch ${BATCH} (${BATCH_EVENTS[*]})"

@@ -99,7 +99,13 @@ class Orchestrator:
                 continue
 
             for raw_art in articles:
-                await self.process_article(raw_art, event, source)
+                try:
+                    await asyncio.wait_for(
+                        self.process_article(raw_art, event, source),
+                        timeout=90,
+                    )
+                except asyncio.TimeoutError:
+                    console.print(f"    [bold red]Article timeout (90s), skipping[/bold red]")
 
             self._write_cell_signal(event["id"], source["id"])
             # Mark as no_predictions if LLM found nothing (prevents re-running next cycle)

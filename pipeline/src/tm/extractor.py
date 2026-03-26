@@ -113,4 +113,5 @@ async def extract_predictions(
             }
         ],
         max_tokens=6000,
+        timeout=45,
     )

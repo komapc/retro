@@ -57,4 +57,5 @@ async def check_is_prediction(
             }
         ],
         max_tokens=200,
+        timeout=20,
     )
