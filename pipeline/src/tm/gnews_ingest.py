@@ -45,7 +45,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, MofNCo
 from rich.table import Table
 
 from .models import CellStatus
-from .progress import load_state
+from .progress import load_state, update_cell
 
 console = Console()
 
@@ -700,6 +700,10 @@ async def run_batch(
                 results[eid][sid] = count
                 label = f"[green]{count} art[/green]" if count else "[dim]0[/dim]"
                 console.print(f"  {eid}/{sid}: {label}")
+                # If new articles were saved for a previously-empty no_pred cell,
+                # reset to pending so the orchestrator picks them up
+                if count > 0 and cell.status == CellStatus.no_predictions:
+                    update_cell(eid, sid, CellStatus.pending)
                 progress.advance(task)
                 await asyncio.sleep(1.0)
 
