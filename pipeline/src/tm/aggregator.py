@@ -1,17 +1,133 @@
 """
-Aggregate a list of PredictionExtraction objects into a single CellSignal.
+Two aggregation functions:
 
-Weight for continuous metrics: certainty × specificity.
-If all weights are zero, falls back to simple mean.
-Categorical fields (time_horizon, prediction_type) use majority vote.
-time_horizon_days uses weighted median.
+1. aggregate_predictions() — cell-level: collapses all predictions across all articles
+   for one (event, source) cell into a single CellSignal.
+
+2. aggregate_article_predictions() — article-level: collapses N predictions extracted
+   from a single article into one unified PredictionExtraction using an LLM.
+   Call needs_aggregation() first to check whether the LLM step is warranted.
 """
 
+import asyncio
+import json
+import instructor
+import litellm
 from statistics import median
 from collections import Counter
 from typing import Optional
 
 from .models import PredictionExtraction, CellSignal
+from .config import settings
+
+litellm.api_key = settings.openrouter_api_key
+_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.MD_JSON)
+
+STANCE_SPREAD_THRESHOLD = 0.4
+
+AGGREGATOR_PROMPT = """\
+You are a forensic intelligence analyst. You have been given a list of predictions \
+extracted from a **single news article** about a specific event. Different parts of the \
+article may quote different people or express different views, but the article as a whole \
+has an editorial angle and a dominant stance.
+
+Your job is to synthesize all these predictions into **one unified article signal** that \
+best represents:
+- The article's **dominant directional outlook** on whether the event will occur / succeed
+- The **most representative quote** that captures the article's overall stance
+- A **single neutral claim** summarising what the article as a whole predicts
+
+### Rules
+- Do NOT simply average the numbers — use editorial judgment
+- If the article quotes one strong voice and several weaker counterpoints, weight toward the dominant voice
+- The `quote` must be an actual excerpt from one of the input predictions (do not fabricate)
+- The `claim` must be in English regardless of source language
+- Output a **single JSON object** (not a list)
+
+### Input
+
+**Event:** {event_name}
+**Source:** {source_name}
+**Article date:** {article_date}
+
+**Extracted predictions (N={n_predictions}):**
+{predictions_json}
+
+### Output
+
+Return ONLY a raw JSON object — no code block, no explanation:
+
+{{
+  "quote": "the single most representative quote from the article",
+  "claim": "one-sentence English summary of the article's overall prediction",
+  "stance": <float -1.0 to 1.0>,
+  "sentiment": <float 0.0 to 1.0>,
+  "certainty": <float 0.0 to 1.0>,
+  "specificity": <float 0.0 to 1.0>,
+  "hedge_ratio": <float 0.0 to 1.0>,
+  "conditionality": <float 0.0 to 1.0>,
+  "magnitude": <float 0.0 to 1.0>,
+  "time_horizon": "<days|weeks|months|years|unspecified>",
+  "time_horizon_days": <integer or null>,
+  "prediction_type": "<binary|continuous|range|trend>",
+  "source_authority": <float 0.0 to 1.0>
+}}
+"""
+
+
+def needs_aggregation(predictions: list[PredictionExtraction]) -> bool:
+    """Return True if article-level LLM aggregation is warranted."""
+    if len(predictions) <= 1:
+        return False
+    stances = [p.stance for p in predictions]
+    return (max(stances) - min(stances)) > STANCE_SPREAD_THRESHOLD
+
+
+async def aggregate_article_predictions(
+    predictions: list[PredictionExtraction],
+    event_name: str,
+    source_name: str,
+    article_date: str,
+) -> PredictionExtraction:
+    """Call Nova Lite to collapse N predictions from one article into one."""
+    predictions_json = json.dumps(
+        [p.model_dump() for p in predictions], indent=2, ensure_ascii=False
+    )
+    prompt = AGGREGATOR_PROMPT.format(
+        event_name=event_name,
+        source_name=source_name,
+        article_date=article_date,
+        n_predictions=len(predictions),
+        predictions_json=predictions_json,
+    )
+
+    _BACKOFF = [30, 60, 120]
+    last_exc: Exception = RuntimeError("no attempts")
+    for _attempt, wait in enumerate([0] + _BACKOFF):
+        if wait:
+            await asyncio.sleep(wait)
+        try:
+            kwargs: dict = dict(
+                model=settings.extractor_model,
+                response_model=PredictionExtraction,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1000,
+                timeout=120,
+                max_retries=1,
+            )
+            if settings.model_api_base:
+                kwargs["api_base"] = settings.model_api_base
+                kwargs["api_key"] = settings.model_api_key
+            if settings.aws_region:
+                kwargs["aws_region_name"] = settings.aws_region
+            return await _client.chat.completions.create(**kwargs)
+        except Exception as e:
+            err = str(e).lower()
+            if "rate" in err or "429" in err or "limit" in err or "temporarily" in err:
+                last_exc = e
+                continue
+            raise
+    raise last_exc
 
 
 def _weighted_mean(values: list[float], weights: list[float]) -> float:
