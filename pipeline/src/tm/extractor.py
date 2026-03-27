@@ -5,7 +5,7 @@ from .models import ExtractionOutput
 from .config import settings
 
 litellm.api_key = settings.openrouter_api_key
-_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.TOOLS)
+_client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.MD_JSON)
 
 PROMPT = """\
 You are a forensic prediction analyst. Extract every distinct forward-looking prediction \
@@ -62,6 +62,10 @@ Return up to 10 predictions. If more exist, take the most specific ones.
 Do not translate the quote field — keep it in the original language.
 The claim field must be in English.
 
+IMPORTANT: Your response must be a JSON object with a "predictions" key containing a list.
+Example structure: {{"predictions": [ {{...}}, {{...}} ]}}
+Do NOT return a bare JSON array. Always wrap in {{"predictions": [...]}}
+
 CRITICAL: Each prediction must be a complete JSON object with ALL of these fields:
   quote (string), claim (string), stance (float -1 to 1), sentiment (float 0-1),
   certainty (float 0-1), specificity (float 0-1), hedge_ratio (float 0-1),
@@ -103,7 +107,7 @@ async def extract_predictions(
         if wait:
             await asyncio.sleep(wait)
         try:
-            return await _client.chat.completions.create(
+            kwargs: dict = dict(
                 model=settings.extractor_model,
                 response_model=ExtractionOutput,
                 messages=[
@@ -120,11 +124,18 @@ async def extract_predictions(
                     }
                 ],
                 max_tokens=6000,
-                timeout=45,
+                timeout=180,
                 max_retries=1,
             )
+            if settings.model_api_base:
+                kwargs["api_base"] = settings.model_api_base
+                kwargs["api_key"] = settings.model_api_key
+            if settings.aws_region:
+                kwargs["aws_region_name"] = settings.aws_region
+            return await _client.chat.completions.create(**kwargs)
         except Exception as e:
-            if isinstance(e, litellm.RateLimitError) or "RateLimit" in str(e) or "429" in str(e):
+            err = str(e).lower()
+            if "rate" in err or "429" in err or "limit" in err or "temporarily" in err:
                 last_exc = e
                 continue
             raise

@@ -87,7 +87,8 @@ class Orchestrator:
 
             state = load_state()
             cell = state.get(event_id, source["id"])
-            if cell.status in (CellStatus.done, CellStatus.no_predictions):
+            skip_statuses = (CellStatus.done, CellStatus.no_predictions) if not self.force_reextract else (CellStatus.done,)
+            if cell.status in skip_statuses:
                 continue
 
             console.print(f"  [bold]Source:[/bold] {source['name']}")
