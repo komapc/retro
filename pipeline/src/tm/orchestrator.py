@@ -9,7 +9,7 @@ from enum import Enum
 
 from rich.console import Console
 from .models import CellStatus, ExtractionOutput, PredictionExtraction
-from .aggregator import aggregate_predictions
+from .aggregator import aggregate_predictions, needs_aggregation, aggregate_article_predictions
 from .runner import run_article, ArticleInput
 from .progress import update_cell, load_state
 from .ingestor import BraveIngestor, GDELTIngestor, DDGIngestor
@@ -207,7 +207,26 @@ class Orchestrator:
             console.print(f"    [bold red]Runner Error:[/bold red] {result.error}")
         
         if result.extraction:
-            console.print(f"    [green]Success![/green] Extracted {len(result.extraction.predictions)} predictions.")
+            preds = result.extraction.predictions
+            console.print(f"    [green]Success![/green] Extracted {len(preds)} predictions.")
+
+            # Article-level aggregation: collapse conflicting predictions into one
+            if needs_aggregation(preds):
+                stances = [p.stance for p in preds]
+                spread = max(stances) - min(stances)
+                console.print(f"    [yellow]Stance spread {spread:.2f} → aggregating {len(preds)} predictions[/yellow]")
+                try:
+                    agg = await aggregate_article_predictions(
+                        preds,
+                        event_name=event["name"],
+                        source_name=source["name"],
+                        article_date=article_input.article_date,
+                    )
+                    result.extraction.predictions = [agg]
+                    console.print(f"    [cyan]Aggregated to 1 prediction (stance={agg.stance:.2f})[/cyan]")
+                except Exception as e:
+                    console.print(f"    [dim red]Article aggregation failed, keeping originals: {e}[/dim red]")
+
             try:
                 with open(extract_path, "w") as f:
                     data = {
