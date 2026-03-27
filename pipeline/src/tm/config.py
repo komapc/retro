@@ -8,9 +8,9 @@ class Settings(BaseSettings):
     openrouter_api_key: str = ""
     brave_api_key: str = ""
 
-    gatekeeper_model: str = "openrouter/google/gemini-2.0-flash-lite-001"
-    extractor_model: str = "openrouter/google/gemini-2.0-flash-lite-001"
-    ground_truth_model: str = "openrouter/google/gemini-2.0-flash-lite-001"
+    gatekeeper_model: str = "openrouter/google/gemini-2.0-flash-lite:free"
+    extractor_model: str = "openrouter/google/gemini-2.0-flash-lite:free"
+    ground_truth_model: str = "openrouter/google/gemini-2.0-flash-lite:free"
 
     data_dir: Path = Path("/app/data")
     vault_dir: Path = Path("")  # empty = data_dir/vault2 (avoids root-owned vault/)
