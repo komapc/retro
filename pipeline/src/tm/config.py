@@ -8,9 +8,15 @@ class Settings(BaseSettings):
     openrouter_api_key: str = ""
     brave_api_key: str = ""
 
-    gatekeeper_model: str = "openrouter/google/gemini-2.0-flash-lite:free"
-    extractor_model: str = "openrouter/google/gemini-2.0-flash-lite:free"
-    ground_truth_model: str = "openrouter/google/gemini-2.0-flash-lite:free"
+    gatekeeper_model: str = "bedrock/amazon.nova-micro-v1:0"
+    extractor_model: str = "bedrock/amazon.nova-lite-v1:0"
+    ground_truth_model: str = "bedrock/amazon.nova-lite-v1:0"
+
+    # Optional: override API base/key (for Ollama or other OpenAI-compatible backends)
+    model_api_base: str = ""
+    model_api_key: str = ""
+
+    aws_region: str = "us-east-1"
 
     data_dir: Path = Path("/app/data")
     vault_dir: Path = Path("")  # empty = data_dir/vault2 (avoids root-owned vault/)
