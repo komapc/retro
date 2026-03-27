@@ -102,10 +102,11 @@ class Orchestrator:
                 try:
                     await asyncio.wait_for(
                         self.process_article(raw_art, event, source),
-                        timeout=90,
+                        timeout=300,
                     )
                 except asyncio.TimeoutError:
-                    console.print(f"    [bold red]Article timeout (90s), skipping[/bold red]")
+                    console.print(f"    [bold red]Article timeout (300s), skipping[/bold red]")
+                await asyncio.sleep(3)
 
             self._write_cell_signal(event["id"], source["id"])
             # Mark as no_predictions if LLM found nothing (prevents re-running next cycle)

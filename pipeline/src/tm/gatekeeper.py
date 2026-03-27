@@ -1,3 +1,4 @@
+import asyncio
 import instructor
 import litellm
 from .models import GatekeeperOutput
@@ -42,20 +43,33 @@ async def check_is_prediction(
     article_date: str,
     event_name: str,
 ) -> GatekeeperOutput:
-    return await _client.chat.completions.create(
-        model=settings.gatekeeper_model,
-        response_model=GatekeeperOutput,
-        messages=[
-            {
-                "role": "user",
-                "content": PROMPT.format(
-                    article_text=article_text[200:2700],
-                    source_name=source_name,
-                    article_date=article_date,
-                    event_name=event_name,
-                ),
-            }
-        ],
-        max_tokens=200,
-        timeout=20,
-    )
+    _BACKOFF = [30, 60, 120]
+    last_exc: Exception = RuntimeError("no attempts")
+    for attempt, wait in enumerate([0] + _BACKOFF):
+        if wait:
+            await asyncio.sleep(wait)
+        try:
+            return await _client.chat.completions.create(
+                model=settings.gatekeeper_model,
+                response_model=GatekeeperOutput,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": PROMPT.format(
+                            article_text=article_text[200:2700],
+                            source_name=source_name,
+                            article_date=article_date,
+                            event_name=event_name,
+                        ),
+                    }
+                ],
+                max_tokens=200,
+                timeout=20,
+                max_retries=1,
+            )
+        except Exception as e:
+            if isinstance(e, litellm.RateLimitError) or "RateLimit" in str(e) or "429" in str(e):
+                last_exc = e
+                continue
+            raise
+    raise last_exc

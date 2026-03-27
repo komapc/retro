@@ -1,3 +1,4 @@
+import asyncio
 import instructor
 import litellm
 from .models import ExtractionOutput
@@ -96,22 +97,35 @@ async def extract_predictions(
     event_description: str,
     journalist: str = "unknown",
 ) -> ExtractionOutput:
-    return await _client.chat.completions.create(
-        model=settings.extractor_model,
-        response_model=ExtractionOutput,
-        messages=[
-            {
-                "role": "user",
-                "content": PROMPT.format(
-                    article_text=article_text,
-                    source_name=source_name,
-                    journalist=journalist,
-                    article_date=article_date,
-                    event_name=event_name,
-                    event_description=event_description,
-                ),
-            }
-        ],
-        max_tokens=6000,
-        timeout=45,
-    )
+    _BACKOFF = [30, 60, 120]
+    last_exc: Exception = RuntimeError("no attempts")
+    for attempt, wait in enumerate([0] + _BACKOFF):
+        if wait:
+            await asyncio.sleep(wait)
+        try:
+            return await _client.chat.completions.create(
+                model=settings.extractor_model,
+                response_model=ExtractionOutput,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": PROMPT.format(
+                            article_text=article_text,
+                            source_name=source_name,
+                            journalist=journalist,
+                            article_date=article_date,
+                            event_name=event_name,
+                            event_description=event_description,
+                        ),
+                    }
+                ],
+                max_tokens=6000,
+                timeout=45,
+                max_retries=1,
+            )
+        except Exception as e:
+            if isinstance(e, litellm.RateLimitError) or "RateLimit" in str(e) or "429" in str(e):
+                last_exc = e
+                continue
+            raise
+    raise last_exc
