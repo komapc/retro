@@ -92,6 +92,12 @@ chmod 644 "$WORKDIR/.env"
 # ── 5. Install Python dependencies ───────────────────────────────────────────
 log "Installing Python dependencies..."
 uv sync --project "$WORKDIR/pipeline"
+# uv sync sometimes misses boto3 if venv was pre-created; install directly to be sure
+if ! uv run --project "$WORKDIR/pipeline" python3 -c "import boto3" 2>/dev/null; then
+  log "boto3 missing from venv — installing directly..."
+  uv pip install boto3 botocore -p "$WORKDIR/pipeline/.venv/bin/python3"
+fi
+log "boto3: $(uv run --project "$WORKDIR/pipeline" python3 -c 'import boto3; print(boto3.__version__)' 2>/dev/null)"
 
 # ── 6. Create data directories ────────────────────────────────────────────────
 mkdir -p "$WORKDIR/data/events" \

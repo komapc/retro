@@ -49,7 +49,17 @@ commit_and_push() {
   uv run --project "$PIPELINE_DIR" python -m tm.render_atlas 2>&1 | tail -5
   STATS=$(cell_stats)
   git add factum_atlas.html data/progress.json 2>/dev/null || true
-  if ! git diff --cached --quiet; then
+  # Don't push an empty atlas — only commit when we have real done cells
+  DONE_COUNT=$(python3 -c "
+import json, os
+from pathlib import Path
+p = Path(os.environ['DATA_DIR']) / 'progress.json'
+try:
+    cells = json.loads(p.read_text()).get('cells', {})
+    print(sum(1 for v in cells.values() if v.get('status') == 'done'))
+except: print(0)
+" 2>/dev/null)
+  if [[ "${DONE_COUNT:-0}" -gt 0 ]] && ! git diff --cached --quiet; then
     git commit -m "atlas: ${msg} — ${STATS}"
     git push origin main
     log "Pushed: ${msg} — ${STATS}"
@@ -140,18 +150,18 @@ while true; do
 
   run_pipeline || log "ERROR: cycle failed, will retry next interval"
 
-  # Skip sleep if there are still failed cells to retry
-  FAILED=$(python3 -c "
+  # Skip sleep if there are still failed or pending cells
+  OUTSTANDING=$(python3 -c "
 import json, os
 from pathlib import Path
 p = Path(os.environ['DATA_DIR']) / 'progress.json'
 try:
     cells = json.loads(p.read_text()).get('cells', {})
-    print(sum(1 for v in cells.values() if v.get('status') == 'failed'))
+    print(sum(1 for v in cells.values() if v.get('status') in ('failed', 'pending')))
 except: print(0)
 " 2>/dev/null)
-  if [[ "${FAILED:-0}" -gt 0 ]]; then
-    log "─── Cycle done. ${FAILED} failed cells — retrying immediately ────"
+  if [[ "${OUTSTANDING:-0}" -gt 0 ]]; then
+    log "─── Cycle done. ${OUTSTANDING} cells still pending/failed — retrying immediately ────"
   else
     log "─── Cycle done. Sleeping ${SLEEP_INTERVAL}s... ────"
     sleep "$SLEEP_INTERVAL"
