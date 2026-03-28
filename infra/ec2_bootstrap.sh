@@ -44,11 +44,11 @@ get_secret() {
     --query SecretString --output text 2>/dev/null
 }
 
-OPENROUTER_KEY=$(get_secret "openclaw/openrouter-api-key")
-BRAVE_KEY=$(get_secret "openclaw/brave-api-key")
-SERPAPI_KEY=$(get_secret "openclaw/serpapi-key")
-SERPERDEV_KEY=$(get_secret "openclaw/serperdev-key")
-GH_TOKEN=$(get_secret "openclaw/github-pat")
+OPENROUTER_KEY=$(get_secret "openclaw/openrouter-api-key") || true
+BRAVE_KEY=$(get_secret "openclaw/brave-api-key") || true
+SERPAPI_KEY=$(get_secret "openclaw/serpapi-key") || true
+SERPERDEV_KEY=$(get_secret "openclaw/serperdev-key") || true
+GH_TOKEN=$(get_secret "openclaw/github-pat") || true
 
 if [[ -z "$OPENROUTER_KEY" ]]; then
   echo "ERROR: openclaw/openrouter-api-key not found in Secrets Manager" >&2
@@ -87,7 +87,7 @@ BRAVE_API_KEY=${BRAVE_KEY}
 SERPAPI_KEY=${SERPAPI_KEY}
 SERPERDEV_KEY=${SERPERDEV_KEY}
 EOF
-chmod 600 "$WORKDIR/.env"
+chmod 644 "$WORKDIR/.env"
 
 # ── 5. Install Python dependencies ───────────────────────────────────────────
 log "Installing Python dependencies..."
