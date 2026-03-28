@@ -153,15 +153,17 @@ while true; do
   run_pipeline || log "ERROR: cycle failed, will retry next interval"
 
   # Skip sleep if there are still failed or pending cells
-  OUTSTANDING=$(python3 -c "
+  OUTSTANDING=$(python3 - <<'PY'
 import json, os
 from pathlib import Path
-p = Path(os.environ['DATA_DIR']) / 'progress.json'
 try:
+    p = Path(os.environ['DATA_DIR']) / 'progress.json'
     cells = json.loads(p.read_text()).get('cells', {})
     print(sum(1 for v in cells.values() if v.get('status') in ('failed', 'pending')))
-except: print(0)
-" 2>/dev/null)
+except Exception:
+    print(0)
+PY
+)
   if [[ "${OUTSTANDING:-0}" -gt 0 ]]; then
     log "─── Cycle done. ${OUTSTANDING} cells still pending/failed — retrying immediately ────"
   else
