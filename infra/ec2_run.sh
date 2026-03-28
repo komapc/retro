@@ -61,6 +61,8 @@ except: print(0)
 " 2>/dev/null)
   if [[ "${DONE_COUNT:-0}" -gt 0 ]] && ! git diff --cached --quiet; then
     git commit -m "atlas: ${msg} — ${STATS}"
+    git fetch origin main
+    git rebase origin/main || { git rebase --abort; log "WARNING: rebase failed, skipping push"; return 0; }
     git push origin main
     log "Pushed: ${msg} — ${STATS}"
   fi
