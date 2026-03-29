@@ -414,6 +414,8 @@ async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
 
 
 GDELT_API = "https://api.gdeltproject.org/api/v2/doc/doc"
+_GDELT_LAST_CALL: float = 0.0
+GDELT_MIN_INTERVAL = 3.0  # seconds between GDELT calls to avoid 429
 
 
 async def search_gdelt(
@@ -428,6 +430,12 @@ async def search_gdelt(
     Free, no API key. English coverage only (weak for Hebrew domains).
     Returns list of {url, published_at, headline, text}.
     """
+    global _GDELT_LAST_CALL
+    elapsed = time.time() - _GDELT_LAST_CALL
+    if elapsed < GDELT_MIN_INTERVAL:
+        await asyncio.sleep(GDELT_MIN_INTERVAL - elapsed)
+    _GDELT_LAST_CALL = time.time()
+
     ascii_kws = [k.strip('"') for k in keywords if _is_ascii(k) and k.strip('"')]
     if not ascii_kws:
         return []
@@ -443,7 +451,7 @@ async def search_gdelt(
     }
 
     try:
-        async with httpx.AsyncClient(timeout=15) as client:
+        async with httpx.AsyncClient(timeout=30) as client:
             r = await client.get(GDELT_API, params=params)
         if r.status_code != 200:
             console.print(f"    [dim red]GDELT error: HTTP {r.status_code}[/dim red]")
