@@ -415,7 +415,7 @@ async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
 
 GDELT_API = "https://api.gdeltproject.org/api/v2/doc/doc"
 _GDELT_LAST_CALL: float = 0.0
-GDELT_MIN_INTERVAL = 3.0  # seconds between GDELT calls to avoid 429
+GDELT_MIN_INTERVAL = 10.0  # seconds between GDELT calls to avoid 429
 
 
 async def search_gdelt(
