@@ -10,7 +10,7 @@ from enum import Enum
 from rich.console import Console
 from .models import CellStatus, ExtractionOutput, PredictionExtraction
 from .aggregator import aggregate_predictions, needs_aggregation, aggregate_article_predictions
-from .runner import run_article, ArticleInput
+from .runner import run_article, ArticleInput, PipelineResult
 from .progress import update_cell, load_state
 from .ingestor import BraveIngestor, GDELTIngestor, DDGIngestor
 import httpx
@@ -99,18 +99,22 @@ class Orchestrator:
                 update_cell(event_id, source["id"], CellStatus.no_predictions)
                 continue
 
+            had_errors = False
             for raw_art in articles:
                 try:
-                    await asyncio.wait_for(
+                    result = await asyncio.wait_for(
                         self.process_article(raw_art, event, source),
                         timeout=300,
                     )
+                    if result is not None and result.error:
+                        had_errors = True
                 except asyncio.TimeoutError:
                     console.print(f"    [bold red]Article timeout (300s), skipping[/bold red]")
+                    had_errors = True
                 await asyncio.sleep(3)
 
             self._write_cell_signal(event["id"], source["id"])
-            # Mark as no_predictions if LLM found nothing (prevents re-running next cycle)
+            # Mark final cell status — only overwrite to no_predictions if no errors occurred
             cell_dir = self.atlas_dir / event_id / source["id"]
             has_predictions = any(
                 json.loads(f.read_text()).get("predictions")
@@ -118,7 +122,10 @@ class Orchestrator:
                 if f.exists()
             ) if cell_dir.exists() else False
             if not has_predictions:
-                update_cell(event_id, source["id"], CellStatus.no_predictions)
+                if had_errors:
+                    update_cell(event_id, source["id"], CellStatus.failed)
+                else:
+                    update_cell(event_id, source["id"], CellStatus.no_predictions)
 
     async def search_articles(self, source: dict, event: dict, start: datetime, end: datetime) -> List[dict]:
         if self.mode == SearchMode.local_file:
@@ -171,7 +178,7 @@ class Orchestrator:
                 articles.append(art)
         return articles
 
-    async def process_article(self, raw_art: dict, event: dict, source: dict):
+    async def process_article(self, raw_art: dict, event: dict, source: dict) -> Optional[PipelineResult]:
         text = raw_art["text"]
         art_hash = self.get_article_hash(text)
         
@@ -185,7 +192,7 @@ class Orchestrator:
         
         if extract_path.exists() and not self.force_reextract:
             self.create_atlas_link(event["id"], source["id"], art_hash, extract_path, raw_art, event.get("outcome_date", ""))
-            return
+            return None
         elif extract_path.exists() and self.force_reextract:
             console.print(f"    [yellow]--force-reextract: re-running LLM for {art_hash[:8]}[/yellow]")
 
@@ -241,6 +248,8 @@ class Orchestrator:
                 console.print(f"    [bold red]Failed to save to vault:[/bold red] {str(e)}")
         else:
             console.print(f"    [yellow]Extraction resulted in 0 predictions.[/yellow]")
+
+        return result
 
     def _write_cell_signal(self, eid: str, sid: str):
         """Aggregate all predictions for this cell and write cell_signal.json."""
