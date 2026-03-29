@@ -14,8 +14,10 @@ Step 2: Resolve each title to a real URL via a chain of search backends
 Step 3: Scrape full article text via trafilatura (primary) with
         BeautifulSoup fallback, and save to data/raw_ingest/.
         If text < 500 chars (paywall), tries Wayback Machine cached copy.
-Step 4: CDX fallback — if GNews finds no titles OR URL resolution fails,
-        enumerate Wayback CDX archives for the domain in the date window.
+Step 4: GDELT fallback — if GNews+URL-resolution yields 0 articles,
+        query the free GDELT DOC API (English sources only) for direct URLs.
+Step 5: CDX fallback — enumerate Wayback CDX archives (disabled on EC2;
+        set ENABLE_CDX=1 to re-enable).
 
 Sources: toi, jpost, haaretz, reuters, globes, ynet, israel_hayom,
          walla, haaretz_he, n12, maariv, ch13, kan11  (Hebrew sources included)
@@ -411,6 +413,85 @@ async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
         return ""
 
 
+GDELT_API = "https://api.gdeltproject.org/api/v2/doc/doc"
+
+
+async def search_gdelt(
+    domain: str,
+    keywords: List[str],
+    start_date: datetime,
+    end_date: datetime,
+    max_results: int = 5,
+) -> List[Dict]:
+    """
+    Query GDELT DOC API for articles from *domain* in the date window.
+    Free, no API key. English coverage only (weak for Hebrew domains).
+    Returns list of {url, published_at, headline, text}.
+    """
+    ascii_kws = [k.strip('"') for k in keywords if _is_ascii(k) and k.strip('"')]
+    if not ascii_kws:
+        return []
+
+    query = f'domain:{domain} "{ascii_kws[0]}"'
+    params = {
+        "query": query,
+        "mode": "artlist",
+        "maxrecords": str(max_results * 3),  # fetch extra, filter by date
+        "startdatetime": start_date.strftime("%Y%m%d") + "000000",
+        "enddatetime": end_date.strftime("%Y%m%d") + "235959",
+        "format": "json",
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            r = await client.get(GDELT_API, params=params)
+        if r.status_code != 200:
+            console.print(f"    [dim red]GDELT error: HTTP {r.status_code}[/dim red]")
+            return []
+        data = r.json()
+    except Exception as e:
+        console.print(f"    [dim red]GDELT error: {type(e).__name__}: {e}[/dim red]")
+        return []
+
+    articles_meta = data.get("articles", [])
+    if not articles_meta:
+        return []
+
+    console.print(f"    [dim]GDELT: {len(articles_meta)} candidates[/dim]")
+    results: List[Dict] = []
+    async with httpx.AsyncClient(headers=HEADERS, timeout=25, follow_redirects=True) as client:
+        for item in articles_meta:
+            if len(results) >= max_results:
+                break
+            url = item.get("url", "")
+            if not url or not _filter_url(url, domain, None):
+                continue
+            seendate = item.get("seendate", "")
+            try:
+                pub_dt = datetime.strptime(seendate[:8], "%Y%m%d")
+            except Exception:
+                pub_dt = start_date
+            try:
+                r = await client.get(url)
+                if r.status_code != 200:
+                    continue
+                text = await _scrape_html(r.text)
+                if len(text) < 300:
+                    continue
+                results.append({
+                    "url": url,
+                    "published_at": pub_dt.strftime("%Y-%m-%d"),
+                    "headline": item.get("title", ""),
+                    "text": text,
+                })
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                console.print(f"    [dim]GDELT fetch failed: {e}[/dim]")
+                continue
+
+    return results
+
+
 CDX_API = "http://web.archive.org/cdx/search/cdx"
 CDX_FETCH_LIMIT = 15   # max candidates to actually fetch per cell
 CDX_SCAN_LIMIT  = 150  # max CDX rows to download before filtering
@@ -614,6 +695,22 @@ async def ingest_cell(
         out = cell_dir / f"article_{saved+1:02d}.json"
         out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
         saved += 1
+
+    if saved == 0 and lang == "en":
+        # ── GDELT fallback: free DOC API, returns real article URLs directly ──
+        console.print(f"    [dim]GDELT fallback for {source_id}/{event['id']}[/dim]")
+        gdelt_arts = await search_gdelt(domain, keywords, start_dt, outcome_dt)
+        for art in gdelt_arts:
+            article = {
+                "headline": art["headline"],
+                "text":     art["text"],
+                "published_at": art["published_at"],
+                "author":   "Unknown",
+                "url":      art["url"],
+            }
+            out = cell_dir / f"article_{saved+1:02d}.json"
+            out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
+            saved += 1
 
     if saved == 0:
         # ── CDX fallback: enumerate Wayback archives ─────────────────────────
