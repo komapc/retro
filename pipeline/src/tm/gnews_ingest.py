@@ -111,6 +111,10 @@ SERPAPI_KEY:    Optional[str] = os.environ.get("SERPAPI_KEY") \
                               or os.environ.get("SERPER_API_KEY")   # serpapi.com (backwards-compat)
 SERPERDEV_KEY:  Optional[str] = os.environ.get("SERPERDEV_KEY")   # serper.dev
 
+# Circuit breakers — set to True after quota/persistent errors to skip for rest of session
+_BRAVE_QUOTA_EXHAUSTED: bool = False
+_GDELT_BLOCKED: bool = False
+
 
 def _is_ascii(s: str) -> bool:
     try:
@@ -260,6 +264,7 @@ def _filter_url(href: str, domain: str, expected_date: Optional[datetime]) -> bo
 
 
 def _search_brave(query: str, domain: str, expected_date: Optional[datetime]) -> Optional[str]:
+    global _BRAVE_QUOTA_EXHAUSTED
     r = httpx.get(
         "https://api.search.brave.com/res/v1/web/search",
         params={"q": query, "count": 5, "search_lang": "en"},
@@ -267,7 +272,8 @@ def _search_brave(query: str, domain: str, expected_date: Optional[datetime]) ->
         timeout=10,
     )
     if r.status_code == 402:
-        raise RuntimeError("quota exhausted (402)")
+        _BRAVE_QUOTA_EXHAUSTED = True
+        raise RuntimeError("quota exhausted (402) — disabling Brave for this session")
     r.raise_for_status()
     for res in r.json().get("web", {}).get("results", []):
         if _filter_url(res.get("url", ""), domain, expected_date):
@@ -322,9 +328,9 @@ def _search_ddg(query: str, domain: str, expected_date: Optional[datetime]) -> O
 # nearly every call), adding latency with no benefit since Serper.dev works.
 # Re-add ("SerpApi", lambda: SERPAPI_KEY, _search_serpapi) if plan is upgraded.
 _SEARCH_BACKENDS = [
-    ("Serper", lambda: SERPERDEV_KEY, _search_serperdev),
-    ("DDG",    lambda: True,          _search_ddg),
-    ("Brave",  lambda: BRAVE_API_KEY, _search_brave),
+    ("Serper", lambda: SERPERDEV_KEY,                          _search_serperdev),
+    ("DDG",    lambda: True,                                   _search_ddg),
+    ("Brave",  lambda: BRAVE_API_KEY and not _BRAVE_QUOTA_EXHAUSTED, _search_brave),
 ]
 
 
@@ -415,7 +421,9 @@ async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
 
 GDELT_API = "https://api.gdeltproject.org/api/v2/doc/doc"
 _GDELT_LAST_CALL: float = 0.0
+_GDELT_CONSECUTIVE_ERRORS: int = 0
 GDELT_MIN_INTERVAL = 10.0  # seconds between GDELT calls to avoid 429
+GDELT_MAX_CONSECUTIVE_ERRORS = 5  # trip circuit breaker after this many consecutive failures
 
 
 async def search_gdelt(
@@ -430,7 +438,9 @@ async def search_gdelt(
     Free, no API key. English coverage only (weak for Hebrew domains).
     Returns list of {url, published_at, headline, text}.
     """
-    global _GDELT_LAST_CALL
+    global _GDELT_LAST_CALL, _GDELT_BLOCKED, _GDELT_CONSECUTIVE_ERRORS
+    if _GDELT_BLOCKED:
+        return []
     elapsed = time.time() - _GDELT_LAST_CALL
     if elapsed < GDELT_MIN_INTERVAL:
         await asyncio.sleep(GDELT_MIN_INTERVAL - elapsed)
@@ -454,11 +464,22 @@ async def search_gdelt(
         async with httpx.AsyncClient(timeout=30) as client:
             r = await client.get(GDELT_API, params=params)
         if r.status_code != 200:
-            console.print(f"    [dim red]GDELT error: HTTP {r.status_code}[/dim red]")
+            _GDELT_CONSECUTIVE_ERRORS += 1
+            if _GDELT_CONSECUTIVE_ERRORS >= GDELT_MAX_CONSECUTIVE_ERRORS:
+                _GDELT_BLOCKED = True
+                console.print(f"    [yellow]GDELT: {_GDELT_CONSECUTIVE_ERRORS} consecutive errors — disabling for this session[/yellow]")
+            else:
+                console.print(f"    [dim red]GDELT error: HTTP {r.status_code}[/dim red]")
             return []
         data = r.json()
+        _GDELT_CONSECUTIVE_ERRORS = 0  # reset on success
     except Exception as e:
-        console.print(f"    [dim red]GDELT error: {type(e).__name__}: {e}[/dim red]")
+        _GDELT_CONSECUTIVE_ERRORS += 1
+        if _GDELT_CONSECUTIVE_ERRORS >= GDELT_MAX_CONSECUTIVE_ERRORS:
+            _GDELT_BLOCKED = True
+            console.print(f"    [yellow]GDELT: {_GDELT_CONSECUTIVE_ERRORS} consecutive errors — disabling for this session[/yellow]")
+        else:
+            console.print(f"    [dim red]GDELT error: {type(e).__name__}: {e}[/dim red]")
         return []
 
     articles_meta = data.get("articles", [])
