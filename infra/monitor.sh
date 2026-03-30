@@ -1,8 +1,8 @@
 #!/bin/bash
-# TruthMachine EC2 Monitor
+# TruthMachine EC2 Monitor — full status dashboard
 # Usage: bash infra/monitor.sh
 
-INSTANCE="i-0f1ba4900a0a7af14"
+INSTANCE="i-00ac444b94c5ff9b2"
 REGION="eu-central-1"
 WORKDIR="/home/ubuntu/truthmachine"
 
@@ -12,9 +12,9 @@ run_remote() {
     --region "$REGION" \
     --instance-ids "$INSTANCE" \
     --document-name "AWS-RunShellScript" \
-    --parameters "$(printf '{"commands":["%s"]}' "$1")" \
+    --parameters "commands=[\"$1\"]" \
     --query "Command.CommandId" --output text 2>/dev/null)
-  sleep 7
+  sleep 6
   aws ssm get-command-invocation \
     --region "$REGION" \
     --command-id "$CMD_ID" \
@@ -25,44 +25,50 @@ run_remote() {
 clear
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  TruthMachine Monitor  $(date '+%Y-%m-%d %H:%M:%S')"
+echo "  Instance: $INSTANCE ($REGION)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# ── Processes ──────────────────────────────────────────
+# ── Service status ──────────────────────────────────────
 echo ""
-echo "  PROCESSES"
-run_remote "ps aux | grep -E 'gnews_ingest|orchestrator|ec2_run|render_atlas' | grep -v grep | awk '{print \$8, \$11, \$12}' | sed 's|.*/tm/||'" \
+echo "  SERVICE"
+run_remote "sudo systemctl is-active truthmachine && sudo systemctl show truthmachine --property=ActiveEnterTimestamp | cut -d= -f2" \
   | while read -r line; do echo "    $line"; done
 
-# ── Article ingest ─────────────────────────────────────
+# ── Cell progress ───────────────────────────────────────
 echo ""
-echo "  INGEST  (raw_ingest/)"
-run_remote "echo TOTAL:\$(find $WORKDIR/data/raw_ingest -name 'article_*.json' 2>/dev/null | wc -l); find $WORKDIR/data/raw_ingest -name 'article_*.json' 2>/dev/null | sed 's|.*/raw_ingest/||' | cut -d/ -f1 | sort | uniq -c | sort -rn" \
-  | while read -r line; do echo "    $line"; done
-
-# ── Extractions + cell progress ────────────────────────
-echo ""
-echo "  EXTRACTIONS"
-run_remote "echo \"vault: \$(ls $WORKDIR/data/vault2/extractions/*.json 2>/dev/null | wc -l) files\"; python3 -c \"
+echo "  PROGRESS"
+run_remote "python3 -c \"
 import json
-p = '$WORKDIR/data/progress.json'
 try:
-    cells = json.load(open(p)).get('cells', {})
-    d = sum(1 for v in cells.values() if v.get('status')=='done')
-    n = sum(1 for v in cells.values() if v.get('status')=='no_predictions')
-    f = sum(1 for v in cells.values() if v.get('status')=='failed')
-    p2 = sum(1 for v in cells.values() if v.get('status')=='pending')
-    t = len(cells)
+    cells = json.load(open('$WORKDIR/data/progress.json')).get('cells', {})
+    d  = sum(1 for v in cells.values() if v.get('status')=='done')
+    n  = sum(1 for v in cells.values() if v.get('status')=='no_predictions')
+    f  = sum(1 for v in cells.values() if v.get('status')=='failed')
+    p  = sum(1 for v in cells.values() if v.get('status')=='pending')
+    t  = len(cells)
     pct = int(100*d/t) if t else 0
-    print(f'cells:  done={d}  no_pred={n}  pending={p2}  failed={f}  total={t}  ({pct}%)')
+    bar = '#'*pct + '.'*(100-pct)
+    print(f'  done={d}  no_pred={n}  failed={f}  pending={p}  total={t}  ({pct}%)')
+    print(f'  [{bar[:50]}] {pct}%')
 except Exception as e:
-    print('no progress.json yet')
-\"" | while read -r line; do echo "    $line"; done
+    print('  no progress.json:', e)
+\"" | while read -r line; do echo "  $line"; done
 
-# ── Last log lines ─────────────────────────────────────
+# ── Ingest counts ───────────────────────────────────────
 echo ""
-echo "  LOG (last 8 lines)"
-run_remote "tail -8 $WORKDIR/pipeline_log.txt 2>/dev/null || echo 'no log yet'" \
+echo "  INGEST  (raw_ingest articles per source)"
+run_remote "find $WORKDIR/data/raw_ingest -name 'article_*.json' 2>/dev/null | sed 's|.*/raw_ingest/||' | cut -d/ -f1 | sort | uniq -c | sort -rn | awk '{printf \"    %-20s %s\n\", \$2, \$1}'; echo \"    ---\"; echo \"    TOTAL: \$(find $WORKDIR/data/raw_ingest -name 'article_*.json' 2>/dev/null | wc -l)\"" \
+  | while read -r line; do echo "$line"; done
+
+# ── Last log lines ──────────────────────────────────────
+echo ""
+echo "  LOG (last 10 lines)"
+run_remote "tail -10 $WORKDIR/pipeline_log.txt 2>/dev/null || echo 'no log yet'" \
   | while read -r line; do echo "    $line"; done
 
 echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  Other scripts:"
+echo "    bash infra/logs.sh [tail|warn|grep <pattern>]"
+echo "    bash infra/check_keys.sh"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
