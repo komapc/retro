@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-11-27",
   "search_keywords": [
-    "\u05d4\u05e4\u05e1\u05e7\u05ea \u05d0\u05e9 \u05d1\u05dc\u05d1\u05e0\u05d5\u05df",
+    "הפסקת אש בלבנון",
     "Lebanon ceasefire 2024"
   ],
-  "llm_referee_criteria": "Must focus on the Nov 27 effective date."
+  "llm_referee_criteria": "Must focus on the Nov 27 effective date.",
+  "predictive_window_days": 30
 }

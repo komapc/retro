@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2023-03-27",
   "search_keywords": [
-    "\u05e9\u05d1\u05d9\u05ea\u05d4 \u05db\u05dc\u05dc\u05d9\u05ea \u05d4\u05e1\u05ea\u05d3\u05e8\u05d5\u05ea",
+    "שביתה כללית הסתדרות",
     "Histadrut general strike"
   ],
-  "llm_referee_criteria": "Must discuss the nationwide shutdown on March 27."
+  "llm_referee_criteria": "Must discuss the nationwide shutdown on March 27.",
+  "predictive_window_days": 30
 }

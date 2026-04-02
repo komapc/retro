@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-03-13",
   "search_keywords": [
-    "\u05ea\u05e7\u05e6\u05d9\u05d1 2024 \u05e2\u05d1\u05e8",
+    "תקציב 2024 עבר",
     "Israel budget 2024 passed"
   ],
-  "llm_referee_criteria": "Must discuss the March 13 legislative approval."
+  "llm_referee_criteria": "Must discuss the March 13 legislative approval.",
+  "predictive_window_days": 30
 }

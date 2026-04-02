@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2023-05-22",
   "search_keywords": [
-    "\u05e8\u05d9\u05d1\u05d9\u05ea \u05d1\u05e0\u05e7 \u05d9\u05e9\u05e8\u05d0\u05dc 4.75",
+    "ריבית בנק ישראל 4.75",
     "Bank of Israel raise rate"
   ],
-  "llm_referee_criteria": "Must focus on the May 22 peak rate hike."
+  "llm_referee_criteria": "Must focus on the May 22 peak rate hike.",
+  "predictive_window_days": 30
 }

@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-05-07",
   "search_keywords": [
-    "\u05e4\u05e2\u05d5\u05dc\u05d4 \u05d1\u05e8\u05e4\u05d9\u05d7",
+    "פעולה ברפיח",
     "Rafah operation begins"
   ],
-  "llm_referee_criteria": "Must focus on the start of the ground offensive in Rafah."
+  "llm_referee_criteria": "Must focus on the start of the ground offensive in Rafah.",
+  "predictive_window_days": 30
 }

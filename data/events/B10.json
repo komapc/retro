@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-10-16",
   "search_keywords": [
-    "\u05d7\u05d9\u05e1\u05d5\u05dc \u05e1\u05d9\u05e0\u05d5\u05d5\u05d0\u05e8",
+    "חיסול סינוואר",
     "Sinwar killed Gaza"
   ],
-  "llm_referee_criteria": "Must focus on the Oct 16 confirmation of his death."
+  "llm_referee_criteria": "Must focus on the Oct 16 confirmation of his death.",
+  "predictive_window_days": 30
 }

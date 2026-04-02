@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-04-19",
   "search_keywords": [
-    "S&P \u05d4\u05d5\u05e8\u05d3\u05ea \u05d3\u05d9\u05e8\u05d5\u05d2",
+    "S&P הורדת דירוג",
     "S&P downgrade Israel"
   ],
-  "llm_referee_criteria": "Must focus on the April 2024 downgrade."
+  "llm_referee_criteria": "Must focus on the April 2024 downgrade.",
+  "predictive_window_days": 30
 }

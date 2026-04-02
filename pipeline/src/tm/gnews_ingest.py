@@ -234,6 +234,9 @@ def _construct_url(title: str, domain: str, expected_date: Optional[datetime] = 
     if domain == "reuters.com" and expected_date:
         date_str = expected_date.strftime("%Y-%m-%d")
         return f"https://www.reuters.com/world/middle-east/{slug}-{date_str}/"
+    if domain == "israelhayom.com" and expected_date:
+        date_path = expected_date.strftime("%Y/%m/%d")
+        return f"https://www.israelhayom.com/{date_path}/{slug}/"
     return None
 
 
@@ -725,8 +728,10 @@ async def ingest_cell(
         out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
         saved += 1
 
-    if saved == 0 and lang == "en":
+    if saved == 0:
         # ── GDELT fallback: free DOC API, returns real article URLs directly ──
+        # Note: search_gdelt() filters to ASCII keywords internally, so this
+        # works for Hebrew-domain sources too (all events have English keywords).
         console.print(f"    [dim]GDELT fallback for {source_id}/{event['id']}[/dim]")
         gdelt_arts = await search_gdelt(domain, keywords, start_dt, outcome_dt)
         for art in gdelt_arts:

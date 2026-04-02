@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2025-01-20",
   "search_keywords": [
-    "\u05d4\u05e9\u05e7\u05ea DeepSeek R1",
+    "השקת DeepSeek R1",
     "DeepSeek R1 release"
   ],
-  "llm_referee_criteria": "Must focus on the Jan 2025 release impact."
+  "llm_referee_criteria": "Must focus on the Jan 2025 release impact.",
+  "predictive_window_days": 30
 }

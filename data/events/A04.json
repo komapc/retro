@@ -1,12 +1,13 @@
 {
   "id": "A04",
-  "name": "2022 Israeli election \u2014 right bloc wins majority",
+  "name": "2022 Israeli election — right bloc wins majority",
   "outcome": true,
   "outcome_date": "2022-11-03",
   "search_keywords": [
-    "\u05ea\u05d5\u05e6\u05d0\u05d5\u05ea \u05d4\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea 2022",
+    "תוצאות הבחירות 2022",
     "election results right bloc",
     "64 seats"
   ],
-  "llm_referee_criteria": "Must discuss the final results showing a 64-seat win."
+  "llm_referee_criteria": "Must discuss the final results showing a 64-seat win.",
+  "predictive_window_days": 30
 }

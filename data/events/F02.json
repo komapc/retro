@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2021-06-13",
   "search_keywords": [
-    "\u05e8\u05e2\\\"\u05dd \u05e7\u05d5\u05d0\u05dc\u05d9\u05e6\u05d9\u05d4",
+    "רע\\\"ם קואליציה",
     "Ra'am joins coalition"
   ],
-  "llm_referee_criteria": "Must confirm Ra'am's formal entry into the 36th government."
+  "llm_referee_criteria": "Must confirm Ra'am's formal entry into the 36th government.",
+  "predictive_window_days": 30
 }

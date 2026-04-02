@@ -4,9 +4,10 @@
   "outcome": true,
   "outcome_date": "2021-06-13",
   "search_keywords": [
-    "\u05de\u05de\u05e9\u05dc\u05ea \u05d1\u05e0\u05d8-\u05dc\u05e4\u05d9\u05d3",
+    "ממשלת בנט-לפיד",
     "Bennett-Lapid government",
     "sworn in"
   ],
-  "llm_referee_criteria": "Must discuss the formation of the 36th government."
+  "llm_referee_criteria": "Must discuss the formation of the 36th government.",
+  "predictive_window_days": 30
 }

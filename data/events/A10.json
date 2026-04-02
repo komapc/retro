@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2023-03-27",
   "search_keywords": [
-    "\u05e0\u05ea\u05e0\u05d9\u05d4\u05d5 \u05d4\u05e9\u05d4\u05d9\u05d9\u05ea \u05d4\u05d7\u05e7\u05d9\u05e7\u05d4",
+    "נתניהו השהיית החקיקה",
     "Netanyahu pause reform"
   ],
-  "llm_referee_criteria": "Must focus on the March 27 announcement after mass protests."
+  "llm_referee_criteria": "Must focus on the March 27 announcement after mass protests.",
+  "predictive_window_days": 30
 }

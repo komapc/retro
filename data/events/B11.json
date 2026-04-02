@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-05-24",
   "search_keywords": [
-    "\u05e6\u05d5 \u05d1\u05d9\u05ea \u05d4\u05d3\u05d9\u05df \u05d1\u05d4\u05d0\u05d2 \u05e8\u05e4\u05d9\u05d7",
+    "צו בית הדין בהאג רפיח",
     "ICJ Rafah order"
   ],
-  "llm_referee_criteria": "Must focus on the May 24 ruling."
+  "llm_referee_criteria": "Must focus on the May 24 ruling.",
+  "predictive_window_days": 30
 }

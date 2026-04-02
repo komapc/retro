@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-03-01",
   "search_keywords": [
-    "\u05e2\u05dc\u05d9\u05d9\u05d4 \u05d1\u05d9\u05e8\u05d9\u05d3\u05d4 \u05de\u05d9\u05e9\u05e8\u05d0\u05dc",
+    "עלייה בירידה מישראל",
     "emigration spike Israel post-war"
   ],
-  "llm_referee_criteria": "Must cite official CBS or airport data showing spike."
+  "llm_referee_criteria": "Must cite official CBS or airport data showing spike.",
+  "predictive_window_days": 30
 }

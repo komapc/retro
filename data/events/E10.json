@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2023-04-04",
   "search_keywords": [
-    "\u05e4\u05d9\u05e0\u05dc\u05e0\u05d3 \u05e0\u05d0\u05d8\u05d5",
+    "פינלנד נאטו",
     "Finland joins NATO"
   ],
-  "llm_referee_criteria": "Must focus on the April 4 accession ceremony."
+  "llm_referee_criteria": "Must focus on the April 4 accession ceremony.",
+  "predictive_window_days": 30
 }

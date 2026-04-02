@@ -4,8 +4,9 @@
   "outcome": false,
   "outcome_date": "2026-03-17",
   "search_keywords": [
-    "\u05d7\u05d5\u05e7 \u05d4\u05d2\u05d9\u05d5\u05e1 \u05e2\u05d1\u05e8",
+    "חוק הגיוס עבר",
     "Haredi draft law passed"
   ],
-  "llm_referee_criteria": "Mark False if only delays or rulings occurred by this date."
+  "llm_referee_criteria": "Mark False if only delays or rulings occurred by this date.",
+  "predictive_window_days": 30
 }

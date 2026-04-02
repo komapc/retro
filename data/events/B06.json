@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2023-12-01",
   "search_keywords": [
-    "\u05d7\u05d6\u05e8\u05d4 \u05dc\u05dc\u05d7\u05d9\u05de\u05d4 \u05e2\u05d6\u05d4",
+    "חזרה ללחימה עזה",
     "fighting resumes Gaza"
   ],
-  "llm_referee_criteria": "Must focus on the expiration of the truce on Dec 1."
+  "llm_referee_criteria": "Must focus on the expiration of the truce on Dec 1.",
+  "predictive_window_days": 30
 }

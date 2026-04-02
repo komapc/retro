@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2023-11-30",
   "search_keywords": [
-    "\u05e9\u05d7\u05e8\u05d5\u05e8 \u05d7\u05d8\u05d5\u05e4\u05d9\u05dd \u05e4\u05e2\u05d9\u05de\u05d4 \u05e8\u05d0\u05e9\u05d5\u05e0\u05d4",
+    "שחרור חטופים פעימה ראשונה",
     "hostage releases completed"
   ],
-  "llm_referee_criteria": "Must focus on the end of the initial release window."
+  "llm_referee_criteria": "Must focus on the end of the initial release window.",
+  "predictive_window_days": 30
 }

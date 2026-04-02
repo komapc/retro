@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-03-13",
   "search_keywords": [
-    "\u05d7\u05d5\u05e7 \u05d4\u05d1\u05d9\u05e0\u05d4 \u05d4\u05de\u05dc\u05d0\u05db\u05d5\u05ea\u05d9\u05ea \u05d4\u05d0\u05d9\u05e8\u05d5\u05e4\u05d9",
+    "חוק הבינה המלאכותית האירופי",
     "EU AI Act adopted"
   ],
-  "llm_referee_criteria": "Must focus on the European Parliament vote on March 13."
+  "llm_referee_criteria": "Must focus on the European Parliament vote on March 13.",
+  "predictive_window_days": 30
 }

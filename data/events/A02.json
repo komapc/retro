@@ -4,9 +4,10 @@
   "outcome": true,
   "outcome_date": "2022-04-06",
   "search_keywords": [
-    "\u05e2\u05d9\u05d3\u05d9\u05ea \u05e1\u05d9\u05dc\u05de\u05df",
+    "עידית סילמן",
     "Idit Silman resignation",
     "majority lost"
   ],
-  "llm_referee_criteria": "Must focus on the 61-seat majority loss citing Silman."
+  "llm_referee_criteria": "Must focus on the 61-seat majority loss citing Silman.",
+  "predictive_window_days": 30
 }

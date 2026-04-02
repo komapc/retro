@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-06-09",
   "search_keywords": [
-    "\u05d2\u05e0\u05e5 \u05e4\u05d5\u05e8\u05e9 \u05de\u05d4\u05de\u05de\u05e9\u05dc\u05d4",
+    "גנץ פורש מהממשלה",
     "Gantz resigns war cabinet"
   ],
-  "llm_referee_criteria": "Must focus on Gantz's official exit on June 9."
+  "llm_referee_criteria": "Must focus on Gantz's official exit on June 9.",
+  "predictive_window_days": 30
 }

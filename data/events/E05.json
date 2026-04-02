@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2023-03-10",
   "search_keywords": [
-    "\u05e7\u05e8\u05d9\u05e1\u05ea SVB",
+    "קריסת SVB",
     "Silicon Valley Bank collapse"
   ],
-  "llm_referee_criteria": "Must focus on the FDIC seizure on March 10."
+  "llm_referee_criteria": "Must focus on the FDIC seizure on March 10.",
+  "predictive_window_days": 30
 }

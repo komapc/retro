@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2024-04-14",
   "search_keywords": [
-    "\u05de\u05ea\u05e7\u05e4\u05d4 \u05d0\u05d9\u05e8\u05d0\u05e0\u05d9\u05ea \u05d9\u05e9\u05d9\u05e8\u05d4",
+    "מתקפה איראנית ישירה",
     "Iran missile attack Israel"
   ],
-  "llm_referee_criteria": "Must focus on the April 14 multi-drone/missile barrage."
+  "llm_referee_criteria": "Must focus on the April 14 multi-drone/missile barrage.",
+  "predictive_window_days": 30
 }

@@ -4,9 +4,10 @@
   "outcome": true,
   "outcome_date": "2022-12-29",
   "search_keywords": [
-    "\u05de\u05de\u05e9\u05dc\u05ea \u05e0\u05ea\u05e0\u05d9\u05d4\u05d5 \u05d4\u05e9\u05d9\u05e9\u05d9\u05ea",
+    "ממשלת נתניהו השישית",
     "Netanyahu 6th government",
     "sworn in"
   ],
-  "llm_referee_criteria": "Must discuss the swearing-in of the 37th government."
+  "llm_referee_criteria": "Must discuss the swearing-in of the 37th government.",
+  "predictive_window_days": 30
 }

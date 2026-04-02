@@ -4,8 +4,9 @@
   "outcome": true,
   "outcome_date": "2023-12-05",
   "search_keywords": [
-    "\u05e6\u05d4\\\"\u05dc \u05d1\u05de\u05e8\u05db\u05d6 \u05d7\u05d0\u05df \u05d9\u05d5\u05e0\u05e1",
+    "צה\\\"ל במרכז חאן יונס",
     "IDF central Khan Yunis"
   ],
-  "llm_referee_criteria": "Must focus on the entry into the city's heart."
+  "llm_referee_criteria": "Must focus on the entry into the city's heart.",
+  "predictive_window_days": 30
 }
