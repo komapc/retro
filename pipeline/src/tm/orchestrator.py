@@ -121,7 +121,15 @@ class Orchestrator:
                 for f in cell_dir.glob("entry_*.json")
                 if f.exists()
             ) if cell_dir.exists() else False
-            if not has_predictions:
+            if has_predictions:
+                # Count total predictions across all entry files for this cell
+                total_preds = sum(
+                    len(json.loads(f.read_text()).get("predictions", []))
+                    for f in cell_dir.glob("entry_*.json")
+                    if f.exists()
+                )
+                update_cell(event_id, source["id"], CellStatus.done, prediction_count=total_preds)
+            else:
                 if had_errors:
                     update_cell(event_id, source["id"], CellStatus.failed)
                 else:
