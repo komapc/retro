@@ -332,9 +332,9 @@ def _search_ddg(query: str, domain: str, expected_date: Optional[datetime]) -> O
 # nearly every call), adding latency with no benefit since Serper.dev works.
 # Re-add ("SerpApi", lambda: SERPAPI_KEY, _search_serpapi) if plan is upgraded.
 _SEARCH_BACKENDS = [
-    ("Serper", lambda: SERPERDEV_KEY,                          _search_serperdev),
-    ("DDG",    lambda: True,                                   _search_ddg),
     ("Brave",  lambda: BRAVE_API_KEY and not _BRAVE_QUOTA_EXHAUSTED, _search_brave),
+    ("Serper", lambda: SERPERDEV_KEY,                          _search_serperdev),
+    # DDG omitted: blocked on EC2 (AWS IPs rate-limited by DuckDuckGo/Yahoo)
 ]
 
 
