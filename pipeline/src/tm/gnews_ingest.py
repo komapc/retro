@@ -48,6 +48,7 @@ from rich.table import Table
 
 from .models import CellStatus
 from .progress import load_state, update_cell
+from .web_search import search_articles as _web_search
 
 console = Console()
 
@@ -727,6 +728,37 @@ async def ingest_cell(
         out = cell_dir / f"article_{saved+1:02d}.json"
         out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
         saved += 1
+
+    if saved == 0:
+        # ── Web search fallback: Serper.dev → Brave → DDG ────────────────────
+        # Direct news search for the event keywords restricted to the source
+        # domain. Runs synchronously (no URL resolution step needed — results
+        # include the real article URL already).
+        console.print(f"    [dim]Web search fallback for {source_id}/{event['id']}[/dim]")
+        ascii_kws = [k.strip('"') for k in keywords if _is_ascii(k) and k.strip('"')]
+        if ascii_kws:
+            ws_query = f"site:{domain} {ascii_kws[0]}"
+            loop = asyncio.get_event_loop()
+            ws_results = await loop.run_in_executor(
+                None, lambda: _web_search(ws_query, 5, start_dt, outcome_dt)
+            )
+            for ws in ws_results:
+                if not ws.url or not _filter_url(ws.url, domain, None):
+                    continue
+                await asyncio.sleep(1.0)
+                text = await fetch_article_text(ws.url)
+                if len(text) < 250:
+                    continue
+                article = {
+                    "headline": ws.title,
+                    "text":     text,
+                    "published_at": ws.published_date or start_dt.strftime("%Y-%m-%d"),
+                    "author":   "Unknown",
+                    "url":      ws.url,
+                }
+                out = cell_dir / f"article_{saved+1:02d}.json"
+                out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
+                saved += 1
 
     if saved == 0:
         # ── GDELT fallback: free DOC API, returns real article URLs directly ──
