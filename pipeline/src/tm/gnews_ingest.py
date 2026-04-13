@@ -114,6 +114,7 @@ SERPERDEV_KEY:  Optional[str] = os.environ.get("SERPERDEV_KEY")   # serper.dev
 
 # Circuit breakers — set to True after quota/persistent errors to skip for rest of session
 _BRAVE_QUOTA_EXHAUSTED: bool = False
+_SERPER_QUOTA_EXHAUSTED: bool = False
 _GDELT_BLOCKED: bool = False
 
 
@@ -299,12 +300,16 @@ def _search_serpapi(query: str, domain: str, expected_date: Optional[datetime]) 
 
 
 def _search_serperdev(query: str, domain: str, expected_date: Optional[datetime]) -> Optional[str]:
+    global _SERPER_QUOTA_EXHAUSTED
     r = httpx.post(
         "https://google.serper.dev/search",
         json={"q": query, "num": 5},
         headers={"X-API-KEY": SERPERDEV_KEY, "Content-Type": "application/json"},
         timeout=10,
     )
+    if r.status_code == 400:
+        _SERPER_QUOTA_EXHAUSTED = True
+        raise RuntimeError(f"Serper quota/key error (400) — disabling for session")
     r.raise_for_status()
     for res in r.json().get("organic", []):
         if _filter_url(res.get("link", ""), domain, expected_date):
@@ -333,7 +338,7 @@ def _search_ddg(query: str, domain: str, expected_date: Optional[datetime]) -> O
 # Re-add ("SerpApi", lambda: SERPAPI_KEY, _search_serpapi) if plan is upgraded.
 _SEARCH_BACKENDS = [
     ("Brave",  lambda: BRAVE_API_KEY and not _BRAVE_QUOTA_EXHAUSTED, _search_brave),
-    ("Serper", lambda: SERPERDEV_KEY,                          _search_serperdev),
+    ("Serper", lambda: SERPERDEV_KEY and not _SERPER_QUOTA_EXHAUSTED, _search_serperdev),
     # DDG omitted: blocked on EC2 (AWS IPs rate-limited by DuckDuckGo/Yahoo)
 ]
 
