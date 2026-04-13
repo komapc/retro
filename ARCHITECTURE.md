@@ -165,10 +165,10 @@ SCORING_CONFIG = ScoringConfig(window_hours=48, min_per_window=2)
 ## Deployment
 
 ### Infrastructure
-- **EC2**: `t4g.medium` (2 vCPU, 4GB RAM), Ubuntu 24.04 arm64, `us-east-1`
-- **Access**: AWS SSM Session Manager (no SSH port needed)
-- **Instance name**: `openclaw-worker` (`i-0f1ba4900a0a7af14`)
-- **Static IP**: `35.174.46.160`
+- **EC2**: `t4g.small`, Ubuntu, `eu-central-1` (Frankfurt)
+- **Access**: AWS SSM Session Manager (no SSH key — instance has no key pair)
+- **Instance name**: `truthmachine-pipeline` (`i-00ac444b94c5ff9b2`)
+- **Public IP**: `3.120.185.111` (dynamic — reassigned on stop/start)
 - **Terraform**: `infra/openclaw/terraform/`
 
 ### Required Secrets (AWS Secrets Manager, `us-east-1`)
