@@ -33,6 +33,16 @@ from ddgs import DDGS
 SERPERDEV_KEY: Optional[str] = os.environ.get("SERPERDEV_KEY")
 BRAVE_API_KEY: Optional[str] = os.environ.get("BRAVE_API_KEY")
 
+
+def _running_on_ec2() -> bool:
+    """Detect AWS EC2 via instance metadata endpoint (fast timeout)."""
+    try:
+        import httpx as _httpx
+        r = _httpx.get("http://169.254.169.254/latest/meta-data/", timeout=0.3)
+        return r.status_code == 200
+    except Exception:
+        return False
+
 _DDG_LAST_CALL: float = 0.0
 DDG_MIN_INTERVAL = 2.0
 
@@ -206,14 +216,17 @@ def search_articles(
             results = _search_brave_news(query, limit, date_from, date_to)
             if results:
                 return results
-        except Exception as e:
+        except Exception:
             pass
 
-    # 3. DuckDuckGo (free, no key)
-    try:
-        return _search_ddg_news(query, limit)
-    except Exception:
-        return []
+    # 3. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
+    if not _running_on_ec2():
+        try:
+            return _search_ddg_news(query, limit)
+        except Exception:
+            pass
+
+    return []
 
 
 # ──────────────────────────────────────────────
