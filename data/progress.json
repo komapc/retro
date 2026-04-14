@@ -1277,8 +1277,8 @@
     "A19:israel_hayom": {
       "event_id": "A19",
       "source_id": "israel_hayom",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "A19:walla": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:20:21.060156"
+  "last_updated": "2026-04-14T16:20:37.619843"
 }
