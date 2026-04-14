@@ -4420,8 +4420,8 @@
     "E01:ynet": {
       "event_id": "E01",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "E02:ch13": {
@@ -4497,8 +4497,8 @@
     "E02:walla": {
       "event_id": "E02",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E02:ynet": {
