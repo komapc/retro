@@ -5155,7 +5155,7 @@
     "F02:ch13": {
       "event_id": "F02",
       "source_id": "ch13",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T17:54:50.748676"
+  "last_updated": "2026-04-14T17:55:07.529817"
 }
