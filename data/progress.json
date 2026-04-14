@@ -31,8 +31,8 @@
     "C05:ynet": {
       "event_id": "C05",
       "source_id": "ynet",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "C06:globes": {
@@ -3895,8 +3895,8 @@
     "C08:ch13": {
       "event_id": "C08",
       "source_id": "ch13",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "C08:kan11": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:20:51.410298"
+  "last_updated": "2026-04-14T16:21:28.474624"
 }
