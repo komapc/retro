@@ -2649,8 +2649,8 @@
     "A11:haaretz": {
       "event_id": "A11",
       "source_id": "haaretz",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "A11:israel_hayom": {
