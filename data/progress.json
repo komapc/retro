@@ -2642,7 +2642,7 @@
     "A11:globes": {
       "event_id": "A11",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2677,7 +2677,7 @@
     "A11:maariv": {
       "event_id": "A11",
       "source_id": "maariv",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2705,7 +2705,7 @@
     "A11:walla": {
       "event_id": "A11",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2831,7 +2831,7 @@
     "A16:ch13": {
       "event_id": "A16",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2999,7 +2999,7 @@
     "A18:ch13": {
       "event_id": "A18",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
