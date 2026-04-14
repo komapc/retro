@@ -5659,7 +5659,7 @@
     "G05:ch13": {
       "event_id": "G05",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5687,7 +5687,7 @@
     "G06:ch13": {
       "event_id": "G06",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5722,7 +5722,7 @@
     "G07:globes": {
       "event_id": "G07",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5876,10 +5876,10 @@
     "G08:ynet": {
       "event_id": "G08",
       "source_id": "ynet",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     }
   },
-  "last_updated": "2026-04-14T17:55:07.529817"
+  "last_updated": "2026-04-14T18:11:47.329811"
 }
