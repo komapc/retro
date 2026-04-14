@@ -101,6 +101,16 @@ print(' '.join(sorted(p.stem for p in events_dir.glob('*.json'))))
   uv run --project "$PIPELINE_DIR" python -m tm.gnews_ingest --events "${INGEST_EVENTS[@]}" 2>&1
   log "Ingest complete — $(cell_stats)"
 
+  # Push progress.json after ingest so local clone sees live status
+  cd "$WORKDIR"
+  git add data/progress.json 2>/dev/null || true
+  if ! git diff --cached --quiet; then
+    git commit -m "progress: ingest batch ${INGEST_EVENTS[*]} — $(cell_stats)"
+    git fetch origin main
+    git rebase origin/main || { git rebase --abort; log "WARNING: progress push rebase failed"; }
+    git push origin main && log "Pushed progress.json after ingest"
+  fi
+
   # ── 3. Extract: run orchestrator in batches of 5 events, commit after each ─
   log "Extraction starting — $(cell_stats)"
 

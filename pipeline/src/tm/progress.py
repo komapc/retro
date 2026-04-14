@@ -13,6 +13,7 @@ Legend: ░ pending  ▒ in_progress  ▓ done  ✗ failed  · no predictions
 """
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -62,6 +63,7 @@ def load_state() -> MatrixState:
 
 
 def save_state(state: MatrixState) -> None:
+    state.last_updated = datetime.now().isoformat()
     settings.progress_file.parent.mkdir(parents=True, exist_ok=True)
     settings.progress_file.write_text(state.model_dump_json(indent=2))
 

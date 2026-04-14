@@ -138,6 +138,7 @@ class MatrixCell(BaseModel):
 
 class MatrixState(BaseModel):
     cells: dict[str, MatrixCell] = {}  # key: "event_id:source_id"
+    last_updated: Optional[str] = None
 
     def key(self, event_id: str, source_id: str) -> str:
         return f"{event_id}:{source_id}"
