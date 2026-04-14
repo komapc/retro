@@ -8,6 +8,7 @@ from typing import List, Optional
 from enum import Enum
 
 from rich.console import Console
+from .config import settings
 from .models import CellStatus, ExtractionOutput, PredictionExtraction
 from .aggregator import aggregate_predictions, needs_aggregation, aggregate_article_predictions
 from .runner import run_article, ArticleInput, PipelineResult
@@ -28,7 +29,6 @@ class Orchestrator:
         self.data_dir = data_dir
         self.mode = mode
         self.force_reextract = force_reextract
-        from .config import settings
         _vault_default = str(settings.vault_dir) if settings.vault_dir != Path("") else str(data_dir / "vault2")
         self.vault_dir = Path(os.environ.get("VAULT_DIR", _vault_default))
         self.atlas_dir = data_dir / "atlas"
