@@ -2649,7 +2649,7 @@
     "A11:haaretz": {
       "event_id": "A11",
       "source_id": "haaretz",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
