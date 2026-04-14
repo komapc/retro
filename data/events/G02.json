@@ -17,5 +17,10 @@
     "Sam Altman",
     "board",
     "governance"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/sam-back-as-ceo-of-openai",
+    "question": "Sam back as CEO of OpenAI?",
+    "match_quality": "exact"
+  }
 }

@@ -16,5 +16,10 @@
     "Rafah",
     "IDF",
     "ground operation"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-israel-launch-a-major-ground-offensive-in-south-gaza-by-dec-8",
+    "question": "Will Israel launch a major ground offensive in South Gaza by Dec 8?",
+    "match_quality": "close"
+  }
 }

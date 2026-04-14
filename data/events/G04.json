@@ -18,5 +18,10 @@
     "X",
     "acquisition",
     "social media"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-elon-musk-become-ceo-of-twitter-by-september-30",
+    "question": "Will Elon Musk become CEO of Twitter by September 30?",
+    "match_quality": "close"
+  }
 }

@@ -17,5 +17,10 @@
     "midterm elections",
     "Democrats",
     "Republicans"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/balance-of-power-2022-us-midterms",
+    "question": "Balance of Power: 2022 US Midterms",
+    "match_quality": "close"
+  }
 }

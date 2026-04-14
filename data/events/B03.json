@@ -16,5 +16,10 @@
     "ground invasion",
     "IDF",
     "Gaza"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-israel-launch-a-major-ground-offensive-in-gaza-by-october-31",
+    "question": "Will Israel launch a major ground offensive in Gaza by October 31?",
+    "match_quality": "exact"
+  }
 }

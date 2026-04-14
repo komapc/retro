@@ -17,5 +17,10 @@
     "OpenAI",
     "LLM",
     "launch"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-openai-release-gpt-4-by-may-31",
+    "question": "Will OpenAI release GPT-4 by May 31?",
+    "match_quality": "close"
+  }
 }

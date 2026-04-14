@@ -18,5 +18,10 @@
     "SBF",
     "collapse",
     "finance"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-ftx-become-insolvent-by-eoy",
+    "question": "Will FTX become insolvent by EOY?",
+    "match_quality": "exact"
+  }
 }

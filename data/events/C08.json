@@ -18,5 +18,10 @@
     "ceasefire",
     "Hezbollah",
     "IDF"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/israel-x-hezbollah-ceasefire-in-2024",
+    "question": "Israel x Hezbollah Ceasefire in 2024?",
+    "match_quality": "exact"
+  }
 }

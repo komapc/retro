@@ -17,5 +17,10 @@
     "US election",
     "2024",
     "president"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/presidential-election-winner-2024/will-donald-trump-win-the-2024-us-presidential-election",
+    "question": "Will Donald Trump win the 2024 US Presidential Election?",
+    "match_quality": "exact"
+  }
 }

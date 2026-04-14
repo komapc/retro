@@ -17,5 +17,10 @@
     "Truss",
     "Prime Minister",
     "resignation"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-liz-truss-remain-prime-minister-of-the-united-kingdom-through-2022",
+    "question": "Will Liz Truss remain Prime Minister of the United Kingdom through 2022?",
+    "match_quality": "exact"
+  }
 }

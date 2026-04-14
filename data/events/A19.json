@@ -19,5 +19,10 @@
     "arrest warrant",
     "Netanyahu",
     "war crimes"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/icc-issues-an-arrest-warrant-for-netanyahu",
+    "question": "ICC issues an arrest warrant for Netanyahu?",
+    "match_quality": "exact"
+  }
 }

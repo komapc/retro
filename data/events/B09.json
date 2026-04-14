@@ -18,5 +18,10 @@
     "assassination",
     "Tehran",
     "Hamas"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/haniyeh-still-in-hamas-leadership-through-march-1",
+    "question": "Haniyeh still in Hamas leadership through March 1?",
+    "match_quality": "indirect"
+  }
 }

@@ -17,5 +17,10 @@
     "indictment",
     "US politics",
     "legal"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-donald-trump-be-federally-charged-by-june-1st-1",
+    "question": "Will Donald Trump be federally charged by June 1st?",
+    "match_quality": "exact"
+  }
 }

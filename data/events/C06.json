@@ -18,5 +18,10 @@
     "retaliation",
     "Iran",
     "strike"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/another-israeli-military-action-against-iran-in-2024",
+    "question": "Another Israeli military action against Iran in 2024?",
+    "match_quality": "exact"
+  }
 }

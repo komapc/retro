@@ -17,5 +17,10 @@
     "releases",
     "deal",
     "ceasefire"
-  ]
+  ],
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-the-hamas-x-israel-ceasefire-last-the-full-4-days",
+    "question": "Will the Hamas x Israel ceasefire last the full 4 days?",
+    "match_quality": "close"
+  }
 }
