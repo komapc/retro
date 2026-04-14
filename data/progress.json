@@ -1291,7 +1291,7 @@
     "D02:israel_hayom": {
       "event_id": "D02",
       "source_id": "israel_hayom",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -4091,7 +4091,7 @@
     "D04:ch13": {
       "event_id": "D04",
       "source_id": "ch13",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T17:31:09.681841"
+  "last_updated": "2026-04-14T17:31:58.824409"
 }
