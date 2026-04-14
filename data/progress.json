@@ -2831,8 +2831,8 @@
     "A16:ch13": {
       "event_id": "A16",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A16:globes": {
@@ -2999,7 +2999,7 @@
     "A18:ch13": {
       "event_id": "A18",
       "source_id": "ch13",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
