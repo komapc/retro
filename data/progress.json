@@ -248,8 +248,8 @@
     "B09:globes": {
       "event_id": "B09",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "B09:haaretz": {
