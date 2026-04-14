@@ -178,35 +178,35 @@
     "B04:globes": {
       "event_id": "B04",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B04:haaretz": {
       "event_id": "B04",
       "source_id": "haaretz",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B04:reuters": {
       "event_id": "B04",
       "source_id": "reuters",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B04:toi": {
       "event_id": "B04",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B04:ynet": {
       "event_id": "B04",
       "source_id": "ynet",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -808,7 +808,7 @@
     "B04:jpost": {
       "event_id": "B04",
       "source_id": "jpost",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -1123,14 +1123,14 @@
     "B04:israel_hayom": {
       "event_id": "B04",
       "source_id": "israel_hayom",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B04:walla": {
       "event_id": "B04",
       "source_id": "walla",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -1459,225 +1459,225 @@
     "B02:globes": {
       "event_id": "B02",
       "source_id": "globes",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:haaretz": {
       "event_id": "B02",
       "source_id": "haaretz",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:israel_hayom": {
       "event_id": "B02",
       "source_id": "israel_hayom",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:jpost": {
       "event_id": "B02",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "B02:reuters": {
       "event_id": "B02",
       "source_id": "reuters",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:toi": {
       "event_id": "B02",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:walla": {
       "event_id": "B02",
       "source_id": "walla",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:ynet": {
       "event_id": "B02",
       "source_id": "ynet",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:globes": {
       "event_id": "B03",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B03:haaretz": {
       "event_id": "B03",
       "source_id": "haaretz",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:israel_hayom": {
       "event_id": "B03",
       "source_id": "israel_hayom",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:jpost": {
       "event_id": "B03",
       "source_id": "jpost",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:reuters": {
       "event_id": "B03",
       "source_id": "reuters",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:toi": {
       "event_id": "B03",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:walla": {
       "event_id": "B03",
       "source_id": "walla",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:ynet": {
       "event_id": "B03",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B05:globes": {
       "event_id": "B05",
       "source_id": "globes",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:haaretz": {
       "event_id": "B05",
       "source_id": "haaretz",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:israel_hayom": {
       "event_id": "B05",
       "source_id": "israel_hayom",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:jpost": {
       "event_id": "B05",
       "source_id": "jpost",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:reuters": {
       "event_id": "B05",
       "source_id": "reuters",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:toi": {
       "event_id": "B05",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:walla": {
       "event_id": "B05",
       "source_id": "walla",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:ynet": {
       "event_id": "B05",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B06:globes": {
       "event_id": "B06",
       "source_id": "globes",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:haaretz": {
       "event_id": "B06",
       "source_id": "haaretz",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:israel_hayom": {
       "event_id": "B06",
       "source_id": "israel_hayom",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:jpost": {
       "event_id": "B06",
       "source_id": "jpost",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:reuters": {
       "event_id": "B06",
       "source_id": "reuters",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:toi": {
       "event_id": "B06",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:walla": {
       "event_id": "B06",
       "source_id": "walla",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:ynet": {
       "event_id": "B06",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B07:globes": {
@@ -3139,141 +3139,141 @@
     "B02:ch13": {
       "event_id": "B02",
       "source_id": "ch13",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:kan11": {
       "event_id": "B02",
       "source_id": "kan11",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:maariv": {
       "event_id": "B02",
       "source_id": "maariv",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B02:n12": {
       "event_id": "B02",
       "source_id": "n12",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:ch13": {
       "event_id": "B03",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B03:kan11": {
       "event_id": "B03",
       "source_id": "kan11",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B03:maariv": {
       "event_id": "B03",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B03:n12": {
       "event_id": "B03",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "B04:ch13": {
       "event_id": "B04",
       "source_id": "ch13",
-      "status": "pending",
+      "status": "failed",
       "prediction_count": 0,
       "error": null
     },
     "B04:kan11": {
       "event_id": "B04",
       "source_id": "kan11",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B04:maariv": {
       "event_id": "B04",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B04:n12": {
       "event_id": "B04",
       "source_id": "n12",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:ch13": {
       "event_id": "B05",
       "source_id": "ch13",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:kan11": {
       "event_id": "B05",
       "source_id": "kan11",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:maariv": {
       "event_id": "B05",
       "source_id": "maariv",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B05:n12": {
       "event_id": "B05",
       "source_id": "n12",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:ch13": {
       "event_id": "B06",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B06:kan11": {
       "event_id": "B06",
       "source_id": "kan11",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "B06:maariv": {
       "event_id": "B06",
       "source_id": "maariv",
-      "status": "pending",
+      "status": "failed",
       "prediction_count": 0,
       "error": null
     },
     "B06:n12": {
       "event_id": "B06",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B07:ch13": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T14:40:38.360211"
+  "last_updated": "2026-04-14T14:47:47.930699"
 }
