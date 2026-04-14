@@ -4175,8 +4175,8 @@
     "D05:ch13": {
       "event_id": "D05",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "D05:globes": {
@@ -4350,8 +4350,8 @@
     "E01:globes": {
       "event_id": "E01",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "E01:haaretz": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T17:31:58.824409"
+  "last_updated": "2026-04-14T17:33:02.146717"
 }
