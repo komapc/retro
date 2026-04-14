@@ -4,6 +4,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import trueskill
+
 
 class Scorer:
     def __init__(self, data_dir: Path):
@@ -35,6 +37,15 @@ class Scorer:
         """Confidence-weighted Brier score."""
         return self.calculate_brier(stance, outcome) * self.confidence_weight(certainty)
 
+    def calculate_log_score(self, stance: float, outcome: bool) -> float:
+        """Logarithmic scoring rule. Higher (less negative) is better. Range: (-∞, 0]."""
+        prob = max(0.01, min(0.99, (stance + 1) / 2))
+        return math.log(prob) if outcome else math.log(1 - prob)
+
+    def calculate_accuracy(self, stance: float, outcome: bool) -> int:
+        """1 if directionally correct, 0 otherwise. Stance=0 counts as wrong."""
+        return 1 if (stance > 0) == outcome else 0
+
     # ─────────────────────────────────────────────
     # Stat buckets
     # ─────────────────────────────────────────────
@@ -44,6 +55,8 @@ class Scorer:
             "name": name,
             "brier_total": 0.0,
             "weighted_brier_total": 0.0,
+            "log_score_total": 0.0,
+            "correct_count": 0,
             "prediction_count": 0,
             "events_covered": 0,
             "elo": 1200.0,
@@ -58,12 +71,16 @@ class Scorer:
         global_stats: Dict[str, dict] = {}
         # category stats: sid → category → bucket
         category_stats: Dict[str, Dict[str, dict]] = defaultdict(dict)
+        # TrueSkill ratings: sid → Rating (μ=25, σ=25/3 by default)
+        ts_env = trueskill.TrueSkill(draw_probability=0.05)
+        ts_ratings: Dict[str, trueskill.Rating] = {}
 
         # Initialise buckets for all sources
         for source_file in self.sources_dir.glob("*.json"):
             source = json.loads(source_file.read_text())
             sid = source["id"]
             global_stats[sid] = self._empty_bucket(source["name"])
+            ts_ratings[sid] = ts_env.create_rating()
 
         # Score every event
         for event_file in sorted(self.events_dir.glob("*.json")):
@@ -108,18 +125,24 @@ class Scorer:
                     avg_stance    = sum(stances) / len(stances)
                     avg_certainty = sum(certainties) / len(certainties)
 
-                    b  = self.calculate_brier(avg_stance, outcome)
-                    wb = self.weighted_brier(avg_stance, avg_certainty, outcome)
+                    b   = self.calculate_brier(avg_stance, outcome)
+                    wb  = self.weighted_brier(avg_stance, avg_certainty, outcome)
+                    ls  = self.calculate_log_score(avg_stance, outcome)
+                    acc = self.calculate_accuracy(avg_stance, outcome)
 
                     # Global bucket
                     global_stats[sid]["brier_total"]          += b
                     global_stats[sid]["weighted_brier_total"] += wb
+                    global_stats[sid]["log_score_total"]      += ls
+                    global_stats[sid]["correct_count"]        += acc
                     global_stats[sid]["prediction_count"]     += 1
 
                     # Per-category buckets
                     for cat in categories:
                         category_stats[sid][cat]["brier_total"]          += b
                         category_stats[sid][cat]["weighted_brier_total"] += wb
+                        category_stats[sid][cat]["log_score_total"]      += ls
+                        category_stats[sid][cat]["correct_count"]        += acc
                         category_stats[sid][cat]["prediction_count"]     += 1
 
                     event_predictions.append((sid, avg_stance))
@@ -130,9 +153,10 @@ class Scorer:
                     for cat in categories:
                         category_stats[sid][cat]["events_covered"] += 1
 
-            # ELO update (global only — per-category ELO can be added later)
+            # ELO + TrueSkill updates (global only)
             if len(event_predictions) > 1:
                 self._update_elo(global_stats, event_predictions, outcome)
+                self._update_trueskill(ts_env, ts_ratings, event_predictions, outcome)
 
         # ── Build leaderboard ────────────────────
         leaderboard = []
@@ -142,6 +166,7 @@ class Scorer:
                 continue
 
             # Per-category scores for this source
+            ts_r = ts_ratings.get(sid)
             per_category = {}
             for cat, cstats in category_stats.get(sid, {}).items():
                 cn = cstats["prediction_count"]
@@ -150,6 +175,8 @@ class Scorer:
                 per_category[cat] = {
                     "brier_score":          round(cstats["brier_total"] / cn, 4),
                     "weighted_brier_score": round(cstats["weighted_brier_total"] / cn, 4),
+                    "log_score":            round(cstats["log_score_total"] / cn, 4),
+                    "accuracy":             round(cstats["correct_count"] / cn, 4),
                     "predictions":          cn,
                     "events":               cstats["events_covered"],
                 }
@@ -159,13 +186,18 @@ class Scorer:
                 "name":                 stats["name"],
                 "brier_score":          round(stats["brier_total"] / n, 4),
                 "weighted_brier_score": round(stats["weighted_brier_total"] / n, 4),
+                "log_score":            round(stats["log_score_total"] / n, 4),
+                "accuracy":             round(stats["correct_count"] / n, 4),
                 "elo":                  round(stats["elo"], 0),
+                "trueskill_mu":         round(ts_r.mu, 2) if ts_r else 25.0,
+                "trueskill_sigma":      round(ts_r.sigma, 2) if ts_r else 8.33,
+                "trueskill_conservative": round(ts_r.mu - 3 * ts_r.sigma, 2) if ts_r else 0.0,
                 "predictions":          n,
                 "events":               stats["events_covered"],
                 "by_category":          per_category,
             })
 
-        leaderboard.sort(key=lambda x: x["elo"], reverse=True)
+        leaderboard.sort(key=lambda x: x["trueskill_conservative"], reverse=True)
 
         self.scores_path.write_text(json.dumps(leaderboard, indent=2))
         print(f"Scoring complete. {len(leaderboard)} sources scored → {self.scores_path}")
@@ -181,6 +213,29 @@ class Scorer:
             is_correct = (stance > 0) == outcome
             delta = K / len(predictions)
             stats[sid]["elo"] += delta if is_correct else -delta
+
+    def _update_trueskill(
+        self,
+        env: trueskill.TrueSkill,
+        ratings: Dict[str, trueskill.Rating],
+        predictions: list,
+        outcome: bool,
+    ) -> None:
+        """Update TrueSkill ratings: correct predictors beat incorrect ones."""
+        winners = [sid for sid, stance in predictions if (stance > 0) == outcome]
+        losers  = [sid for sid, stance in predictions if (stance > 0) != outcome]
+        if not winners or not losers:
+            return  # all right or all wrong — no information
+
+        winner_teams = [[ratings[sid]] for sid in winners]
+        loser_teams  = [[ratings[sid]] for sid in losers]
+        ranks = [0] * len(winner_teams) + [1] * len(loser_teams)
+        new_ratings = env.rate(winner_teams + loser_teams, ranks=ranks)
+
+        for i, sid in enumerate(winners):
+            ratings[sid] = new_ratings[i][0]
+        for i, sid in enumerate(losers):
+            ratings[sid] = new_ratings[len(winners) + i][0]
 
     # Backwards-compat alias
     def update_elo(self, stats, predictions, outcome, K=32):
