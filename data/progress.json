@@ -5736,7 +5736,7 @@
     "G07:israel_hayom": {
       "event_id": "G07",
       "source_id": "israel_hayom",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:35:02.437210"
+  "last_updated": "2026-04-14T16:35:26.269826"
 }
