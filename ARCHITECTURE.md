@@ -234,6 +234,71 @@ The EC2 pipeline commits and pushes `factum_atlas.html` after each cycle.
 
 ---
 
+## Forecasting System Design
+
+> Documented 2026-04-14 based on design conversation.
+
+### Goal
+
+Use the historical prediction+accuracy data to build a **media-weighted forecaster**:
+given a new binary question, search the web for relevant articles, weight each source's
+prediction by its historical accuracy on that topic, and output a calibrated probability
+distribution.
+
+### Data Requirements Added
+
+1. **Event categories/tags** — every event gets one or more topic tags (multi-label).
+   Used to compute per-source accuracy scores per topic.
+2. **Author-level tracking** — predictions should be linked to author when available,
+   enabling author-level accuracy scores within a source.
+
+### Taxonomy (v1)
+
+| Category | Example events |
+|---|---|
+| `Israeli Politics` | Coalition formation, judicial reform, elections |
+| `Gaza War` | Oct 7, ground invasion, hostage deals, Rafah |
+| `Regional Geopolitics` | Iran attack, Saudi normalization, ICJ ruling |
+| `AI & Tech` | ChatGPT, GPT-4, DeepSeek, EU AI Act, Nvidia $1T |
+| `Global` | Everything else |
+
+Events can have multiple tags (e.g. Iran attack → `["Gaza War", "Regional Geopolitics"]`).
+New categories can be added freely — the taxonomy is not fixed.
+
+### Scoring Design
+
+- **Confidence-weighted**: high-certainty predictions that turn out correct score more;
+  high-certainty wrong predictions score worse. Formula TBD (Brier score already computed).
+- **Two accuracy levels**: source-level and author-level, both per topic.
+- **Binary outcomes only** for now; architecture should support continuous later.
+
+### Inference Pipeline (future)
+
+```
+New question arrives
+  │
+  ├─ Match to topic category
+  ├─ Search all sources for relevant articles (web_search.py)
+  ├─ Extract predictions from articles (extractor.py)
+  ├─ Look up each source's historical accuracy on that topic
+  ├─ Weight predictions by source/author accuracy score
+  └─ Aggregate → probability distribution (mean + confidence interval)
+```
+
+### ML Model Candidates (ranked by recommendation)
+
+| # | Approach | Notes |
+|---|---|---|
+| 1 | **Weighted Bayesian Aggregation** | No training needed; Brier-score weights; interpretable |
+| 2 | **Isotonic Regression Calibration** | Calibrate #1 against historical outcomes; corrects systematic bias |
+| 3 | **Logistic Regression** | Features: source accuracy, certainty, days-before, stance, hedge_ratio |
+| 4 | **Gradient Boosting (XGBoost/LightGBM)** | Captures non-linear interactions; best classical ML option |
+| 5 | **Fine-tuned LLM Forecaster** | Article text → calibrated probability; highest ceiling, most expensive |
+
+**Recommended path**: Start with #1+#2 → move to #4 once dataset is large enough → #5 long-term.
+
+---
+
 ## Cost Estimates (at scale)
 
 | Scale | LLM cost | Search | News licenses |
