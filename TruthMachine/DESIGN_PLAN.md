@@ -150,10 +150,10 @@ TruthMachine is designed to run within the broader **Daatan Infrastructure** (se
 - **User Interface:** The **Corvus** agent (OpenClaw) serves as the primary interface, querying the TruthMachine Oracle API to provide users with calibrated forecasts.
 - **Automation:** A dedicated `retro-manager` skill enables the **DevOps** agent to trigger periodic Atlas syncs and vault ingestions.
 
-### Inference Layer (LiteLLM)
-- **Routing:** All LLM calls (Gatekeeper, Extractor) are proxied through **LiteLLM**.
-- **Cost Optimization:** LiteLLM dynamically routes requests to the most cost-effective models (e.g., DeepSeek V3.2 for extraction, Gemini Flash for filtering) based on current OpenRouter quotas.
-- **Fallback:** Automatic failover between providers (Bedrock, OpenRouter, Ollama) ensures pipeline resilience.
+### Inference Layer
+- **Current:** All LLM calls go directly to **AWS Bedrock** (Nova Micro for gatekeeper, Nova Lite for extractor) via `litellm` with `instructor` for structured output. OpenRouter quota was exhausted in early testing; Bedrock is the live backend.
+- **Models in use:** `bedrock/amazon.nova-micro-v1:0` (gatekeeper), `bedrock/amazon.nova-lite-v1:0` (extractor + aggregator)
+- **Oracle API:** Calls the same pipeline modules directly — no separate proxy layer needed.
 
 ---
 

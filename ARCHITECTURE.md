@@ -349,7 +349,7 @@ New question arrives
 
 ## Forecasting Microservice
 
-> Planned 2026-04-14. Not yet implemented.
+> Phase 1 implemented 2026-04-14 (API skeleton + placeholder forecaster). Pipeline integration is Phase 2.
 
 ### Purpose
 
@@ -401,21 +401,20 @@ POST /api/forecast
 3. Compute weighted mean + variance → return `{ mean, std, ci_low, ci_high }`
 4. Aggregation method: Weighted Bayesian (#1) initially → LightGBM (#4) when enough data
 
-### Deployment Options (deferred)
+### Deployment (decided 2026-04-14)
 
-| Option | Pros | Cons |
-|---|---|---|
-| **Python FastAPI microservice** | Reuses retro's extractor/gatekeeper/scorer/web_search directly | Extra service to maintain |
-| **TypeScript routes in daatan** | Single deploy, reuses daatan's search chain | Must port Python ML logic |
+**FastAPI microservice in `retro/api/`** — deployed as a second systemd service (`oracle-api.service`) on the retro EC2 alongside the batch pipeline.
 
-**Recommendation:** Start as Python FastAPI — called via HTTP from daatan. Port later if needed.
+- Imports `tm.gatekeeper`, `tm.extractor`, `tm.web_search` directly — no code ported
+- Reads `leaderboard.json` from the same `data/` directory (refreshed every 5 min)
+- Auth: `x-api-key` header + AWS Security Group (daatan SG → port 8001 only)
+- Subdomain: `oracle.daatan.com`
+- Test console: https://komapc.github.io/retro/oracle-test.html
+- Full docs: `docs/ORACLE_API.md`
 
-### Open Decisions
-
-| # | Question | Options |
-|---|---|---|
-| Q1 | Where do source scores live? | GitHub raw `leaderboard.json` vs daatan PostgreSQL (nightly sync recommended) |
-| Q4 | Where does the service live? | Python FastAPI (recommended) vs daatan TypeScript routes |
+**Decisions closed:**
+- Source scores stay in `leaderboard.json` on the retro EC2 (no daatan DB sync needed)
+- TypeScript port rejected — pipeline is ~2000 lines of Python ML, porting is months of work
 
 ---
 
