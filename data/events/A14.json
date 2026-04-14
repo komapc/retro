@@ -8,5 +8,14 @@
     "Gantz resigns war cabinet"
   ],
   "llm_referee_criteria": "Must focus on Gantz's official exit on June 9.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Gaza War"
+  ],
+  "tags": [
+    "Gantz",
+    "war cabinet",
+    "coalition crisis"
+  ]
 }

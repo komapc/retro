@@ -9,5 +9,13 @@
     "64 seats"
   ],
   "llm_referee_criteria": "Must discuss the final results showing a 64-seat win.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "elections",
+    "Netanyahu",
+    "right bloc"
+  ]
 }

@@ -8,5 +8,13 @@
     "Hamas status Oct 2024"
   ],
   "llm_referee_criteria": "Must discuss Hamas still fighting/ruling parts of Gaza.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War"
+  ],
+  "tags": [
+    "Hamas",
+    "Oct 7 anniversary",
+    "operational capacity"
+  ]
 }

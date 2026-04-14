@@ -8,5 +8,14 @@
     "Histadrut general strike"
   ],
   "llm_referee_criteria": "Must discuss the nationwide shutdown on March 27.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Israeli Society"
+  ],
+  "tags": [
+    "general strike",
+    "Histadrut",
+    "judicial reform"
+  ]
 }

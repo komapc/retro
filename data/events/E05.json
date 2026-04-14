@@ -8,5 +8,14 @@
     "Silicon Valley Bank collapse"
   ],
   "llm_referee_criteria": "Must focus on the FDIC seizure on March 10.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global"
+  ],
+  "tags": [
+    "SVB",
+    "bank collapse",
+    "finance",
+    "US"
+  ]
 }

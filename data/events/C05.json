@@ -8,5 +8,15 @@
     "Iran missile attack Israel"
   ],
   "llm_referee_criteria": "Must focus on the April 14 multi-drone/missile barrage.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War",
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "Iran",
+    "missile attack",
+    "Israel",
+    "escalation"
+  ]
 }

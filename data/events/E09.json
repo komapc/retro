@@ -8,5 +8,14 @@
     "Liz Truss resigns UK PM"
   ],
   "llm_referee_criteria": "Must focus on the Oct 20 resignation announcement.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global"
+  ],
+  "tags": [
+    "UK",
+    "Truss",
+    "Prime Minister",
+    "resignation"
+  ]
 }

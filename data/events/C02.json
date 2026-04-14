@@ -8,5 +8,14 @@
     "Mahsa Amini protests begin"
   ],
   "llm_referee_criteria": "Must focus on the start of the movement in Sept 2022.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "Iran",
+    "protests",
+    "Mahsa Amini",
+    "regime"
+  ]
 }

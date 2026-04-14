@@ -8,5 +8,14 @@
     "Nvidia 1 trillion market cap"
   ],
   "llm_referee_criteria": "Must focus on the May 30 valuation milestone.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "AI & Tech"
+  ],
+  "tags": [
+    "Nvidia",
+    "market cap",
+    "GPU",
+    "AI chips"
+  ]
 }

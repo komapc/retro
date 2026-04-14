@@ -8,5 +8,13 @@
     "Court strikes down reasonableness"
   ],
   "llm_referee_criteria": "Must focus on the Jan 1 historic 8-7 ruling.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "Supreme Court",
+    "judicial reform",
+    "reasonableness clause"
+  ]
 }

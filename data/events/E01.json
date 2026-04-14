@@ -8,5 +8,14 @@
     "Russia invades Ukraine full-scale"
   ],
   "llm_referee_criteria": "Must focus on the Feb 24 ground offensive start.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global"
+  ],
+  "tags": [
+    "Russia",
+    "Ukraine",
+    "invasion",
+    "war"
+  ]
 }

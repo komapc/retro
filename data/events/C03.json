@@ -8,5 +8,15 @@
     "Iran drones Russia"
   ],
   "llm_referee_criteria": "Must focus on the official confirmation in Nov 2022.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Regional Geopolitics",
+    "Global"
+  ],
+  "tags": [
+    "Iran",
+    "Russia",
+    "drones",
+    "Ukraine"
+  ]
 }

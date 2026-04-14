@@ -8,5 +8,14 @@
     "Israel budget 2023 passed"
   ],
   "llm_referee_criteria": "Must discuss the final passage of the 2023 budget.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Israeli Economy"
+  ],
+  "tags": [
+    "budget",
+    "Knesset",
+    "fiscal policy"
+  ]
 }

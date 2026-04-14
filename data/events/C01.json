@@ -8,5 +8,14 @@
     "JCPOA negotiations collapse"
   ],
   "llm_referee_criteria": "Must focus on the late 2022 impasse.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "JCPOA",
+    "Iran",
+    "nuclear",
+    "diplomacy"
+  ]
 }

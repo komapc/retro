@@ -8,5 +8,14 @@
     "emigration spike Israel post-war"
   ],
   "llm_referee_criteria": "Must cite official CBS or airport data showing spike.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Society"
+  ],
+  "tags": [
+    "emigration",
+    "yerida",
+    "Oct 7",
+    "brain drain"
+  ]
 }

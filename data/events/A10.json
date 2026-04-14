@@ -8,5 +8,14 @@
     "Netanyahu pause reform"
   ],
   "llm_referee_criteria": "Must focus on the March 27 announcement after mass protests.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "judicial reform",
+    "Netanyahu",
+    "protests",
+    "strike"
+  ]
 }

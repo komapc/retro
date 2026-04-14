@@ -8,5 +8,14 @@
     "ChatGPT launch"
   ],
   "llm_referee_criteria": "Must focus on the Nov 30 public release.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "AI & Tech"
+  ],
+  "tags": [
+    "ChatGPT",
+    "OpenAI",
+    "LLM",
+    "launch"
+  ]
 }

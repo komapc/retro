@@ -8,5 +8,14 @@
     "Gantz joins cabinet"
   ],
   "llm_referee_criteria": "Must discuss the swearing-in after the Oct 7 attack.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Gaza War"
+  ],
+  "tags": [
+    "Gantz",
+    "war cabinet",
+    "emergency government"
+  ]
 }

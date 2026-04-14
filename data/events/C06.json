@@ -8,5 +8,15 @@
     "Israel retaliates Iran April"
   ],
   "llm_referee_criteria": "Must focus on the specific April 19 response.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War",
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "Israel",
+    "retaliation",
+    "Iran",
+    "strike"
+  ]
 }

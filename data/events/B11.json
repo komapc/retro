@@ -8,5 +8,15 @@
     "ICJ Rafah order"
   ],
   "llm_referee_criteria": "Must focus on the May 24 ruling.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War",
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "ICJ",
+    "genocide",
+    "Rafah",
+    "international law"
+  ]
 }

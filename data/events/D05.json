@@ -8,5 +8,13 @@
     "Israel GDP negative growth war"
   ],
   "llm_referee_criteria": "Must focus on Q4 2023 GDP contraction data release.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Economy"
+  ],
+  "tags": [
+    "GDP",
+    "recession",
+    "war economy"
+  ]
 }

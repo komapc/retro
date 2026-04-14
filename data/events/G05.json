@@ -8,5 +8,15 @@
     "DeepSeek R1 release"
   ],
   "llm_referee_criteria": "Must focus on the Jan 2025 release impact.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "AI & Tech"
+  ],
+  "tags": [
+    "DeepSeek",
+    "R1",
+    "LLM",
+    "China",
+    "AI market"
+  ]
 }

@@ -9,5 +9,13 @@
     "majority lost"
   ],
   "llm_referee_criteria": "Must focus on the 61-seat majority loss citing Silman.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "coalition",
+    "Knesset majority",
+    "Bennett"
+  ]
 }

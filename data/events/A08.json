@@ -8,5 +8,13 @@
     "reasonableness first reading"
   ],
   "llm_referee_criteria": "Must discuss the July 11 legislative vote.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "judicial reform",
+    "reasonableness clause",
+    "Knesset"
+  ]
 }

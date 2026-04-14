@@ -8,5 +8,14 @@
     "Gemini Ultra launch benchmark"
   ],
   "llm_referee_criteria": "Must focus on the Feb 8 launch and benchmark claims.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "AI & Tech"
+  ],
+  "tags": [
+    "Gemini",
+    "Google",
+    "GPT-4",
+    "benchmark"
+  ]
 }

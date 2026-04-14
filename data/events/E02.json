@@ -8,5 +8,14 @@
     "Ukraine recaptures Kherson"
   ],
   "llm_referee_criteria": "Must focus on the Nov 11 Ukrainian flag raising.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global"
+  ],
+  "tags": [
+    "Ukraine",
+    "Kherson",
+    "counteroffensive",
+    "Russia"
+  ]
 }

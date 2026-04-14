@@ -9,5 +9,13 @@
     "Lapid caretaker"
   ],
   "llm_referee_criteria": "Must discuss the bill to dissolve or the transition to Lapid.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "Knesset dissolution",
+    "Lapid",
+    "elections"
+  ]
 }

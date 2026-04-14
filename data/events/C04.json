@@ -8,5 +8,14 @@
     "Saudi-Iran deal Beijing"
   ],
   "llm_referee_criteria": "Must focus on the March 10 signing.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "Saudi Arabia",
+    "Iran",
+    "normalization",
+    "China"
+  ]
 }

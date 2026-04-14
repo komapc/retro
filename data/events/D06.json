@@ -8,5 +8,13 @@
     "Israel unemployment war spike"
   ],
   "llm_referee_criteria": "Must focus on official CBS data showing spike above 4.5%.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Economy"
+  ],
+  "tags": [
+    "unemployment",
+    "war economy",
+    "labor market"
+  ]
 }

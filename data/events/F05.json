@@ -8,5 +8,15 @@
     "Supreme Court Haredi draft ruling"
   ],
   "llm_referee_criteria": "Must focus on the June 25 unanimous ruling on state funding.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Israeli Society"
+  ],
+  "tags": [
+    "ultra-orthodox",
+    "Supreme Court",
+    "military draft",
+    "Haredi"
+  ]
 }

@@ -8,5 +8,14 @@
     "Haredi draft law passed"
   ],
   "llm_referee_criteria": "Mark False if only delays or rulings occurred by this date.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Israeli Society"
+  ],
+  "tags": [
+    "ultra-orthodox",
+    "military draft",
+    "Haredi"
+  ]
 }

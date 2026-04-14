@@ -9,5 +9,13 @@
     "sworn in"
   ],
   "llm_referee_criteria": "Must discuss the swearing-in of the 37th government.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "government formation",
+    "Netanyahu",
+    "6th government"
+  ]
 }

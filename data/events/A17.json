@@ -8,5 +8,14 @@
     "Israel budget 2024 passed"
   ],
   "llm_referee_criteria": "Must discuss the March 13 legislative approval.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Israeli Economy"
+  ],
+  "tags": [
+    "budget",
+    "Knesset",
+    "fiscal policy"
+  ]
 }

@@ -8,5 +8,14 @@
     "Ra'am joins coalition"
   ],
   "llm_referee_criteria": "Must confirm Ra'am's formal entry into the 36th government.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "Ra'am",
+    "Arab MK",
+    "coalition",
+    "Abraham Accords"
+  ]
 }

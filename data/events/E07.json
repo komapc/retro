@@ -8,5 +8,14 @@
     "Trump wins 2024 election"
   ],
   "llm_referee_criteria": "Must focus on the Nov 6 projection/call of the race.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global"
+  ],
+  "tags": [
+    "Trump",
+    "US election",
+    "2024",
+    "president"
+  ]
 }

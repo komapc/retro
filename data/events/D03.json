@@ -8,5 +8,13 @@
     "S&P downgrade Israel"
   ],
   "llm_referee_criteria": "Must focus on the April 2024 downgrade.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Economy"
+  ],
+  "tags": [
+    "S&P",
+    "credit rating",
+    "downgrade"
+  ]
 }

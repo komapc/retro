@@ -8,5 +8,14 @@
     "Gallant fired second time"
   ],
   "llm_referee_criteria": "Must focus on the Nov 5 dismissal by Netanyahu.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Gaza War"
+  ],
+  "tags": [
+    "Gallant",
+    "Defense Minister",
+    "Netanyahu"
+  ]
 }

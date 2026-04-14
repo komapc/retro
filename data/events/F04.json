@@ -8,5 +8,15 @@
     "Kotel agreement cancelled diaspora"
   ],
   "llm_referee_criteria": "Must focus on formal cancellation and diaspora reaction.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Society",
+    "Israeli Politics"
+  ],
+  "tags": [
+    "diaspora",
+    "Kotel",
+    "Western Wall",
+    "relations"
+  ]
 }

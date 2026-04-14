@@ -8,5 +8,13 @@
     "IDF central Khan Yunis"
   ],
   "llm_referee_criteria": "Must focus on the entry into the city's heart.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War"
+  ],
+  "tags": [
+    "Khan Yunis",
+    "IDF",
+    "ground operation"
+  ]
 }

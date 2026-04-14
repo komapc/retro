@@ -8,5 +8,14 @@
     "first hostage deal"
   ],
   "llm_referee_criteria": "Must focus on the agreement reached on Nov 22.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War"
+  ],
+  "tags": [
+    "hostage deal",
+    "ceasefire",
+    "Qatar",
+    "negotiations"
+  ]
 }

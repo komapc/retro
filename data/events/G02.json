@@ -8,5 +8,14 @@
     "Sam Altman fired OpenAI"
   ],
   "llm_referee_criteria": "Must focus on the Nov 2023 crisis and resolution.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "AI & Tech"
+  ],
+  "tags": [
+    "OpenAI",
+    "Sam Altman",
+    "board",
+    "governance"
+  ]
 }

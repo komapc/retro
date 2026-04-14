@@ -8,5 +8,14 @@
     "US midterms Democrats Senate"
   ],
   "llm_referee_criteria": "Must focus on final Senate majority determination.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global"
+  ],
+  "tags": [
+    "US",
+    "midterm elections",
+    "Democrats",
+    "Republicans"
+  ]
 }

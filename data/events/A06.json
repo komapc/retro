@@ -8,5 +8,13 @@
     "Ben Gvir appointment"
   ],
   "llm_referee_criteria": "Must confirm appointment as part of government formation.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "Ben Gvir",
+    "far right",
+    "National Security"
+  ]
 }

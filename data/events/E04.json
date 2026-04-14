@@ -8,5 +8,15 @@
     "FTX collapse SBF arrested"
   ],
   "llm_referee_criteria": "Must focus on the exchange halt and SBF's arrest.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global"
+  ],
+  "tags": [
+    "FTX",
+    "crypto",
+    "SBF",
+    "collapse",
+    "finance"
+  ]
 }

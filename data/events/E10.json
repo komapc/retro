@@ -8,5 +8,15 @@
     "Finland joins NATO"
   ],
   "llm_referee_criteria": "Must focus on the April 4 accession ceremony.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global",
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "Finland",
+    "NATO",
+    "expansion",
+    "Russia"
+  ]
 }

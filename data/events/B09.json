@@ -8,5 +8,15 @@
     "Haniyeh assassinated Tehran"
   ],
   "llm_referee_criteria": "Must focus on the July 31 event in Iran.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War",
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "Haniyeh",
+    "assassination",
+    "Tehran",
+    "Hamas"
+  ]
 }

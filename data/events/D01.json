@@ -8,5 +8,13 @@
     "Shekel below 4.0 USD"
   ],
   "llm_referee_criteria": "Must focus on the exchange rate milestone.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Economy"
+  ],
+  "tags": [
+    "shekel",
+    "exchange rate",
+    "currency"
+  ]
 }

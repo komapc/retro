@@ -8,5 +8,13 @@
     "Smotrich West Bank powers"
   ],
   "llm_referee_criteria": "Must discuss the specific Feb 23 transfer agreement.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "Smotrich",
+    "West Bank",
+    "settlements"
+  ]
 }

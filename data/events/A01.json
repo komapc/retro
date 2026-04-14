@@ -9,5 +9,14 @@
     "sworn in"
   ],
   "llm_referee_criteria": "Must discuss the formation of the 36th government.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "coalition",
+    "government formation",
+    "Bennett",
+    "Lapid"
+  ]
 }

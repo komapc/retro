@@ -8,5 +8,15 @@
     "Lebanon ceasefire 2024"
   ],
   "llm_referee_criteria": "Must focus on the Nov 27 effective date.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War",
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "Lebanon",
+    "ceasefire",
+    "Hezbollah",
+    "IDF"
+  ]
 }

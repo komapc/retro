@@ -8,5 +8,15 @@
     "100000 protesters judicial reform"
   ],
   "llm_referee_criteria": "Must cite crowd estimates of 100K+ in a single event.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Israeli Society"
+  ],
+  "tags": [
+    "protests",
+    "judicial reform",
+    "democracy",
+    "100K"
+  ]
 }

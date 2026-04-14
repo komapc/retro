@@ -8,5 +8,14 @@
     "EU AI Act adopted"
   ],
   "llm_referee_criteria": "Must focus on the European Parliament vote on March 13.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "AI & Tech"
+  ],
+  "tags": [
+    "EU AI Act",
+    "regulation",
+    "AI policy",
+    "Europe"
+  ]
 }

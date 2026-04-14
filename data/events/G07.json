@@ -8,5 +8,14 @@
     "GPT-4 release OpenAI"
   ],
   "llm_referee_criteria": "Must focus on the March 14 public launch.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "AI & Tech"
+  ],
+  "tags": [
+    "GPT-4",
+    "OpenAI",
+    "LLM",
+    "launch"
+  ]
 }

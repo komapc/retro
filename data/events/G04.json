@@ -8,5 +8,15 @@
     "Musk completes Twitter deal"
   ],
   "llm_referee_criteria": "Must focus on the Oct 27 finalization.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "AI & Tech"
+  ],
+  "tags": [
+    "Elon Musk",
+    "Twitter",
+    "X",
+    "acquisition",
+    "social media"
+  ]
 }

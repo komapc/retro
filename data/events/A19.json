@@ -8,5 +8,16 @@
     "ICC arrest warrant Netanyahu"
   ],
   "llm_referee_criteria": "Must focus on the official warrant issuance on Nov 21.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics",
+    "Gaza War",
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "ICC",
+    "arrest warrant",
+    "Netanyahu",
+    "war crimes"
+  ]
 }

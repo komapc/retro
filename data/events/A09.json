@@ -8,5 +8,13 @@
     "reasonableness final vote"
   ],
   "llm_referee_criteria": "Must discuss the 64-0 passage on July 24.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Politics"
+  ],
+  "tags": [
+    "judicial reform",
+    "reasonableness clause",
+    "legislation"
+  ]
 }

@@ -8,5 +8,15 @@
     "US halts weapons shipment"
   ],
   "llm_referee_criteria": "Must focus on the May 8 confirmation of the pause.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War",
+    "Global"
+  ],
+  "tags": [
+    "US",
+    "weapons",
+    "arms embargo",
+    "Biden"
+  ]
 }

@@ -8,5 +8,13 @@
     "ground invasion begins"
   ],
   "llm_referee_criteria": "Must focus on the start of the large-scale incursion.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War"
+  ],
+  "tags": [
+    "ground invasion",
+    "IDF",
+    "Gaza"
+  ]
 }

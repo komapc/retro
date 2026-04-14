@@ -8,5 +8,14 @@
     "Assad regime falls Syria"
   ],
   "llm_referee_criteria": "Must focus on the Dec 8 total collapse.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Regional Geopolitics"
+  ],
+  "tags": [
+    "Assad",
+    "Syria",
+    "regime collapse",
+    "rebels"
+  ]
 }

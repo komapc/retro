@@ -8,5 +8,14 @@
     "hostage releases completed"
   ],
   "llm_referee_criteria": "Must focus on the end of the initial release window.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War"
+  ],
+  "tags": [
+    "hostages",
+    "releases",
+    "deal",
+    "ceasefire"
+  ]
 }

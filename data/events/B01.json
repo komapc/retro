@@ -8,5 +8,14 @@
     "Hamas surprise attack"
   ],
   "llm_referee_criteria": "Must focus on the initial infiltration and attack.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War"
+  ],
+  "tags": [
+    "Oct 7",
+    "Hamas",
+    "attack",
+    "terrorism"
+  ]
 }

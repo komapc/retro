@@ -8,5 +8,14 @@
     "Sinwar killed Gaza"
   ],
   "llm_referee_criteria": "Must focus on the Oct 16 confirmation of his death.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War"
+  ],
+  "tags": [
+    "Sinwar",
+    "killed",
+    "Hamas",
+    "IDF"
+  ]
 }

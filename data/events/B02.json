@@ -8,5 +8,14 @@
     "Israel declares war Article 40"
   ],
   "llm_referee_criteria": "Must focus on the cabinet's formal invocation.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Gaza War",
+    "Israeli Politics"
+  ],
+  "tags": [
+    "declaration of war",
+    "Israel",
+    "Hamas"
+  ]
 }

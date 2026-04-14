@@ -8,5 +8,14 @@
     "Trump federal indictment"
   ],
   "llm_referee_criteria": "Must focus on the June 9 federal charges.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Global"
+  ],
+  "tags": [
+    "Trump",
+    "indictment",
+    "US politics",
+    "legal"
+  ]
 }

@@ -8,5 +8,13 @@
     "Bank of Israel raise rate"
   ],
   "llm_referee_criteria": "Must focus on the May 22 peak rate hike.",
-  "predictive_window_days": 30
+  "predictive_window_days": 30,
+  "category": [
+    "Israeli Economy"
+  ],
+  "tags": [
+    "Bank of Israel",
+    "interest rate",
+    "monetary policy"
+  ]
 }
