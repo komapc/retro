@@ -2089,7 +2089,7 @@
     "A03:walla": {
       "event_id": "A03",
       "source_id": "walla",
-      "status": "failed",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -2621,7 +2621,7 @@
     "A10:walla": {
       "event_id": "A10",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:35:26.269826"
+  "last_updated": "2026-04-14T16:43:26.671083"
 }
