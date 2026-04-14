@@ -2236,8 +2236,8 @@
     "A06:israel_hayom": {
       "event_id": "A06",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "A06:jpost": {
@@ -2341,8 +2341,8 @@
     "A07:maariv": {
       "event_id": "A07",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A07:n12": {
@@ -2558,8 +2558,8 @@
     "A10:globes": {
       "event_id": "A10",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 13,
       "error": null
     },
     "A10:haaretz": {
