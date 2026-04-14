@@ -255,7 +255,7 @@
     "B09:haaretz": {
       "event_id": "B09",
       "source_id": "haaretz",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T18:15:29.962221"
+  "last_updated": "2026-04-14T19:07:31.889041"
 }
