@@ -451,7 +451,7 @@
     "A12:ynet": {
       "event_id": "A12",
       "source_id": "ynet",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -871,7 +871,7 @@
     "A14:jpost": {
       "event_id": "A14",
       "source_id": "jpost",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -1221,7 +1221,7 @@
     "A12:israel_hayom": {
       "event_id": "A12",
       "source_id": "israel_hayom",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2691,7 +2691,7 @@
     "A11:reuters": {
       "event_id": "A11",
       "source_id": "reuters",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
