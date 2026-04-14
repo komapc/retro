@@ -248,7 +248,7 @@
     "B09:globes": {
       "event_id": "B09",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
