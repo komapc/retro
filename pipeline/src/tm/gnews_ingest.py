@@ -66,6 +66,7 @@ SOURCES_CONFIG: Dict[str, Dict] = {
     "globes":       {"domain": "en.globes.co.il",    "lang": "en"},
     "ynet":         {"domain": "ynetnews.com",       "lang": "en"},
     "israel_hayom": {"domain": "israelhayom.com",    "lang": "en"},
+    "aljazeera":    {"domain": "aljazeera.com",      "lang": "en"},
     # Hebrew-native sources
     "walla":        {"domain": "news.walla.co.il",   "lang": "he"},
     "haaretz_he":   {"domain": "www.haaretz.co.il",  "lang": "he"},  # Hebrew edition — less paywalled than haaretz.com
