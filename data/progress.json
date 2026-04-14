@@ -402,8 +402,8 @@
     "A04:reuters": {
       "event_id": "A04",
       "source_id": "reuters",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A04:toi": {
@@ -1942,8 +1942,8 @@
     "A02:globes": {
       "event_id": "A02",
       "source_id": "globes",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "A02:haaretz": {
@@ -2138,8 +2138,8 @@
     "A05:globes": {
       "event_id": "A05",
       "source_id": "globes",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 11,
       "error": null
     },
     "A05:haaretz": {
@@ -2236,7 +2236,7 @@
     "A06:israel_hayom": {
       "event_id": "A06",
       "source_id": "israel_hayom",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2341,7 +2341,7 @@
     "A07:maariv": {
       "event_id": "A07",
       "source_id": "maariv",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2558,7 +2558,7 @@
     "A10:globes": {
       "event_id": "A10",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
