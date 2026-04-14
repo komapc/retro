@@ -451,8 +451,8 @@
     "A12:ynet": {
       "event_id": "A12",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "A13:globes": {
@@ -871,8 +871,8 @@
     "A14:jpost": {
       "event_id": "A14",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "A15:jpost": {
@@ -1221,8 +1221,8 @@
     "A12:israel_hayom": {
       "event_id": "A12",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 8,
       "error": null
     },
     "A12:walla": {
@@ -2691,8 +2691,8 @@
     "A11:reuters": {
       "event_id": "A11",
       "source_id": "reuters",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A11:toi": {
