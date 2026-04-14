@@ -1795,7 +1795,7 @@
     "F04:globes": {
       "event_id": "F04",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5512,7 +5512,7 @@
     "G03:israel_hayom": {
       "event_id": "G03",
       "source_id": "israel_hayom",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
