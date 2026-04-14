@@ -48,17 +48,28 @@ async def background_refresh_loop(path: Path, interval_seconds: int) -> None:
 
 def get_credibility_weight(source_id: str) -> float:
     """
-    Credibility weight derived from ELO and Brier score.
+    Credibility weight derived from TrueSkill conservative estimate (μ − 3σ).
+    Falls back to ELO/Brier if TrueSkill fields are absent.
     Sources absent from leaderboard get neutral weight 1.0.
 
-    Formula: elo / (1200 + brier_score * 200)
-    - ELO 1200, Brier 0.0  → weight = 1.0  (neutral baseline)
-    - ELO 1280, Brier 0.05 → weight ≈ 1.06 (slightly trusted)
-    - ELO 1140, Brier 0.30 → weight ≈ 0.91 (slightly distrusted)
+    TrueSkill conservative score: higher = more trusted.
+    We normalise so that the default uninformed prior (μ=25, σ=8.33 → conservative≈0)
+    maps to weight 1.0.
+
+    Formula: max(0.1, 1.0 + conservative / 25.0)
+    - conservative =  0  → weight = 1.0  (new/unknown source)
+    - conservative = 10  → weight = 1.4  (trusted)
+    - conservative = -5  → weight = 0.8  (distrusted)
     """
     entry = _cache.get(source_id)
     if entry is None:
         return 1.0
+
+    if "trueskill_conservative" in entry:
+        conservative = float(entry["trueskill_conservative"])
+        return max(0.1, 1.0 + conservative / 25.0)
+
+    # Fallback: ELO / Brier
     elo = float(entry.get("elo", 1200.0))
     brier = float(entry.get("brier_score", 0.25))
     return elo / (1200.0 + brier * 200.0)
