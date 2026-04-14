@@ -91,6 +91,65 @@
     .btn-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
     .hint { font-size: .78rem; color: var(--muted); }
 
+    .inline-code {
+      display: inline-block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .78rem;
+      padding: .15rem .4rem;
+      border-radius: 4px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    .subtle-panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .85rem 1rem;
+    }
+
+    .subtle-panel strong {
+      color: var(--text);
+    }
+
+    .details-toggle {
+      margin-top: .85rem;
+    }
+
+    .details-toggle summary {
+      font-size: .82rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .details-toggle[open] summary {
+      margin-bottom: .85rem;
+    }
+
+    .quick-prompts {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-top: .85rem;
+    }
+
+    .quick-prompt {
+      background: var(--bg);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: .45rem .75rem;
+      font-size: .78rem;
+      font-weight: 500;
+    }
+
+    .quick-prompt:hover {
+      background: #17314e;
+      color: var(--text);
+    }
+
     /* Result panel */
     #result { display: none; }
 
@@ -218,22 +277,39 @@
 
   <header>
     <h1><span>Oracle</span> API <span class="badge">Test Console</span></h1>
-    <p>TruthMachine forecast service — weighted by historical source accuracy</p>
+    <p>TruthMachine forecast service for <span class="inline-code">oracle.daatan.com</span> — weighted by historical source accuracy</p>
   </header>
 
   <!-- Config -->
   <section>
     <h2>Connection</h2>
-    <div class="row">
-      <div class="field">
-        <label for="api-url">API Base URL</label>
-        <input id="api-url" type="url" value="http://localhost:8001" placeholder="http://oracle.daatan.com" />
+    <div class="subtle-panel">
+      <div style="font-size:.82rem; color:var(--text-dim); line-height:1.5">
+        Target: <strong id="connection-target">https://oracle.daatan.com</strong><br>
+        Auth: <strong id="connection-auth">Operator-managed</strong>
       </div>
-      <div class="field">
-        <label for="api-key">API Key (x-api-key)</label>
-        <input id="api-key" type="password" placeholder="your-oracle-api-key" />
+      <div id="connection-note" class="hint" style="margin-top:.5rem">
+        The page no longer stores the Oracle key in localStorage or shows it in the main UI.
       </div>
     </div>
+
+    <details class="details-toggle">
+      <summary>Developer settings</summary>
+      <div class="row">
+        <div class="field">
+          <label for="api-url">API Base URL</label>
+          <input id="api-url" type="url" value="https://oracle.daatan.com" placeholder="https://oracle.daatan.com" />
+        </div>
+        <div class="field">
+          <label for="api-key">API Key (optional, never persisted)</label>
+          <input id="api-key" type="password" placeholder="Only needed for direct secured API calls" autocomplete="off" />
+        </div>
+      </div>
+      <div class="hint">
+        If the deployment is fronted by a proxy or operator-managed auth, leave the key blank.
+      </div>
+    </details>
+
     <div class="btn-row" style="margin-top:.75rem">
       <button id="btn-health" onclick="checkHealth()">Check /health</button>
       <span id="health-status" class="hint"></span>
@@ -250,6 +326,11 @@
     <div class="field">
       <label for="max-articles">Max Articles <span class="hint">(1–20, default 5)</span></label>
       <input id="max-articles" type="number" value="5" min="1" max="20" style="width:100px" />
+    </div>
+    <div class="quick-prompts">
+      <button class="quick-prompt" type="button" onclick="setQuestion('Will Israel and Hamas reach a permanent ceasefire before the end of 2026?')">Ceasefire</button>
+      <button class="quick-prompt" type="button" onclick="setQuestion('Will the Israeli coalition government collapse before the end of 2026?')">Coalition collapse</button>
+      <button class="quick-prompt" type="button" onclick="setQuestion('Will Iran launch a direct military strike on Israel before the end of 2026?')">Iran strike</button>
     </div>
     <div class="btn-row" style="margin-top:.75rem">
       <button id="btn-forecast" onclick="runForecast()">Run Forecast</button>
@@ -325,25 +406,63 @@
 </div>
 
 <script>
-  // Persist config in localStorage
+  const ORACLE_TEST_CONFIG = window.__ORACLE_TEST_CONFIG__ || {}
+  const DEFAULT_REMOTE_URL = 'https://oracle.daatan.com'
+
   const $ = id => document.getElementById(id)
 
+  const getDefaultApiUrl = () => {
+    const host = window.location.hostname
+    if (host === 'localhost' || host === '127.0.0.1') return 'http://localhost:8001'
+    if (host === 'oracle.daatan.com') return 'https://oracle.daatan.com'
+    return DEFAULT_REMOTE_URL
+  }
+
+  const getConfig = () => {
+    const apiUrl = (ORACLE_TEST_CONFIG.apiUrl || $('api-url').value || getDefaultApiUrl()).replace(/\/$/, '')
+    const apiKey = (ORACLE_TEST_CONFIG.apiKey || $('api-key').value || '').trim()
+    return { apiUrl, apiKey }
+  }
+
+  function refreshConnectionSummary() {
+    const { apiUrl, apiKey } = getConfig()
+    $('connection-target').textContent = apiUrl
+    $('connection-auth').textContent = apiKey ? 'Configured, hidden from UI summary' : 'Operator-managed / none provided'
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
-    $('api-url').value = localStorage.getItem('oracle_url') || 'http://localhost:8001'
-    $('api-key').value = localStorage.getItem('oracle_key') || ''
+    $('api-url').value = localStorage.getItem('oracle_url') || ORACLE_TEST_CONFIG.apiUrl || getDefaultApiUrl()
     $('question').value = localStorage.getItem('oracle_q') || ''
 
     $('api-url').addEventListener('change', () => localStorage.setItem('oracle_url', $('api-url').value))
-    $('api-key').addEventListener('change', () => localStorage.setItem('oracle_key', $('api-key').value))
+    $('api-url').addEventListener('change', refreshConnectionSummary)
+    $('api-key').addEventListener('input', refreshConnectionSummary)
     $('question').addEventListener('input', () => localStorage.setItem('oracle_q', $('question').value))
+
+    $('question').addEventListener('keydown', event => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') runForecast()
+    })
+
+    if (ORACLE_TEST_CONFIG.apiKey) {
+      $('api-key').value = ''
+      $('api-key').placeholder = 'Managed outside this page'
+    }
+
+    refreshConnectionSummary()
   })
 
+  function setQuestion(value) {
+    $('question').value = value
+    localStorage.setItem('oracle_q', value)
+    $('question').focus()
+  }
+
   async function checkHealth() {
-    const url = $('api-url').value.replace(/\/$/, '')
+    const { apiUrl } = getConfig()
     const el = $('health-status')
     el.textContent = 'Checking…'
     try {
-      const r = await fetch(`${url}/health`, { signal: AbortSignal.timeout(5000) })
+      const r = await fetch(`${apiUrl}/health`, { signal: AbortSignal.timeout(5000) })
       const d = await r.json()
       if (r.ok) {
         el.textContent = `✓ OK — ${d.leaderboard_sources ?? 0} sources in leaderboard`
@@ -359,13 +478,11 @@
   }
 
   async function runForecast() {
-    const url    = $('api-url').value.replace(/\/$/, '')
-    const key    = $('api-key').value.trim()
+    const { apiUrl, apiKey } = getConfig()
     const q      = $('question').value.trim()
     const maxArt = parseInt($('max-articles').value) || 5
 
     if (!q) { alert('Enter a question first.'); return }
-    if (!key) { alert('Enter your API key.'); return }
 
     // Reset UI
     $('result').style.display = 'none'
@@ -377,9 +494,12 @@
     const t0 = Date.now()
 
     try {
-      const res = await fetch(`${url}/forecast`, {
+      const headers = { 'Content-Type': 'application/json' }
+      if (apiKey) headers['x-api-key'] = apiKey
+
+      const res = await fetch(`${apiUrl}/forecast`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': key },
+        headers,
         body: JSON.stringify({ question: q, max_articles: maxArt }),
         signal: AbortSignal.timeout(25000),
       })
@@ -397,7 +517,9 @@
 
     } catch (e) {
       $('error-section').style.display = 'block'
-      $('error-msg').textContent = e.message
+      $('error-msg').textContent = e.message.includes('401')
+        ? 'Request was rejected. This deployment still expects operator-managed auth for /forecast. Configure a backend proxy or provide a non-persisted key in Developer settings.'
+        : e.message
     } finally {
       $('loading').style.display = 'none'
       $('btn-forecast').disabled = false
