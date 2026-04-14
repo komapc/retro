@@ -4,7 +4,6 @@ data/vault/
 data/vault2/
 data/raw_ingest/
 data/pages/
-data/progress.json
 *.db
 
 # Generated artifacts (EC2 pushes factum_atlas.html directly)
