@@ -4875,7 +4875,7 @@
     "E08:ch13": {
       "event_id": "E08",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5078,7 +5078,7 @@
     "F01:globes": {
       "event_id": "F01",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
