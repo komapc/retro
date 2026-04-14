@@ -1795,8 +1795,8 @@
     "F04:globes": {
       "event_id": "F04",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "F04:haaretz": {
@@ -5512,8 +5512,8 @@
     "G03:israel_hayom": {
       "event_id": "G03",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "G03:jpost": {
