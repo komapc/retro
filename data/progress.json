@@ -1207,8 +1207,8 @@
     "A04:israel_hayom": {
       "event_id": "A04",
       "source_id": "israel_hayom",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "A04:walla": {
@@ -2201,8 +2201,8 @@
     "A05:walla": {
       "event_id": "A05",
       "source_id": "walla",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "A05:ynet": {
@@ -2222,7 +2222,7 @@
     "A06:globes": {
       "event_id": "A06",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2285,7 +2285,7 @@
     "A06:walla": {
       "event_id": "A06",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2299,7 +2299,7 @@
     "A07:ch13": {
       "event_id": "A07",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2320,7 +2320,7 @@
     "A07:israel_hayom": {
       "event_id": "A07",
       "source_id": "israel_hayom",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2369,7 +2369,7 @@
     "A07:walla": {
       "event_id": "A07",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2453,7 +2453,7 @@
     "A08:walla": {
       "event_id": "A08",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2474,7 +2474,7 @@
     "A09:globes": {
       "event_id": "A09",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
