@@ -640,8 +640,8 @@
     "D03:haaretz": {
       "event_id": "D03",
       "source_id": "haaretz",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "D03:reuters": {
