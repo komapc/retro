@@ -1,0 +1,34 @@
+[project]
+name = "forecast-api"
+version = "0.1.0"
+description = "TruthMachine Oracle API — FastAPI prediction microservice"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "slowapi>=0.1.9",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "truthmachine-pipeline",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "httpx>=0.27.0",  # for TestClient
+]
+
+[tool.uv.sources]
+truthmachine-pipeline = { path = "../pipeline", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/forecast_api"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
