@@ -2488,8 +2488,8 @@
     "A09:israel_hayom": {
       "event_id": "A09",
       "source_id": "israel_hayom",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A09:jpost": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T17:26:48.675131"
+  "last_updated": "2026-04-14T17:31:09.681841"
 }
