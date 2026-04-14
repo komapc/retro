@@ -3195,7 +3195,7 @@
     "B04:ch13": {
       "event_id": "B04",
       "source_id": "ch13",
-      "status": "failed",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:20:37.619843"
+  "last_updated": "2026-04-14T16:20:51.410298"
 }
