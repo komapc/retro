@@ -3265,8 +3265,8 @@
     "B06:maariv": {
       "event_id": "B06",
       "source_id": "maariv",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B06:n12": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:44:01.343183"
+  "last_updated": "2026-04-14T16:44:29.070438"
 }
