@@ -2642,8 +2642,8 @@
     "A11:globes": {
       "event_id": "A11",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "A11:haaretz": {
@@ -2677,8 +2677,8 @@
     "A11:maariv": {
       "event_id": "A11",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A11:n12": {
@@ -2705,8 +2705,8 @@
     "A11:walla": {
       "event_id": "A11",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "A11:ynet": {
