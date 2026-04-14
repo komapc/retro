@@ -1291,7 +1291,7 @@
     "D02:israel_hayom": {
       "event_id": "D02",
       "source_id": "israel_hayom",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4091,7 +4091,7 @@
     "D04:ch13": {
       "event_id": "D04",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4175,7 +4175,7 @@
     "D05:ch13": {
       "event_id": "D05",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4350,7 +4350,7 @@
     "E01:globes": {
       "event_id": "E01",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T17:14:12.156747"
+  "last_updated": "2026-04-14T17:26:48.675131"
 }
