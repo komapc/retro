@@ -5078,8 +5078,8 @@
     "F01:globes": {
       "event_id": "F01",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 10,
       "error": null
     },
     "F01:haaretz": {
