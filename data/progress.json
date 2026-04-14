@@ -4959,7 +4959,7 @@
     "E09:reuters": {
       "event_id": "E09",
       "source_id": "reuters",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
