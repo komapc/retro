@@ -731,8 +731,8 @@
     "E08:ynet": {
       "event_id": "E08",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "G02:globes": {
