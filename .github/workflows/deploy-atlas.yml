@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - factum_atlas.html
+      - oracle-test.html
 
   # Allow manual trigger from GitHub UI
   workflow_dispatch:
@@ -34,6 +35,7 @@ jobs:
         run: |
           mkdir -p _site
           cp factum_atlas.html _site/index.html
+          cp oracle-test.html _site/oracle-test.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
