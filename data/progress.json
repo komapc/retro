@@ -2432,8 +2432,8 @@
     "A08:n12": {
       "event_id": "A08",
       "source_id": "n12",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "A08:reuters": {
@@ -2516,8 +2516,8 @@
     "A09:n12": {
       "event_id": "A09",
       "source_id": "n12",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "A09:reuters": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:19:32.655864"
+  "last_updated": "2026-04-14T16:20:21.060156"
 }
