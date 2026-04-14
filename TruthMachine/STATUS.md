@@ -1,6 +1,6 @@
 # TruthMachine / Factum Atlas — Status & Runbook
 
-_Last updated: 2026-03-28_
+_Last updated: 2026-04-14_
 
 ---
 
@@ -17,20 +17,30 @@ The matrix has **840 cells** = 70 events × 13 sources (not all combinations hav
 
 ---
 
-## Current State (2026-03-28)
+## Current State (2026-04-14)
 
 | Metric | Value |
 |--------|-------|
 | EC2 instance | `i-00ac444b94c5ff9b2` (eu-central-1) |
 | Instance type | t4g.small (ARM64, Ubuntu 24.04) |
-| Service | `truthmachine.service` — **running** |
-| Cells done | ~36 / 840 |
-| Cells no_predictions | ~781 |
-| Cells failed | 0 |
-| Raw ingest articles (EC2) | 276 |
-| Vault extractions (EC2) | 61 |
-| Atlas entries (EC2) | 183 |
+| Batch pipeline service | `truthmachine.service` — **running** |
+| Oracle API service | `oracle-api.service` — **not yet deployed** (Phase 2) |
+| Cells done | ~157 / 840 (from git log 2026-04-14) |
+| Cells no_predictions | ~543 |
+| Cells failed | ~11 |
+| Cells pending | ~128 |
 | Cycle interval | 300s (5 min sleep between cycles) |
+
+### Oracle API (oracle.daatan.com)
+
+| Item | Status |
+|------|--------|
+| API skeleton (`api/`) | ✅ Merged |
+| Test console | ✅ Live at [komapc.github.io/retro/oracle-test.html](https://komapc.github.io/retro/oracle-test.html) |
+| Pipeline integration (Phase 2) | 🔲 Pending |
+| EC2 deployment | 🔲 Pending |
+| DNS (`oracle.daatan.com`) | 🔲 Pending |
+| daatan bot integration | 🔲 Pending |
 
 ### Why is it sleeping?
 

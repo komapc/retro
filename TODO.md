@@ -1,5 +1,20 @@
 # TruthMachine TODO
 
+## Oracle API (oracle.daatan.com)
+
+- [x] API skeleton — FastAPI app with placeholder forecaster (`api/`)
+- [x] Test console deployed to GitHub Pages
+- [ ] **Phase 2: Wire up pipeline** — replace stub in `forecaster.py` with:
+  1. `web_search.search_articles(question, limit)` via `asyncio.to_thread`
+  2. `gatekeeper.check_is_prediction()` + `extractor.extract_predictions()` in parallel per article
+  3. `leaderboard.get_credibility_weight(source_id)` weighting
+  4. Weighted mean + 95% CI aggregation
+- [ ] Deploy `oracle-api.service` to retro EC2 (`sudo systemctl enable oracle-api`)
+- [ ] Point `oracle.daatan.com` DNS → retro EC2, issue TLS cert
+- [ ] Add nginx vhost for `oracle.daatan.com` (see `docs/ORACLE_API.md`)
+- [ ] Add `ORACLE_URL` + `ORACLE_API_KEY` secrets to daatan `.env` / AWS Secrets Manager
+- [ ] Wire daatan bot-runner to call `oracle.ts` for probability estimates
+
 ## Ingest / Coverage
 
 - [ ] **GDELT DOC API** — query `doc.gdeltproject.org/api/v2/artlist` by domain + keyword + date range.

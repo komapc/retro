@@ -26,10 +26,10 @@
 |-------|------------|---------|
 | Framework | Next.js (App Router) | 15.5.x |
 | Language | TypeScript | 5.x |
-| Runtime | Node.js | 20.x |
+| Runtime | Node.js | 24.x |
 | Styling | Tailwind CSS | 3.4.x |
 | Database | PostgreSQL | 16 |
-| ORM | Prisma | 5.22.x |
+| ORM | Prisma | 7.x |
 | Authentication | NextAuth.js | 4.24.x |
 | Testing | Vitest | 4.x |
 | Containerization | Docker | Latest |

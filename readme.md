@@ -60,6 +60,8 @@ This shifts Daatan from a media-auditing tool into a forward-looking intelligenc
 - **Prediction market participants** — data-driven edge for Polymarket and similar platforms
 - **Corporate & government risk desks** — calibrated probability estimates for geopolitical and economic planning
 
+The TruthMachine inference layer is exposed as the **Oracle API** (`oracle.daatan.com`) — a FastAPI microservice that accepts a binary question and returns a calibrated probability distribution, with per-source credibility weighting derived from the Factum Atlas. See [`docs/ORACLE_API.md`](docs/ORACLE_API.md) and the [live test console](https://komapc.github.io/retro/oracle-test.html).
+
 ---
 
 ### The Vision
