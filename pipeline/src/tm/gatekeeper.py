@@ -10,21 +10,31 @@ _client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.MD_J
 PROMPT = """\
 You are a forensic analyst screening news articles for predictive content.
 
-Determine whether the following article snippet contains a **forward-looking prediction** — \
-a claim about what will or may happen, or what the author believes will happen.
+Your job has TWO parts:
+1. Is this article directly relevant to the related event below?
+2. Does it contain a forward-looking prediction about that specific event?
+
+**Relevance check (STRICT):** The article must be primarily about the related event or its \
+direct causes/consequences. An article that merely mentions the topic in passing, covers a \
+different aspect of the same general conflict, or is a human-interest piece without predictive \
+content about the specific event should be REJECTED.
+
+**Prediction check:** The article must contain a forward-looking prediction — a claim about \
+what will or may happen regarding the related event.
 
 Include:
 - Explicit predictions ("X will happen", "we expect Y")
 - Strong directional forecasts ("the market is headed for collapse")
 - Conditional predictions ("if X happens, then Y is likely")
 - Implied forecasts based on analysis ("the signs point to Z")
-- Vague sentiment that implies a directional view ("things are getting worse")
 
 Exclude:
 - Pure factual reporting of past or present events
 - Historical context without forward implication
 - Rhetorical questions without answers
-- Pure opinion with no predictive content
+- Articles about a different event in the same region/topic
+- Human-interest pieces without predictive content
+- Articles where the related event is only mentioned in passing
 
 Article snippet:
 <article>

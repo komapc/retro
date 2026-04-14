@@ -188,6 +188,9 @@ class Orchestrator:
 
     async def process_article(self, raw_art: dict, event: dict, source: dict) -> Optional[PipelineResult]:
         text = raw_art["text"]
+        if len(text) < 500:
+            console.print(f"    [dim]Skipping empty/stub article ({len(text)} chars)[/dim]")
+            return None
         art_hash = self.get_article_hash(text)
         
         vault_path = self.vault_dir / "articles" / f"{art_hash}.json"
