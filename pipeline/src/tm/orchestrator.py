@@ -250,6 +250,9 @@ class Orchestrator:
                     data = {
                         "extraction": result.extraction.model_dump(),
                         "prompt_version": model_v,
+                        "extractor_model": settings.extractor_model,
+                        "gatekeeper_model": settings.gatekeeper_model,
+                        "gatekeeper_reason": result.gatekeeper_reason,
                         "run_date": datetime.now().isoformat()
                     }
                     json.dump(data, f, indent=2)
@@ -296,8 +299,13 @@ class Orchestrator:
             "article_hash": art_hash,
             "extraction_id": f"{art_hash}_{eid}_v1",
             "headline": raw_art.get("headline", "N/A"),
+            "article_url": raw_art.get("url", ""),
+            "author": raw_art.get("author", ""),
             "article_date": raw_art["published_at"],
             "event_date": event_date,
+            "extractor_model": ext_data.get("extractor_model", ""),
+            "gatekeeper_model": ext_data.get("gatekeeper_model", ""),
+            "gatekeeper_reason": ext_data.get("gatekeeper_reason", ""),
             "predictions": ext_data["extraction"].get("predictions", []),
         }
         with open(link_path, "w") as f:

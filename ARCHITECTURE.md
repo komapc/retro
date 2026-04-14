@@ -85,6 +85,35 @@ Used to compute per-category source accuracy scores for the forecasting model.
 }
 ```
 
+### Atlas Entry (`data/atlas/{event_id}/{source_id}/entry_{hash[:8]}.json`)
+```json
+{
+  "article_hash": "...",
+  "extraction_id": "...",
+  "headline": "...",
+  "article_url": "https://...",
+  "author": "...",
+  "article_date": "2024-04-13",
+  "event_date": "2024-04-14",
+  "extractor_model": "bedrock/amazon.nova-lite-v1:0",
+  "gatekeeper_model": "bedrock/amazon.nova-micro-v1:0",
+  "gatekeeper_reason": "Article directly predicts an imminent Iranian missile strike on Israel.",
+  "predictions": [...]
+}
+```
+
+### Vault Extraction (`data/vault2/extractions/{hash}_{event}_v1.json`)
+```json
+{
+  "extraction": { "predictions": [...] },
+  "prompt_version": "v1",
+  "extractor_model": "bedrock/amazon.nova-lite-v1:0",
+  "gatekeeper_model": "bedrock/amazon.nova-micro-v1:0",
+  "gatekeeper_reason": "...",
+  "run_date": "2026-04-14T12:00:00"
+}
+```
+
 ### Prediction (extracted by LLM)
 Each prediction has: `quote`, `claim`, `stance` (−1 to +1, event probability), `certainty`, `sentiment`, `specificity`, `hedge_ratio`, `conditionality`, `magnitude`, `time_horizon`, `prediction_type`, `source_authority`.
 
