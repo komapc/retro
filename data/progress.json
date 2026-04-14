@@ -4077,8 +4077,8 @@
     "D03:maariv": {
       "event_id": "D03",
       "source_id": "maariv",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "D03:n12": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:44:29.070438"
+  "last_updated": "2026-04-14T16:46:43.883916"
 }
