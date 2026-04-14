@@ -1809,7 +1809,7 @@
     "F04:israel_hayom": {
       "event_id": "F04",
       "source_id": "israel_hayom",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -1823,7 +1823,7 @@
     "F04:reuters": {
       "event_id": "F04",
       "source_id": "reuters",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -5344,8 +5344,8 @@
     "F04:n12": {
       "event_id": "F04",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "F05:ch13": {
@@ -5561,7 +5561,7 @@
     "G03:walla": {
       "event_id": "G03",
       "source_id": "walla",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:33:53.289029"
+  "last_updated": "2026-04-14T16:35:02.437210"
 }
