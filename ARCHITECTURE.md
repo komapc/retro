@@ -63,9 +63,17 @@ retro/
   "outcome_date": "2024-12-08",
   "predictive_window_days": 14,
   "search_keywords": ["נפילת אסד סוריה", "מרד סוריה דמשק", "Assad regime collapse Syria", ...],
-  "llm_referee_criteria": "The Assad government loses effective control of Damascus."
+  "llm_referee_criteria": "The Assad government loses effective control of Damascus.",
+  "category": ["Regional Geopolitics"],
+  "tags": ["Assad", "Syria", "regime collapse", "rebels"]
 }
 ```
+
+**`category`** — multi-label list from the taxonomy:
+`Israeli Politics`, `Gaza War`, `Regional Geopolitics`, `Israeli Economy`, `Israeli Society`, `AI & Tech`, `Global`.
+Used to compute per-category source accuracy scores for the forecasting model.
+
+**`tags`** — free-form keywords for fine-grained topic matching at inference time.
 
 ### Source (`data/sources/{id}.json`)
 ```json
@@ -140,6 +148,17 @@ Configured in `render_atlas.py`:
 ```python
 SCORING_CONFIG = ScoringConfig(window_hours=48, min_per_window=2)
 ```
+
+**Confidence-weighted Brier Score** (`scorer.py`) — predictions with higher `certainty` carry more weight:
+
+```
+weight          = 0.5 + 1.5 × certainty      # range [0.5, 2.0]
+weighted_brier  = brier × weight
+```
+
+**Per-category scoring** — `scorer.py` computes `brier_score` and `weighted_brier_score` both globally and broken down by `category` (e.g. "Gaza War", "AI & Tech"). Stored in `leaderboard.json` under `by_category`. Used by the forecasting model to select trusted sources per topic.
+
+**ELO** — zero-sum rating updated after each event: sources that predicted correctly gain points from those that predicted incorrectly. Global only (per-category ELO planned).
 
 ---
 

@@ -1,7 +1,9 @@
 import json
-from pathlib import Path
-from typing import Dict, List
 import math
+from collections import defaultdict
+from pathlib import Path
+from typing import Dict, List, Optional
+
 
 class Scorer:
     def __init__(self, data_dir: Path):
@@ -11,108 +13,179 @@ class Scorer:
         self.sources_dir = data_dir / "sources"
         self.scores_path = data_dir / "leaderboard.json"
 
+    # ─────────────────────────────────────────────
+    # Core scoring primitives
+    # ─────────────────────────────────────────────
+
     def calculate_brier(self, stance: float, outcome: bool) -> float:
-        # Map stance (-1 to 1) to probability (0 to 1)
-        # Note: ML model will eventually do this, for now we use linear mapping
-        prob = (stance + 1) / 2
+        """Brier score for a single prediction."""
+        prob = (stance + 1) / 2          # stance [-1,1] → prob [0,1]
         actual = 1.0 if outcome else 0.0
         return (prob - actual) ** 2
 
-    def run(self):
-        source_stats = {} # sid -> {brier_sum, count, elo}
-        
-        # Initialize ELO and Brier for all sources
-        for source_file in self.sources_dir.glob("*.json"):
-            with open(source_file, "r") as f:
-                source = json.load(f)
-            source_stats[source["id"]] = {
-                "name": source["name"],
-                "brier_total": 0.0,
-                "prediction_count": 0,
-                "elo": 1200.0,
-                "events_covered": 0
-            }
+    def confidence_weight(self, certainty: float) -> float:
+        """
+        Higher certainty → higher weight when correct, higher penalty when wrong.
+        Returns a multiplier in [0.5, 2.0] so low-certainty predictions still count.
+        """
+        certainty = max(0.0, min(1.0, certainty))
+        return 0.5 + 1.5 * certainty
 
-        # Iterate through events to update scores
-        for event_file in self.events_dir.glob("*.json"):
-            with open(event_file, "r") as f:
-                event = json.load(f)
-            
+    def weighted_brier(self, stance: float, certainty: float, outcome: bool) -> float:
+        """Confidence-weighted Brier score."""
+        return self.calculate_brier(stance, outcome) * self.confidence_weight(certainty)
+
+    # ─────────────────────────────────────────────
+    # Stat buckets
+    # ─────────────────────────────────────────────
+
+    def _empty_bucket(self, name: str = "") -> dict:
+        return {
+            "name": name,
+            "brier_total": 0.0,
+            "weighted_brier_total": 0.0,
+            "prediction_count": 0,
+            "events_covered": 0,
+            "elo": 1200.0,
+        }
+
+    # ─────────────────────────────────────────────
+    # Main run
+    # ─────────────────────────────────────────────
+
+    def run(self):
+        # global stats:  sid → bucket
+        global_stats: Dict[str, dict] = {}
+        # category stats: sid → category → bucket
+        category_stats: Dict[str, Dict[str, dict]] = defaultdict(dict)
+
+        # Initialise buckets for all sources
+        for source_file in self.sources_dir.glob("*.json"):
+            source = json.loads(source_file.read_text())
+            sid = source["id"]
+            global_stats[sid] = self._empty_bucket(source["name"])
+
+        # Score every event
+        for event_file in sorted(self.events_dir.glob("*.json")):
+            event = json.loads(event_file.read_text())
             eid = event["id"]
             outcome = event["outcome"]
-            
+            categories: List[str] = event.get("category", [])
+
             atlas_event_dir = self.atlas_dir / eid
             if not atlas_event_dir.exists():
                 continue
 
-            event_predictions = [] # List of (sid, stance)
-            
+            event_predictions = []   # (sid, stance) for ELO update
+
             for source_dir in atlas_event_dir.iterdir():
                 if not source_dir.is_dir():
                     continue
-                
                 sid = source_dir.name
-                if sid not in source_stats:
+                if sid not in global_stats:
                     continue
 
-                # Get all predictions for this source/event
-                for entry_file in source_dir.glob("*.json"):
-                    with open(entry_file, "r") as f:
-                        entry = json.load(f)
-                    
+                entry_files = list(source_dir.glob("*.json"))
+                if not entry_files:
+                    continue
+
+                # Ensure per-category buckets exist for this source
+                for cat in categories:
+                    if cat not in category_stats[sid]:
+                        category_stats[sid][cat] = self._empty_bucket(
+                            global_stats[sid]["name"]
+                        )
+
+                covered = False
+                for entry_file in entry_files:
+                    entry = json.loads(entry_file.read_text())
                     preds = entry.get("predictions", [])
                     if not preds:
                         continue
-                        
-                    # Aggregate stance for this article (simple mean for MVP)
-                    import numpy as np
-                    avg_stance = float(np.mean([p.get("stance", 0) for p in preds]))
-                    
-                    brier = self.calculate_brier(avg_stance, outcome)
-                    
-                    source_stats[sid]["brier_total"] += brier
-                    source_stats[sid]["prediction_count"] += 1
+
+                    stances    = [p.get("stance", 0.0) for p in preds]
+                    certainties = [p.get("certainty", 0.5) for p in preds]
+                    avg_stance    = sum(stances) / len(stances)
+                    avg_certainty = sum(certainties) / len(certainties)
+
+                    b  = self.calculate_brier(avg_stance, outcome)
+                    wb = self.weighted_brier(avg_stance, avg_certainty, outcome)
+
+                    # Global bucket
+                    global_stats[sid]["brier_total"]          += b
+                    global_stats[sid]["weighted_brier_total"] += wb
+                    global_stats[sid]["prediction_count"]     += 1
+
+                    # Per-category buckets
+                    for cat in categories:
+                        category_stats[sid][cat]["brier_total"]          += b
+                        category_stats[sid][cat]["weighted_brier_total"] += wb
+                        category_stats[sid][cat]["prediction_count"]     += 1
+
                     event_predictions.append((sid, avg_stance))
-                
-                if any(source_dir.glob("*.json")):
-                    source_stats[sid]["events_covered"] += 1
+                    covered = True
 
-            # Simple ELO-like relative update per event
-            # Correct sources gain from incorrect ones
+                if covered:
+                    global_stats[sid]["events_covered"] += 1
+                    for cat in categories:
+                        category_stats[sid][cat]["events_covered"] += 1
+
+            # ELO update (global only — per-category ELO can be added later)
             if len(event_predictions) > 1:
-                self.update_elo(source_stats, event_predictions, outcome)
+                self._update_elo(global_stats, event_predictions, outcome)
 
-        # Finalize averages
+        # ── Build leaderboard ────────────────────
         leaderboard = []
-        for sid, stats in source_stats.items():
-            if stats["prediction_count"] > 0:
-                stats["brier_score"] = stats["brier_total"] / stats["prediction_count"]
-                leaderboard.append({
-                    "id": sid,
-                    "name": stats["name"],
-                    "brier_score": round(stats["brier_score"], 4),
-                    "elo": round(stats["elo"], 0),
-                    "predictions": stats["prediction_count"],
-                    "events": stats["events_covered"]
-                })
+        for sid, stats in global_stats.items():
+            n = stats["prediction_count"]
+            if n == 0:
+                continue
 
-        # Sort by ELO descending
+            # Per-category scores for this source
+            per_category = {}
+            for cat, cstats in category_stats.get(sid, {}).items():
+                cn = cstats["prediction_count"]
+                if cn == 0:
+                    continue
+                per_category[cat] = {
+                    "brier_score":          round(cstats["brier_total"] / cn, 4),
+                    "weighted_brier_score": round(cstats["weighted_brier_total"] / cn, 4),
+                    "predictions":          cn,
+                    "events":               cstats["events_covered"],
+                }
+
+            leaderboard.append({
+                "id":                   sid,
+                "name":                 stats["name"],
+                "brier_score":          round(stats["brier_total"] / n, 4),
+                "weighted_brier_score": round(stats["weighted_brier_total"] / n, 4),
+                "elo":                  round(stats["elo"], 0),
+                "predictions":          n,
+                "events":               stats["events_covered"],
+                "by_category":          per_category,
+            })
+
         leaderboard.sort(key=lambda x: x["elo"], reverse=True)
-        
-        with open(self.scores_path, "w") as f:
-            json.dump(leaderboard, f, indent=2)
-        
-        print(f"Scoring complete. Leaderboard saved to {self.scores_path}")
 
-    def update_elo(self, stats, predictions, outcome, K=32):
-        # Very simplified zero-sum adjustment for MVP
+        self.scores_path.write_text(json.dumps(leaderboard, indent=2))
+        print(f"Scoring complete. {len(leaderboard)} sources scored → {self.scores_path}")
+        return leaderboard
+
+    # ─────────────────────────────────────────────
+    # ELO helper
+    # ─────────────────────────────────────────────
+
+    def _update_elo(self, stats: dict, predictions: list, outcome: bool, K: int = 32):
+        """Zero-sum ELO adjustment: sources that predicted correctly gain from those that didn't."""
         for sid, stance in predictions:
-            # Did they lean the right way?
             is_correct = (stance > 0) == outcome
-            if is_correct:
-                stats[sid]["elo"] += K / len(predictions)
-            else:
-                stats[sid]["elo"] -= K / len(predictions)
+            delta = K / len(predictions)
+            stats[sid]["elo"] += delta if is_correct else -delta
+
+    # Backwards-compat alias
+    def update_elo(self, stats, predictions, outcome, K=32):
+        self._update_elo(stats, predictions, outcome, K)
+
 
 def main():
     import sys
@@ -121,6 +194,7 @@ def main():
         data_dir = Path(sys.argv[1])
     scorer = Scorer(data_dir)
     scorer.run()
+
 
 if __name__ == "__main__":
     main()
