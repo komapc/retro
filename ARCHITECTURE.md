@@ -318,6 +318,78 @@ New question arrives
 
 ---
 
+## Forecasting Microservice
+
+> Planned 2026-04-14. Not yet implemented.
+
+### Purpose
+
+Given a binary question ("Will X happen by Y?"), return a calibrated probability distribution by searching current articles and weighting predictions by each source's historical accuracy on the relevant topic.
+
+### Input / Output
+
+```
+POST /api/forecast
+{
+  "question": "Will Israel and Hamas reach a permanent ceasefire by June 2025?",
+  "deadline": "2025-06-01",
+  "async": false          // optional, default false
+}
+
+→ 200 OK
+{
+  "question": "...",
+  "category": "Gaza War",         // auto-classified by LLM
+  "mean": 0.38,
+  "std": 0.14,
+  "ci_low": 0.18,
+  "ci_high": 0.58,
+  "articles_found": 7,
+  "articles_used": 5,
+  "sources": [
+    { "name": "Times of Israel", "trust": 0.84, "stance": 0.4, "certainty": 0.7 },
+    ...
+  ],
+  "computed_at": "2026-04-14T12:00:00Z"
+}
+```
+
+### Pipeline
+
+**Stage 1 — Search & Extract**
+1. Classify question into topic category using LLM (retro taxonomy: Israeli Politics, Gaza War, etc.)
+2. Search for related articles via daatan's existing `searchArticles()` (6-provider chain)
+3. For each article: run `gatekeeper.py` → `extractor.py` to get `stance`, `certainty`, `hedge_ratio`, etc.
+
+**Stage 2 — Weight by Source Credibility**
+1. Load `leaderboard.json` from retro (sync into daatan PostgreSQL nightly — see Open Decisions)
+2. For each article's source: look up `weighted_brier_score` for the matched category
+3. Compute trust weight: `weight = 1 / (weighted_brier + ε)` — lower Brier = higher trust
+
+**Stage 3 — Aggregate → Distribution**
+1. Each article contributes probability `p_i = (stance + 1) / 2`
+2. Weight by `certainty × source_trust`
+3. Compute weighted mean + variance → return `{ mean, std, ci_low, ci_high }`
+4. Aggregation method: Weighted Bayesian (#1) initially → LightGBM (#4) when enough data
+
+### Deployment Options (deferred)
+
+| Option | Pros | Cons |
+|---|---|---|
+| **Python FastAPI microservice** | Reuses retro's extractor/gatekeeper/scorer/web_search directly | Extra service to maintain |
+| **TypeScript routes in daatan** | Single deploy, reuses daatan's search chain | Must port Python ML logic |
+
+**Recommendation:** Start as Python FastAPI — called via HTTP from daatan. Port later if needed.
+
+### Open Decisions
+
+| # | Question | Options |
+|---|---|---|
+| Q1 | Where do source scores live? | GitHub raw `leaderboard.json` vs daatan PostgreSQL (nightly sync recommended) |
+| Q4 | Where does the service live? | Python FastAPI (recommended) vs daatan TypeScript routes |
+
+---
+
 ## Cost Estimates (at scale)
 
 | Scale | LLM cost | Search | News licenses |
