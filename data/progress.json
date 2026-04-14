@@ -5001,8 +5001,8 @@
     "E10:haaretz": {
       "event_id": "E10",
       "source_id": "haaretz",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "E10:israel_hayom": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:46:43.883916"
+  "last_updated": "2026-04-14T16:47:16.124812"
 }
