@@ -640,7 +640,7 @@
     "D03:haaretz": {
       "event_id": "D03",
       "source_id": "haaretz",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4420,7 +4420,7 @@
     "E01:ynet": {
       "event_id": "E01",
       "source_id": "ynet",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4497,7 +4497,7 @@
     "E02:walla": {
       "event_id": "E02",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
