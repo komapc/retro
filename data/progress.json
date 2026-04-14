@@ -731,7 +731,7 @@
     "E08:ynet": {
       "event_id": "E08",
       "source_id": "ynet",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4959,7 +4959,7 @@
     "E09:reuters": {
       "event_id": "E09",
       "source_id": "reuters",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
