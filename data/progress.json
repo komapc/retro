@@ -4497,8 +4497,8 @@
     "E02:walla": {
       "event_id": "E02",
       "source_id": "walla",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "E02:ynet": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:31:17.271809"
+  "last_updated": "2026-04-14T16:33:03.365841"
 }
