@@ -5169,8 +5169,8 @@
     "F02:haaretz": {
       "event_id": "F02",
       "source_id": "haaretz",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "F02:israel_hayom": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-14T16:33:03.365841"
+  "last_updated": "2026-04-14T16:33:53.289029"
 }
