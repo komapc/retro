@@ -353,8 +353,8 @@
     "B13:globes": {
       "event_id": "B13",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 17,
       "error": null
     },
     "B13:haaretz": {
@@ -3489,22 +3489,22 @@
     "C01:haaretz": {
       "event_id": "C01",
       "source_id": "haaretz",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "C01:israel_hayom": {
       "event_id": "C01",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 9,
       "error": null
     },
     "C01:jpost": {
       "event_id": "C01",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "C01:kan11": {
@@ -3545,8 +3545,8 @@
     "C01:walla": {
       "event_id": "C01",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "C01:ynet": {
