@@ -4875,8 +4875,8 @@
     "E08:ch13": {
       "event_id": "E08",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "E08:kan11": {
