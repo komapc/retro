@@ -35,11 +35,20 @@
     .section-title {{ font-size: 18px; font-weight: 600; margin: 32px 0 16px;
                       border-bottom: 1px solid var(--border); padding-bottom: 8px; }}
 
-    /* ── Legend boxes ── */
+    /* ── Legend boxes (collapsible <details>) ── */
     .legend-box {{
       background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
       padding: 14px 18px; margin-bottom: 16px; font-size: 12px;
     }}
+    .legend-box summary.legend-title {{
+      font-weight: 600; color: var(--text); cursor: pointer; list-style: none;
+      display: flex; align-items: center; gap: 6px; user-select: none;
+    }}
+    .legend-box summary.legend-title::before {{
+      content: "▶"; font-size: 9px; color: var(--muted); transition: transform 0.15s;
+    }}
+    .legend-box[open] summary.legend-title::before {{ transform: rotate(90deg); }}
+    .legend-box[open] summary.legend-title {{ margin-bottom: 8px; }}
     .legend-box .legend-title {{ font-weight: 600; margin-bottom: 8px; color: var(--text); }}
     .legend-grid {{ display: flex; gap: 32px; flex-wrap: wrap; color: var(--muted); }}
     .legend-col {{ min-width: 180px; }}
@@ -204,8 +213,8 @@
   <!-- ── Coverage Matrix ── -->
   <div class="section-title">Coverage Matrix</div>
 
-  <div class="legend-box">
-    <div class="legend-title">How to read the matrix</div>
+  <details class="legend-box">
+    <summary class="legend-title">How to read the matrix</summary>
     <div class="legend-grid">
 
       <div class="legend-col">
@@ -266,15 +275,15 @@
       </div>
 
     </div>
-  </div>
+  </details>
 
   <div class="matrix-wrap">{matrix_html}</div>
 
   <!-- ── Event Time Series ── -->
   <div class="section-title">Event Time Series</div>
 
-  <div class="legend-box">
-    <div class="legend-title">How to read the charts</div>
+  <details class="legend-box">
+    <summary class="legend-title">How to read the charts</summary>
     <div class="legend-grid">
 
       <div class="legend-col">
@@ -310,7 +319,7 @@
       </div>
 
     </div>
-  </div>
+  </details>
 
   <div class="event-nav">
     {event_nav_links}

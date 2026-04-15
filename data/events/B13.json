@@ -19,5 +19,9 @@
     "arms embargo",
     "Biden"
   ],
-  "polymarket": null
+  "polymarket": {
+    "url": "https://polymarket.com/event/us-arms-embargo-on-israel-in-2024",
+    "question": "U.S. arms embargo on Israel in 2024?",
+    "match_quality": "close"
+  }
 }
