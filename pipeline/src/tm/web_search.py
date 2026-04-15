@@ -76,8 +76,13 @@ def _search_serpapi_news(
     if not SERPAPI_KEY:
         raise RuntimeError("SERPAPI_KEY not set")
 
+    # SerpAPI news (tbm=nws) doesn't support site: operator — strip it.
+    # Results are filtered by domain by the caller anyway.
+    import re as _re
+    clean_query = _re.sub(r"\bsite:\S+\s*", "", query).strip()
+
     params: dict = {
-        "q": query,
+        "q": clean_query,
         "tbm": "nws",
         "num": min(limit, 100),
         "api_key": SERPAPI_KEY,
