@@ -510,7 +510,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
         body: JSON.stringify({ question: q, max_articles: parseInt($('max-articles').value) || 5 }),
-        signal: AbortSignal.timeout(60000),
+        signal: AbortSignal.timeout(120000),
       })
 
       const elapsed = ((Date.now() - t0) / 1000).toFixed(1)
@@ -524,7 +524,8 @@
       renderResult(data, elapsed, q)
 
     } catch (e) {
-      $('result-area').innerHTML = `<div class="error-card">⚠ ${escHtml(e.message)}</div>`
+      const msg = e.name === 'TimeoutError' ? 'Request timed out after 120s — the pipeline may be under load, try again.' : e.message
+      $('result-area').innerHTML = `<div class="error-card">⚠ ${escHtml(msg)}</div>`
       $('result-area').style.display = 'block'
     } finally {
       $('run-btn').disabled = false
