@@ -1,0 +1,13 @@
+{
+  "id": "guardian",
+  "name": "The Guardian",
+  "url": "https://www.theguardian.com",
+  "country": "GB",
+  "language": "en",
+  "type": "newspaper",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": "center-left",
+  "economic_lean": null,
+  "notes": "UK broadsheet; prominent Middle East and international desk"
+}

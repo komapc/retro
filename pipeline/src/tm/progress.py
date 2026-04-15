@@ -52,6 +52,11 @@ SOURCE_ABBREV: dict[str, str] = {
     "reuters":      "REU",
     "bloomberg":    "BLM",
     "wsj":          "WSJ",
+    "nyt":          "NYT",
+    "ft":           "FT ",
+    "guardian":     "GRD",
+    "wapost":       "WPO",
+    "axios":        "AXS",
 }
 
 

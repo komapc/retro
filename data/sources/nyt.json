@@ -1,0 +1,13 @@
+{
+  "id": "nyt",
+  "name": "The New York Times",
+  "url": "https://www.nytimes.com",
+  "country": "US",
+  "language": "en",
+  "type": "newspaper",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": "center-left",
+  "economic_lean": null,
+  "notes": "Major US daily; strong international and Middle East coverage"
+}
