@@ -346,6 +346,17 @@ def _render_matrix(matrix_rows: list, search_status: dict,
             '<span class="outcome-badge badge-false">FALSE</span>'
             if not row["outcome"] else ""
         )
+        pm = row.get("polymarket")
+        pm_badge = ""
+        if pm and pm.get("url"):
+            quality = pm.get("match_quality", "")
+            opacity = "1" if quality == "exact" else "0.65"
+            pm_question = pm.get("question", "")
+            pm_badge = (
+                f'<a href="{pm["url"]}" target="_blank" rel="noopener" '
+                f'title="Polymarket: {pm_question} ({quality})" '
+                f'class="pm-badge" style="opacity:{opacity}">PM</a>'
+            )
         parts.append(
             f'<tr>'
             f'<td class="event-label">'
@@ -353,6 +364,7 @@ def _render_matrix(matrix_rows: list, search_status: dict,
             f'<span class="event-id">{eid}</span>'
             f'<a href="#event-{eid}">{row["name"]}</a>'
             f'</span>'
+            f'{pm_badge}'
             f'{badge}'
             f'</td>'
         )
@@ -634,7 +646,8 @@ def render(data_dir: Path, output_path: Path,
         if not ev:
             continue
         row = {"id": eid, "name": ev["name"], "outcome": ev["outcome"],
-               "outcome_date": ev["outcome_date"], "cells": []}
+               "outcome_date": ev["outcome_date"], "polymarket": ev.get("polymarket"),
+               "cells": []}
         for sid in SOURCES:
             entries = cells.get((eid, sid), [])
             stances = [p.get("stance", 0) for e in entries for p in e.get("predictions", [])]
