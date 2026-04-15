@@ -3,9 +3,10 @@ Multi-provider news search with fallback chain.
 Python equivalent of daatan's webSearch.ts utility.
 
 Fallback order:
-  1. Serper.dev /news endpoint  (SERPERDEV_KEY)
-  2. Brave News Search           (BRAVE_API_KEY)
-  3. DuckDuckGo Lite             (free, no key)
+  1. SerpAPI (serpapi.com)       (SERPAPI_KEY)
+  2. Serper.dev /news endpoint  (SERPERDEV_KEY)
+  3. Brave News Search           (BRAVE_API_KEY)
+  4. DuckDuckGo Lite             (free, no key)
 
 Usage:
     from tm.web_search import search_articles
@@ -33,6 +34,7 @@ from ddgs import DDGS
 
 logger = logging.getLogger(__name__)
 
+SERPAPI_KEY: Optional[str] = os.environ.get("SERPAPI_KEY")
 SERPERDEV_KEY: Optional[str] = os.environ.get("SERPERDEV_KEY")
 BRAVE_API_KEY: Optional[str] = os.environ.get("BRAVE_API_KEY")
 
@@ -59,6 +61,51 @@ class SearchResult:
     snippet: str
     source: str = ""
     published_date: str = ""
+
+
+# ──────────────────────────────────────────────
+# Provider: SerpAPI (serpapi.com) news
+# ──────────────────────────────────────────────
+
+def _search_serpapi_news(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
+    if not SERPAPI_KEY:
+        raise RuntimeError("SERPAPI_KEY not set")
+
+    params: dict = {
+        "q": query,
+        "tbm": "nws",
+        "num": min(limit, 100),
+        "api_key": SERPAPI_KEY,
+    }
+    if date_from:
+        params["tbs"] = f"cdr:1,cd_min:{date_from.month}/{date_from.day}/{date_from.year}"
+        if date_to:
+            params["tbs"] += f",cd_max:{date_to.month}/{date_to.day}/{date_to.year}"
+
+    r = httpx.get(
+        "https://serpapi.com/search.json",
+        params=params,
+        timeout=12,
+    )
+    r.raise_for_status()
+    items = r.json().get("news_results", [])
+
+    return [
+        SearchResult(
+            title=item.get("title", ""),
+            url=item.get("link", ""),
+            snippet=item.get("snippet", ""),
+            source=item.get("source", _extract_domain(item.get("link", ""))),
+            published_date=item.get("date", ""),
+        )
+        for item in items[:limit]
+        if item.get("link")
+    ]
 
 
 # ──────────────────────────────────────────────
@@ -192,7 +239,7 @@ def search_articles(
 ) -> List[SearchResult]:
     """
     Search for news articles matching *query*, returning up to *limit* results.
-    Tries providers in order: Serper.dev → Brave → DuckDuckGo.
+    Tries providers in order: SerpAPI → Serper.dev → Brave → DuckDuckGo.
     Providers without an API key are skipped.
 
     Args:
@@ -204,7 +251,17 @@ def search_articles(
     Returns:
         List of SearchResult(title, url, snippet, source, published_date).
     """
-    # 1. Serper.dev news
+    # 1. SerpAPI (primary — working key confirmed)
+    if SERPAPI_KEY:
+        try:
+            results = _search_serpapi_news(query, limit, date_from, date_to)
+            if results:
+                return results
+            logger.warning("SerpAPI returned 0 results for: %s", query[:60])
+        except Exception as e:
+            logger.warning("SerpAPI failed: %s", e)
+
+    # 2. Serper.dev news
     if SERPERDEV_KEY:
         try:
             results = _search_serper_news(query, limit, date_from, date_to)
@@ -214,7 +271,7 @@ def search_articles(
         except Exception as e:
             logger.warning("Serper failed: %s", e)
 
-    # 2. Brave News
+    # 3. Brave News
     if BRAVE_API_KEY and not _BRAVE_QUOTA_EXHAUSTED:
         try:
             results = _search_brave_news(query, limit, date_from, date_to)
@@ -224,7 +281,7 @@ def search_articles(
         except Exception as e:
             logger.warning("Brave failed: %s", e)
 
-    # 3. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
+    # 4. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
         try:
             return _search_ddg_news(query, limit)
