@@ -37,8 +37,17 @@ async def lifespan(app: FastAPI):
     logger.info("Oracle API shut down")
 
 
+_CORS_ORIGIN = "https://komapc.github.io"
+
+
 def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
-    return JSONResponse({"detail": "Rate limit exceeded — max 10 requests/minute"}, status_code=429)
+    origin = request.headers.get("origin", "")
+    headers = {}
+    if origin == _CORS_ORIGIN or origin.startswith("http://localhost") or origin.startswith("http://127.0.0.1"):
+        headers["Access-Control-Allow-Origin"] = origin
+        headers["Access-Control-Allow-Headers"] = "Content-Type, x-api-key"
+        headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return JSONResponse({"detail": "Rate limit exceeded — max 10 requests/minute"}, status_code=429, headers=headers)
 
 
 app = FastAPI(
