@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from slowapi.errors import RateLimitExceeded
 
 from .auth import verify_api_key
@@ -62,6 +62,12 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type", "x-api-key"],
 )
+
+
+@app.get("/", include_in_schema=False)
+async def root():
+    """Redirect to the interactive test console."""
+    return RedirectResponse("https://komapc.github.io/retro/oracle-test.html")
 
 
 @app.get("/health", tags=["Meta"])
