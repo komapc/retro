@@ -139,11 +139,10 @@ async def _process_article(
 async def run_forecast(req: ForecastRequest) -> ForecastResponse:
     limit = req.max_articles or settings.max_articles
 
-    # Step 1: search — append prediction-biasing terms so Serper surfaces forecasts
-    search_query = req.question + " forecast prediction outlook analysts expect"
+    # Step 1: search
     try:
         search_results: list[SearchResult] = await asyncio.to_thread(
-            search_articles, search_query, limit
+            search_articles, req.question, limit
         )
     except Exception as exc:
         logger.error("Search failed: %s", exc)
