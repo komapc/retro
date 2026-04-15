@@ -20,6 +20,7 @@ Usage:
         print(r.url, r.title)
 """
 
+import logging
 import os
 import re
 import time
@@ -29,6 +30,8 @@ from typing import List, Optional
 
 import httpx
 from ddgs import DDGS
+
+logger = logging.getLogger(__name__)
 
 SERPERDEV_KEY: Optional[str] = os.environ.get("SERPERDEV_KEY")
 BRAVE_API_KEY: Optional[str] = os.environ.get("BRAVE_API_KEY")
@@ -119,7 +122,7 @@ def _search_brave_news(
         "q": query,
         "count": min(limit, 20),
         "search_lang": "en",
-        "result_filter": "news",
+        "country": "us",
     }
     # Brave supports freshness but not arbitrary date ranges; skip date filter here
     # (caller should include dates in the query string instead)
@@ -207,8 +210,9 @@ def search_articles(
             results = _search_serper_news(query, limit, date_from, date_to)
             if results:
                 return results
+            logger.warning("Serper returned 0 results for: %s", query[:60])
         except Exception as e:
-            pass  # fall through to next provider
+            logger.warning("Serper failed: %s", e)
 
     # 2. Brave News
     if BRAVE_API_KEY and not _BRAVE_QUOTA_EXHAUSTED:
@@ -216,16 +220,20 @@ def search_articles(
             results = _search_brave_news(query, limit, date_from, date_to)
             if results:
                 return results
-        except Exception:
-            pass
+            logger.warning("Brave returned 0 results for: %s", query[:60])
+        except Exception as e:
+            logger.warning("Brave failed: %s", e)
 
     # 3. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
         try:
             return _search_ddg_news(query, limit)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("DDG failed: %s", e)
+    else:
+        logger.info("Skipping DDG (running on EC2)")
 
+    logger.error("All search providers exhausted — no articles found for: %s", query[:60])
     return []
 
 
