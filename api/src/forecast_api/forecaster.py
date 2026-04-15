@@ -14,6 +14,9 @@ import re
 from datetime import datetime
 from urllib.parse import urlparse
 
+import httpx
+import trafilatura
+
 from tm.gatekeeper import check_is_prediction
 from tm.extractor import extract_predictions
 from tm.web_search import search_articles, SearchResult
@@ -61,20 +64,40 @@ def _source_id_from_url(url: str) -> str:
     return domain  # fallback: raw domain as id
 
 
+def _fetch_article_text(url: str, fallback: str) -> str:
+    """Fetch full article body with trafilatura; return fallback on error."""
+    try:
+        html = httpx.get(
+            url,
+            timeout=6.0,
+            follow_redirects=True,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; TruthMachine/1.0)"},
+        ).text
+        extracted = trafilatura.extract(html, include_comments=False, include_tables=False)
+        if extracted and len(extracted) > len(fallback):
+            return extracted
+    except Exception as exc:
+        logger.debug("Article fetch failed for %s: %s", url, exc)
+    return fallback
+
+
 async def _process_article(
     result: SearchResult,
     question: str,
 ) -> tuple[SearchResult, list] | None:
     """
     Run gatekeeper + extractor for one article.
-    Returns (result, predictions) or None if article not relevant/predictive.
-    Calls gatekeeper and extractor directly (not run_article) to avoid
-    writing to progress.json which belongs to the batch pipeline.
+    Fetches full article text via trafilatura; falls back to title+snippet.
     """
-    # Combine title + snippet for richer gatekeeper context
+    # Fallback text = title + snippet
     parts = [p for p in [result.title, result.snippet] if p and p.strip()]
-    text = " — ".join(parts)
-    if not text or len(text) < 30:
+    fallback = " — ".join(parts)
+    if not fallback or len(fallback) < 20:
+        return None
+
+    # Fetch full article content (blocking I/O → thread)
+    text = await asyncio.to_thread(_fetch_article_text, result.url, fallback)
+    if not text:
         return None
 
     source_name = result.source or _source_id_from_url(result.url)
