@@ -453,7 +453,7 @@
       const d = await r.json()
       if (r.ok) {
         $('health-dot').className = 'dot ok'
-        $('health-text').textContent = `Online · ${d.leaderboard_sources ?? 0} sources`
+        $('health-text').textContent = `Online · ${d.leaderboard_sources ?? 0} tracked sources`
         $('health-text').style.color = 'var(--yes)'
       } else {
         $('health-dot').className = 'dot err'

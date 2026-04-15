@@ -71,8 +71,10 @@ async def _process_article(
     Calls gatekeeper and extractor directly (not run_article) to avoid
     writing to progress.json which belongs to the batch pipeline.
     """
-    text = result.snippet
-    if not text or len(text) < 40:
+    # Combine title + snippet for richer gatekeeper context
+    parts = [p for p in [result.title, result.snippet] if p and p.strip()]
+    text = " — ".join(parts)
+    if not text or len(text) < 30:
         return None
 
     source_name = result.source or _source_id_from_url(result.url)
@@ -114,10 +116,11 @@ async def _process_article(
 async def run_forecast(req: ForecastRequest) -> ForecastResponse:
     limit = req.max_articles or settings.max_articles
 
-    # Step 1: search
+    # Step 1: search — append prediction-biasing terms so Serper surfaces forecasts
+    search_query = req.question + " forecast prediction outlook analysts expect"
     try:
         search_results: list[SearchResult] = await asyncio.to_thread(
-            search_articles, req.question, limit
+            search_articles, search_query, limit
         )
     except Exception as exc:
         logger.error("Search failed: %s", exc)
