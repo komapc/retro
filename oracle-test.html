@@ -510,7 +510,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
         body: JSON.stringify({ question: q, max_articles: parseInt($('max-articles').value) || 5 }),
-        signal: AbortSignal.timeout(30000),
+        signal: AbortSignal.timeout(60000),
       })
 
       const elapsed = ((Date.now() - t0) / 1000).toFixed(1)
