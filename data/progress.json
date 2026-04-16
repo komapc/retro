@@ -6194,7 +6194,42 @@
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
+    },
+    "D05:kan11": {
+      "event_id": "D05",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:kan11": {
+      "event_id": "D06",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:kan11": {
+      "event_id": "E01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:kan11": {
+      "event_id": "E02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:kan11": {
+      "event_id": "E03",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
     }
   },
-  "last_updated": "2026-04-16T20:54:13.090704"
+  "last_updated": "2026-04-16T20:54:17.632710"
 }
