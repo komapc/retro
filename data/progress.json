@@ -178,8 +178,8 @@
     "B04:globes": {
       "event_id": "B04",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B04:haaretz": {
@@ -1480,8 +1480,8 @@
     "B02:jpost": {
       "event_id": "B02",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "B02:reuters": {
@@ -1515,8 +1515,8 @@
     "B03:globes": {
       "event_id": "B03",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B03:haaretz": {
@@ -1676,8 +1676,8 @@
     "B06:ynet": {
       "event_id": "B06",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B07:globes": {
@@ -3167,8 +3167,8 @@
     "B03:ch13": {
       "event_id": "B03",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 14,
       "error": null
     },
     "B03:kan11": {
@@ -3181,15 +3181,15 @@
     "B03:maariv": {
       "event_id": "B03",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B03:n12": {
       "event_id": "B03",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "B04:ch13": {
@@ -3209,8 +3209,8 @@
     "B04:maariv": {
       "event_id": "B04",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B04:n12": {
@@ -3251,8 +3251,8 @@
     "B06:ch13": {
       "event_id": "B06",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B06:kan11": {
@@ -3265,15 +3265,15 @@
     "B06:maariv": {
       "event_id": "B06",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B06:n12": {
       "event_id": "B06",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B07:ch13": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T09:04:12.623124"
+  "last_updated": "2026-04-16T09:06:19.432210"
 }
