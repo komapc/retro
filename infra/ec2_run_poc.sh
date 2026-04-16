@@ -105,7 +105,7 @@ p = Path('$POC_DIR/pm_harvest/events.jsonl')
 if not p.exists():
     print(0)
 else:
-    n = sum(1 for line in p.read_text().splitlines() if line.strip() and not json.loads(line).get('prices'))
+    n = sum(1 for line in p.read_text().splitlines() if line.strip() and not json.loads(line).get('prices_fetched', False))
     print(n)
 " 2>/dev/null || echo 0)
 

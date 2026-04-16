@@ -357,13 +357,16 @@ def fetch_prices(data_dir: Path) -> None:
             if line:
                 events.append(json.loads(line))
 
-    need_prices = [e for e in events if not e.get("prices")]
+    # "prices_fetched" flag distinguishes "not yet fetched" from "fetched but no history"
+    # (prices: [] alone is ambiguous — API may return empty for valid markets)
+    need_prices = [e for e in events if not e.get("prices_fetched", False)]
     console.print(f"[bold cyan]Fetch prices[/bold cyan] — {len(need_prices)}/{len(events)} events need price history")
 
     with httpx.Client(timeout=30) as client:
         for i, ev in enumerate(need_prices):
             prices = _fetch_price_history(ev["pm_id"], ev["outcome_date"], client)
             ev["prices"] = prices
+            ev["prices_fetched"] = True
             if (i + 1) % 50 == 0:
                 console.print(f"  {i+1}/{len(need_prices)} fetched...")
                 time.sleep(0.5)
