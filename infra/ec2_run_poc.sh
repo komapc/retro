@@ -95,7 +95,7 @@ run_poc_cycle() {
   # ── Pull latest code ──────────────────────────────────────────────────────
   log "Pulling latest from main..."
   git fetch origin main 2>&1 | tail -2
-  git merge --ff-only origin/main 2>&1 | tail -2
+  git rebase origin/main 2>&1 | tail -3 || { git rebase --abort; log "WARNING: rebase failed, continuing with current code"; }
 
   # ── Phase 1: Fetch Polymarket price history for events missing prices ─────
   NEED_PRICES=$(python3 -c "
@@ -121,8 +121,8 @@ else:
   fi
 
   # ── Phase 2: Generate event JSONs for new harvested events ───────────────
-  HARVESTED=$(wc -l < "$POC_DIR/pm_harvest/events.jsonl" 2>/dev/null || echo 0)
-  GENERATED=$(ls "$POC_DIR/events/" 2>/dev/null | wc -l || echo 0)
+  HARVESTED=$(python3 -c "from pathlib import Path; p=Path('$POC_DIR/pm_harvest/events.jsonl'); print(sum(1 for _ in p.open()) if p.exists() else 0)" 2>/dev/null || echo 0)
+  GENERATED=$(python3 -c "from pathlib import Path; p=Path('$POC_DIR/events'); print(sum(1 for _ in p.glob('*.json')) if p.exists() else 0)" 2>/dev/null || echo 0)
   log "Harvested: $HARVESTED events, $GENERATED event JSONs generated"
 
   if [[ "$GENERATED" -lt "$HARVESTED" ]]; then
