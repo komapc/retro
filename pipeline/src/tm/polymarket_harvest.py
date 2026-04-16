@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 console = Console()
 
 GAMMA_BASE = "https://gamma-api.polymarket.com"
+CLOB_BASE = "https://clob.polymarket.com"
 PAGE_SIZE = 100
 REQUEST_DELAY = 0.5  # seconds between pages (be polite)
 
@@ -155,13 +156,17 @@ def _extract_outcome(market: dict) -> bool | None:
     return None  # ambiguous
 
 
-def _fetch_price_history(market_id: str, outcome_date: str, client: httpx.Client) -> list[dict]:
-    """Fetch and normalise daily prices for a market (synchronous)."""
+def _fetch_price_history(clob_token_yes: str, outcome_date: str, client: httpx.Client) -> list[dict]:
+    """
+    Fetch and normalise daily prices for a market using the CLOB API.
+    clob_token_yes is the first element of clobTokenIds (the "Yes" outcome token).
+    Timestamps are Unix seconds (not milliseconds) in the CLOB API.
+    """
     try:
         r = client.get(
-            f"{GAMMA_BASE}/prices-history",
-            params={"market": market_id, "interval": "1d", "fidelity": 1},
-            timeout=20,
+            f"{CLOB_BASE}/prices-history",
+            params={"market": clob_token_yes, "interval": "max", "fidelity": 1440},
+            timeout=30,
         )
         if r.status_code != 200:
             return []
@@ -172,12 +177,13 @@ def _fetch_price_history(market_id: str, outcome_date: str, client: httpx.Client
             ts = point.get("t", 0)
             prob = point.get("p")
             if ts and prob is not None:
-                dt = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).date()
+                # CLOB API returns Unix seconds (not milliseconds)
+                dt = datetime.fromtimestamp(ts, tz=timezone.utc).date()
                 if dt <= outcome_dt:
                     by_date[dt.strftime("%Y-%m-%d")] = round(float(prob), 4)
         return [{"date": d, "probability": v} for d, v in sorted(by_date.items())]
     except Exception as exc:
-        logger.debug("Price history error for %s: %s", market_id, exc)
+        logger.debug("Price history error for token %s: %s", clob_token_yes, exc)
         return []
 
 
@@ -303,6 +309,10 @@ def harvest(
                     # Infer category label
                     category = (market.get("category") or "Politics").strip()
 
+                    # clobTokenIds[0] = Yes-outcome token (needed for CLOB price history API)
+                    clob_tokens = market.get("clobTokenIds") or []
+                    clob_token_yes = clob_tokens[0] if clob_tokens else None
+
                     event = {
                         "pm_id": market_id,
                         "question": question.strip(),
@@ -310,6 +320,7 @@ def harvest(
                         "outcome_date": outcome_date,
                         "category": category,
                         "pm_url": f"https://polymarket.com/event/{slug}" if slug else "",
+                        "clob_token_yes": clob_token_yes,
                         # prices fetched separately via fetch_prices() to keep harvest fast
                         "prices": [],
                     }
@@ -339,9 +350,68 @@ def harvest(
     return all_events
 
 
+def backfill_clob_tokens(data_dir: Path) -> int:
+    """
+    Read cached raw_page_N.json files and add clob_token_yes to events that lack it.
+    Also resets prices_fetched=False for those events so fetch_prices() re-runs them.
+    Returns count of events updated.
+    """
+    harvest_dir = data_dir / "pm_harvest"
+    output_path = harvest_dir / "events.jsonl"
+    if not output_path.exists():
+        console.print("[red]events.jsonl not found[/red]")
+        return 0
+
+    # Build lookup: numeric market_id -> clob_token_yes from cached raw pages
+    console.print("[bold cyan]Backfill CLOB tokens[/bold cyan] — scanning cached raw pages...")
+    clob_lookup: dict[str, str] = {}
+    page = 0
+    while True:
+        raw_cache = harvest_dir / f"raw_page_{page}.json"
+        if not raw_cache.exists():
+            break
+        try:
+            with open(raw_cache) as f:
+                markets = json.load(f)
+            for m in markets:
+                mid = str(m.get("id") or m.get("conditionId", ""))
+                tokens = m.get("clobTokenIds") or []
+                if mid and tokens:
+                    clob_lookup[mid] = str(tokens[0])
+        except Exception:
+            pass
+        page += 1
+    console.print(f"  Found CLOB tokens for {len(clob_lookup)} markets in {page} cached pages")
+
+    events: list[dict] = []
+    with open(output_path) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                events.append(json.loads(line))
+
+    updated = 0
+    for ev in events:
+        if ev.get("clob_token_yes"):
+            continue
+        token = clob_lookup.get(str(ev.get("pm_id", "")))
+        if token:
+            ev["clob_token_yes"] = token
+            ev["prices_fetched"] = False  # force re-fetch with correct token
+            updated += 1
+
+    with open(output_path, "w") as f:
+        for ev in events:
+            f.write(json.dumps(ev) + "\n")
+
+    console.print(f"[bold green]Backfill done.[/bold green] Updated {updated}/{len(events)} events.")
+    return updated
+
+
 def fetch_prices(data_dir: Path) -> None:
     """
     Second pass: fetch price history for all events in events.jsonl that have empty prices.
+    Uses the CLOB API with clob_token_yes (stored during harvest).
     Writes updated events.jsonl in-place.
     Run after harvest() completes.
     """
@@ -358,17 +428,24 @@ def fetch_prices(data_dir: Path) -> None:
                 events.append(json.loads(line))
 
     # "prices_fetched" flag distinguishes "not yet fetched" from "fetched but no history"
-    # (prices: [] alone is ambiguous — API may return empty for valid markets)
+    # Events without clob_token_yes can't use the CLOB API — backfill first
     need_prices = [e for e in events if not e.get("prices_fetched", False)]
+    no_token = [e for e in need_prices if not e.get("clob_token_yes")]
+    if no_token:
+        console.print(
+            f"[yellow]WARNING: {len(no_token)} events have no clob_token_yes — "
+            f"run --backfill-clob-tokens first to recover from cached pages[/yellow]"
+        )
+    need_prices = [e for e in need_prices if e.get("clob_token_yes")]
     console.print(f"[bold cyan]Fetch prices[/bold cyan] — {len(need_prices)}/{len(events)} events need price history")
 
     with httpx.Client(timeout=30) as client:
         for i, ev in enumerate(need_prices):
-            prices = _fetch_price_history(ev["pm_id"], ev["outcome_date"], client)
+            prices = _fetch_price_history(ev["clob_token_yes"], ev["outcome_date"], client)
             ev["prices"] = prices
             ev["prices_fetched"] = True
             if (i + 1) % 50 == 0:
-                console.print(f"  {i+1}/{len(need_prices)} fetched...")
+                console.print(f"  {i+1}/{len(need_prices)} fetched — last had {len(prices)} points...")
                 time.sleep(0.5)
 
     # Rewrite file
@@ -387,11 +464,15 @@ if __name__ == "__main__":
     parser.add_argument("--start", default="2023-01-01", help="Start date YYYY-MM-DD")
     parser.add_argument("--end", default=None, help="End date YYYY-MM-DD (default: today)")
     parser.add_argument("--fetch-prices", action="store_true",
-                        help="Second pass: fetch price history for harvested events")
+                        help="Second pass: fetch price history for harvested events via CLOB API")
+    parser.add_argument("--backfill-clob-tokens", action="store_true",
+                        help="Backfill clob_token_yes from cached raw pages (run once on existing data)")
     args = parser.parse_args()
 
     base = Path(os.environ.get("DATA_DIR", args.data_dir))
-    if args.fetch_prices:
+    if args.backfill_clob_tokens:
+        backfill_clob_tokens(base)
+    elif args.fetch_prices:
         fetch_prices(base)
     else:
         harvest(base, start_date=args.start, end_date=args.end)
