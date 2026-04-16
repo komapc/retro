@@ -6,7 +6,10 @@
 INSTANCE="i-00ac444b94c5ff9b2"
 REGION="eu-central-1"
 
-SERPERDEV_KEY="07c4d5aaf5c00f0eeb689db82a0ea5b0acb66c76"
+SERPERDEV_KEY=$(aws secretsmanager get-secret-value \
+  --secret-id openclaw/serperdev-key \
+  --region "$REGION" \
+  --query SecretString --output text 2>/dev/null)
 
 ok()   { echo "  ✓  $1"; }
 fail() { echo "  ✗  $1"; }
@@ -35,14 +38,18 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 # ── Serper.dev ──────────────────────────────────────────
 echo ""
 echo "  SEARCH KEYS"
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "https://google.serper.dev/search" \
-  -H "X-API-KEY: $SERPERDEV_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"q":"test","num":1}' 2>/dev/null)
-if [[ "$STATUS" == "200" ]]; then
-  ok "Serper.dev (HTTP $STATUS)"
+if [[ -n "$SERPERDEV_KEY" ]]; then
+  STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "https://google.serper.dev/search" \
+    -H "X-API-KEY: $SERPERDEV_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"q":"test","num":1}' 2>/dev/null)
+  if [[ "$STATUS" == "200" ]]; then
+    ok "Serper.dev (HTTP $STATUS)"
+  else
+    fail "Serper.dev (HTTP $STATUS)"
+  fi
 else
-  fail "Serper.dev (HTTP $STATUS)"
+  warn "Serper.dev — key not found in Secrets Manager (openclaw/serperdev-key)"
 fi
 
 # ── Brave ───────────────────────────────────────────────

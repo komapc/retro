@@ -96,7 +96,8 @@ class Orchestrator:
             articles = await self.search_articles(source, event, start_date, outcome_date)
 
             if not articles:
-                update_cell(event_id, source["id"], CellStatus.no_predictions)
+                if cell.status != CellStatus.failed:
+                    update_cell(event_id, source["id"], CellStatus.no_predictions)
                 continue
 
             had_errors = False

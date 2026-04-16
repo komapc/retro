@@ -19,6 +19,7 @@ dependencies = [
     "ddgs>=9.0.0",
     "trafilatura>=2.0.0",
     "trueskill>=0.4.0",
+    "pyyaml>=6.0.0",
 ]
 
 [project.optional-dependencies]

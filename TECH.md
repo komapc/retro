@@ -46,7 +46,7 @@
 | i18n | next-intl | 4.x |
 | Image Processing | Sharp | - |
 
-**LLM prompts** (forecast/prediction creation) are managed via AWS Bedrock Prompt Management. See [docs/LLM_ARCHITECTURE.md](./docs/LLM_ARCHITECTURE.md).
+**LLM prompts** (forecast/prediction creation) are managed via AWS Bedrock Prompt Management.
 
 ---
 
@@ -390,12 +390,6 @@ terraform plan -var="environment=prod"
 terraform apply -var="environment=prod"
 ```
 
-aws_security_group.ec2        # Firewall rules
-aws_iam_role.ec2_role         # IAM role
-aws_vpc.main                  # VPC
-aws_subnet.public_a           # Public subnet
-```
-
 **Note:** Instance type changes are ignored in lifecycle to prevent accidental recreation.
 
 ### Estimated Monthly Costs
@@ -419,7 +413,7 @@ A scheduled workflow runs every 5 minutes and calls `POST /api/bots/run` with th
 
 **Required secret:** `BOT_RUNNER_SECRET` — must match the value of the `BOT_RUNNER_SECRET` environment variable in the running app.
 
-See [docs/bots.md](./docs/bots.md) for full bot system documentation.
+Bot system documentation is maintained in the daatan repo.
 
 #### Deploy Workflow (`deploy.yml`)
 
@@ -700,7 +694,7 @@ docker compose -f ~/app/docker-compose.prod.yml restart nginx
 
 ### Network Security
 
-- SSH restricted to specific CIDR
+- SSH port 22 is blocked — all server access via AWS SSM
 - Database not exposed publicly (internal Docker network)
 - All traffic forced to HTTPS
 - API routes have cache disabled
@@ -711,7 +705,7 @@ docker compose -f ~/app/docker-compose.prod.yml restart nginx
 - GitHub Secrets for CI/CD
 - `.env` file gitignored
 - No secrets in Docker images
-- See [SECRETS.md](./SECRETS.md) for details
+- Secrets management details are maintained in the daatan repo
 
 ---
 
@@ -858,7 +852,9 @@ free -m                                     # Memory
 
 ## Related Documentation
 
-- [DEPLOYMENT.md](./DEPLOYMENT.md) — Deployment procedures and operations
-- [PRODUCT.md](./PRODUCT.md) — Product documentation
+> **Note:** `TECH.md` documents the **daatan web app** (Next.js). For retro pipeline and Oracle API docs, see `ARCHITECTURE.md` and `docs/ORACLE_API.md`.
+
+- [PRODUCT.md](./PRODUCT.md) — Product documentation (daatan web app)
 - [TODO.md](./TODO.md) — Technical debt and roadmap
-- [SECRETS.md](./SECRETS.md) — Secrets management guide
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — Retro pipeline and Oracle API architecture
+- [docs/ORACLE_API.md](./docs/ORACLE_API.md) — Oracle forecast service documentation

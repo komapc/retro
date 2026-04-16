@@ -1,5 +1,5 @@
 # DAATAN Core Document
-_This document is the single source of truth for the DAATAN project._
+_This document is the single source of truth for the DAATAN project (the web app). It describes the daatan Next.js product, not the retro pipeline. For retro/TruthMachine docs, see [ARCHITECTURE.md](./ARCHITECTURE.md)._
 
 ## 1. Project Mission
 

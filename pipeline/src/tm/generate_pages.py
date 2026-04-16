@@ -24,7 +24,7 @@ def generate_event_page(event_id: str, data_dir: Path):
         source_meta = load_json(data_dir / "sources" / f"{source_id}.json")
         
         # Collect all entries for this source/event
-        for entry_file in source_dir.glob("*.json"):
+        for entry_file in source_dir.glob("entry_*.json"):
             entry = load_json(entry_file)
             
             # For MVP, we assume entry has a link to extraction

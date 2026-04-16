@@ -230,5 +230,5 @@ def _empty_response(question: str) -> ForecastResponse:
         ci_high=0.2,
         articles_used=0,
         sources=[],
-        placeholder=False,
+        placeholder=True,
     )

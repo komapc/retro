@@ -447,7 +447,7 @@ def run_backtest(event_ids: list[str], output_dir: Path, use_lgbm: bool = True) 
         })
 
         # Polymarket comparison
-        poly_price = fetch_polymarket_price(event.get("title", event_id), event_date)
+        poly_price = fetch_polymarket_price(event.get("name", event_id), event_date)
 
         results.append({
             "event_id": event_id,

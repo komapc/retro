@@ -1,6 +1,6 @@
 # TruthMachine / Factum Atlas — Status & Runbook
 
-_Last updated: 2026-04-14_
+_Last updated: 2026-04-16_
 
 ---
 
@@ -17,19 +17,21 @@ The matrix has **840 cells** = 70 events × 13 sources (not all combinations hav
 
 ---
 
-## Current State (2026-04-14)
+## Current State (2026-04-16)
 
 | Metric | Value |
 |--------|-------|
 | EC2 instance | `i-00ac444b94c5ff9b2` (eu-central-1) |
 | Instance type | t4g.small (ARM64, Ubuntu 24.04) |
 | Batch pipeline service | `truthmachine.service` — **running** |
-| Oracle API service | `oracle-api.service` — **not yet deployed** (Phase 2) |
-| Cells done | ~157 / 840 (from git log 2026-04-14) |
-| Cells no_predictions | ~543 |
-| Cells failed | ~11 |
-| Cells pending | ~128 |
+| Oracle API service | `oracle-api.service` — **running** |
+| Cells done | 193 / 840 (23%) |
+| Cells no_predictions | 647 |
+| Cells failed | 0 |
+| Cells pending | 0 |
 | Cycle interval | 300s (5 min sleep between cycles) |
+
+The matrix is fully processed — no pending or failed cells remain. The 77% "no predictions" rate reflects cells where no articles were found or the gatekeeper rejected all articles.
 
 ### Oracle API (oracle.daatan.com)
 
@@ -37,10 +39,23 @@ The matrix has **840 cells** = 70 events × 13 sources (not all combinations hav
 |------|--------|
 | API skeleton (`api/`) | ✅ Merged |
 | Test console | ✅ Live at [komapc.github.io/retro/oracle-test.html](https://komapc.github.io/retro/oracle-test.html) |
-| Pipeline integration (Phase 2) | 🔲 Pending |
-| EC2 deployment | 🔲 Pending |
-| DNS (`oracle.daatan.com`) | 🔲 Pending |
+| Pipeline wired (web_search → gatekeeper → extractor → aggregate) | ✅ Complete |
+| Leaderboard credibility weighting (TrueSkill) | ✅ Complete |
+| EC2 deployment (`oracle-api.service`) | ✅ Running |
+| DNS + TLS (`oracle.daatan.com`) | ✅ Live |
+| nginx vhost (`infra/nginx/oracle.conf`) | ✅ Deployed |
+| daatan secrets (`ORACLE_URL` + `ORACLE_API_KEY`) | 🔲 Pending |
 | daatan bot integration | 🔲 Pending |
+
+### Duel: TruthMachine vs Polymarket
+
+| Item | Status |
+|------|--------|
+| Polymarket harvest pipeline (`polymarket_harvest.py`) | ✅ Complete |
+| PoC event generation (`poc_event_gen.py`) | ✅ Complete |
+| Duel report generator (`poc_report.py`) | ✅ Complete |
+| `duel.html` generated and deployed to GitHub Pages | ✅ Live |
+| TM vs PM Brier comparison section | 🔲 Placeholder (TM predictions not yet wired into duel) |
 
 ### Why is it sleeping?
 
