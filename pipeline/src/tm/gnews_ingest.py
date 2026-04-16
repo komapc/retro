@@ -818,6 +818,7 @@ async def run_batch(
     event_ids: List[str],
     source_filter: Optional[List[str]],
     force: bool,
+    max_concurrent: int = 3,
 ):
     events_dir = data_dir / "events"
     raw_ingest_dir = data_dir / "raw_ingest"
@@ -835,12 +836,33 @@ async def run_batch(
 
     console.print(
         f"\n[bold]Google News + DDG Batch Ingest[/bold]  "
-        f"{len(events)} events × {len(sources)} sources = {total} cells\n"
+        f"{len(events)} events × {len(sources)} sources = {total} cells  "
+        f"[dim](max_concurrent={max_concurrent})[/dim]\n"
     )
 
-    results: dict[str, dict] = {}
-
+    results: dict[str, dict] = {eid: {} for eid in events}
     state = load_state()
+    sem = asyncio.Semaphore(max_concurrent)
+
+    # Build work queue — skip cells that are already done
+    work: list[tuple[str, dict, str]] = []
+    skipped = 0
+    for eid, event in events.items():
+        for sid in sources:
+            cell = state.get(eid, sid)
+            if not force and cell.status == CellStatus.done:
+                results[eid][sid] = 0
+                skipped += 1
+                continue
+            if not force and cell.status == CellStatus.no_predictions:
+                cell_dir = raw_ingest_dir / sid / eid
+                if cell_dir.exists() and any(cell_dir.glob("article_*.json")):
+                    results[eid][sid] = 0
+                    skipped += 1
+                    continue
+            work.append((eid, event, sid))
+
+    console.print(f"  {len(work)} cells to fetch, {skipped} skipped (done/no_pred)")
 
     with Progress(
         SpinnerColumn(),
@@ -849,37 +871,20 @@ async def run_batch(
         MofNCompleteColumn(),
         console=console,
     ) as progress:
-        task = progress.add_task("Fetching…", total=total)
+        task = progress.add_task("Fetching…", total=len(work))
 
-        for eid, event in events.items():
-            results[eid] = {}
-            for sid in sources:
-                progress.update(task, description=f"[cyan]{eid}[/cyan]/[blue]{sid}[/blue]")
-                # Skip done cells (predictions extracted — no need to re-fetch)
-                # Skip no_pred cells only if articles already exist in raw_ingest
-                # (articles were genuinely non-predictive); retry if no articles yet
-                cell = state.get(eid, sid)
-                if not force and cell.status == CellStatus.done:
-                    results[eid][sid] = 0
-                    progress.advance(task)
-                    continue
-                if not force and cell.status == CellStatus.no_predictions:
-                    cell_dir = raw_ingest_dir / sid / eid
-                    has_articles = cell_dir.exists() and any(cell_dir.glob("article_*.json"))
-                    if has_articles:
-                        results[eid][sid] = 0
-                        progress.advance(task)
-                        continue
+        async def _fetch(eid: str, event: dict, sid: str) -> None:
+            async with sem:
                 count = await ingest_cell(event, sid, raw_ingest_dir, force)
                 results[eid][sid] = count
                 label = f"[green]{count} art[/green]" if count else "[dim]0[/dim]"
                 console.print(f"  {eid}/{sid}: {label}")
-                # If new articles were saved for a previously-empty no_pred cell,
-                # reset to pending so the orchestrator picks them up
+                cell = state.get(eid, sid)
                 if count > 0 and cell.status == CellStatus.no_predictions:
                     update_cell(eid, sid, CellStatus.pending)
                 progress.advance(task)
-                await asyncio.sleep(1.0)
+
+        await asyncio.gather(*[_fetch(eid, ev, sid) for eid, ev, sid in work])
 
     # Summary table
     table = Table(title="Ingest Summary")
@@ -915,6 +920,8 @@ def main():
     p.add_argument("--events", nargs="+", default=MVP_EVENTS)
     p.add_argument("--sources", nargs="+", default=None)
     p.add_argument("--force", action="store_true", help="Re-fetch already populated cells")
+    p.add_argument("--max-concurrent", type=int, default=3,
+                   help="Max concurrent event×source cells (default: 3)")
     args = p.parse_args()
 
     data_dir = Path(os.environ.get("DATA_DIR", "/app/data"))
@@ -922,7 +929,7 @@ def main():
     event_ids = args.events if args.events != MVP_EVENTS else sorted(
         p.stem for p in (data_dir / "events").glob("*.json")
     ) or MVP_EVENTS
-    asyncio.run(run_batch(data_dir, event_ids, args.sources, args.force))
+    asyncio.run(run_batch(data_dir, event_ids, args.sources, args.force, args.max_concurrent))
 
 
 if __name__ == "__main__":
