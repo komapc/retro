@@ -283,8 +283,8 @@
     "B10:globes": {
       "event_id": "B10",
       "source_id": "globes",
-      "status": "failed",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B10:haaretz": {
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T23:18:55.003171"
+  "last_updated": "2026-04-16T23:37:37.142908"
 }
