@@ -102,7 +102,7 @@ print(' '.join(sorted(p.stem for p in events_dir.glob('*.json'))))
 
   read -ra ALL_ARR <<< "$ALL_POC_EVENTS"
   TOTAL_ALL=${#ALL_ARR[@]}
-  BATCH_SIZE=20
+  BATCH_SIZE=10
   OFFSET_FILE="$POC_DIR/ingest_offset"
   OFFSET=$(cat "$OFFSET_FILE" 2>/dev/null || echo 0)
   OFFSET=$(( OFFSET % TOTAL_ALL ))
@@ -140,12 +140,12 @@ print(' '.join(sorted(events)))
 
   read -ra EVENT_ARR <<< "$POC_EVENTS_WITH_ARTICLES"
   TOTAL_EVENTS=${#EVENT_ARR[@]}
-  log "Orchestrating $TOTAL_EVENTS PoC events in batches of 5..."
+  log "Orchestrating $TOTAL_EVENTS PoC events in batches of 3..."
 
   BATCH=0
-  for (( i=0; i<TOTAL_EVENTS; i+=5 )); do
+  for (( i=0; i<TOTAL_EVENTS; i+=3 )); do
     BATCH=$((BATCH + 1))
-    BATCH_EVENTS=("${EVENT_ARR[@]:i:5}")
+    BATCH_EVENTS=("${EVENT_ARR[@]:i:3}")
     log "PoC batch $BATCH: ${BATCH_EVENTS[*]}"
     timeout 600 DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
       python -m tm.orchestrator local_file --events "${BATCH_EVENTS[@]}" 2>&1 | tail -5 \
