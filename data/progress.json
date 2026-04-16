@@ -213,8 +213,8 @@
     "B08:globes": {
       "event_id": "B08",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B08:haaretz": {
@@ -227,8 +227,8 @@
     "B08:reuters": {
       "event_id": "B08",
       "source_id": "reuters",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B08:toi": {
@@ -248,8 +248,8 @@
     "B09:globes": {
       "event_id": "B09",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B09:haaretz": {
@@ -836,8 +836,8 @@
     "B11:jpost": {
       "event_id": "B11",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "B13:jpost": {
@@ -1144,8 +1144,8 @@
     "B08:walla": {
       "event_id": "B08",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B09:israel_hayom": {
@@ -1165,8 +1165,8 @@
     "B10:israel_hayom": {
       "event_id": "B10",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B10:walla": {
@@ -1179,15 +1179,15 @@
     "B11:israel_hayom": {
       "event_id": "B11",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "B11:walla": {
       "event_id": "B11",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B13:israel_hayom": {
@@ -1697,8 +1697,8 @@
     "B07:israel_hayom": {
       "event_id": "B07",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "B07:jpost": {
@@ -3321,15 +3321,15 @@
     "B08:maariv": {
       "event_id": "B08",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B08:n12": {
       "event_id": "B08",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B09:ch13": {
@@ -3384,8 +3384,8 @@
     "B10:n12": {
       "event_id": "B10",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B11:ch13": {
@@ -3405,8 +3405,8 @@
     "B11:maariv": {
       "event_id": "B11",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B11:n12": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T09:06:19.432210"
+  "last_updated": "2026-04-16T09:08:23.951460"
 }
