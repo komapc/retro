@@ -4336,7 +4336,7 @@
     "D06:ynet": {
       "event_id": "D06",
       "source_id": "ynet",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T09:33:55.924505"
+  "last_updated": "2026-04-16T11:55:55.372682"
 }
