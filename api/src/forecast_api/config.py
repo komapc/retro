@@ -15,6 +15,15 @@ class ApiSettings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = 8001
 
+    # Cap article body fed to LLMs. News articles have the thesis in the lead;
+    # beyond ~3000 chars we pay LLM latency and $$ for diminishing returns.
+    max_article_chars: int = 3000
+
+    # Forecast-response cache keyed by sha256(question, max_articles).
+    # cache_ttl_seconds=0 disables caching entirely.
+    cache_ttl_seconds: int = 3600
+    cache_max_entries: int = 512
+
     @property
     def resolved_leaderboard_path(self) -> Path:
         if self.leaderboard_path != Path(""):
