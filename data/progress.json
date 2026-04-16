@@ -843,8 +843,8 @@
     "B13:jpost": {
       "event_id": "B13",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A04:jpost": {
@@ -1193,15 +1193,15 @@
     "B13:israel_hayom": {
       "event_id": "B13",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B13:walla": {
       "event_id": "B13",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A04:israel_hayom": {
@@ -1739,8 +1739,8 @@
     "B12:globes": {
       "event_id": "B12",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B12:haaretz": {
@@ -1760,8 +1760,8 @@
     "B12:jpost": {
       "event_id": "B12",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B12:reuters": {
@@ -3419,8 +3419,8 @@
     "B12:ch13": {
       "event_id": "B12",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "B12:kan11": {
@@ -3433,8 +3433,8 @@
     "B12:maariv": {
       "event_id": "B12",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "B12:n12": {
@@ -3447,8 +3447,8 @@
     "B13:ch13": {
       "event_id": "B13",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B13:kan11": {
@@ -3461,8 +3461,8 @@
     "B13:maariv": {
       "event_id": "B13",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B13:n12": {
@@ -3489,22 +3489,22 @@
     "C01:haaretz": {
       "event_id": "C01",
       "source_id": "haaretz",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "C01:israel_hayom": {
       "event_id": "C01",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "C01:jpost": {
       "event_id": "C01",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "C01:kan11": {
@@ -3524,8 +3524,8 @@
     "C01:n12": {
       "event_id": "C01",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "C01:reuters": {
@@ -3545,15 +3545,15 @@
     "C01:walla": {
       "event_id": "C01",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "C01:ynet": {
       "event_id": "C01",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "C02:ch13": {
@@ -3587,8 +3587,8 @@
     "C02:jpost": {
       "event_id": "C02",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "C02:kan11": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T09:08:23.951460"
+  "last_updated": "2026-04-16T09:11:22.794064"
 }
