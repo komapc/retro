@@ -3048,7 +3048,7 @@
     "A18:n12": {
       "event_id": "A18",
       "source_id": "n12",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -5984,7 +5984,42 @@
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
+    },
+    "A16:kan11": {
+      "event_id": "A16",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:kan11": {
+      "event_id": "A17",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:kan11": {
+      "event_id": "A18",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A19:kan11": {
+      "event_id": "A19",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:kan11": {
+      "event_id": "B01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
     }
   },
-  "last_updated": "2026-04-16T20:53:41.996431"
+  "last_updated": "2026-04-16T20:53:50.836644"
 }
