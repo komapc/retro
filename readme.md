@@ -72,7 +72,7 @@ Daatan's goal is to create a definitive reliability layer for the information ec
 
 ## Appendix A: LLM & NLP Pipeline
 
-**Hybrid architecture:** High-volume filtering uses cheap or free models (Nemotron Nano); nuanced forensic extraction uses mid-tier models (DeepSeek V3.2 at $0.25/1M tokens). Heavy models are called only when necessary.
+**Hybrid architecture:** High-volume filtering uses fast models (AWS Bedrock Nova Micro); nuanced forensic extraction uses mid-tier models (Bedrock Nova Lite). Heavy models are called only when necessary.
 
 **Multilingual extraction:** The pipeline natively processes Hebrew and English, capturing signals in Israeli media before they surface in international coverage.
 
@@ -90,8 +90,15 @@ Daatan's goal is to create a definitive reliability layer for the information ec
 
 ## Appendix C: Infrastructure
 
-**Compute:** AWS EC2 t4g.small (Graviton, ARM) — free-tier eligible through 2026. 40% better price-performance than T3 for this workload.
+**Compute:** AWS EC2 t4g.small (Graviton, ARM), `eu-central-1` (Frankfurt). Access via AWS SSM only (port 22 blocked).
 
-**Storage (MVP):** Filesystem JSON — one file per event/source pair (~3,000 files). Migrates to PostgreSQL + pgvector as data volume and API demand grows.
+**Storage (MVP):** Filesystem JSON — one file per event/source pair (~3,200 atlas entries). Migrates to PostgreSQL + pgvector as data volume and API demand grows.
 
-**Orchestration:** OpenClaw / custom Python async workers.
+**Orchestration:** `truthmachine.service` (batch pipeline loop) + `oracle-api.service` (FastAPI forecast API at `oracle.daatan.com`).
+
+**LLM:** AWS Bedrock — Nova Micro (gatekeeper) + Nova Lite (extractor, aggregator).
+
+**Live pages:**
+- Factum Atlas: https://komapc.github.io/retro/
+- Oracle Test Console: https://komapc.github.io/retro/oracle-test.html
+- TruthMachine vs Polymarket Duel: https://komapc.github.io/retro/duel.html
