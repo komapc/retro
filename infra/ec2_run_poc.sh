@@ -113,8 +113,11 @@ else:
     log "Fetching prices for $NEED_PRICES events..."
     DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
       python -m tm.polymarket_harvest --data-dir "$POC_DIR" --fetch-prices 2>&1 | tail -10
-    log "Price fetch complete."
-    # Commit updated events.jsonl (now has price history)
+    log "Price fetch complete — regenerating duel.html..."
+    DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
+      python -m tm.poc_report --data-dir "$POC_DIR" --out "$WORKDIR/duel.html" 2>&1 | tail -3
+    git add "$WORKDIR/duel.html" 2>/dev/null || true
+    # Commit updated events.jsonl + duel.html (now has price history + calibration)
     commit_poc_data "price fetch complete ($NEED_PRICES events had no prices)"
   else
     log "All events have price history — skipping price fetch."
@@ -201,6 +204,12 @@ print(' '.join(sorted(events)))
   done
 
   log "PoC extraction complete — $(poc_cell_stats)"
+
+  # ── Render duel.html and commit ──────────────────────────────────────────
+  log "Rendering duel.html..."
+  DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
+    python -m tm.poc_report --data-dir "$POC_DIR" --out "$WORKDIR/duel.html" 2>&1 | tail -3
+  git add "$WORKDIR/duel.html" 2>/dev/null || true
 
   # ── Commit progress + sync bulk data to S3 ───────────────────────────────
   commit_poc_data "batch $(date '+%Y-%m-%d %H:%M')"
