@@ -1,7 +1,7 @@
 # Oracle API — TruthMachine Forecast Service
 
 > **Subdomain:** `oracle.daatan.com`
-> **Status:** Implementation in progress (placeholders merged, full inference pending)
+> **Status:** Phase 1 + 2 complete (live pipeline wired). Pending: EC2 deploy, DNS, TLS, daatan integration.
 
 ## Overview
 
@@ -212,9 +212,9 @@ export async function getOracleForecast(question: string): Promise<number | null
 
 | Phase | Description |
 |---|---|
-| ✅ Phase 1 | API skeleton + placeholder responses |
-| 🔲 Phase 2 | Wire up `web_search.py` + gatekeeper + extractor |
-| 🔲 Phase 3 | Leaderboard credibility weighting live |
-| 🔲 Phase 4 | `oracle.daatan.com` DNS + TLS |
-| 🔲 Phase 5 | daatan bot integration |
+| ✅ Phase 1 | API skeleton + auth + rate limiting |
+| ✅ Phase 2 | Live pipeline: `web_search.py` → gatekeeper → extractor → leaderboard weighting |
+| ✅ Phase 3 | Leaderboard credibility weighting (TrueSkill conservative score) |
+| 🔲 Phase 4 | `oracle.daatan.com` DNS + TLS + EC2 deploy |
+| 🔲 Phase 5 | daatan bot integration (`oracle.ts` + `ORACLE_URL` env) |
 | 🔲 Phase 6 | Async queue for >15s requests |

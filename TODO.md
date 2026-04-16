@@ -2,18 +2,20 @@
 
 ## Oracle API (oracle.daatan.com)
 
-- [x] API skeleton — FastAPI app with placeholder forecaster (`api/`)
+- [x] API skeleton — FastAPI app with auth + rate limiting (`api/`)
 - [x] Test console deployed to GitHub Pages
-- [ ] **Phase 2: Wire up pipeline** — replace stub in `forecaster.py` with:
-  1. `web_search.search_articles(question, limit)` via `asyncio.to_thread`
-  2. `gatekeeper.check_is_prediction()` + `extractor.extract_predictions()` in parallel per article
-  3. `leaderboard.get_credibility_weight(source_id)` weighting
-  4. Weighted mean + 95% CI aggregation
-- [ ] Deploy `oracle-api.service` to retro EC2 (`sudo systemctl enable oracle-api`)
-- [ ] Point `oracle.daatan.com` DNS → retro EC2, issue TLS cert
-- [ ] Add nginx vhost for `oracle.daatan.com` (see `docs/ORACLE_API.md`)
-- [ ] Add `ORACLE_URL` + `ORACLE_API_KEY` secrets to daatan `.env` / AWS Secrets Manager
-- [ ] Wire daatan bot-runner to call `oracle.ts` for probability estimates
+- [x] **Phase 2: Pipeline wired** — `forecaster.py` fully implemented:
+  - `web_search.search_articles()` (SerpAPI → Serper → Brave → DDG) via `asyncio.to_thread`
+  - trafilatura full-text fetch per article
+  - `gatekeeper` + `extractor` in parallel per article
+  - `leaderboard.get_credibility_weight()` — TrueSkill conservative score
+  - Weighted mean + 95% CI aggregation
+- [x] Leaderboard credibility weighting live (`api/src/forecast_api/leaderboard.py`)
+- [ ] **Deploy `oracle-api.service`** to retro EC2 (`sudo systemctl enable oracle-api`)
+- [ ] **DNS** — point `oracle.daatan.com` → retro EC2, issue TLS cert via certbot
+- [ ] **nginx vhost** — deploy `infra/nginx/oracle.conf` on retro EC2
+- [ ] **daatan secrets** — add `ORACLE_URL` + `ORACLE_API_KEY` to daatan `.env` / AWS Secrets Manager
+- [ ] **daatan bot integration** — wire `oracle.ts` into the bot-runner for probability estimates
 
 ## Ingest / Coverage
 

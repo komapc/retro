@@ -400,7 +400,7 @@ New question arrives
 
 ## Forecasting Microservice
 
-> Phase 1 implemented 2026-04-14 (API skeleton + placeholder forecaster). Pipeline integration is Phase 2.
+> Phase 1 + 2 complete (live pipeline wired, leaderboard weighting active). Pending: EC2 deploy, DNS/TLS, daatan integration.
 
 ### Purpose
 
@@ -436,21 +436,21 @@ POST /api/forecast
 
 ### Pipeline
 
-**Stage 1 — Search & Extract**
-1. Classify question into topic category using LLM (retro taxonomy: Israeli Politics, Gaza War, etc.)
-2. Search for related articles via daatan's existing `searchArticles()` (6-provider chain)
-3. For each article: run `gatekeeper.py` → `extractor.py` to get `stance`, `certainty`, `hedge_ratio`, etc.
+**Stage 1 — Search & Fetch**
+1. `web_search.search_articles(question, limit)` — SerpAPI → Serper.dev → Brave → DDG fallback chain
+2. Per article: trafilatura full-text fetch (falls back to title+snippet)
 
-**Stage 2 — Weight by Source Credibility**
-1. Load `leaderboard.json` from retro (sync into daatan PostgreSQL nightly — see Open Decisions)
-2. For each article's source: look up `weighted_brier_score` for the matched category
-3. Compute trust weight: `weight = 1 / (weighted_brier + ε)` — lower Brier = higher trust
+**Stage 2 — Gatekeeper + Extractor** (parallel per article)
+1. `gatekeeper.check_is_prediction()` — LLM filter: does this article contain a prediction?
+2. `extractor.extract_predictions()` — LLM extraction: `stance`, `certainty`, `claim`, etc.
 
-**Stage 3 — Aggregate → Distribution**
-1. Each article contributes probability `p_i = (stance + 1) / 2`
-2. Weight by `certainty × source_trust`
-3. Compute weighted mean + variance → return `{ mean, std, ci_low, ci_high }`
-4. Aggregation method: Weighted Bayesian (#1) initially → LightGBM (#4) when enough data
+**Stage 3 — Weight by Source Credibility**
+1. `leaderboard.get_credibility_weight(source_id)` — TrueSkill conservative score from `leaderboard.json`
+2. `weight = credibility × certainty` per prediction
+
+**Stage 4 — Aggregate → Distribution**
+1. Weighted mean stance + variance → `{ mean, std, ci_low, ci_high }`
+2. Convert to probability: `p = (mean + 1) / 2`
 
 ### Deployment (decided 2026-04-14)
 
