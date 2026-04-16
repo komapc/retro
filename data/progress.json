@@ -2607,7 +2607,7 @@
     "A10:reuters": {
       "event_id": "A10",
       "source_id": "reuters",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T22:45:39.347900"
+  "last_updated": "2026-04-16T22:46:49.430020"
 }
