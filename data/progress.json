@@ -696,15 +696,15 @@
     "E07:ynet": {
       "event_id": "E07",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "E08:globes": {
       "event_id": "E08",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "E08:haaretz": {
@@ -731,8 +731,8 @@
     "E08:ynet": {
       "event_id": "E08",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "G02:globes": {
@@ -906,8 +906,8 @@
     "E07:jpost": {
       "event_id": "E07",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E08:jpost": {
@@ -1333,8 +1333,8 @@
     "E08:israel_hayom": {
       "event_id": "E08",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E08:walla": {
@@ -4616,15 +4616,15 @@
     "E04:israel_hayom": {
       "event_id": "E04",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "E04:jpost": {
       "event_id": "E04",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "E04:kan11": {
@@ -4833,15 +4833,15 @@
     "E06:walla": {
       "event_id": "E06",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E06:ynet": {
       "event_id": "E06",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 12,
       "error": null
     },
     "E07:ch13": {
@@ -4868,8 +4868,8 @@
     "E07:n12": {
       "event_id": "E07",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "E08:ch13": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T09:21:07.087093"
+  "last_updated": "2026-04-16T09:23:10.153369"
 }
