@@ -6089,7 +6089,42 @@
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
+    },
+    "B12:kan11": {
+      "event_id": "B12",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:kan11": {
+      "event_id": "B13",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:kan11": {
+      "event_id": "C01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:kan11": {
+      "event_id": "C02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C03:kan11": {
+      "event_id": "C03",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
     }
   },
-  "last_updated": "2026-04-16T20:53:59.766156"
+  "last_updated": "2026-04-16T20:54:04.296796"
 }
