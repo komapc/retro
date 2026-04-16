@@ -1,0 +1,13 @@
+{
+  "id": "wapost",
+  "name": "The Washington Post",
+  "url": "https://www.washingtonpost.com",
+  "country": "US",
+  "language": "en",
+  "type": "newspaper",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": "center-left",
+  "economic_lean": null,
+  "notes": "Major US daily; strong foreign policy and national security coverage"
+}

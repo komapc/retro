@@ -1,0 +1,13 @@
+{
+  "id": "axios",
+  "name": "Axios",
+  "url": "https://www.axios.com",
+  "country": "US",
+  "language": "en",
+  "type": "digital",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": "center",
+  "economic_lean": null,
+  "notes": "US digital news outlet; concise smart brevity format; covers politics and world affairs"
+}

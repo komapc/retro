@@ -1,0 +1,13 @@
+{
+  "id": "ft",
+  "name": "Financial Times",
+  "url": "https://www.ft.com",
+  "country": "GB",
+  "language": "en",
+  "type": "newspaper",
+  "api_provider": null,
+  "ingestion_status": "pending",
+  "political_lean": "center",
+  "economic_lean": "pro-market",
+  "notes": "UK financial daily; authoritative on geopolitics and economics"
+}

@@ -29,6 +29,11 @@ SOURCE_COLORS = {
     "calcalist":    "#fbbf24",
     "kan11":        "#c084fc",
     "aljazeera":    "#34d399",
+    "nyt":          "#6366f1",
+    "ft":           "#f59e0b",
+    "guardian":     "#10b981",
+    "wapost":       "#64748b",
+    "axios":        "#ec4899",
 }
 SOURCES = list(SOURCE_COLORS.keys())
 
