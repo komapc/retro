@@ -11,9 +11,9 @@
   - `leaderboard.get_credibility_weight()` — TrueSkill conservative score
   - Weighted mean + 95% CI aggregation
 - [x] Leaderboard credibility weighting live (`api/src/forecast_api/leaderboard.py`)
-- [ ] **Deploy `oracle-api.service`** to retro EC2 (`sudo systemctl enable oracle-api`)
-- [ ] **DNS** — point `oracle.daatan.com` → retro EC2, issue TLS cert via certbot
-- [ ] **nginx vhost** — deploy `infra/nginx/oracle.conf` on retro EC2
+- [x] **Deploy `oracle-api.service`** — running on retro EC2, enabled + auto-restart
+- [x] **DNS + TLS** — `oracle.daatan.com` live, Let's Encrypt cert issued
+- [x] **nginx vhost** — `infra/nginx/oracle.conf` deployed, HTTP→HTTPS redirect active
 - [ ] **daatan secrets** — add `ORACLE_URL` + `ORACLE_API_KEY` to daatan `.env` / AWS Secrets Manager
 - [ ] **daatan bot integration** — wire `oracle.ts` into the bot-runner for probability estimates
 

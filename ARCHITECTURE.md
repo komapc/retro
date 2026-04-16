@@ -400,7 +400,7 @@ New question arrives
 
 ## Forecasting Microservice
 
-> Phase 1 + 2 complete (live pipeline wired, leaderboard weighting active). Pending: EC2 deploy, DNS/TLS, daatan integration.
+> Phases 1–4 complete and live at `oracle.daatan.com`. Pending: daatan bot integration (Phase 5).
 
 ### Purpose
 
