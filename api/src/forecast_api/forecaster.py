@@ -8,10 +8,13 @@ Flow:
   4. Aggregate: weighted mean stance + 95% CI → return ForecastResponse
 """
 import asyncio
+import hashlib
 import logging
 import math
 import re
+import time
 from datetime import datetime
+from typing import Optional
 from urllib.parse import urlparse
 
 import httpx
@@ -21,11 +24,41 @@ from tm.gatekeeper import check_is_prediction
 from tm.extractor import extract_predictions
 from tm.web_search import search_articles, SearchResult
 
+from .cache import forecast_cache
 from .leaderboard import get_credibility_weight
 from .models import ForecastRequest, ForecastResponse, SourceSignal
 from .config import settings
 
 logger = logging.getLogger(__name__)
+
+
+def _question_hash(question: str) -> str:
+    """Short, non-reversible question tag used to correlate log lines."""
+    return hashlib.sha256(question.strip().casefold().encode("utf-8")).hexdigest()[:12]
+
+
+def _log_phase(
+    phase: str,
+    duration_ms: float,
+    *,
+    question: str,
+    **extra: object,
+) -> None:
+    """
+    Emit a structured single-line log for one phase of a forecast call.
+
+    The line is key=value formatted so it is readable by humans and greppable
+    by log aggregators (``journalctl``/CloudWatch) without a dedicated parser.
+    Correlate related phases with ``question_hash``.
+    """
+    fields = {
+        "event": "forecast_phase",
+        "phase": phase,
+        "duration_ms": round(duration_ms, 1),
+        "question_hash": _question_hash(question),
+        **extra,
+    }
+    logger.info(" ".join(f"{k}={v}" for k, v in fields.items()))
 
 # Domain → leaderboard source_id mapping
 _DOMAIN_MAP: dict[str, str] = {
@@ -81,13 +114,31 @@ def _fetch_article_text(url: str, fallback: str) -> str:
     return fallback
 
 
+def _truncate_article(text: str, max_chars: int) -> str:
+    """
+    Cap article body at ``max_chars``.
+
+    News leads carry the thesis in the first ~2–3k chars; the remainder
+    mostly burns LLM latency + tokens without improving stance extraction.
+    Returns the original string untouched when already under the cap or when
+    ``max_chars <= 0`` (truncation disabled).
+    """
+    if max_chars <= 0 or len(text) <= max_chars:
+        return text
+    return text[:max_chars]
+
+
 async def _process_article(
     result: SearchResult,
     question: str,
+    *,
+    max_article_chars: int,
+    timings: list[dict],
 ) -> tuple[SearchResult, list] | None:
     """
     Run gatekeeper + extractor for one article.
     Fetches full article text via trafilatura; falls back to title+snippet.
+    Appends per-phase durations to ``timings`` for aggregate logging.
     """
     # Fallback text = title + snippet
     parts = [p for p in [result.title, result.snippet] if p and p.strip()]
@@ -96,13 +147,19 @@ async def _process_article(
         return None
 
     # Fetch full article content (blocking I/O → thread)
+    fetch_start = time.perf_counter()
     text = await asyncio.to_thread(_fetch_article_text, result.url, fallback)
+    fetch_ms = (time.perf_counter() - fetch_start) * 1000
     if not text:
+        timings.append({"url": result.url, "fetch_ms": fetch_ms, "outcome": "empty_text"})
         return None
+
+    text = _truncate_article(text, max_article_chars)
 
     source_name = result.source or _source_id_from_url(result.url)
     article_date = result.published_date or datetime.now().strftime("%Y-%m-%d")
 
+    gate_start = time.perf_counter()
     try:
         gate = await check_is_prediction(
             article_text=text,
@@ -112,12 +169,23 @@ async def _process_article(
         )
     except Exception as exc:
         logger.warning("Gatekeeper failed for %s: %s", result.url, exc)
+        timings.append({
+            "url": result.url, "fetch_ms": fetch_ms,
+            "gate_ms": (time.perf_counter() - gate_start) * 1000,
+            "outcome": "gate_error",
+        })
         return None
+    gate_ms = (time.perf_counter() - gate_start) * 1000
 
     if not gate.is_prediction:
         logger.debug("Gatekeeper rejected: %s", result.url)
+        timings.append({
+            "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
+            "outcome": "gate_rejected",
+        })
         return None
 
+    extract_start = time.perf_counter()
     try:
         extraction = await extract_predictions(
             article_text=text,
@@ -128,18 +196,47 @@ async def _process_article(
         )
     except Exception as exc:
         logger.warning("Extractor failed for %s: %s", result.url, exc)
+        timings.append({
+            "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
+            "extract_ms": (time.perf_counter() - extract_start) * 1000,
+            "outcome": "extract_error",
+        })
         return None
+    extract_ms = (time.perf_counter() - extract_start) * 1000
 
     if not extraction.predictions:
+        timings.append({
+            "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
+            "extract_ms": extract_ms, "outcome": "no_predictions",
+        })
         return None
 
+    timings.append({
+        "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
+        "extract_ms": extract_ms, "outcome": "ok",
+    })
     return (result, extraction.predictions)
 
 
 async def run_forecast(req: ForecastRequest) -> ForecastResponse:
     limit = req.max_articles or settings.max_articles
+    total_start = time.perf_counter()
+
+    # Step 0: cache lookup — identical (question, max_articles) within the TTL
+    # returns instantly. Placeholder responses are never cached.
+    cache_key = forecast_cache.make_key(req.question, req.max_articles)
+    cached = forecast_cache.get(cache_key)
+    if cached is not None:
+        _log_phase(
+            "cache_hit",
+            (time.perf_counter() - total_start) * 1000,
+            question=req.question,
+            articles_used=cached.articles_used,
+        )
+        return cached
 
     # Step 1: search
+    search_start = time.perf_counter()
     try:
         search_results: list[SearchResult] = await asyncio.to_thread(
             search_articles, req.question, limit
@@ -147,17 +244,52 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
     except Exception as exc:
         logger.error("Search failed: %s", exc)
         search_results = []
+    search_ms = (time.perf_counter() - search_start) * 1000
+    _log_phase(
+        "search",
+        search_ms,
+        question=req.question,
+        results=len(search_results),
+    )
 
     if not search_results:
         logger.warning("No articles found for: %s", req.question[:80])
+        _log_phase(
+            "total",
+            (time.perf_counter() - total_start) * 1000,
+            question=req.question,
+            articles_used=0,
+            outcome="no_search_results",
+        )
         return _empty_response(req.question)
 
     logger.info("Found %d articles for: %s", len(search_results), req.question[:80])
 
     # Step 2: gatekeeper + extractor in parallel
+    process_start = time.perf_counter()
+    timings: list[dict] = []
     outcomes = await asyncio.gather(
-        *[_process_article(r, req.question) for r in search_results],
+        *[
+            _process_article(
+                r,
+                req.question,
+                max_article_chars=settings.max_article_chars,
+                timings=timings,
+            )
+            for r in search_results
+        ],
         return_exceptions=True,
+    )
+    process_ms = (time.perf_counter() - process_start) * 1000
+    _log_phase(
+        "articles_processed",
+        process_ms,
+        question=req.question,
+        articles=len(search_results),
+        ok=sum(1 for t in timings if t.get("outcome") == "ok"),
+        avg_fetch_ms=_avg(timings, "fetch_ms"),
+        avg_gate_ms=_avg(timings, "gate_ms"),
+        avg_extract_ms=_avg(timings, "extract_ms"),
     )
 
     # Step 3: build per-source signals
@@ -191,6 +323,13 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
 
     if not all_stances:
         logger.warning("No usable predictions extracted from %d articles", len(search_results))
+        _log_phase(
+            "total",
+            (time.perf_counter() - total_start) * 1000,
+            question=req.question,
+            articles_used=0,
+            outcome="no_usable_predictions",
+        )
         return _empty_response(req.question)
 
     # Step 4: weighted mean + 95% CI
@@ -208,7 +347,7 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
         mean, std, ci_low, ci_high, n,
     )
 
-    return ForecastResponse(
+    response = ForecastResponse(
         question=req.question,
         mean=round(mean, 4),
         std=round(std, 4),
@@ -218,6 +357,18 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
         sources=source_signals,
         placeholder=False,
     )
+
+    forecast_cache.set(cache_key, response)
+
+    _log_phase(
+        "total",
+        (time.perf_counter() - total_start) * 1000,
+        question=req.question,
+        articles_used=n,
+        outcome="ok",
+    )
+
+    return response
 
 
 def _empty_response(question: str) -> ForecastResponse:
@@ -232,3 +383,11 @@ def _empty_response(question: str) -> ForecastResponse:
         sources=[],
         placeholder=True,
     )
+
+
+def _avg(timings: list[dict], key: str) -> Optional[float]:
+    """Mean of ``key`` across ``timings`` entries that carry it, rounded to 1 dp."""
+    values = [t[key] for t in timings if key in t and t[key] is not None]
+    if not values:
+        return None
+    return round(sum(values) / len(values), 1)

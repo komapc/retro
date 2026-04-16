@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from slowapi.errors import RateLimitExceeded
 
 from .auth import verify_api_key
+from .cache import forecast_cache
 from .config import settings
 from .forecaster import run_forecast
 from .leaderboard import background_refresh_loop, leaderboard_size, refresh_cache
@@ -86,6 +87,10 @@ async def health():
         "status": "ok",
         "version": app.version,
         "leaderboard_sources": leaderboard_size(),
+        "cache": {
+            "enabled": forecast_cache.enabled,
+            **forecast_cache.stats().as_dict(),
+        },
     }
 
 
