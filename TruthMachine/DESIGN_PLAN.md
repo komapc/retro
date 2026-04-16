@@ -145,10 +145,9 @@ Generates calibrated probability estimates from the full forensic feature vector
 
 TruthMachine is designed to run within the broader **Daatan Infrastructure** (see `daatan/infra`).
 
-### Orchestration Layer (OpenClaw)
-- **Deployment:** TruthMachine services are deployed on AWS EC2 instances provisioned via Terraform.
-- **User Interface:** The **Corvus** agent (OpenClaw) serves as the primary interface, querying the TruthMachine Oracle API to provide users with calibrated forecasts.
-- **Automation:** A dedicated `retro-manager` skill enables the **DevOps** agent to trigger periodic Atlas syncs and vault ingestions.
+### Deployment Layer
+- **Hosting:** TruthMachine services run on a dedicated AWS EC2 instance in `eu-central-1` (see `ARCHITECTURE.md` → Deployment).
+- **Primary consumer:** The **daatan** Next.js app calls the TruthMachine Oracle API (`oracle.daatan.com`) from its `context` and `express/guess` flows to surface calibrated forecasts to users.
 
 ### Inference Layer
 - **Current:** All LLM calls go directly to **AWS Bedrock** (Nova Micro for gatekeeper, Nova Lite for extractor) via `litellm` with `instructor` for structured output. OpenRouter quota was exhausted in early testing; Bedrock is the live backend.
