@@ -1158,7 +1158,7 @@
     "B09:walla": {
       "event_id": "B09",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -3237,7 +3237,7 @@
     "B05:maariv": {
       "event_id": "B05",
       "source_id": "maariv",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T20:54:36.016420"
+  "last_updated": "2026-04-16T21:19:57.599743"
 }
