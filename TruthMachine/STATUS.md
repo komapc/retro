@@ -1,6 +1,6 @@
 # TruthMachine / Factum Atlas — Status & Runbook
 
-_Last updated: 2026-04-16_
+_Last updated: 2026-04-17_
 
 ---
 
@@ -17,7 +17,7 @@ The matrix has **840 cells** = 70 events × 13 sources (not all combinations hav
 
 ---
 
-## Current State (2026-04-16)
+## Current State (2026-04-17)
 
 | Metric | Value |
 |--------|-------|
@@ -44,8 +44,9 @@ The matrix is fully processed — no pending or failed cells remain. The 77% "no
 | EC2 deployment (`oracle-api.service`) | ✅ Running |
 | DNS + TLS (`oracle.daatan.com`) | ✅ Live |
 | nginx vhost (`infra/nginx/oracle.conf`) | ✅ Deployed |
-| daatan secrets (`ORACLE_URL` + `ORACLE_API_KEY`) | 🔲 Pending |
-| daatan bot integration | 🔲 Pending |
+| `/health` endpoint with version | ✅ Live (`0.1.0`) |
+| daatan secrets (`ORACLE_URL` + `ORACLE_API_KEY`) | ✅ In AWS Secrets Manager (`daatan-env-{prod,staging}`) |
+| daatan integration (`oracle.ts` wired into context + express guess routes) | ✅ Live in daatan v1.9.0 |
 
 ### Duel: TruthMachine vs Polymarket
 

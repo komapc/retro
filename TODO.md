@@ -14,8 +14,10 @@
 - [x] **Deploy `oracle-api.service`** — running on retro EC2, enabled + auto-restart
 - [x] **DNS + TLS** — `oracle.daatan.com` live, Let's Encrypt cert issued
 - [x] **nginx vhost** — `infra/nginx/oracle.conf` deployed, HTTP→HTTPS redirect active
-- [ ] **daatan secrets** — add `ORACLE_URL` + `ORACLE_API_KEY` to daatan `.env` / AWS Secrets Manager
-- [ ] **daatan bot integration** — wire `oracle.ts` into the bot-runner for probability estimates
+- [x] **`/health` endpoint returns version** — daatan client can detect API incompatibility
+- [x] **daatan secrets** — `ORACLE_URL` + `ORACLE_API_KEY` added to `daatan-env-{prod,staging}` in AWS Secrets Manager; standalone `openclaw/oracle-api-key` for rotation
+- [x] **daatan integration** — `oracle.ts` wired into `context` + `express/guess` routes with LLM fallback (shipped in daatan v1.9.0)
+- [ ] **daatan bot integration** — wire `getOracleProbability` into the bot-runner so autonomous bots use the Oracle when forming their predictions
 
 ## Ingest / Coverage
 
@@ -46,21 +48,10 @@
 
 - [ ] Calibration curve — plot implied_p vs actual outcome rate across probability buckets.
 
-## Bugs (from code review 2026-04-16)
+## Bugs (from code review 2026-04-16) — all resolved in PR #35
 
-- [ ] **`*.json` glob catches `cell_signal.json`** — `render_atlas.py`, `scorer.py`, and `generate_pages.py`
-  use `glob("*.json")` per source dir, which includes `cell_signal.json` alongside `entry_*.json`.
-  This can distort Brier scores and prediction counts. Filter to `entry_*.json` only.
-
-- [ ] **Silent failure masking** — `orchestrator.py` overwrites `failed` status with `no_predictions`
-  when no predictions are found, hiding real LLM errors. Check `has_predictions` only if no runner
-  errors occurred.
-
-- [ ] **`backtest.py` uses `event.get("title")`** — should be `event.get("name")`. Polymarket lookup
-  likely fails silently for most events.
-
-- [ ] **`check_keys.sh` has a hardcoded Serper API key** — committed secret in `infra/check_keys.sh`.
-  Remove and read from Secrets Manager or env instead.
-
-- [ ] **`placeholder` field never set to `True`** — `forecaster.py` `_empty_response` returns
-  `placeholder=False` even when no articles are found. Should distinguish "no data" from "real forecast".
+- [x] **`*.json` glob catches `cell_signal.json`** — filter to `entry_*.json` in `render_atlas.py`, `scorer.py`, `generate_pages.py`
+- [x] **Silent failure masking** — `orchestrator.py` no longer overwrites `failed` with `no_predictions`
+- [x] **`backtest.py` uses `event.get("title")`** — fixed to `event.get("name")`
+- [x] **`check_keys.sh` has a hardcoded Serper API key** — moved to AWS Secrets Manager (`openclaw/serperdev-key`)
+- [x] **`placeholder` field never set to `True`** — `_empty_response` now returns `placeholder=True`

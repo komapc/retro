@@ -1,7 +1,7 @@
 # Oracle API — TruthMachine Forecast Service
 
 > **Subdomain:** `oracle.daatan.com`
-> **Status:** Phases 1–4 complete and live. Pending: daatan bot integration.
+> **Status:** Phases 1–5 complete and live. Wired into daatan v1.9.0.
 
 ## Overview
 
@@ -91,7 +91,17 @@ App:    x-api-key: $ORACLE_API_KEY
 
 ### `GET /health`
 
-No auth required. Returns `{"status": "ok"}`. Use as a liveness probe.
+No auth required. Returns:
+
+```json
+{
+  "status": "ok",
+  "version": "0.1.0",
+  "leaderboard_sources": 27
+}
+```
+
+`version` allows clients to verify API compatibility before relying on `/forecast` responses.
 
 ---
 
@@ -185,26 +195,25 @@ server {
 
 ---
 
-## daatan integration
+## daatan integration (live since v1.9.0)
 
-```ts
-// src/lib/services/oracle.ts
-export async function getOracleForecast(question: string): Promise<number | null> {
-  const url = process.env.ORACLE_URL
-  const key = process.env.ORACLE_API_KEY
-  if (!url || !key) return null
+The Oracle is wired into two `daatan` routes, with automatic fallback to the existing LLM `guessChances` path when the Oracle is unavailable, returns a placeholder, or times out:
 
-  const res = await fetch(`${url}/forecast`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': key },
-    body: JSON.stringify({ question }),
-    signal: AbortSignal.timeout(20_000),
-  })
-  if (!res.ok) return null
-  const data = await res.json()
-  return (data.mean + 1) / 2  // convert stance [-1,1] → probability [0,1]
-}
-```
+| Route | File |
+|-------|------|
+| `POST /api/forecasts/[id]/context` | `daatan/src/app/api/forecasts/[id]/context/route.ts` |
+| `POST /api/forecasts/express/guess` | `daatan/src/app/api/forecasts/express/guess/route.ts` |
+
+Client: `daatan/src/lib/services/oracle.ts` — `getOracleProbability()` returns a probability in `[0, 1]` or `null` (never throws). `checkOracleHealth()` verifies the API is reachable and its version starts with `0.1`.
+
+### Secret management
+
+The shared `x-api-key` lives in AWS Secrets Manager at `openclaw/oracle-api-key` (region `eu-central-1`). Both sides read it from there:
+
+- **retro EC2** (`oracle-api.service`) — `ORACLE_API_KEY` env var
+- **daatan EC2** (`~/app/.env`) — `ORACLE_URL` + `ORACLE_API_KEY`, pulled via `scripts/fetch-secrets.sh` from the `daatan-env-prod` / `daatan-env-staging` bundle secret on each deploy
+
+To rotate: update `openclaw/oracle-api-key` in Secrets Manager, then update both `daatan-env-{prod,staging}` bundles and the EC2 `.env` on the retro side, and restart both services.
 
 ---
 
@@ -216,5 +225,5 @@ export async function getOracleForecast(question: string): Promise<number | null
 | ✅ Phase 2 | Live pipeline: `web_search.py` → gatekeeper → extractor → leaderboard weighting |
 | ✅ Phase 3 | Leaderboard credibility weighting (TrueSkill conservative score) |
 | ✅ Phase 4 | `oracle.daatan.com` DNS + TLS + EC2 deploy |
-| 🔲 Phase 5 | daatan bot integration (`oracle.ts` + `ORACLE_URL` env) |
+| ✅ Phase 5 | daatan integration — `oracle.ts` client wired into context + express guess routes (shipped in daatan v1.9.0) |
 | 🔲 Phase 6 | Async queue for >15s requests |
