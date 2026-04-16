@@ -6,7 +6,7 @@ on:
     paths:
       - factum_atlas.html
       - oracle-test.html
-      - poc_atlas.html
+      - duel.html
 
   # Allow manual trigger from GitHub UI
   workflow_dispatch:
@@ -38,8 +38,8 @@ jobs:
           cp factum_atlas.html _site/index.html
           cp factum_atlas.html _site/factum_atlas.html
           cp oracle-test.html _site/oracle-test.html
-          # Copy PoC atlas if it exists
-          if [ -f poc_atlas.html ]; then cp poc_atlas.html _site/poc_atlas.html; fi
+          # Copy duel report if it exists
+          if [ -f duel.html ]; then cp duel.html _site/duel.html; fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
