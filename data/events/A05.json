@@ -18,5 +18,9 @@
     "Netanyahu",
     "6th government"
   ],
-  "polymarket": null
+  "polymarket": {
+    "url": "https://polymarket.com/event/will-netanyahu-be-the-next-prime-minister-of-israel",
+    "question": "Will Netanyahu be the next Prime Minister of Israel?",
+    "match_quality": "close"
+  }
 }
