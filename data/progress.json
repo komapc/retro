@@ -941,8 +941,8 @@
     "G05:jpost": {
       "event_id": "G05",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "G05:reuters": {
@@ -990,8 +990,8 @@
     "G06:reuters": {
       "event_id": "G06",
       "source_id": "reuters",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "G06:toi": {
@@ -5596,8 +5596,8 @@
     "G04:israel_hayom": {
       "event_id": "G04",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 11,
       "error": null
     },
     "G04:jpost": {
@@ -5617,8 +5617,8 @@
     "G04:maariv": {
       "event_id": "G04",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "G04:n12": {
@@ -5652,8 +5652,8 @@
     "G04:ynet": {
       "event_id": "G04",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "G05:ch13": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T09:28:15.503177"
+  "last_updated": "2026-04-16T09:29:10.266492"
 }
