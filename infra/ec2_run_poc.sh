@@ -82,10 +82,14 @@ commit_poc_data() {
 # Sync bulk intermediate data to S3
 s3_sync_poc() {
   log "Syncing raw_ingest/ and atlas/ to S3..."
-  aws s3 sync "$POC_DIR/raw_ingest/" "$S3_BUCKET/raw_ingest/" \
-    --quiet --no-progress 2>&1 | tail -3 || log "WARNING: S3 sync raw_ingest failed"
-  aws s3 sync "$POC_DIR/atlas/" "$S3_BUCKET/atlas/" \
-    --quiet --no-progress 2>&1 | tail -3 || log "WARNING: S3 sync atlas failed"
+  if [[ -d "$POC_DIR/raw_ingest" ]]; then
+    aws s3 sync "$POC_DIR/raw_ingest/" "$S3_BUCKET/raw_ingest/" \
+      --quiet --no-progress 2>&1 | tail -3 || log "WARNING: S3 sync raw_ingest failed"
+  fi
+  if [[ -d "$POC_DIR/atlas" ]]; then
+    aws s3 sync "$POC_DIR/atlas/" "$S3_BUCKET/atlas/" \
+      --quiet --no-progress 2>&1 | tail -3 || log "WARNING: S3 sync atlas failed"
+  fi
   log "S3 sync complete."
 }
 
@@ -198,7 +202,7 @@ print(' '.join(sorted(events)))
     BATCH=$((BATCH + 1))
     BATCH_EVENTS=("${EVENT_ARR[@]:i:3}")
     log "PoC batch $BATCH: ${BATCH_EVENTS[*]}"
-    timeout 600 DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
+    timeout 600 env DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
       python -m tm.orchestrator local_file --events "${BATCH_EVENTS[@]}" 2>&1 | tail -5 \
       || log "WARNING: PoC batch $BATCH timed out — continuing"
   done
