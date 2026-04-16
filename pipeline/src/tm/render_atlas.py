@@ -125,7 +125,7 @@ def load_atlas_data(data_dir: Path) -> dict:
             cell_dir = data_dir / "atlas" / eid / sid
             if not cell_dir.exists():
                 continue
-            entries = [load_json(fp) for fp in sorted(cell_dir.glob("*.json"))]
+            entries = [load_json(fp) for fp in sorted(cell_dir.glob("entry_*.json"))]
             if entries:
                 cells[(eid, sid)] = entries
 

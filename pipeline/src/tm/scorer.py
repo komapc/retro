@@ -102,7 +102,7 @@ class Scorer:
                 if sid not in global_stats:
                     continue
 
-                entry_files = list(source_dir.glob("*.json"))
+                entry_files = list(source_dir.glob("entry_*.json"))
                 if not entry_files:
                     continue
 
