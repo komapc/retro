@@ -102,6 +102,24 @@ run_poc_cycle() {
   git rebase origin/main 2>&1 | tail -3 || { git rebase --abort; log "WARNING: rebase failed, continuing with current code"; }
 
   # ── Phase 1: Fetch Polymarket price history for events missing prices ─────
+  # First: backfill clob_token_yes from cached raw pages (no-op if all events already have it)
+  NO_TOKEN=$(python3 -c "
+import json
+from pathlib import Path
+p = Path('$POC_DIR/pm_harvest/events.jsonl')
+if not p.exists():
+    print(0)
+else:
+    n = sum(1 for line in p.read_text().splitlines() if line.strip() and not json.loads(line).get('clob_token_yes'))
+    print(n)
+" 2>/dev/null || echo 0)
+
+  if [[ "$NO_TOKEN" -gt 0 ]]; then
+    log "Backfilling CLOB tokens for $NO_TOKEN events from cached raw pages..."
+    DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
+      python -m tm.polymarket_harvest --data-dir "$POC_DIR" --backfill-clob-tokens 2>&1 | tail -5
+  fi
+
   NEED_PRICES=$(python3 -c "
 import json
 from pathlib import Path
@@ -114,7 +132,7 @@ else:
 " 2>/dev/null || echo 0)
 
   if [[ "$NEED_PRICES" -gt 0 ]]; then
-    log "Fetching prices for $NEED_PRICES events..."
+    log "Fetching prices for $NEED_PRICES events via CLOB API..."
     DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
       python -m tm.polymarket_harvest --data-dir "$POC_DIR" --fetch-prices 2>&1 | tail -10
     log "Price fetch complete — regenerating duel.html..."
