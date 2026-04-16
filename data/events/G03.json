@@ -22,5 +22,6 @@
     "url": "https://polymarket.com/event/largest-company-eoy/will-nvidia-be-the-largest-company-in-the-world-by-market-cap-on-december-31",
     "question": "Will Nvidia be the largest company in the world by market cap on December 31?",
     "match_quality": "indirect"
-  }
+  },
+  "scope": "global"
 }

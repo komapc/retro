@@ -20,7 +20,7 @@ Step 5: CDX fallback — enumerate Wayback CDX archives (disabled on EC2;
         set ENABLE_CDX=1 to re-enable).
 
 Sources: toi, jpost, haaretz, reuters, globes, ynet, israel_hayom,
-         walla, haaretz_he, n12, maariv, ch13, kan11  (Hebrew sources included)
+         walla, haaretz_he, n12, maariv, ch13, calcalist  (Hebrew sources included)
 
 Usage:
     DATA_DIR=/path/to/data uv run python -m tm.gnews_ingest
@@ -59,7 +59,7 @@ GNEWS_BASE = "https://news.google.com/rss/search"
 # lang="he" → first Hebrew keyword, iw-IL GNews params
 SOURCES_CONFIG: Dict[str, Dict] = {
     # English sources
-    "toi":          {"domain": "timesofisrael.com",  "lang": "en"},
+    "toi":          {"domain": "www.timesofisrael.com", "lang": "en"},
     "jpost":        {"domain": "jpost.com",          "lang": "en"},
     "haaretz":      {"domain": "haaretz.com",        "lang": "en"},
     "reuters":      {"domain": "reuters.com",        "lang": "en"},
@@ -78,7 +78,7 @@ SOURCES_CONFIG: Dict[str, Dict] = {
     "n12":          {"domain": "www.mako.co.il",     "lang": "he"},
     "maariv":       {"domain": "www.maariv.co.il",   "lang": "he"},
     "ch13":         {"domain": "13tv.co.il",         "lang": "he"},
-    "kan11":        {"domain": "www.kan.org.il",     "lang": "he"},
+    "calcalist":    {"domain": "www.calcalist.co.il", "lang": "he"},
 }
 
 GNEWS_LOCALE = {

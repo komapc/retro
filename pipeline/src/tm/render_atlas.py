@@ -27,7 +27,6 @@ SOURCE_COLORS = {
     "bbc":          "#e879f9",
     "walla":        "#94a3b8",
     "calcalist":    "#fbbf24",
-    "kan11":        "#c084fc",
     "aljazeera":    "#34d399",
     "nyt":          "#6366f1",
     "ft":           "#f59e0b",

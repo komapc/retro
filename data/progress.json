@@ -1883,11 +1883,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A01:kan11": {
+    "A01:calcalist": {
       "event_id": "A01",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A01:maariv": {
@@ -1967,11 +1969,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A02:kan11": {
+    "A02:calcalist": {
       "event_id": "A02",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A02:maariv": {
@@ -2051,11 +2055,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A03:kan11": {
+    "A03:calcalist": {
       "event_id": "A03",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A03:maariv": {
@@ -2107,11 +2113,13 @@
       "prediction_count": 8,
       "error": null
     },
-    "A04:kan11": {
+    "A04:calcalist": {
       "event_id": "A04",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A04:maariv": {
@@ -2163,11 +2171,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A05:kan11": {
+    "A05:calcalist": {
       "event_id": "A05",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A05:maariv": {
@@ -2247,11 +2257,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A06:kan11": {
+    "A06:calcalist": {
       "event_id": "A06",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A06:maariv": {
@@ -2331,11 +2343,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A07:kan11": {
+    "A07:calcalist": {
       "event_id": "A07",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A07:maariv": {
@@ -2415,11 +2429,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A08:kan11": {
+    "A08:calcalist": {
       "event_id": "A08",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A08:maariv": {
@@ -2499,11 +2515,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A09:kan11": {
+    "A09:calcalist": {
       "event_id": "A09",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A09:maariv": {
@@ -2583,11 +2601,13 @@
       "prediction_count": 1,
       "error": null
     },
-    "A10:kan11": {
+    "A10:calcalist": {
       "event_id": "A10",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A10:maariv": {
@@ -2667,11 +2687,13 @@
       "prediction_count": 2,
       "error": null
     },
-    "A11:kan11": {
+    "A11:calcalist": {
       "event_id": "A11",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A11:maariv": {
@@ -2723,11 +2745,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A12:kan11": {
+    "A12:calcalist": {
       "event_id": "A12",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A12:maariv": {
@@ -2751,11 +2775,13 @@
       "prediction_count": 1,
       "error": null
     },
-    "A13:kan11": {
+    "A13:calcalist": {
       "event_id": "A13",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A13:maariv": {
@@ -2779,11 +2805,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A14:kan11": {
+    "A14:calcalist": {
       "event_id": "A14",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A14:maariv": {
@@ -2807,11 +2835,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A15:kan11": {
+    "A15:calcalist": {
       "event_id": "A15",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A15:maariv": {
@@ -2863,11 +2893,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A16:kan11": {
+    "A16:calcalist": {
       "event_id": "A16",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A16:maariv": {
@@ -2947,11 +2979,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A17:kan11": {
+    "A17:calcalist": {
       "event_id": "A17",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A17:maariv": {
@@ -3031,11 +3065,13 @@
       "prediction_count": 2,
       "error": null
     },
-    "A18:kan11": {
+    "A18:calcalist": {
       "event_id": "A18",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A18:maariv": {
@@ -3087,11 +3123,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "A19:kan11": {
+    "A19:calcalist": {
       "event_id": "A19",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "A19:maariv": {
@@ -3115,11 +3153,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B01:kan11": {
+    "B01:calcalist": {
       "event_id": "B01",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B01:maariv": {
@@ -3143,11 +3183,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B02:kan11": {
+    "B02:calcalist": {
       "event_id": "B02",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B02:maariv": {
@@ -3171,11 +3213,13 @@
       "prediction_count": 14,
       "error": null
     },
-    "B03:kan11": {
+    "B03:calcalist": {
       "event_id": "B03",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B03:maariv": {
@@ -3199,11 +3243,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B04:kan11": {
+    "B04:calcalist": {
       "event_id": "B04",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B04:maariv": {
@@ -3227,11 +3273,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B05:kan11": {
+    "B05:calcalist": {
       "event_id": "B05",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B05:maariv": {
@@ -3255,11 +3303,13 @@
       "prediction_count": 1,
       "error": null
     },
-    "B06:kan11": {
+    "B06:calcalist": {
       "event_id": "B06",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B06:maariv": {
@@ -3283,11 +3333,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B07:kan11": {
+    "B07:calcalist": {
       "event_id": "B07",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B07:maariv": {
@@ -3311,11 +3363,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B08:kan11": {
+    "B08:calcalist": {
       "event_id": "B08",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B08:maariv": {
@@ -3339,11 +3393,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B09:kan11": {
+    "B09:calcalist": {
       "event_id": "B09",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B09:maariv": {
@@ -3367,11 +3423,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B10:kan11": {
+    "B10:calcalist": {
       "event_id": "B10",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B10:maariv": {
@@ -3395,11 +3453,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "B11:kan11": {
+    "B11:calcalist": {
       "event_id": "B11",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B11:maariv": {
@@ -3423,11 +3483,13 @@
       "prediction_count": 3,
       "error": null
     },
-    "B12:kan11": {
+    "B12:calcalist": {
       "event_id": "B12",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B12:maariv": {
@@ -3451,11 +3513,13 @@
       "prediction_count": 1,
       "error": null
     },
-    "B13:kan11": {
+    "B13:calcalist": {
       "event_id": "B13",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "B13:maariv": {
@@ -3507,11 +3571,13 @@
       "prediction_count": 7,
       "error": null
     },
-    "C01:kan11": {
+    "C01:calcalist": {
       "event_id": "C01",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C01:maariv": {
@@ -3591,11 +3657,13 @@
       "prediction_count": 3,
       "error": null
     },
-    "C02:kan11": {
+    "C02:calcalist": {
       "event_id": "C02",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C02:maariv": {
@@ -3675,11 +3743,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "C03:kan11": {
+    "C03:calcalist": {
       "event_id": "C03",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C03:maariv": {
@@ -3759,11 +3829,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "C04:kan11": {
+    "C04:calcalist": {
       "event_id": "C04",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C04:maariv": {
@@ -3815,11 +3887,13 @@
       "prediction_count": 5,
       "error": null
     },
-    "C05:kan11": {
+    "C05:calcalist": {
       "event_id": "C05",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C05:maariv": {
@@ -3843,11 +3917,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "C06:kan11": {
+    "C06:calcalist": {
       "event_id": "C06",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C06:maariv": {
@@ -3871,11 +3947,13 @@
       "prediction_count": 1,
       "error": null
     },
-    "C07:kan11": {
+    "C07:calcalist": {
       "event_id": "C07",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C07:maariv": {
@@ -3899,11 +3977,13 @@
       "prediction_count": 2,
       "error": null
     },
-    "C08:kan11": {
+    "C08:calcalist": {
       "event_id": "C08",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C08:maariv": {
@@ -3927,11 +4007,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "C09:kan11": {
+    "C09:calcalist": {
       "event_id": "C09",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "C09:maariv": {
@@ -3983,11 +4065,13 @@
       "prediction_count": 6,
       "error": null
     },
-    "D01:kan11": {
+    "D01:calcalist": {
       "event_id": "D01",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "D01:maariv": {
@@ -4039,11 +4123,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "D02:kan11": {
+    "D02:calcalist": {
       "event_id": "D02",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "D02:maariv": {
@@ -4067,11 +4153,13 @@
       "prediction_count": 3,
       "error": null
     },
-    "D03:kan11": {
+    "D03:calcalist": {
       "event_id": "D03",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "D03:maariv": {
@@ -4123,11 +4211,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "D04:kan11": {
+    "D04:calcalist": {
       "event_id": "D04",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "D04:maariv": {
@@ -4207,11 +4297,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "D05:kan11": {
+    "D05:calcalist": {
       "event_id": "D05",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "D05:maariv": {
@@ -4291,11 +4383,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "D06:kan11": {
+    "D06:calcalist": {
       "event_id": "D06",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "D06:maariv": {
@@ -4375,11 +4469,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E01:kan11": {
+    "E01:calcalist": {
       "event_id": "E01",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E01:maariv": {
@@ -4459,11 +4555,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E02:kan11": {
+    "E02:calcalist": {
       "event_id": "E02",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E02:maariv": {
@@ -4543,11 +4641,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E03:kan11": {
+    "E03:calcalist": {
       "event_id": "E03",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E03:maariv": {
@@ -4627,11 +4727,13 @@
       "prediction_count": 3,
       "error": null
     },
-    "E04:kan11": {
+    "E04:calcalist": {
       "event_id": "E04",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E04:maariv": {
@@ -4711,11 +4813,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E05:kan11": {
+    "E05:calcalist": {
       "event_id": "E05",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E05:maariv": {
@@ -4795,11 +4899,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E06:kan11": {
+    "E06:calcalist": {
       "event_id": "E06",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E06:maariv": {
@@ -4851,11 +4957,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E07:kan11": {
+    "E07:calcalist": {
       "event_id": "E07",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E07:maariv": {
@@ -4879,11 +4987,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E08:kan11": {
+    "E08:calcalist": {
       "event_id": "E08",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E08:maariv": {
@@ -4935,11 +5045,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E09:kan11": {
+    "E09:calcalist": {
       "event_id": "E09",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E09:maariv": {
@@ -5019,11 +5131,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "E10:kan11": {
+    "E10:calcalist": {
       "event_id": "E10",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "E10:maariv": {
@@ -5103,11 +5217,13 @@
       "prediction_count": 1,
       "error": null
     },
-    "F01:kan11": {
+    "F01:calcalist": {
       "event_id": "F01",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "F01:maariv": {
@@ -5187,11 +5303,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "F02:kan11": {
+    "F02:calcalist": {
       "event_id": "F02",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "F02:maariv": {
@@ -5271,11 +5389,13 @@
       "prediction_count": 1,
       "error": null
     },
-    "F03:kan11": {
+    "F03:calcalist": {
       "event_id": "F03",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "F03:maariv": {
@@ -5327,11 +5447,13 @@
       "prediction_count": 5,
       "error": null
     },
-    "F04:kan11": {
+    "F04:calcalist": {
       "event_id": "F04",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "F04:maariv": {
@@ -5355,11 +5477,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "F05:kan11": {
+    "F05:calcalist": {
       "event_id": "F05",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "F05:maariv": {
@@ -5411,11 +5535,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "G01:kan11": {
+    "G01:calcalist": {
       "event_id": "G01",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "G01:maariv": {
@@ -5467,11 +5593,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "G02:kan11": {
+    "G02:calcalist": {
       "event_id": "G02",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "G02:maariv": {
@@ -5523,11 +5651,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "G03:kan11": {
+    "G03:calcalist": {
       "event_id": "G03",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "G03:maariv": {
@@ -5607,11 +5737,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "G04:kan11": {
+    "G04:calcalist": {
       "event_id": "G04",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "G04:maariv": {
@@ -5663,11 +5795,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "G05:kan11": {
+    "G05:calcalist": {
       "event_id": "G05",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "G05:maariv": {
@@ -5691,11 +5825,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "G06:kan11": {
+    "G06:calcalist": {
       "event_id": "G06",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "G06:maariv": {
@@ -5747,11 +5883,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "G07:kan11": {
+    "G07:calcalist": {
       "event_id": "G07",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "G07:maariv": {
@@ -5831,11 +5969,13 @@
       "prediction_count": 0,
       "error": null
     },
-    "G08:kan11": {
+    "G08:calcalist": {
       "event_id": "G08",
-      "source_id": "kan11",
-      "status": "no_predictions",
+      "source_id": "calcalist",
+      "status": "pending",
       "prediction_count": 0,
+      "article_count": 0,
+      "last_updated": null,
       "error": null
     },
     "G08:maariv": {
@@ -5881,5 +6021,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T13:50:48.258646"
+  "last_updated": "2026-04-16T22:17:28.066754"
 }
