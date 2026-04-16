@@ -7,25 +7,55 @@ Python pipeline for retroactive media prediction extraction and scoring.
 ```
 pipeline/
   src/tm/
-    config.py           # settings via pydantic-settings
-    models.py           # pydantic schemas (LLM output + matrix state)
-    gatekeeper.py       # stage 1: is this a prediction? (Gemini Flash)
-    extractor.py        # stage 2: forensic metric extraction (DeepSeek)
-    runner.py           # orchestrates gatekeeper → extraction per article
-    orchestrator.py     # batch runner: events × sources, local_file and api modes
-    progress.py         # matrix state tracker + rich terminal visualizer
-    backtest.py         # LightGBM backtest vs Polymarket (see BACKTEST.md)
+    config.py              # settings via pydantic-settings (models, API keys, paths)
+    models.py              # pydantic schemas (Prediction, ExtractionOutput, CellSignal, etc.)
+    progress.py            # matrix state tracker + rich terminal visualizer
+
+    # Ingest
+    gnews_ingest.py        # GNews RSS → URL resolution → trafilatura + Wayback fallback
+    gdelt_ingest.py        # GDELT Doc 2.0 API batch ingestor (sequential, rate-limited)
+    ingestor.py            # Pluggable ingestor classes: DDGIngestor, GDELTIngestor
+    site_search.py         # Direct site-search scraper (no API key, high reliability)
+    web_search.py          # Multi-provider search: SerpAPI → Serper → Brave → DDG
+    polymarket.py          # Polymarket Gamma API: fetch market history per event
+    polymarket_harvest.py  # Bulk harvest of all resolved Polymarket political markets
+
+    # Extraction
+    gatekeeper.py          # LLM stage 1: does this article contain predictions?
+    extractor.py           # LLM stage 2: extract structured predictions from article
+    runner.py              # Orchestrates gatekeeper → extractor per article
+    aggregator.py          # Cell-level: collapse all predictions → CellSignal
+    reaggregate.py         # Post-processing: re-run aggregation on high-variance cells
+
+    # Scoring & Output
+    orchestrator.py        # Batch runner: events × sources → vault → atlas
+    scorer.py              # Brier score + calibration + per-category scoring
+    backtest.py            # LightGBM backtest vs Polymarket (see BACKTEST.md)
+    render_atlas.py        # Renders factum_atlas.html from atlas/ data
+    generate_pages.py      # Generates per-event/source static HTML pages
+    sync_atlas.py          # Parses event table and syncs atlas entry JSON files
+
+    # One-off scripts
+    init_db.py             # Initialize SQLite DB for progress tracking
+    migrate_cell_signals.py  # One-time: compute cell_signal.json from existing vault data
+    poc_event_gen.py         # Convert harvested Polymarket events → pipeline event JSONs
+    create_real_samples.py   # Create real sample data for testing
+    create_sample_data.py    # Create synthetic sample data for testing
+
+  scripts/
+    improve_keywords.py    # One-time: LLM-generate search keywords for events
   tests/
     test_models.py
-  smoke_test.py         # 3 hardcoded articles, full pipeline run
-  BACKTEST.md           # backtest design rationale and usage
+  smoke_test.py            # 3 hardcoded articles through full pipeline
+  test_run.py              # Manual test runner
+  BACKTEST.md              # backtest design rationale and usage
 ```
 
 ## Setup
 
 ```bash
 cd pipeline
-cp .env.example .env   # add OPENROUTER_API_KEY
+cp .env.example .env   # configure API keys (see below)
 uv sync
 ```
 
@@ -33,9 +63,17 @@ uv sync
 
 | Variable | Required | Description |
 |---|---|---|
-| `OPENROUTER_API_KEY` | Yes | OpenRouter key for gatekeeper + extractor LLM calls |
+| `MODEL_API_KEY` | Yes* | API key for the LLM provider (AWS credentials or OpenRouter key) |
+| `MODEL_API_BASE` | No | LiteLLM-compatible base URL (leave empty for AWS Bedrock default) |
+| `AWS_REGION` | No | AWS region for Bedrock (default: `us-east-1`) |
+| `OPENROUTER_API_KEY` | No | OpenRouter key — alternative LLM provider |
+| `BRAVE_API_KEY` | No | Brave Search — URL resolution fallback |
+| `SERPAPI_KEY` | No | SerpAPI — news search provider (highest priority) |
+| `SERPERDEV_KEY` | No | Serper.dev — news search provider (second priority) |
 | `DATA_DIR` | No | Path to data directory (default: `../data`) |
 | `VAULT_DIR` | No | Path to vault directory (default: `$DATA_DIR/vault`) |
+
+\* AWS Bedrock (the default) uses the ambient AWS credentials (`~/.aws/credentials` or instance role), not `MODEL_API_KEY`. Set `MODEL_API_KEY` only when using an explicit key-based provider.
 
 > **Note:** `vault/` may be root-owned if previously created inside Docker. Set `VAULT_DIR` to a
 > user-writable path (e.g. `data/vault2/`) to avoid permission errors when running locally.
@@ -119,11 +157,12 @@ Progress: 3/250 (1.2%) | done: 2 | no_pred: 1 | failed: 0
 
 | Stage | File | Model | Purpose |
 |---|---|---|---|
-| 1 | `gatekeeper.py` | Gemini 2.0 Flash | filter — is this article a prediction? |
-| 2 | `extractor.py` | DeepSeek Chat | extract 11 forensic metrics per prediction |
+| 1 | `gatekeeper.py` | `bedrock/amazon.nova-micro-v1:0` | filter — is this article a prediction? |
+| 2 | `extractor.py` | `bedrock/amazon.nova-lite-v1:0` | extract 11 forensic metrics per prediction |
 | 3 | `runner.py` | — | orchestrate stages 1+2 per article |
-| 4 | `orchestrator.py` | — | batch across all events × sources |
-| 5 | `backtest.py` | LightGBM | compare predictions to Polymarket via Brier score |
+| 4 | `aggregator.py` | — | collapse article predictions → CellSignal |
+| 5 | `orchestrator.py` | — | batch across all events × sources |
+| 6 | `backtest.py` | LightGBM | compare predictions to Polymarket via Brier score |
 
 ## Known issues
 

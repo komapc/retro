@@ -14,21 +14,58 @@ TruthMachine (Factum Atlas) is a retroactive media analysis pipeline that:
 
 ```
 retro/
+├── api/                         # Oracle API — FastAPI microservice (oracle.daatan.com)
+│   ├── src/forecast_api/
+│   │   ├── main.py              # FastAPI app + lifespan
+│   │   ├── forecaster.py        # Core: search → extract → weight → aggregate
+│   │   ├── leaderboard.py       # Load/cache leaderboard.json for credibility weights
+│   │   ├── models.py            # Pydantic request/response schemas
+│   │   ├── config.py            # Settings (extends tm.config pattern)
+│   │   ├── auth.py              # x-api-key dependency
+│   │   └── limiter.py           # slowapi rate limiting
+│   └── pyproject.toml
 ├── pipeline/                    # Python pipeline (uv project)
 │   ├── src/tm/
-│   │   ├── gnews_ingest.py      # Article ingest: GNews RSS + multi-backend URL resolution + trafilatura
-│   │   ├── gatekeeper.py        # LLM: does this article contain predictions?
-│   │   ├── extractor.py         # LLM: extract structured predictions from article
-│   │   ├── orchestrator.py      # Orchestrates ingest → extract → vault → atlas
-│   │   ├── runner.py            # Runs gatekeeper + extractor per article
-│   │   ├── render_atlas.py      # Renders factum_atlas.html from atlas/ data
-│   │   ├── models.py            # Pydantic models (Prediction, ExtractionOutput, etc.)
 │   │   ├── config.py            # Settings (models, API keys via .env)
-│   │   ├── progress.py          # progress.json read/write helpers
+│   │   ├── models.py            # Pydantic models (Prediction, ExtractionOutput, CellSignal, etc.)
+│   │   ├── progress.py          # progress.json read/write helpers + rich terminal visualizer
+│   │   │
+│   │   ├── # --- Ingest ---
+│   │   ├── gnews_ingest.py      # GNews RSS → URL resolution → trafilatura + Wayback fallback
+│   │   ├── gdelt_ingest.py      # GDELT Doc 2.0 API batch ingestor (sequential, rate-limited)
+│   │   ├── ingestor.py          # Pluggable ingestor classes: DDGIngestor, GDELTIngestor
+│   │   ├── site_search.py       # Direct site-search scraper (no API key, high reliability)
+│   │   ├── web_search.py        # Multi-provider news search: SerpAPI → Serper → Brave → DDG
+│   │   ├── polymarket.py        # Polymarket Gamma API: fetch market history per event
+│   │   ├── polymarket_harvest.py # Bulk harvest of all resolved Polymarket political markets
+│   │   │
+│   │   ├── # --- Extraction ---
+│   │   ├── gatekeeper.py        # LLM stage 1: does this article contain predictions?
+│   │   ├── extractor.py         # LLM stage 2: extract structured predictions from article
+│   │   ├── runner.py            # Orchestrates gatekeeper → extractor per article
+│   │   ├── aggregator.py        # Cell-level: collapse all predictions for (event, source) → CellSignal
+│   │   ├── reaggregate.py       # Post-processing: re-run aggregation on high-variance cells
+│   │   │
+│   │   ├── # --- Scoring & Output ---
+│   │   ├── orchestrator.py      # Batch runner: events × sources → vault → atlas
+│   │   ├── scorer.py            # Brier score + calibration utilities + per-category scoring
 │   │   ├── backtest.py          # LightGBM backtest + Polymarket comparison
-│   │   └── scorer.py            # Brier score + calibration utilities
+│   │   ├── render_atlas.py      # Renders factum_atlas.html from atlas/ data
+│   │   ├── generate_pages.py    # Generates per-event/source static HTML pages
+│   │   ├── sync_atlas.py        # Parses event table and syncs atlas entry JSON files
+│   │   │
+│   │   ├── # --- One-off scripts ---
+│   │   ├── init_db.py           # Initialize SQLite DB for progress tracking
+│   │   ├── migrate_cell_signals.py # One-time: compute cell_signal.json from existing vault data
+│   │   ├── poc_event_gen.py     # Convert harvested Polymarket events → pipeline event JSONs
+│   │   ├── create_real_samples.py  # Create real sample data for testing
+│   │   └── create_sample_data.py   # Create synthetic sample data for testing
 │   ├── scripts/
 │   │   └── improve_keywords.py  # One-time: LLM-generate search keywords for events
+│   ├── tests/                   # pytest test suite
+│   ├── smoke_test.py            # 3 hardcoded articles through full pipeline
+│   ├── test_run.py              # Manual test runner
+│   ├── docker-compose.yml       # Local pipeline stack
 │   ├── pyproject.toml
 │   └── Dockerfile
 ├── data/                        # Gitignored except events/ and sources/
@@ -43,8 +80,19 @@ retro/
 ├── infra/
 │   ├── ec2_bootstrap.sh         # One-time EC2 setup script
 │   ├── ec2_run.sh               # Hourly pipeline loop (runs on EC2)
+│   ├── ec2_run_poc.sh           # PoC pipeline run script
+│   ├── deploy.sh                # Deploy pipeline to EC2
 │   ├── monitor.sh               # Local monitoring script (polls EC2 via SSM)
-│   └── openclaw/terraform/      # Terraform for EC2 instance (us-east-1)
+│   ├── logs.sh                  # Tail EC2 pipeline logs via SSM
+│   ├── check_keys.sh            # Verify required AWS Secrets Manager keys exist
+│   ├── remote_stats.sh          # Fetch pipeline progress stats from EC2
+│   ├── oracle-api.service       # systemd unit for the Oracle API process
+│   ├── truthmachine.service     # systemd unit for the pipeline batch process
+│   ├── truthmachine-poc.service # systemd unit for PoC pipeline variant
+│   ├── nginx/                   # Nginx config fragments (oracle.daatan.com vhost)
+│   ├── nanoclaw/                # Lightweight agent runtime
+│   └── openclaw/terraform/      # Terraform for EC2 instance (eu-central-1)
+├── case-studies/                # Interactive case study pages
 ├── .github/workflows/
 │   └── deploy-atlas.yml         # GitHub Actions: deploy factum_atlas.html to Pages
 └── factum_atlas.html            # Generated atlas (committed by EC2 after each cycle)
@@ -127,24 +175,26 @@ Each prediction has: `quote`, `claim`, `stance` (−1 to +1, event probability),
 ## Pipeline Flow
 
 ```
-gnews_ingest.py
-  │  GNews RSS → titles in date window
-  │  URL resolution chain: slug → Brave → SerpApi → Serper.dev → DDG
-  │  trafilatura → clean article text  (fallback: BeautifulSoup)
-  │  If 0 articles: CDX/Wayback fallback enumerates archived URLs
-  │  Save to data/raw_ingest/{source}/{event}/article_NN.json
+Ingest (choose one):
+  gnews_ingest.py  — GNews RSS → URL resolution (Brave/SerpAPI/Serper/DDG) → trafilatura
+                     If 0 articles: CDX/Wayback fallback
+  gdelt_ingest.py  — GDELT Doc 2.0 API, sequential with rate-limiting
+  ingestor.py      — Pluggable DDGIngestor / GDELTIngestor classes
+  site_search.py   — Direct site search scraper (no API key)
+  All save to: data/raw_ingest/{source}/{event}/article_NN.json
   ▼
 orchestrator.py  (local_file mode)
   │  For each (event, source) cell not yet done:
   │    runner.py → gatekeeper.py (LLM: has predictions?)
   │                extractor.py  (LLM: extract structured predictions)
+  │    aggregator.py → cell_signal.json (collapse predictions → CellSignal)
   │    Save extraction to vault2/extractions/{hash}_{event}_v1.json
   │    Save atlas link to atlas/{event}/{source}/entry_{hash[:8]}.json
   │    Update progress.json → status: done
   ▼
 render_atlas.py
-  │  Load all atlas/ entries
-  │  Compute competitive Brier scores
+  │  Load all atlas/ entries + cell signals
+  │  Compute competitive Brier scores (scorer.py)
   │  Render factum_atlas.html (interactive matrix)
   ▼
 git push → GitHub Actions → GitHub Pages
@@ -156,11 +206,12 @@ git push → GitHub Actions → GitHub Pages
 
 | Role | Model | Notes |
 |---|---|---|
-| Gatekeeper | `google/gemini-2.0-flash-lite-001` | Fast yes/no: does article contain predictions? |
-| Extractor | `google/gemini-2.0-flash-lite-001` | Structured extraction of up to 10 predictions |
+| Gatekeeper | `bedrock/amazon.nova-micro-v1:0` | Fast yes/no: does article contain predictions? |
+| Extractor | `bedrock/amazon.nova-lite-v1:0` | Structured extraction of up to 10 predictions |
+| Ground Truth | `bedrock/amazon.nova-lite-v1:0` | Referee: does the article confirm the outcome? |
 | Keywords | `google/gemini-2.0-flash-001` | One-time: generate search keywords per event |
 
-All via OpenRouter. Change in `pipeline/src/tm/config.py`.
+All defaults via AWS Bedrock. Override via env vars in `pipeline/src/tm/config.py`. The `model_api_base` and `model_api_key` settings allow routing through any LiteLLM-compatible provider (OpenRouter, etc.).
 
 ---
 
