@@ -2817,7 +2817,7 @@
     "A15:maariv": {
       "event_id": "A15",
       "source_id": "maariv",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -3048,7 +3048,7 @@
     "A18:n12": {
       "event_id": "A18",
       "source_id": "n12",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T13:27:38.789020"
+  "last_updated": "2026-04-16T13:50:48.258646"
 }
