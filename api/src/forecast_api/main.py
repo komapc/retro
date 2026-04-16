@@ -82,7 +82,11 @@ async def root():
 @app.get("/health", tags=["Meta"])
 async def health():
     """Liveness probe — no auth required."""
-    return {"status": "ok", "leaderboard_sources": leaderboard_size()}
+    return {
+        "status": "ok",
+        "version": app.version,
+        "leaderboard_sources": leaderboard_size(),
+    }
 
 
 @app.post("/forecast", response_model=ForecastResponse, tags=["Forecast"])
