@@ -2593,7 +2593,7 @@
     "A10:maariv": {
       "event_id": "A10",
       "source_id": "maariv",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T12:02:01.629713"
+  "last_updated": "2026-04-16T13:24:10.270362"
 }
