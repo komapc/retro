@@ -6,8 +6,16 @@ data/raw_ingest/
 data/pages/
 *.db
 
+# PoC data — bulk intermediate dirs go to S3, not git
+data/poc/raw_ingest/
+data/poc/atlas/
+data/poc/events/
+data/poc/vault2/
+data/poc/ingest_offset
+
 # Generated artifacts (EC2 pushes factum_atlas.html directly)
 pipeline_log.txt
+poc_log.txt
 gdelt_ingest.log
 
 # Python
