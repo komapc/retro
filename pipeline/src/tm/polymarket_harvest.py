@@ -17,6 +17,7 @@ Output:
 import argparse
 import json
 import logging
+import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -67,14 +68,32 @@ OUTCOME_NO_THRESHOLD = 0.05    # final prob ≤ this → outcome = False
 MIN_PRICE_POINTS = 5           # need at least this many daily price points
 
 
+# Patterns that disqualify a question even if it contains political keywords
+_NOISE_PATTERNS = re.compile(
+    r"nhl:|nba:|nfl:|mlb:|premier league|bundesliga|la liga|serie a|"
+    r"ufc \d|will .{0,30} (score|win|lose|beat) .{0,20} (in|at) (game|match|quarter)|"
+    r"will .{0,20} say ['\"]|will .{0,20} tweet|"
+    r"\bsports?\b|\bchess\b|horse racing|formula [e1]|"
+    r"cryptocurrency|bitcoin|ethereum|crypto|nft|"
+    r"box office|oscars?|grammy|emmy|super bowl halftime",
+    re.I,
+)
+
+
 def _is_political(market: dict) -> bool:
     """Check if market belongs to political/geopolitical category."""
+    question = (market.get("question") or "").lower()
+
+    # Hard exclusions — disqualify noise even if political keyword present
+    if _NOISE_PATTERNS.search(question):
+        return False
+
     # Old markets have explicit categories
     category = (market.get("category") or "").strip().lower()
     if category in POLITICAL_CATEGORIES:
         return True
+
     # New markets (~2022+) have empty category — use question keyword matching
-    question = (market.get("question") or "").lower()
     return any(kw in question for kw in POLITICAL_KEYWORDS)
 
 
@@ -93,22 +112,40 @@ def _parse_outcome_date(market: dict) -> str | None:
     return None
 
 
-def _extract_outcome(market: dict, prices: list[dict]) -> bool | None:
+def _extract_outcome(market: dict) -> bool | None:
     """
-    Determine binary outcome from price history.
-    Returns True/False, or None if ambiguous.
+    Determine binary outcome from the market's outcomePrices field.
+    outcomePrices is a JSON array string like '["0", "1"]' where index 0 = Yes, index 1 = No.
+    Returns True (Yes resolved), False (No resolved), or None if ambiguous.
     """
-    if not prices:
-        return None
+    # Try outcomePrices first (fastest — already in market data, no API call)
+    raw = market.get("outcomePrices")
+    if raw:
+        try:
+            prices_arr = json.loads(raw) if isinstance(raw, str) else raw
+            if len(prices_arr) >= 2:
+                yes_p = float(prices_arr[0])
+                no_p = float(prices_arr[1])
+                if yes_p >= OUTCOME_YES_THRESHOLD:
+                    return True
+                if no_p >= OUTCOME_YES_THRESHOLD or yes_p <= OUTCOME_NO_THRESHOLD:
+                    return False
+        except (ValueError, TypeError, json.JSONDecodeError):
+            pass
 
-    # Use the last price point as the resolution probability
-    final_prob = prices[-1]["probability"]
-    if final_prob >= OUTCOME_YES_THRESHOLD:
-        return True
-    if final_prob <= OUTCOME_NO_THRESHOLD:
-        return False
+    # Fall back to lastTradePrice
+    last = market.get("lastTradePrice")
+    if last is not None:
+        try:
+            p = float(last)
+            if p >= OUTCOME_YES_THRESHOLD:
+                return True
+            if p <= OUTCOME_NO_THRESHOLD:
+                return False
+        except (ValueError, TypeError):
+            pass
 
-    # Also check market's resolutionValue field if present
+    # Explicit resolution string
     res_val = (market.get("resolutionValue") or "").strip().lower()
     if res_val in ("yes", "1", "true"):
         return True
@@ -184,7 +221,6 @@ def harvest(
     total_checked = 0
     total_skipped_category = 0
     total_skipped_ambiguous = 0
-    total_skipped_sparse = 0
 
     with httpx.Client(timeout=30) as client:
         with Progress(
@@ -253,14 +289,8 @@ def harvest(
                         total_skipped_category += 1
                         continue
 
-                    # Price history
-                    prices = _fetch_price_history(market_id, outcome_date, client)
-                    if len(prices) < MIN_PRICE_POINTS:
-                        total_skipped_sparse += 1
-                        continue
-
-                    # Outcome clarity
-                    outcome = _extract_outcome(market, prices)
+                    # Outcome clarity — use outcomePrices from market (no API call needed)
+                    outcome = _extract_outcome(market)
                     if outcome is None:
                         total_skipped_ambiguous += 1
                         continue
@@ -280,7 +310,8 @@ def harvest(
                         "outcome_date": outcome_date,
                         "category": category,
                         "pm_url": f"https://polymarket.com/event/{slug}" if slug else "",
-                        "prices": prices,
+                        # prices fetched separately via fetch_prices() to keep harvest fast
+                        "prices": [],
                     }
 
                     seen_ids.add(market_id)
@@ -295,7 +326,7 @@ def harvest(
                     description=(
                         f"Page {page} — {len(existing_events) + len(new_events)} events "
                         f"(checked {total_checked}, skipped cat={total_skipped_category} "
-                        f"ambig={total_skipped_ambiguous} sparse={total_skipped_sparse})"
+                        f"ambig={total_skipped_ambiguous})"
                     ),
                 )
                 page += 1
@@ -305,20 +336,59 @@ def harvest(
     console.print(f"  New this run: {len(new_events)}")
     console.print(f"  Skipped — not political: {total_skipped_category}")
     console.print(f"  Skipped — ambiguous outcome: {total_skipped_ambiguous}")
-    console.print(f"  Skipped — sparse price history: {total_skipped_sparse}")
-
     return all_events
+
+
+def fetch_prices(data_dir: Path) -> None:
+    """
+    Second pass: fetch price history for all events in events.jsonl that have empty prices.
+    Writes updated events.jsonl in-place.
+    Run after harvest() completes.
+    """
+    output_path = data_dir / "pm_harvest" / "events.jsonl"
+    if not output_path.exists():
+        console.print("[red]events.jsonl not found — run harvest first[/red]")
+        return
+
+    events: list[dict] = []
+    with open(output_path) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                events.append(json.loads(line))
+
+    need_prices = [e for e in events if not e.get("prices")]
+    console.print(f"[bold cyan]Fetch prices[/bold cyan] — {len(need_prices)}/{len(events)} events need price history")
+
+    with httpx.Client(timeout=30) as client:
+        for i, ev in enumerate(need_prices):
+            prices = _fetch_price_history(ev["pm_id"], ev["outcome_date"], client)
+            ev["prices"] = prices
+            if (i + 1) % 50 == 0:
+                console.print(f"  {i+1}/{len(need_prices)} fetched...")
+                time.sleep(0.5)
+
+    # Rewrite file
+    with open(output_path, "w") as f:
+        for ev in events:
+            f.write(json.dumps(ev) + "\n")
+    console.print(f"[bold green]Done.[/bold green] Price history written for {len(need_prices)} events.")
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
 
+    import os
     parser = argparse.ArgumentParser(description="Harvest Polymarket political events")
     parser.add_argument("--data-dir", default="data/poc", help="Base data directory (default: data/poc)")
     parser.add_argument("--start", default="2023-01-01", help="Start date YYYY-MM-DD")
     parser.add_argument("--end", default=None, help="End date YYYY-MM-DD (default: today)")
+    parser.add_argument("--fetch-prices", action="store_true",
+                        help="Second pass: fetch price history for harvested events")
     args = parser.parse_args()
 
-    import os
     base = Path(os.environ.get("DATA_DIR", args.data_dir))
-    harvest(base, start_date=args.start, end_date=args.end)
+    if args.fetch_prices:
+        fetch_prices(base)
+    else:
+        harvest(base, start_date=args.start, end_date=args.end)
