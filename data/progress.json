@@ -5848,7 +5848,7 @@
     "G08:n12": {
       "event_id": "G08",
       "source_id": "n12",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T22:31:52.780681"
+  "last_updated": "2026-04-16T22:35:38.153559"
 }
