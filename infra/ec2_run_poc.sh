@@ -142,22 +142,39 @@ else:
     commit_poc_data "event JSONs generated ($GENERATED total)"
   fi
 
-  # ── Phase 3: Ingest articles (batch of 10 PoC events per cycle) ──────────
+  # ── Phase 3: Ingest articles (batch of 50 qualified PoC events per cycle) ──
   log "Starting PoC ingest — $(poc_cell_stats)"
+
+  # Option 5: only ingest events with >5 Polymarket price points (meaningful markets)
   ALL_POC_EVENTS=$(python3 -c "
-import pathlib
+import json, pathlib
+harvest = pathlib.Path('$POC_DIR/pm_harvest/events.jsonl')
 events_dir = pathlib.Path('$POC_DIR/events')
-print(' '.join(sorted(p.stem for p in events_dir.glob('*.json'))))
+# Build set of pm_ids with >5 price points
+qualified_ids = set()
+if harvest.exists():
+    for line in harvest.read_text().splitlines():
+        if not line.strip(): continue
+        ev = json.loads(line)
+        # Use event_id format from poc_event_gen: pm + first 8 alphanum chars of pm_id
+        import re
+        safe = re.sub(r'[^a-zA-Z0-9]', '', str(ev['pm_id']))[:8]
+        event_id = f'pm{safe}'
+        if len(ev.get('prices') or []) > 5:
+            qualified_ids.add(event_id)
+# Return only qualified event IDs that have a JSON file
+result = sorted(p.stem for p in events_dir.glob('*.json') if p.stem in qualified_ids)
+print(' '.join(result))
 " 2>/dev/null)
 
   if [[ -z "$ALL_POC_EVENTS" ]]; then
-    log "No PoC event JSONs yet — skipping ingest."
+    log "No qualified PoC events yet — skipping ingest."
     return
   fi
 
   read -ra ALL_ARR <<< "$ALL_POC_EVENTS"
   TOTAL_ALL=${#ALL_ARR[@]}
-  BATCH_SIZE=10
+  BATCH_SIZE=50
   OFFSET_FILE="$POC_DIR/ingest_offset"
   OFFSET=$(cat "$OFFSET_FILE" 2>/dev/null || echo 0)
   OFFSET=$(( OFFSET % TOTAL_ALL ))
@@ -169,9 +186,9 @@ print(' '.join(sorted(p.stem for p in events_dir.glob('*.json'))))
   NEW_OFFSET=$(( (OFFSET + BATCH_SIZE) % TOTAL_ALL ))
   echo "$NEW_OFFSET" > "$OFFSET_FILE"
 
-  log "Ingesting PoC events (offset $OFFSET/$TOTAL_ALL): ${INGEST_EVENTS[*]}"
+  log "Ingesting PoC events (offset $OFFSET/$TOTAL_ALL qualified): ${INGEST_EVENTS[*]:0:5}..."
   DATA_DIR="$POC_DIR" uv run --project "$PIPELINE_DIR" \
-    python -m tm.gnews_ingest --events "${INGEST_EVENTS[@]}" 2>&1 | tail -10
+    python -m tm.gnews_ingest --events "${INGEST_EVENTS[@]}" --max-concurrent 5 2>&1 | tail -10
   log "PoC ingest done — $(poc_cell_stats)"
 
   # ── Phase 4: Extract predictions for PoC events with articles ────────────
