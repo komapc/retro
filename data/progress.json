@@ -920,8 +920,8 @@
     "G02:jpost": {
       "event_id": "G02",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "G05:globes": {
@@ -1011,8 +1011,8 @@
     "F05:globes": {
       "event_id": "F05",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "F05:haaretz": {
@@ -1046,8 +1046,8 @@
     "F05:ynet": {
       "event_id": "F05",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "C05:israel_hayom": {
@@ -1795,15 +1795,15 @@
     "F04:globes": {
       "event_id": "F04",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "F04:haaretz": {
       "event_id": "F04",
       "source_id": "haaretz",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "F04:israel_hayom": {
@@ -5323,8 +5323,8 @@
     "F04:ch13": {
       "event_id": "F04",
       "source_id": "ch13",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "F04:kan11": {
@@ -5344,8 +5344,8 @@
     "F04:n12": {
       "event_id": "F04",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "F05:ch13": {
@@ -5428,8 +5428,8 @@
     "G01:n12": {
       "event_id": "G01",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "G01:reuters": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T09:26:28.626532"
+  "last_updated": "2026-04-16T09:28:15.503177"
 }
