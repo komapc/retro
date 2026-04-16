@@ -352,8 +352,9 @@ def harvest(
 
 def backfill_clob_tokens(data_dir: Path) -> int:
     """
-    Read cached raw_page_N.json files and add clob_token_yes to events that lack it.
-    Also resets prices_fetched=False for those events so fetch_prices() re-runs them.
+    Add clob_token_yes to events that lack it.
+    First tries cached raw_page_N.json files; falls back to paging the Gamma API.
+    Also resets prices_fetched=False for updated events so fetch_prices() re-runs them.
     Returns count of events updated.
     """
     harvest_dir = data_dir / "pm_harvest"
@@ -362,10 +363,25 @@ def backfill_clob_tokens(data_dir: Path) -> int:
         console.print("[red]events.jsonl not found[/red]")
         return 0
 
-    # Build lookup: numeric market_id -> clob_token_yes from cached raw pages
-    console.print("[bold cyan]Backfill CLOB tokens[/bold cyan] — scanning cached raw pages...")
+    events: list[dict] = []
+    with open(output_path) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                events.append(json.loads(line))
+
+    # Build set of pm_ids that still need a clob token
+    need_token: set[str] = {str(ev["pm_id"]) for ev in events if not ev.get("clob_token_yes")}
+    if not need_token:
+        console.print("[green]All events already have clob_token_yes — nothing to do.[/green]")
+        return 0
+
+    console.print(f"[bold cyan]Backfill CLOB tokens[/bold cyan] — {len(need_token)} events need token")
+
+    # Pass 1: try cached raw pages (fast, no API calls)
     clob_lookup: dict[str, str] = {}
     page = 0
+    cached_pages = 0
     while True:
         raw_cache = harvest_dir / f"raw_page_{page}.json"
         if not raw_cache.exists():
@@ -376,25 +392,76 @@ def backfill_clob_tokens(data_dir: Path) -> int:
             for m in markets:
                 mid = str(m.get("id") or m.get("conditionId", ""))
                 tokens = m.get("clobTokenIds") or []
-                if mid and tokens:
+                if mid and tokens and mid in need_token:
                     clob_lookup[mid] = str(tokens[0])
+            cached_pages += 1
         except Exception:
             pass
         page += 1
-    console.print(f"  Found CLOB tokens for {len(clob_lookup)} markets in {page} cached pages")
 
-    events: list[dict] = []
-    with open(output_path) as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                events.append(json.loads(line))
+    if cached_pages:
+        console.print(f"  From cache ({cached_pages} pages): found {len(clob_lookup)} tokens")
 
+    # Pass 2: fetch remaining from Gamma API (paging through all closed markets)
+    still_need = need_token - set(clob_lookup.keys())
+    if still_need:
+        console.print(f"  Fetching {len(still_need)} remaining tokens from Gamma API...")
+        fetched_from_api = 0
+        api_page = 0
+        with httpx.Client(timeout=30) as client:
+            while still_need:
+                raw_cache = harvest_dir / f"raw_page_{api_page}.json"
+                markets = None
+                if raw_cache.exists():
+                    try:
+                        with open(raw_cache) as f:
+                            markets = json.load(f)
+                    except Exception:
+                        pass
+
+                if markets is None:
+                    try:
+                        r = client.get(
+                            f"{GAMMA_BASE}/markets",
+                            params={"closed": "true", "limit": PAGE_SIZE, "offset": api_page * PAGE_SIZE},
+                            timeout=20,
+                        )
+                        if r.status_code != 200:
+                            logger.warning("Backfill page %d: HTTP %d", api_page, r.status_code)
+                            break
+                        markets = r.json()
+                        # Cache for future use
+                        with open(raw_cache, "w") as f:
+                            json.dump(markets, f)
+                        time.sleep(REQUEST_DELAY)
+                    except Exception as exc:
+                        logger.error("Backfill page %d error: %s", api_page, exc)
+                        break
+
+                if not markets:
+                    break
+
+                for m in markets:
+                    mid = str(m.get("id") or m.get("conditionId", ""))
+                    tokens = m.get("clobTokenIds") or []
+                    if mid and tokens and mid in still_need:
+                        clob_lookup[mid] = str(tokens[0])
+                        still_need.discard(mid)
+                        fetched_from_api += 1
+
+                api_page += 1
+                if api_page % 20 == 0:
+                    console.print(f"    Page {api_page}, {len(still_need)} still needed...")
+
+        console.print(f"  From API: found {fetched_from_api} additional tokens")
+
+    # Apply updates
     updated = 0
     for ev in events:
+        mid = str(ev.get("pm_id", ""))
         if ev.get("clob_token_yes"):
             continue
-        token = clob_lookup.get(str(ev.get("pm_id", "")))
+        token = clob_lookup.get(mid)
         if token:
             ev["clob_token_yes"] = token
             ev["prices_fetched"] = False  # force re-fetch with correct token
