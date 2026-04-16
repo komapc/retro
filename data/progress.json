@@ -5001,8 +5001,8 @@
     "E10:haaretz": {
       "event_id": "E10",
       "source_id": "haaretz",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "E10:israel_hayom": {
@@ -5029,8 +5029,8 @@
     "E10:maariv": {
       "event_id": "E10",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E10:n12": {
@@ -5099,8 +5099,8 @@
     "F01:jpost": {
       "event_id": "F01",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "F01:kan11": {
@@ -5113,8 +5113,8 @@
     "F01:maariv": {
       "event_id": "F01",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "F01:n12": {
@@ -5162,15 +5162,15 @@
     "F02:globes": {
       "event_id": "F02",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "F02:haaretz": {
       "event_id": "F02",
       "source_id": "haaretz",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "F02:israel_hayom": {
@@ -5225,8 +5225,8 @@
     "F02:walla": {
       "event_id": "F02",
       "source_id": "walla",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "F02:ynet": {
@@ -5267,8 +5267,8 @@
     "F03:jpost": {
       "event_id": "F03",
       "source_id": "jpost",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "F03:kan11": {
@@ -5316,8 +5316,8 @@
     "F03:ynet": {
       "event_id": "F03",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 15,
       "error": null
     },
     "F04:ch13": {
@@ -5881,5 +5881,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T09:23:10.153369"
+  "last_updated": "2026-04-16T09:26:28.626532"
 }
