@@ -2817,7 +2817,7 @@
     "A15:maariv": {
       "event_id": "A15",
       "source_id": "maariv",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -5949,7 +5949,42 @@
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
+    },
+    "A11:kan11": {
+      "event_id": "A11",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:kan11": {
+      "event_id": "A12",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:kan11": {
+      "event_id": "A13",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:kan11": {
+      "event_id": "A14",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:kan11": {
+      "event_id": "A15",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
     }
   },
-  "last_updated": "2026-04-16T20:53:33.619771"
+  "last_updated": "2026-04-16T20:53:41.996431"
 }
