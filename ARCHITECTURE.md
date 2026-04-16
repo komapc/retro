@@ -82,7 +82,6 @@ retro/
 │   ├── ec2_bootstrap.sh         # One-time EC2 setup script
 │   ├── ec2_run.sh               # Hourly pipeline loop (runs on EC2)
 │   ├── ec2_run_poc.sh           # PoC pipeline run script
-│   ├── deploy.sh                # Deploy pipeline to EC2
 │   ├── monitor.sh               # Local monitoring script (polls EC2 via SSM)
 │   ├── logs.sh                  # Tail EC2 pipeline logs via SSM
 │   ├── check_keys.sh            # Verify required AWS Secrets Manager keys exist
@@ -90,9 +89,7 @@ retro/
 │   ├── oracle-api.service       # systemd unit for the Oracle API process
 │   ├── truthmachine.service     # systemd unit for the pipeline batch process
 │   ├── truthmachine-poc.service # systemd unit for PoC pipeline variant
-│   ├── nginx/                   # Nginx config fragments (oracle.daatan.com vhost)
-│   ├── nanoclaw/                # Lightweight agent runtime
-│   └── openclaw/terraform/      # Terraform for EC2 instance (eu-central-1)
+│   └── nginx/                   # Nginx config fragments (oracle.daatan.com vhost)
 ├── case-studies/                # Interactive case study pages
 ├── .github/workflows/
 │   └── deploy-atlas.yml         # GitHub Actions: deploy factum_atlas.html + oracle-test + duel to Pages
@@ -299,40 +296,35 @@ weighted_brier  = brier × weight
 - **Access**: AWS SSM Session Manager (no SSH key — instance has no key pair)
 - **Instance name**: `truthmachine-pipeline` (`i-00ac444b94c5ff9b2`)
 - **Public IP**: `3.120.185.111` (dynamic — reassigned on stop/start)
-- **Terraform**: `infra/openclaw/terraform/`
+- **Terraform**: not in this repo. The EC2 instance was originally provisioned by
+  the `openclaw` Terraform stack, which has since been decommissioned. The instance
+  continues to run manually; a fresh Terraform module for TruthMachine would need
+  to be authored if a replacement is ever required.
 
-### Required Secrets (AWS Secrets Manager, `us-east-1`)
+### Required Secrets (AWS Secrets Manager, `eu-central-1`)
+
+> **Note on naming:** The secret names below are prefixed `openclaw/` for historical
+> reasons — they predate the decommissioning of the OpenClaw stack. The secrets
+> themselves are still in active use by TruthMachine/Oracle and should **not** be
+> renamed without a coordinated update to `infra/ec2_bootstrap.sh`, `infra/check_keys.sh`,
+> and the Oracle API service config.
+
 | Secret name | Used by |
 |---|---|
-| `openclaw/openrouter-api-key` | LLM inference via OpenRouter |
+| `openclaw/openrouter-api-key` | LLM inference via OpenRouter (fallback) |
 | `openclaw/brave-api-key` | URL resolution — Brave Search (optional) |
 | `openclaw/serpapi-key` | URL resolution — SerpApi/Google (optional) |
 | `openclaw/serperdev-key` | URL resolution — Serper.dev/Google (optional) |
 | `openclaw/github-pat` | Push `factum_atlas.html` to repo |
+| `openclaw/oracle-api-key` | Shared auth key between Oracle API and daatan |
 
-### Deploy to a New Server
+### Bootstrap on an existing EC2 instance
 
 ```bash
-# 1. Provision EC2 via Terraform
-cd infra/openclaw/terraform
-terraform init && terraform apply
-
-# 2. Create required secrets in Secrets Manager
-aws secretsmanager create-secret --region us-east-1 \
-  --name openclaw/github-pat --secret-string "ghp_YOUR_TOKEN"
-# (openrouter and brave keys should already exist)
-
-# 3. Connect via SSM
-aws ssm start-session \
-  --target $(aws ec2 describe-instances \
-    --filters "Name=tag:Name,Values=openclaw-worker" \
-    --query "Reservations[0].Instances[0].InstanceId" --output text) \
-  --region us-east-1
-
-# 4. Bootstrap (run once on the instance)
+# On the instance (via SSM session):
 curl -sSL https://raw.githubusercontent.com/komapc/retro/main/infra/ec2_bootstrap.sh | bash
 
-# 5. Start pipeline loop
+# Start pipeline loop
 nohup bash ~/truthmachine/infra/ec2_run.sh \
   >> ~/truthmachine/pipeline_log.txt 2>&1 &
 ```
