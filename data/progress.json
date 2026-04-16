@@ -4980,7 +4980,7 @@
     "E09:ynet": {
       "event_id": "E09",
       "source_id": "ynet",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5057,7 +5057,7 @@
     "E10:walla": {
       "event_id": "E10",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5071,7 +5071,7 @@
     "F01:ch13": {
       "event_id": "F01",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -5141,7 +5141,7 @@
     "F01:walla": {
       "event_id": "F01",
       "source_id": "walla",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T21:50:03.172913"
+  "last_updated": "2026-04-16T22:16:11.776856"
 }
