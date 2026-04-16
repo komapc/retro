@@ -18,5 +18,6 @@
     "GPT-4",
     "benchmark"
   ],
-  "polymarket": null
+  "polymarket": null,
+  "scope": "global"
 }

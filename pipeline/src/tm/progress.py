@@ -36,7 +36,6 @@ SOURCE_ABBREV: dict[str, str] = {
     "n12":          "N12",
     "israel_hayom": "IHY",
     "globes":       "GLB",
-    "kan11":        "KAN",
     "themarker":    "TMK",
     "walla":        "WAL",
     "maariv":       "MAR",
