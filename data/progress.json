@@ -4553,7 +4553,7 @@
     "E03:maariv": {
       "event_id": "E03",
       "source_id": "maariv",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T00:06:17.933307"
+  "last_updated": "2026-04-17T01:30:10.135263"
 }
