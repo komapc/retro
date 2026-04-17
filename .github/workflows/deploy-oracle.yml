@@ -1,0 +1,122 @@
+name: Deploy Oracle API
+
+# Auto-deploys the Oracle API on every merge to main. Invokes
+# infra/deploy_oracle.sh on the EC2 box via SSM Run Command — no SSH needed.
+# The script does git-fetch → reset → uv-sync → SIGHUP reload with a no-op
+# fast-path when HEAD is unchanged, so path-filter misses here (e.g. data-only
+# atlas commits from the pipeline) are harmless and cheap.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - api/**
+      - pipeline/**
+      - infra/deploy_oracle.sh
+      - infra/oracle-api.service
+      - .github/workflows/deploy-oracle.yml
+
+  # Manual trigger — useful for redeploying the current main (e.g. after a
+  # hotfix on the box) or for pinning a deploy to an older SHA for rollback.
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "git ref to deploy (default: current HEAD of main)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  id-token: write   # required for OIDC → AWS role assumption
+
+# Serialize deploys to the same box. cancel-in-progress=false because an
+# in-flight SSM command can't be cleanly cancelled from GHA (it'd keep running
+# on the box) — safer to queue than to race.
+concurrency:
+  group: deploy-oracle
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'eu-central-1' }}
+  ORACLE_INSTANCE_ID: ${{ vars.ORACLE_INSTANCE_ID || 'i-00ac444b94c5ff9b2' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve deploy ref
+        id: ref
+        run: |
+          REF="${{ github.event.inputs.ref || github.sha }}"
+          echo "sha=${REF}" >> "$GITHUB_OUTPUT"
+          echo "Deploying ${REF}"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-session-name: gha-deploy-oracle-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Send deploy command via SSM
+        id: send
+        run: |
+          set -euo pipefail
+          CMD_ID=$(aws ssm send-command \
+            --region "${AWS_REGION}" \
+            --instance-ids "${ORACLE_INSTANCE_ID}" \
+            --document-name AWS-RunShellScript \
+            --comment "gha deploy oracle-api ${{ steps.ref.outputs.sha }} (run ${{ github.run_id }})" \
+            --parameters "commands=[\"sudo -u ubuntu bash /home/ubuntu/oracle-api/infra/deploy_oracle.sh ${{ steps.ref.outputs.sha }}\"]" \
+            --output text --query 'Command.CommandId')
+          echo "cmd_id=${CMD_ID}" >> "$GITHUB_OUTPUT"
+          echo "SSM command: ${CMD_ID}"
+
+      # Poll until the command finishes. `aws ssm wait command-executed` has a
+      # built-in 100-iteration @ 5s retry loop (~8min ceiling). If deploy takes
+      # longer than that something is badly wrong and the next step will
+      # surface it via the final Status fetch.
+      - name: Wait for SSM command to finish
+        id: wait
+        continue-on-error: true
+        run: |
+          aws ssm wait command-executed \
+            --region "${AWS_REGION}" \
+            --instance-id "${ORACLE_INSTANCE_ID}" \
+            --command-id "${{ steps.send.outputs.cmd_id }}"
+
+      # Always fetch and print the invocation result, even if `wait` errored
+      # (a Failed/Cancelled/TimedOut status makes wait exit non-zero but we
+      # still want the box's stdout/stderr in the Actions log).
+      - name: Fetch deploy output
+        id: result
+        run: |
+          set -euo pipefail
+          aws ssm get-command-invocation \
+            --region "${AWS_REGION}" \
+            --instance-id "${ORACLE_INSTANCE_ID}" \
+            --command-id "${{ steps.send.outputs.cmd_id }}" \
+            --output json > invocation.json
+
+          STATUS=$(jq -r '.Status' invocation.json)
+          echo "status=${STATUS}" >> "$GITHUB_OUTPUT"
+
+          echo "::group::deploy stdout"
+          jq -r '.StandardOutputContent' invocation.json
+          echo "::endgroup::"
+
+          echo "::group::deploy stderr"
+          jq -r '.StandardErrorContent' invocation.json
+          echo "::endgroup::"
+
+          echo "### Oracle API deploy: \`${STATUS}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- ref: \`${{ steps.ref.outputs.sha }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- instance: \`${ORACLE_INSTANCE_ID}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- ssm command: \`${{ steps.send.outputs.cmd_id }}\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail job on non-success
+        if: steps.result.outputs.status != 'Success'
+        run: |
+          echo "SSM command ended with Status=${{ steps.result.outputs.status }}"
+          exit 1
