@@ -1,11 +1,23 @@
-# IAM — GitHub Actions → AWS
+# IAM templates
 
-These are templates for the IAM role that `deploy-oracle.yml` assumes via OIDC. They are not applied automatically; a human runs the setup commands in [`docs/ORACLE_DEPLOY.md`](../../docs/ORACLE_DEPLOY.md#one-time-iam-setup) once, edits the placeholders, and sets the `AWS_DEPLOY_ROLE_ARN` repo variable.
+Templates for AWS IAM policies referenced by the infra. They are not applied automatically; a human runs the setup commands (see each section) once, edits the placeholders, and wires any resulting ARN into the workflow / config as called out.
+
+## 1. GitHub Actions → AWS (OIDC, used by `deploy-oracle.yml`)
+
+See setup in [`docs/ORACLE_DEPLOY.md`](../../docs/ORACLE_DEPLOY.md#one-time-iam-setup). Set the resulting role ARN as the `AWS_DEPLOY_ROLE_ARN` repo variable.
 
 | File | Purpose |
 |------|---------|
 | `gha-deploy-oracle-trust.json` | Who can assume the role — scoped to GitHub Actions runs from this repo on `main` (plus manual `workflow_dispatch`). |
 | `gha-deploy-oracle-policy.json` | What the role can do — `ssm:SendCommand` scoped to the one oracle instance *and* only the `AWS-RunShellScript` document, plus read-only `ssm:Get*/List*Command*` for polling results. See "Why `SendCommand` is two separate statements" below. |
+
+## 2. TruthMachine EC2 → S3 (snapshot/restore atlas state)
+
+Inline policy for the existing `truthmachine-ec2-role` (attached to the batch-pipeline EC2 instance). Grants Get/Put/Delete on the snapshot bucket only. See setup in [`docs/ATLAS_SNAPSHOTS.md`](../../docs/ATLAS_SNAPSHOTS.md#one-time-iam-setup).
+
+| File | Purpose |
+|------|---------|
+| `truthmachine-ec2-s3-snapshots-policy.json` | Read/write access to `truthmachine-atlas-snapshots-<ACCOUNT_ID>` only. Lists the bucket, and gets/puts/deletes objects (including versioned deletes so the per-cycle `snapshots/` lifecycle rule works). |
 
 ## Placeholders to replace
 
@@ -13,9 +25,9 @@ Before applying:
 
 | Placeholder | Where | What to put |
 |-------------|-------|-------------|
-| `<ACCOUNT_ID>` | both files | Your 12-digit AWS account ID (`aws sts get-caller-identity --query Account --output text`) |
-| `<REGION>` | policy | The region the oracle instance lives in (currently `eu-central-1`) |
-| `<INSTANCE_ID>` | policy | The oracle instance ID (currently `i-00ac444b94c5ff9b2`) |
+| `<ACCOUNT_ID>` | all files | Your 12-digit AWS account ID (`aws sts get-caller-identity --query Account --output text`) |
+| `<REGION>` | `gha-deploy-oracle-policy.json` | The region the oracle instance lives in (currently `eu-central-1`) |
+| `<INSTANCE_ID>` | `gha-deploy-oracle-policy.json` | The oracle instance ID (currently `i-00ac444b94c5ff9b2`) |
 
 ## Scope rationale
 
