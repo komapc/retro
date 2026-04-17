@@ -1683,8 +1683,8 @@
     "B07:globes": {
       "event_id": "B07",
       "source_id": "globes",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "B07:haaretz": {
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T02:29:37.988081"
+  "last_updated": "2026-04-17T02:40:17.771620"
 }
