@@ -4588,7 +4588,7 @@
     "E03:ynet": {
       "event_id": "E03",
       "source_id": "ynet",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T05:02:26.518424"
+  "last_updated": "2026-04-17T06:40:51.582936"
 }
