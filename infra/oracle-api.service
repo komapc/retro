@@ -7,7 +7,11 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=ubuntu
-WorkingDirectory=/home/ubuntu/truthmachine/api
+# Dedicated API-only checkout (decoupled from the pipeline's working tree at
+# /home/ubuntu/truthmachine, which accumulates local atlas/progress commits
+# from the ingest loop). Deploys reset this checkout to origin/main cleanly
+# without ever touching the pipeline's git state. See docs/ORACLE_DEPLOY.md.
+WorkingDirectory=/home/ubuntu/oracle-api/api
 
 # Gunicorn supervises uvicorn workers. The master process owns the listening
 # socket on :8001 and keeps it open across SIGHUP, so `systemctl reload` swaps
@@ -42,6 +46,8 @@ ExecReload=/bin/kill -HUP $MAINPID
 # via `systemctl restart`, but incurs the usual 2-5s 502 window.
 Restart=always
 RestartSec=10
+# Shared env file: DATA_DIR points into the pipeline's data dir so the API
+# reads live leaderboard.json / events/ written by the ingest loop.
 EnvironmentFile=/home/ubuntu/truthmachine/.env
 StandardOutput=append:/home/ubuntu/truthmachine/oracle_log.txt
 StandardError=append:/home/ubuntu/truthmachine/oracle_log.txt

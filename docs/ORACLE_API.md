@@ -107,6 +107,8 @@ No auth required. Returns:
 
 ## Deployment
 
+> **Deploy flow and one-time migration:** see [`ORACLE_DEPLOY.md`](ORACLE_DEPLOY.md). The API runs from its own checkout at `/home/ubuntu/oracle-api/` (separate from the pipeline's `/home/ubuntu/truthmachine/`) so deploys can `git reset --hard origin/main` without touching the pipeline's unpushed atlas commits. Routine deploys use `infra/deploy_oracle.sh`.
+
 ### Directory structure
 
 ```
@@ -124,27 +126,30 @@ retro/
 │       └── models.py           ← Pydantic request/response schemas
 ├── infra/
 │   ├── oracle-api.service      ← systemd unit for the API process
+│   ├── deploy_oracle.sh        ← zero-downtime deploy (fetch → reset → sync → SIGHUP)
 │   └── ...
 ```
 
 ### First-time EC2 setup
 
+The pipeline's checkout at `~/truthmachine` already exists. Add a second, API-only checkout at `~/oracle-api` and install the unit file from it. Full walkthrough in [`ORACLE_DEPLOY.md`](ORACLE_DEPLOY.md#one-time-migration-pipeline-ec2-i-00ac444b94c5ff9b2).
+
 ```bash
-cd ~/truthmachine
-git pull origin main
+# New: dedicated API checkout
+cd /home/ubuntu
+git clone https://github.com/komapc/retro.git oracle-api
+cd oracle-api/api
+uv sync --frozen
 
-# Install API deps (shares uv toolchain with pipeline)
-cd api
-uv sync
+# .env already exists at /home/ubuntu/truthmachine/.env and is shared
+# (the unit file points EnvironmentFile= there). Nothing new to add beyond
+# ORACLE_API_KEY, which is already set for the existing service.
 
-# Add to .env
-echo "ORACLE_API_KEY=<generate-with: openssl rand -hex 32>" >> ../.env
-
-# Install and start systemd unit
-sudo cp ~/truthmachine/infra/oracle-api.service /etc/systemd/system/
+# Install the new unit file (WorkingDirectory now points at oracle-api/)
+sudo cp /home/ubuntu/oracle-api/infra/oracle-api.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable oracle-api
-sudo systemctl start oracle-api
+sudo systemctl restart oracle-api   # first-time switchover; later deploys use `reload`
 ```
 
 ### Smoke test
@@ -162,14 +167,20 @@ Since the service is supervised by gunicorn, routine deploys use `reload`, not
 `restart`. The gunicorn master keeps the :8001 listening socket open while it
 swaps workers with fresh code, so clients see no 502s.
 
-```bash
-cd ~/truthmachine
-git pull origin main
-cd api && uv sync --frozen
+Use the one-shot script:
 
-# Smoke-check imports BEFORE reloading — if this fails, abort.
-# Old workers keep serving; we never reload broken code.
-ORACLE_API_KEY=dummy uv run python -c "from forecast_api.main import app"
+```bash
+bash /home/ubuntu/oracle-api/infra/deploy_oracle.sh              # -> origin/main
+bash /home/ubuntu/oracle-api/infra/deploy_oracle.sh <commit-sha> # pin to a SHA
+```
+
+Which is equivalent to:
+
+```bash
+cd /home/ubuntu/oracle-api
+git fetch origin main
+git reset --hard origin/main
+cd api && uv sync --frozen
 
 # Zero-downtime swap — master keeps the socket; workers recycle gracefully.
 sudo systemctl reload oracle-api
