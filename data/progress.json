@@ -5092,8 +5092,8 @@
     "F01:israel_hayom": {
       "event_id": "F01",
       "source_id": "israel_hayom",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "F01:jpost": {
@@ -5148,8 +5148,8 @@
     "F01:ynet": {
       "event_id": "F01",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "F02:ch13": {
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T06:55:46.721092"
+  "last_updated": "2026-04-17T07:02:02.949958"
 }
