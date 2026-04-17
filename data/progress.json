@@ -3692,7 +3692,7 @@
     "C03:n12": {
       "event_id": "C03",
       "source_id": "n12",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T03:18:39.189910"
+  "last_updated": "2026-04-17T04:36:28.835868"
 }
