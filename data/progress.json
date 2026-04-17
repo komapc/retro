@@ -4504,8 +4504,8 @@
     "E02:ynet": {
       "event_id": "E02",
       "source_id": "ynet",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E03:ch13": {
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T04:55:54.526266"
+  "last_updated": "2026-04-17T05:02:26.518424"
 }
