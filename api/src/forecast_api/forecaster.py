@@ -178,7 +178,15 @@ async def _process_article(
     gate_ms = (time.perf_counter() - gate_start) * 1000
 
     if not gate.is_prediction:
-        logger.debug("Gatekeeper rejected: %s", result.url)
+        # Bumped from DEBUG → INFO so rejections surface in oracle_log.txt.
+        # The gatekeeper's `reason` is the only explanation we have for why an
+        # article that *looked* relevant from search was tossed; without it
+        # "No usable predictions extracted from N articles" is opaque.
+        logger.info(
+            "event=article_outcome outcome=gate_rejected url=%s reason=%r",
+            result.url,
+            (gate.reason or "")[:200],
+        )
         timings.append({
             "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
             "outcome": "gate_rejected",
@@ -211,6 +219,16 @@ async def _process_article(
         })
         return None
 
+    # One INFO line per accepted article so we can reconstruct exactly what
+    # each source contributed (stance, certainty, claim) from logs alone.
+    # Avg over the article's predictions matches what aggregator will use.
+    avg_stance = sum(p.stance for p in extraction.predictions) / len(extraction.predictions)
+    avg_certainty = sum(p.certainty for p in extraction.predictions) / len(extraction.predictions)
+    first_claim = (extraction.predictions[0].claim or "")[:160]
+    logger.info(
+        "event=article_outcome outcome=ok url=%s stance=%.3f certainty=%.3f n_preds=%d claim=%r",
+        result.url, avg_stance, avg_certainty, len(extraction.predictions), first_claim,
+    )
     timings.append({
         "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
         "extract_ms": extract_ms, "outcome": "ok",
@@ -263,7 +281,15 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
         )
         return _empty_response(req.question)
 
-    logger.info("Found %d articles for: %s", len(search_results), req.question[:80])
+    # Log the URLs that came back so we can trace exactly which articles each
+    # downstream phase saw. The search query == the question (we don't rewrite
+    # it), so question_hash + this line is enough to reconstruct the call.
+    logger.info(
+        "event=search_results count=%d question=%r urls=%s",
+        len(search_results),
+        req.question[:120],
+        [r.url for r in search_results],
+    )
 
     # Step 2: gatekeeper + extractor in parallel
     process_start = time.perf_counter()
@@ -322,13 +348,25 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
         ))
 
     if not all_stances:
-        logger.warning("No usable predictions extracted from %d articles", len(search_results))
+        # Outcome histogram tells us *why* we got nothing — were articles
+        # rejected by the gatekeeper, did extraction return empty, or did
+        # fetch fail? Without this the warning is uninvestigatable.
+        outcome_counts: dict[str, int] = {}
+        for t in timings:
+            key = str(t.get("outcome", "unknown"))
+            outcome_counts[key] = outcome_counts.get(key, 0) + 1
+        logger.warning(
+            "No usable predictions extracted from %d articles (outcomes=%s)",
+            len(search_results),
+            outcome_counts,
+        )
         _log_phase(
             "total",
             (time.perf_counter() - total_start) * 1000,
             question=req.question,
             articles_used=0,
             outcome="no_usable_predictions",
+            **{f"n_{k}": v for k, v in outcome_counts.items()},
         )
         return _empty_response(req.question)
 
