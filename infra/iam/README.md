@@ -5,7 +5,7 @@ These are templates for the IAM role that `deploy-oracle.yml` assumes via OIDC. 
 | File | Purpose |
 |------|---------|
 | `gha-deploy-oracle-trust.json` | Who can assume the role — scoped to GitHub Actions runs from this repo on `main` (plus manual `workflow_dispatch`). |
-| `gha-deploy-oracle-policy.json` | What the role can do — only `ssm:SendCommand` / `ssm:GetCommandInvocation` / `ssm:ListCommandInvocations` on the one oracle instance, and only with the `AWS-RunShellScript` document. |
+| `gha-deploy-oracle-policy.json` | What the role can do — `ssm:SendCommand` scoped to the one oracle instance *and* only the `AWS-RunShellScript` document, plus read-only `ssm:Get*/List*Command*` for polling results. See "Why `SendCommand` is two separate statements" below. |
 
 ## Placeholders to replace
 
@@ -20,4 +20,23 @@ Before applying:
 ## Scope rationale
 
 - **Trust**: `token.actions.githubusercontent.com` + `repo:komapc/retro:ref:refs/heads/main` means only workflow runs on `main` (and `workflow_dispatch`, which still runs from whatever branch you pick) can assume the role. A PR branch cannot. This matches our deploy trigger.
-- **Permissions**: `ssm:SendCommand` is the sharp tool — anyone with it can run arbitrary shell as root on the target instance. We scope it three ways: (a) resource ARN restricted to the one instance, (b) `ssm:DocumentName` condition restricting to `AWS-RunShellScript` (blocks e.g. `AWS-RunPowerShellScript` or custom documents), (c) no wildcard on the resource. `ssm:GetCommandInvocation` / `ssm:ListCommandInvocations` are scoped to the region but not per-command (the command-id is only known after `SendCommand` returns).
+- **Permissions**: `ssm:SendCommand` is the sharp tool — anyone with it can run arbitrary shell as root on the target instance. We scope it two ways: the instance ARN is restricted to the one oracle box, and the document ARN is restricted to `AWS-RunShellScript` (blocks e.g. `AWS-RunPowerShellScript` or custom documents). `ssm:GetCommandInvocation` / `ssm:ListCommandInvocations` are scoped to the region but not per-command (the command-id is only known after `SendCommand` returns).
+
+### Why `SendCommand` is two separate statements
+
+`ssm:SendCommand` is a [multi-resource action](https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonsystemsmanager.html#amazonsystemsmanager-actions-as-permissions): IAM evaluates it against the **instance** ARN *and* the **document** ARN at the same time, and both must match an `Allow`. We need to express "instance X AND document Y", not "instance X OR document Y".
+
+A single statement with both ARNs in the `Resource` array expresses OR (the semantics of IAM `Resource` lists), which fails the two-resource check. The earlier form of this template did exactly that:
+
+```json
+// DO NOT — denied with "no identity-based policy allows the ssm:SendCommand action on resource: instance/..."
+"Resource": [
+  "arn:aws:ec2:...:instance/<INSTANCE_ID>",
+  "arn:aws:ssm:...::document/AWS-RunShellScript"
+],
+"Condition": { "StringEquals": { "ssm:DocumentName": "AWS-RunShellScript" } }
+```
+
+Splitting into two statements (one per resource) gives the evaluator an independent `Allow` for each check, which is the form AWS documents. The `ssm:DocumentName` condition was redundant belt-and-suspenders in the broken form and isn't needed now that the document ARN is scoped directly.
+
+Diagnosed live during the first smoke test of the Tier 4 workflow; see PR #49 comments for context.

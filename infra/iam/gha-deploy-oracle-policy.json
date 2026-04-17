@@ -2,18 +2,16 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "SendCommandToOracleInstance",
+      "Sid": "SendCommandOnInstance",
       "Effect": "Allow",
       "Action": "ssm:SendCommand",
-      "Resource": [
-        "arn:aws:ec2:<REGION>:<ACCOUNT_ID>:instance/<INSTANCE_ID>",
-        "arn:aws:ssm:<REGION>::document/AWS-RunShellScript"
-      ],
-      "Condition": {
-        "StringEquals": {
-          "ssm:DocumentName": "AWS-RunShellScript"
-        }
-      }
+      "Resource": "arn:aws:ec2:<REGION>:<ACCOUNT_ID>:instance/<INSTANCE_ID>"
+    },
+    {
+      "Sid": "SendCommandWithShellDocument",
+      "Effect": "Allow",
+      "Action": "ssm:SendCommand",
+      "Resource": "arn:aws:ssm:<REGION>::document/AWS-RunShellScript"
     },
     {
       "Sid": "ReadCommandResults",
