@@ -5239,7 +5239,7 @@
     "F03:ch13": {
       "event_id": "F03",
       "source_id": "ch13",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-16T23:37:37.142908"
+  "last_updated": "2026-04-17T00:04:40.094098"
 }
