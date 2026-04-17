@@ -8,33 +8,38 @@ litellm.api_key = settings.openrouter_api_key
 _client = instructor.from_litellm(litellm.acompletion, mode=instructor.Mode.MD_JSON)
 
 PROMPT = """\
-You are a forensic analyst screening news articles for predictive content.
+You are a topic-relevance screener for a forecasting system.
 
-Your job has TWO parts:
-1. Is this article directly relevant to the related event below?
-2. Does it contain a forward-looking prediction about that specific event?
+Decide whether this article contains useful evidence about the RELATED EVENT below.
+A downstream extractor will pull out directional signals and assign its own stance and
+certainty — even a weak or ambiguous signal is valuable. ERR ON THE SIDE OF INCLUDING
+the article. Worst case, the extractor will assign near-zero certainty and it won't
+affect the forecast.
 
-**Relevance check (STRICT):** The article must be primarily about the related event or its \
-direct causes/consequences. An article that merely mentions the topic in passing, covers a \
-different aspect of the same general conflict, or is a human-interest piece without predictive \
-content about the specific event should be REJECTED.
+**PASS (is_prediction=true) if ANY of these apply:**
+- The article discusses the related event directly (including reporting current actions,
+  announcements, statements, or developments).
+- The article covers the specific actors, institutions, places, or situation underlying
+  the event (even in a factual / analytical style).
+- The article reports causes, consequences, or recent developments a reasonable reader
+  would consider relevant evidence for whether the event will occur.
+- The article contains explicit or implicit forecasts, analysis, or commentary about
+  the event's likelihood or drivers.
+- The article is partisan, opinion, or speculative but on-topic.
 
-**Prediction check:** The article must contain a forward-looking prediction — a claim about \
-what will or may happen regarding the related event.
+**REJECT (is_prediction=false) ONLY if:**
+- The article is wholly about a clearly different event or domain (e.g. celebrity
+  gossip when the event is about monetary policy).
+- The article is empty, a paywall/404 stub, or has no substantive content (under ~200
+  meaningful words).
+- The article only brushes past the event's keywords in passing while the substance is
+  about something wholly unrelated.
 
-Include:
-- Explicit predictions ("X will happen", "we expect Y")
-- Strong directional forecasts ("the market is headed for collapse")
-- Conditional predictions ("if X happens, then Y is likely")
-- Implied forecasts based on analysis ("the signs point to Z")
-
-Exclude:
-- Pure factual reporting of past or present events
-- Historical context without forward implication
-- Rhetorical questions without answers
-- Articles about a different event in the same region/topic
-- Human-interest pieces without predictive content
-- Articles where the related event is only mentioned in passing
+**Do NOT reject for:**
+- Being "only factual reporting" — recent facts ARE evidence for forecasts.
+- Lacking explicit "X will happen" language — implicit signal is extracted downstream.
+- Being short but on-topic — the extractor handles low-specificity input.
+- Covering an adjacent aspect of the same underlying situation.
 
 Article snippet:
 <article>
@@ -44,6 +49,11 @@ Article snippet:
 Source: {source_name}
 Date: {article_date}
 Related event: {event_name}
+
+Set `is_prediction` to true for on-topic articles even when they contain no explicit
+forecast. Set `reason` with a one-sentence justification. Set `prediction_count_estimate`
+to how many distinct predictive signals (explicit or implicit) a careful reader could
+extract; use 0 for purely factual on-topic articles (but still pass them).
 """
 
 
