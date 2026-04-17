@@ -969,7 +969,7 @@
     "G06:globes": {
       "event_id": "G06",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T01:32:00.382879"
+  "last_updated": "2026-04-17T01:53:20.817235"
 }
