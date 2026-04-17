@@ -156,12 +156,49 @@ curl -s -X POST http://127.0.0.1:8001/forecast \
   -d '{"question": "Will Netanyahu remain PM through 2025?"}'
 ```
 
-### Updating
+### Updating (zero-downtime reload)
+
+Since the service is supervised by gunicorn, routine deploys use `reload`, not
+`restart`. The gunicorn master keeps the :8001 listening socket open while it
+swaps workers with fresh code, so clients see no 502s.
 
 ```bash
-cd ~/truthmachine && git pull origin main && cd api && uv sync
-sudo systemctl restart oracle-api
+cd ~/truthmachine
+git pull origin main
+cd api && uv sync --frozen
+
+# Smoke-check imports BEFORE reloading — if this fails, abort.
+# Old workers keep serving; we never reload broken code.
+ORACLE_API_KEY=dummy uv run python -c "from forecast_api.main import app"
+
+# Zero-downtime swap — master keeps the socket; workers recycle gracefully.
+sudo systemctl reload oracle-api
+
+# Verify /health returns the new version.
+curl -s http://127.0.0.1:8001/health | jq .
 ```
+
+Verify the reload window is truly seamless (run in another terminal before
+reloading):
+
+```bash
+while true; do
+  curl -s -o /dev/null -w "%{http_code} " http://127.0.0.1:8001/health
+  sleep 0.1
+done
+# Expect a continuous stream of 200s across the reload.
+```
+
+### When to use `restart` instead of `reload`
+
+- The systemd unit file itself changed (`ExecStart`, env vars, etc.) — run
+  `sudo systemctl daemon-reload && sudo systemctl restart oracle-api`. This
+  incurs a 2-5s 502 window.
+- Gunicorn master itself crashed or needs new flags.
+- Dependency-graph changes that require a fresh Python interpreter.
+
+For routine app-code deploys (forecaster, models, config defaults), `reload`
+is always sufficient and strictly preferred.
 
 ---
 
