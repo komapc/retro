@@ -1,6 +1,6 @@
 # TruthMachine / Factum Atlas — Status & Runbook
 
-_Last updated: 2026-04-17_
+_Last updated: 2026-04-17. The "Current State" snapshot below ages fast — cross-check with the live atlas before trusting specific numbers._
 
 ---
 
@@ -13,25 +13,28 @@ TruthMachine is a retroactive media prediction pipeline. It:
 4. **Renders** the Factum Atlas — an HTML matrix of prediction signals
 5. **Publishes** the atlas to GitHub (`factum_atlas.html` on `main`)
 
-The matrix has **840 cells** = 70 events × 13 sources (not all combinations have articles).
+The matrix has up to **910 cells** = 70 events × 13 sources. Not all combinations have articles (the gatekeeper rejects off-topic coverage, some sources don't cover some events), so the steady-state `done` count is lower than 910.
 
 ---
 
-## Current State (2026-04-17)
+## Current State
+
+For live numbers, look at:
+
+- **Factum Atlas**: [komapc.github.io/retro/factum_atlas.html](https://komapc.github.io/retro/factum_atlas.html) — rendered HTML, updated on every atlas commit.
+- **`data/progress.json` on `main`** — cell-by-cell status, updated by the pipeline's per-cycle commit.
+- Recent atlas/progress commits: `git log --oneline --grep='atlas:\|progress:'`.
+
+Snapshot as of last update:
 
 | Metric | Value |
 |--------|-------|
 | EC2 instance | `i-00ac444b94c5ff9b2` (eu-central-1) |
 | Instance type | t4g.small (ARM64, Ubuntu 24.04) |
 | Batch pipeline service | `truthmachine.service` — **running** |
-| Oracle API service | `oracle-api.service` — **running** |
-| Cells done | 193 / 840 (23%) |
-| Cells no_predictions | 647 |
-| Cells failed | 0 |
-| Cells pending | 0 |
-| Cycle interval | 300s (5 min sleep between cycles) |
+| Oracle API service | `oracle-api.service` — **running** (auto-deploys on merge to main via `.github/workflows/deploy-oracle.yml`) |
 
-The matrix is fully processed — no pending or failed cells remain. The 77% "no predictions" rate reflects cells where no articles were found or the gatekeeper rejected all articles.
+The pipeline loop (`infra/ec2_run.sh`) runs continuously: it sleeps 300s between cycles **only when no cells are `pending` or `failed`** — otherwise it retries immediately. So if `progress.json` shows pending cells, expect rapid re-attempts; a 5-minute gap between commits implies a steady state.
 
 ### Oracle API (oracle.daatan.com)
 
@@ -169,51 +172,44 @@ ec2_run.sh (systemd loop)
 
 ---
 
+## Done (historical — do not re-do)
+
+- **Skip sleep when pending > 0** — `infra/ec2_run.sh:165-182` guards sleep on `failed + pending == 0`.
+- **Don't commit empty atlas** — `infra/ec2_run.sh:52-68` guards commit on `done > 0`.
+- **Boto3 bootstrap verify-and-install** — `infra/ec2_bootstrap.sh:95-100` reinstalls if `import boto3` fails post-`uv sync`.
+- **Unmask silent orchestrator failures** — `pipeline/src/tm/orchestrator.run_event` catches `Exception` (not just `asyncio.TimeoutError`) around `process_article`, so any infra-level failure routes a cell to `failed` instead of being hidden as `no_predictions` or killing the whole cell loop.
+
 ## Future Fixes (Priority Order)
-
-### High Priority
-
-1. **Skip sleep when pending cells exist**
-   - Change `ec2_run.sh`: only sleep if `pending == 0`
-   - Currently wastes 5 min after every cycle even when work remains
-
-2. **Fix silent `no_predictions` masking failures**
-   - In `orchestrator.py`: don't overwrite `failed` status with `no_predictions`
-   - Or: check `has_predictions` only if no runner errors occurred
-
-3. **Don't commit empty atlas**
-   - In `commit_and_push()`: skip commit when `done == 0`
-   - Prevents overwriting good atlas data with empty render on fresh EC2
-
-4. **Fix boto3 in bootstrap**
-   - `ec2_bootstrap.sh`: after `uv sync`, explicitly verify `import boto3` works
-   - If not: `uv pip install boto3 botocore -p pipeline/.venv/bin/python3`
 
 ### Medium Priority
 
-5. **Refresh Brave API quota or add SerpAPI fallback**
+1. **Refresh Brave API quota or add SerpAPI fallback**
    - Brave is quota-exhausted (402 on every call)
    - Add `openclaw/serpapi-key` or `openclaw/serperdev-key` to Secrets Manager
 
-6. **Persist atlas data on EC2 across restarts**
+2. **Persist atlas data on EC2 across restarts**
    - Currently: if EC2 restarts, all vault/atlas data is lost (not in git)
    - Option A: commit `data/atlas/` and `data/progress.json` to git (small enough)
    - Option B: sync to S3 on each cycle, restore on startup
 
-7. **Reduce sleep interval or make it adaptive**
+3. **Reduce sleep interval or make it adaptive**
    - `SLEEP_INTERVAL=60` would be more responsive
    - Or: skip sleep entirely when ingest found new articles
 
 ### Low Priority
 
-8. **Article-level aggregation on full re-run**
+1. **Article-level aggregation on full re-run**
    - The `reaggregate.py` script fixed 81 local entries
    - EC2 will re-aggregate inline during extraction (already wired in orchestrator)
    - No action needed unless we re-use local data
 
-9. **Ground truth scoring**
+2. **Ground truth scoring**
    - `pipeline/src/tm/backtest.py` — not yet run on EC2
    - Requires resolved events with known outcomes
+
+3. **Wire TM predictions into `duel.html`**
+   - Currently just a placeholder — TM vs Polymarket Brier comparison section is empty
+   - Needs TM cell-signal → probability mapping to be comparable with Polymarket midpoint
 
 ---
 
