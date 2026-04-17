@@ -4273,7 +4273,7 @@
     "D06:haaretz": {
       "event_id": "D06",
       "source_id": "haaretz",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T03:10:58.698559"
+  "last_updated": "2026-04-17T03:18:39.189910"
 }
