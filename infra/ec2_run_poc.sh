@@ -99,7 +99,7 @@ run_poc_cycle() {
   # ── Pull latest code ──────────────────────────────────────────────────────
   log "Pulling latest from main..."
   git fetch origin main 2>&1 | tail -2
-  git rebase origin/main 2>&1 | tail -3 || { git rebase --abort; log "WARNING: rebase failed, continuing with current code"; }
+  git rebase --autostash origin/main 2>&1 | tail -3 || { git rebase --abort; log "WARNING: rebase failed, continuing with current code"; }
 
   # ── Phase 1: Fetch Polymarket price history for events missing prices ─────
   # First: backfill clob_token_yes from cached raw pages (no-op if all events already have it)
@@ -110,7 +110,10 @@ p = Path('$POC_DIR/pm_harvest/events.jsonl')
 if not p.exists():
     print(0)
 else:
-    n = sum(1 for line in p.read_text().splitlines() if line.strip() and not json.loads(line).get('clob_token_yes'))
+    def bad_token(e):
+        t = e.get('clob_token_yes')
+        return not t or len(str(t)) <= 10
+    n = sum(1 for line in p.read_text().splitlines() if line.strip() and bad_token(json.loads(line)))
     print(n)
 " 2>/dev/null || echo 0)
 

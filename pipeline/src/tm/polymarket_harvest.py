@@ -310,8 +310,14 @@ def harvest(
                     category = (market.get("category") or "Politics").strip()
 
                     # clobTokenIds[0] = Yes-outcome token (needed for CLOB price history API)
+                    # The Gamma API sometimes returns clobTokenIds as a JSON-encoded string
                     clob_tokens = market.get("clobTokenIds") or []
-                    clob_token_yes = clob_tokens[0] if clob_tokens else None
+                    if isinstance(clob_tokens, str):
+                        try:
+                            clob_tokens = json.loads(clob_tokens)
+                        except Exception:
+                            clob_tokens = []
+                    clob_token_yes = str(clob_tokens[0]) if clob_tokens else None
 
                     event = {
                         "pm_id": market_id,
@@ -371,7 +377,12 @@ def backfill_clob_tokens(data_dir: Path) -> int:
                 events.append(json.loads(line))
 
     # Build set of pm_ids that still need a clob token
-    need_token: set[str] = {str(ev["pm_id"]) for ev in events if not ev.get("clob_token_yes")}
+    # Also treat broken tokens (len<=2, e.g. "[") as missing — they were mis-parsed
+    def _token_valid(ev: dict) -> bool:
+        t = ev.get("clob_token_yes")
+        return bool(t and len(str(t)) > 10)
+
+    need_token: set[str] = {str(ev["pm_id"]) for ev in events if not _token_valid(ev)}
     if not need_token:
         console.print("[green]All events already have clob_token_yes — nothing to do.[/green]")
         return 0
@@ -392,6 +403,11 @@ def backfill_clob_tokens(data_dir: Path) -> int:
             for m in markets:
                 mid = str(m.get("id") or m.get("conditionId", ""))
                 tokens = m.get("clobTokenIds") or []
+                if isinstance(tokens, str):
+                    try:
+                        tokens = json.loads(tokens)
+                    except Exception:
+                        tokens = []
                 if mid and tokens and mid in need_token:
                     clob_lookup[mid] = str(tokens[0])
             cached_pages += 1
@@ -444,6 +460,11 @@ def backfill_clob_tokens(data_dir: Path) -> int:
                 for m in markets:
                     mid = str(m.get("id") or m.get("conditionId", ""))
                     tokens = m.get("clobTokenIds") or []
+                    if isinstance(tokens, str):
+                        try:
+                            tokens = json.loads(tokens)
+                        except Exception:
+                            tokens = []
                     if mid and tokens and mid in still_need:
                         clob_lookup[mid] = str(tokens[0])
                         still_need.discard(mid)
