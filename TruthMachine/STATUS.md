@@ -59,7 +59,7 @@ The pipeline loop (`infra/ec2_run.sh`) runs continuously: it sleeps 300s between
 | PoC event generation (`poc_event_gen.py`) | ✅ Complete |
 | Duel report generator (`poc_report.py`) | ✅ Complete |
 | `duel.html` generated and deployed to GitHub Pages | ✅ Live |
-| TM vs PM Brier comparison section | 🔲 Placeholder (TM predictions not yet wired into duel) |
+| TM vs PM Brier comparison section | 🔲 Blocked — TM pipeline has never run on the PM universe; see "Wire TM into `duel.html`" under Low Priority Future Fixes for real scope |
 
 ### Why is it sleeping?
 
@@ -178,6 +178,7 @@ ec2_run.sh (systemd loop)
 - **Don't commit empty atlas** — `infra/ec2_run.sh:52-68` guards commit on `done > 0`.
 - **Boto3 bootstrap verify-and-install** — `infra/ec2_bootstrap.sh:95-100` reinstalls if `import boto3` fails post-`uv sync`.
 - **Unmask silent orchestrator failures** — `pipeline/src/tm/orchestrator.run_event` catches `Exception` (not just `asyncio.TimeoutError`) around `process_article`, so any infra-level failure routes a cell to `failed` instead of being hidden as `no_predictions` or killing the whole cell loop.
+- **Atlas persistence across EC2 restarts** — `data/atlas/` + `data/vault2/` are snapshotted to `s3://truthmachine-atlas-snapshots-<account>/` at the tail of each pipeline cycle (`infra/snapshot_atlas.sh`) and restored on fresh-instance bootstrap (`infra/restore_atlas.sh`). See [`docs/ATLAS_SNAPSHOTS.md`](../docs/ATLAS_SNAPSHOTS.md).
 
 ## Future Fixes (Priority Order)
 
@@ -187,12 +188,7 @@ ec2_run.sh (systemd loop)
    - Brave is quota-exhausted (402 on every call)
    - Add `openclaw/serpapi-key` or `openclaw/serperdev-key` to Secrets Manager
 
-2. **Persist atlas data on EC2 across restarts**
-   - Currently: if EC2 restarts, all vault/atlas data is lost (not in git)
-   - Option A: commit `data/atlas/` and `data/progress.json` to git (small enough)
-   - Option B: sync to S3 on each cycle, restore on startup
-
-3. **Reduce sleep interval or make it adaptive**
+2. **Reduce sleep interval or make it adaptive**
    - `SLEEP_INTERVAL=60` would be more responsive
    - Or: skip sleep entirely when ingest found new articles
 
@@ -207,9 +203,14 @@ ec2_run.sh (systemd loop)
    - `pipeline/src/tm/backtest.py` — not yet run on EC2
    - Requires resolved events with known outcomes
 
-3. **Wire TM predictions into `duel.html`**
-   - Currently just a placeholder — TM vs Polymarket Brier comparison section is empty
-   - Needs TM cell-signal → probability mapping to be comparable with Polymarket midpoint
+3. **Wire TM into `duel.html` — scope is larger than it looks**
+   - `duel.html` is rendered by `tm.poc_report` from `data/poc/pm_harvest/events.jsonl` (~thousands of Polymarket markets: "Will X win Y", "Will Biden get Coronavirus", etc.). That harvest data **does not exist** in the repo and the PoC pipeline (`tm.polymarket_harvest` → `tm.poc_event_gen` → orchestrator on those events) has never run end-to-end.
+   - The 70 Factum Atlas events (the ones the pipeline *is* running on) have a separate `data/polymarket/` mapping table, but only 14 of those have PM-market IDs filled in and **0 of the 14 have price history** (`"prices": []`).
+   - So "wire TM in" is one of three real projects, not a small fix:
+     - (a) Run the TM pipeline against the ~4600 PM markets — multi-week Bedrock-heavy campaign.
+     - (b) Harvest PM price history for the 14 mapped events + wire TM cell-signals for those 14 → mini-duel with n=14 (statistically weak but bounded).
+     - (c) Drop the comparison pretense and show a TM-only backtest leaderboard where the placeholder sits.
+   - Park until one of those is consciously chosen; do not treat as a trivial ticket.
 
 ---
 

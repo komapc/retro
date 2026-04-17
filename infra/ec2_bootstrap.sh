@@ -107,6 +107,15 @@ mkdir -p "$WORKDIR/data/events" \
          "$WORKDIR/data/vault2/extractions" \
          "$WORKDIR/data/atlas"
 
+# ── 6a. Restore prior atlas+vault2 from S3 if available ─────────────────────
+# No-op if atlas is already populated (safety on re-bootstrap) or if no
+# snapshot exists yet (fresh account). See infra/snapshot_atlas.sh for what
+# lives in the tarball.
+if [[ -x "$WORKDIR/infra/restore_atlas.sh" ]]; then
+  log "Restoring atlas snapshot from S3..."
+  WORKDIR="$WORKDIR" bash "$WORKDIR/infra/restore_atlas.sh" || log "restore_atlas exited non-zero (non-fatal, continuing)"
+fi
+
 # ── 7. Install systemd service ────────────────────────────────────────────────
 log "Installing systemd service..."
 sudo cp "$WORKDIR/infra/truthmachine.service" /etc/systemd/system/truthmachine.service

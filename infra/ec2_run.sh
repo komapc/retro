@@ -150,6 +150,14 @@ print(' '.join(sorted(events)))
   fi
 
   log "Extraction complete — $(cell_stats)"
+
+  # Snapshot atlas+vault2 to S3 so a replaced EC2 instance can resume with
+  # prior state. Non-fatal — failures are logged but don't break the loop.
+  # Runs unconditionally after the extraction phase because vault2/ grows on
+  # every article processed, not only when a commit happens.
+  if [[ -x "$WORKDIR/infra/snapshot_atlas.sh" ]]; then
+    bash "$WORKDIR/infra/snapshot_atlas.sh" || log "snapshot_atlas exited non-zero (non-fatal)"
+  fi
 }
 
 # ── Main loop ─────────────────────────────────────────────────────────────────
