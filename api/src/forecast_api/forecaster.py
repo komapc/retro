@@ -97,20 +97,94 @@ def _source_id_from_url(url: str) -> str:
     return domain  # fallback: raw domain as id
 
 
+# Minimum extracted length before we trust the body over title+snippet.
+# Real news leads are always >> 400 chars; values below this are almost
+# always 404 stubs, paywall walls, or cookie-wall interstitials.
+_MIN_ARTICLE_CHARS = 400
+
+# Paywall / registration-wall phrases. Match is case-insensitive and
+# substring-based. Only considered when extracted content is short — real
+# articles may quote these phrases without being paywalled.
+_PAYWALL_MARKERS: tuple[str, ...] = (
+    "subscribe to continue",
+    "subscribe to read",
+    "sign in to continue",
+    "sign in to read",
+    "create a free account",
+    "create an account to",
+    "register to read",
+    "this article is for subscribers",
+    "log in to continue",
+    "become a subscriber",
+)
+
+
+def _looks_like_paywall(text: str) -> bool:
+    """True when a short body contains a subscription/registration CTA.
+
+    We deliberately only check *short* bodies: a 5000-char article that
+    merely quotes "subscribe to read" inside its prose is not a paywall.
+    """
+    low = text.lower()
+    return any(marker in low for marker in _PAYWALL_MARKERS)
+
+
 def _fetch_article_text(url: str, fallback: str) -> str:
-    """Fetch full article body with trafilatura; return fallback on error."""
+    """Fetch full article body with trafilatura; return fallback on error.
+
+    Upgraded from a naive ``httpx.get(...).text`` pipeline:
+
+    - Non-2xx responses (404/403/paywall redirects) used to silently feed
+      the gatekeeper an HTML error page. We now detect them via
+      ``raise_for_status`` and fall back to title+snippet immediately.
+    - Paywall / registration-wall stubs that trafilatura faithfully
+      extracts (e.g. "Subscribe to read the full article…") previously
+      passed the ``len(extracted) > len(fallback)`` check and became the
+      "article content". We reject short extractions containing a known
+      paywall marker.
+    - Each fetch now logs its outcome at INFO so we can measure from
+      production how often paywalls / 404s cost us an article.
+    """
+    outcome = "ok"
+    status: int | None = None
+    extracted_len = 0
     try:
-        html = httpx.get(
+        resp = httpx.get(
             url,
             timeout=6.0,
             follow_redirects=True,
             headers={"User-Agent": "Mozilla/5.0 (compatible; TruthMachine/1.0)"},
-        ).text
-        extracted = trafilatura.extract(html, include_comments=False, include_tables=False)
-        if extracted and len(extracted) > len(fallback):
-            return extracted
+        )
+        status = resp.status_code
+        resp.raise_for_status()
+        extracted = trafilatura.extract(resp.text, include_comments=False, include_tables=False)
+        if not extracted:
+            outcome = "trafilatura_empty"
+        else:
+            extracted_len = len(extracted)
+            if extracted_len < _MIN_ARTICLE_CHARS and _looks_like_paywall(extracted):
+                outcome = "paywall_suspected"
+            elif extracted_len <= len(fallback):
+                # Fallback (title+snippet) is richer than the body — treat as
+                # not helpful, keep the fallback. Common for link-only pages
+                # and very short briefs.
+                outcome = "extracted_too_short"
+            else:
+                logger.info(
+                    "event=article_fetch outcome=ok url=%s status=%d extracted_len=%d",
+                    url, status, extracted_len,
+                )
+                return extracted
+    except httpx.HTTPStatusError as exc:
+        outcome = "http_error"
+        status = exc.response.status_code
     except Exception as exc:
+        outcome = "fetch_error"
         logger.debug("Article fetch failed for %s: %s", url, exc)
+    logger.info(
+        "event=article_fetch outcome=%s url=%s status=%s extracted_len=%d using=fallback",
+        outcome, url, status, extracted_len,
+    )
     return fallback
 
 
