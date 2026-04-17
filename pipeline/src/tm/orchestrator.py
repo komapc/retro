@@ -100,6 +100,14 @@ class Orchestrator:
                     update_cell(event_id, source["id"], CellStatus.no_predictions)
                 continue
 
+            # Track whether any article hit an infra-level error (timeout,
+            # exception, runner-set error). The final cell-status branch
+            # below uses this to distinguish "genuinely no predictions found"
+            # from "we don't know — something broke". Without this, any
+            # non-TimeoutError exception bubbling out of process_article
+            # would abort the whole cell loop, skipping the final status
+            # write and leaving the cell stuck at whatever in-progress state
+            # runner.py last set.
             had_errors = False
             for raw_art in articles:
                 try:
@@ -112,10 +120,22 @@ class Orchestrator:
                 except asyncio.TimeoutError:
                     console.print(f"    [bold red]Article timeout (300s), skipping[/bold red]")
                     had_errors = True
+                except Exception as e:
+                    console.print(
+                        f"    [bold red]Article exception ({type(e).__name__}): {e}[/bold red]"
+                    )
+                    had_errors = True
                 await asyncio.sleep(3)
 
             self._write_cell_signal(event["id"], source["id"])
-            # Mark final cell status — only overwrite to no_predictions if no errors occurred
+            # Final cell status is derived from two signals:
+            #   1. Did any article actually write predictions to disk? (has_predictions)
+            #   2. Did any article hit an infra-level error? (had_errors)
+            # Precedence: predictions-on-disk wins — partial success is still
+            # success, even if other articles in the cell errored. Without
+            # predictions, had_errors routes to `failed` (visible in the
+            # atlas as a real problem) vs `no_predictions` (genuine empty
+            # result — e.g. gatekeeper rejected everything).
             cell_dir = self.atlas_dir / event_id / source["id"]
             has_predictions = any(
                 json.loads(f.read_text()).get("predictions")
@@ -123,7 +143,6 @@ class Orchestrator:
                 if f.exists()
             ) if cell_dir.exists() else False
             if has_predictions:
-                # Count total predictions across all entry files for this cell
                 total_preds = sum(
                     len(json.loads(f.read_text()).get("predictions", []))
                     for f in cell_dir.glob("entry_*.json")
