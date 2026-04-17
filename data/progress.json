@@ -1683,7 +1683,7 @@
     "B07:globes": {
       "event_id": "B07",
       "source_id": "globes",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -6371,5 +6371,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-04-17T02:00:10.530724"
+  "last_updated": "2026-04-17T02:29:37.988081"
 }
