@@ -34,15 +34,41 @@ from ddgs import DDGS
 
 logger = logging.getLogger(__name__)
 
-SERPAPI_KEY: Optional[str] = os.environ.get("SERPAPI_KEY")
-SERPERDEV_KEY: Optional[str] = os.environ.get("SERPERDEV_KEY")
-BRAVE_API_KEY: Optional[str] = os.environ.get("BRAVE_API_KEY")
+
+def _secret(env_var: str, secret_name: str) -> Optional[str]:
+    """Return env var if set, otherwise fetch from AWS Secrets Manager."""
+    val = os.environ.get(env_var)
+    if val:
+        return val
+    try:
+        import boto3
+        client = boto3.client("secretsmanager", region_name="eu-central-1")
+        val = client.get_secret_value(SecretId=secret_name)["SecretString"].strip()
+        logger.info("Loaded %s from Secrets Manager", secret_name)
+        return val
+    except Exception as e:
+        logger.debug("Could not load %s from Secrets Manager: %s", secret_name, e)
+        return None
+
+
+SERPAPI_KEY: Optional[str] = _secret("SERPAPI_KEY", "openclaw/serpapi-key")
+SERPERDEV_KEY: Optional[str] = _secret("SERPERDEV_KEY", "openclaw/serperdev-key")
+BRAVE_API_KEY: Optional[str] = _secret("BRAVE_API_KEY", "openclaw/brave-api-key")
 
 
 def _running_on_ec2() -> bool:
-    """Detect AWS EC2 via instance metadata endpoint (fast timeout)."""
+    """Detect AWS EC2 via IMDS (supports both IMDSv1 and IMDSv2)."""
     try:
         import httpx as _httpx
+        # IMDSv2: PUT to get a token — works even when IMDSv1 is disabled.
+        r = _httpx.put(
+            "http://169.254.169.254/latest/api/token",
+            headers={"X-aws-ec2-metadata-token-ttl-seconds": "21600"},
+            timeout=0.3,
+        )
+        if r.status_code == 200:
+            return True
+        # Fallback for IMDSv1-only configurations.
         r = _httpx.get("http://169.254.169.254/latest/meta-data/", timeout=0.3)
         return r.status_code == 200
     except Exception:
@@ -52,6 +78,7 @@ _DDG_LAST_CALL: float = 0.0
 DDG_MIN_INTERVAL = 2.0
 
 _BRAVE_QUOTA_EXHAUSTED: bool = False
+_SERPER_QUOTA_EXHAUSTED: bool = False
 
 
 @dataclass
@@ -123,6 +150,7 @@ def _search_serper_news(
     date_from: Optional[datetime] = None,
     date_to: Optional[datetime] = None,
 ) -> List[SearchResult]:
+    global _SERPER_QUOTA_EXHAUSTED
     if not SERPERDEV_KEY:
         raise RuntimeError("SERPERDEV_KEY not set")
 
@@ -139,6 +167,9 @@ def _search_serper_news(
         headers={"X-API-KEY": SERPERDEV_KEY, "Content-Type": "application/json"},
         timeout=10,
     )
+    if r.status_code == 400 and "credits" in r.text.lower():
+        _SERPER_QUOTA_EXHAUSTED = True
+        raise RuntimeError("Serper quota exhausted (no credits)")
     r.raise_for_status()
     data = r.json()
     items = data.get("news", [])
@@ -267,7 +298,7 @@ def search_articles(
             logger.warning("SerpAPI failed: %s", e)
 
     # 2. Serper.dev news
-    if SERPERDEV_KEY:
+    if SERPERDEV_KEY and not _SERPER_QUOTA_EXHAUSTED:
         try:
             results = _search_serper_news(query, limit, date_from, date_to)
             if results:
