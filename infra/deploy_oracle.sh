@@ -20,19 +20,22 @@ set -euo pipefail
 API_DIR="/home/ubuntu/oracle-api"
 REF="${1:-origin/main}"
 
-export PATH="$HOME/.local/bin:$PATH"
+# git and uv must run as ubuntu (the repo owner) regardless of whether this
+# script is invoked as root via SSM. Only systemctl needs root.
+AS_UBUNTU="sudo -u ubuntu HOME=/home/ubuntu"
+UV="/home/ubuntu/.local/bin/uv"
 
 log() { echo "[deploy_oracle $(date '+%H:%M:%S')] $*"; }
 
 # ── 1. Fetch + reset ─────────────────────────────────────────────────────────
 cd "$API_DIR"
 log "fetching origin/main..."
-git fetch origin main --quiet
+$AS_UBUNTU git fetch origin main --quiet
 
-BEFORE=$(git rev-parse HEAD)
+BEFORE=$($AS_UBUNTU git rev-parse HEAD)
 log "resetting to ${REF} (was ${BEFORE:0:8})"
-git reset --hard "$REF" --quiet
-AFTER=$(git rev-parse HEAD)
+$AS_UBUNTU git reset --hard "$REF" --quiet
+AFTER=$($AS_UBUNTU git rev-parse HEAD)
 log "now at ${AFTER:0:8}: $(git log -1 --pretty=%s)"
 
 if [[ "$BEFORE" == "$AFTER" ]]; then
@@ -43,7 +46,7 @@ fi
 # ── 2. Sync Python deps ──────────────────────────────────────────────────────
 log "uv sync --frozen..."
 cd "$API_DIR/api"
-uv sync --frozen --quiet
+$AS_UBUNTU $UV sync --frozen --quiet
 
 # ── 3. Zero-downtime reload ──────────────────────────────────────────────────
 # SIGHUP to gunicorn master spawns fresh workers with reimported modules and
