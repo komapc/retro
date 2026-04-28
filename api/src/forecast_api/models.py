@@ -41,9 +41,28 @@ class SearchHealthResponse(BaseModel):
 
 # ── Forecast ──────────────────────────────────────────────────────────────────
 
+class ArticleInput(BaseModel):
+    url: str
+    title: str = ""
+    snippet: str = ""
+    source: str = ""
+    published_date: str = ""
+    text: Optional[str] = Field(
+        default=None,
+        description="Pre-fetched article body. If omitted, oracle fetches via trafilatura.",
+    )
+
+
 class ForecastRequest(BaseModel):
     question: str = Field(..., min_length=5, max_length=500, description="Binary question to forecast")
     max_articles: Optional[int] = Field(default=None, ge=1, le=20)
+    articles: Optional[list[ArticleInput]] = Field(
+        default=None,
+        description=(
+            "Pre-fetched articles. If provided, oracle skips its internal search and analyzes "
+            "these directly. max_articles is ignored when this field is set."
+        ),
+    )
 
 
 class SourceSignal(BaseModel):

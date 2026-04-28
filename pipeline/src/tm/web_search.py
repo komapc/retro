@@ -136,6 +136,7 @@ class SearchResult:
     snippet: str
     source: str = ""
     published_date: str = ""
+    _prefetched_text: Optional[str] = field(default=None)
 
 
 # ──────────────────────────────────────────────

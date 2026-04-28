@@ -72,9 +72,13 @@ class ForecastCache:
         return self._ttl > 0
 
     @staticmethod
-    def make_key(question: str, max_articles: Optional[int]) -> str:
+    def make_key(
+        question: str,
+        max_articles: Optional[int],
+        articles_hash: Optional[str] = None,
+    ) -> str:
         normalized = question.strip().casefold()
-        payload = f"{normalized}|{max_articles or ''}".encode("utf-8")
+        payload = f"{normalized}|{max_articles or ''}|{articles_hash or ''}".encode("utf-8")
         return hashlib.sha256(payload).hexdigest()
 
     def get(self, key: str) -> Optional[ForecastResponse]:
