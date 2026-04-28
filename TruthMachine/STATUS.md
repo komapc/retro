@@ -50,6 +50,8 @@ The pipeline loop (`infra/ec2_run.sh`) runs continuously: it sleeps 300s between
 | `/health` endpoint with version | ✅ Live (`0.1.0`) |
 | daatan secrets (`ORACLE_URL` + `ORACLE_API_KEY`) | ✅ In AWS Secrets Manager (`daatan-env-{prod,staging}`) |
 | daatan integration (`oracle.ts` wired into context + express guess routes) | ✅ Live in daatan v1.9.0 |
+| Search provider expansion (BrightData + Nimbleway + ScrapingBee) | ✅ Live (2026-04-28) — 6 paid providers + DDG |
+| Secrets Manager read permission (`openclaw-secrets-read` on `truthmachine-ec2-role`) | ✅ Applied |
 
 ### Duel: TruthMachine vs Polymarket
 
@@ -184,9 +186,10 @@ ec2_run.sh (systemd loop)
 
 ### Medium Priority
 
-1. **Refresh Brave API quota or add SerpAPI fallback**
-   - Brave is quota-exhausted (402 on every call)
-   - Add `openclaw/serpapi-key` or `openclaw/serperdev-key` to Secrets Manager
+1. ~~**Refresh Brave API quota or add SerpAPI fallback**~~ — resolved 2026-04-28.
+   BrightData, Nimbleway, and ScrapingBee added to `web_search.py` as additional fallbacks.
+   Keys in Secrets Manager. Oracle survives simultaneous exhaustion of all three original providers.
+   Next: implement oracle `/search` endpoint so daatan uses the same chain (Phase 2 in TODO.md).
 
 2. **Reduce sleep interval or make it adaptive**
    - `SLEEP_INTERVAL=60` would be more responsive
@@ -241,7 +244,7 @@ cd /home/mark/projects/retro && git fetch && git log --oneline -10
 | AMI | Ubuntu 24.04 LTS arm64 |
 | Type | t4g.small |
 | IAM Role | `truthmachine-ec2-role` |
-| Permissions | SSM + Bedrock (Nova) + Secrets Manager (`openclaw/*`) |
+| Permissions | SSM + Bedrock (Nova) + Secrets Manager (`openclaw/*`) + S3 (`truthmachine-atlas-snapshots-*`) |
 | Workdir | `/home/ubuntu/truthmachine/` |
 | Service | `systemctl status truthmachine` |
 | Log | `/home/ubuntu/truthmachine/pipeline_log.txt` |
