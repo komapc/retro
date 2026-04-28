@@ -30,6 +30,7 @@ Usage:
 import logging
 import os
 import re
+import threading
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -40,6 +41,15 @@ import httpx
 from ddgs import DDGS
 
 logger = logging.getLogger(__name__)
+
+# Thread-local: stores the provider name that served the last search_articles()
+# call in this thread. Read via get_last_search_provider() after the call returns.
+_provider_local = threading.local()
+
+
+def get_last_search_provider() -> str:
+    """Return the provider that served the most recent search_articles() call in this thread."""
+    return getattr(_provider_local, "name", "none")
 
 
 def _secret(env_var: str, secret_name: str) -> Optional[str]:
@@ -64,6 +74,31 @@ BRAVE_API_KEY: Optional[str] = _secret("BRAVE_API_KEY", "openclaw/brave-api-key"
 BRIGHTDATA_API_KEY: Optional[str] = _secret("BRIGHTDATA_API_KEY", "openclaw/brightdata-api-key")
 NIMBLEWAY_API_KEY: Optional[str] = _secret("NIMBLEWAY_API_KEY", "openclaw/nimbleway-api-key")
 SCRAPINGBEE_API_KEY: Optional[str] = _secret("SCRAPINGBEE_API_KEY", "openclaw/scrapingbee-api-key")
+
+_KEY_LOADED_AT: float = time.time()
+_KEY_MAX_AGE_SECONDS: float = 86400.0  # 24h
+
+
+def _refresh_keys_if_stale() -> None:
+    """Re-fetch all search API keys from Secrets Manager if >24h old.
+
+    Keys are loaded once at module import. Long-running processes (the batch
+    pipeline can run for days) would use stale keys after rotation. This
+    function is called at the top of search_articles() to catch that case.
+    """
+    global SERPAPI_KEY, SERPERDEV_KEY, BRAVE_API_KEY
+    global BRIGHTDATA_API_KEY, NIMBLEWAY_API_KEY, SCRAPINGBEE_API_KEY
+    global _KEY_LOADED_AT
+    if time.time() - _KEY_LOADED_AT < _KEY_MAX_AGE_SECONDS:
+        return
+    logger.info("Refreshing search API keys from Secrets Manager (>24h since last fetch)")
+    SERPAPI_KEY = _secret("SERPAPI_KEY", "openclaw/serpapi-key")
+    SERPERDEV_KEY = _secret("SERPERDEV_KEY", "openclaw/serperdev-key")
+    BRAVE_API_KEY = _secret("BRAVE_API_KEY", "openclaw/brave-api-key")
+    BRIGHTDATA_API_KEY = _secret("BRIGHTDATA_API_KEY", "openclaw/brightdata-api-key")
+    NIMBLEWAY_API_KEY = _secret("NIMBLEWAY_API_KEY", "openclaw/nimbleway-api-key")
+    SCRAPINGBEE_API_KEY = _secret("SCRAPINGBEE_API_KEY", "openclaw/scrapingbee-api-key")
+    _KEY_LOADED_AT = time.time()
 
 
 def _running_on_ec2() -> bool:
@@ -419,11 +454,15 @@ def search_articles(
     Returns:
         List of SearchResult(title, url, snippet, source, published_date).
     """
+    _refresh_keys_if_stale()
+    _provider_local.name = "none"
+
     # 1. SerpAPI
     if SERPAPI_KEY:
         try:
             results = _search_serpapi_news(query, limit, date_from, date_to)
             if results:
+                _provider_local.name = "serpapi"
                 return results
             logger.warning("SerpAPI returned 0 results for: %s", query[:60])
         except Exception as e:
@@ -434,6 +473,7 @@ def search_articles(
         try:
             results = _search_serper_news(query, limit, date_from, date_to)
             if results:
+                _provider_local.name = "serper"
                 return results
             logger.warning("Serper returned 0 results for: %s", query[:60])
         except Exception as e:
@@ -444,6 +484,7 @@ def search_articles(
         try:
             results = _search_brave_news(query, limit, date_from, date_to)
             if results:
+                _provider_local.name = "brave"
                 return results
             logger.warning("Brave returned 0 results for: %s", query[:60])
         except Exception as e:
@@ -454,6 +495,7 @@ def search_articles(
         try:
             results = _search_brightdata(query, limit)
             if results:
+                _provider_local.name = "brightdata"
                 return results
             logger.warning("BrightData returned 0 results for: %s", query[:60])
         except Exception as e:
@@ -464,6 +506,7 @@ def search_articles(
         try:
             results = _search_nimbleway(query, limit)
             if results:
+                _provider_local.name = "nimbleway"
                 return results
             logger.warning("Nimbleway returned 0 results for: %s", query[:60])
         except Exception as e:
@@ -474,6 +517,7 @@ def search_articles(
         try:
             results = _search_scrapingbee(query, limit)
             if results:
+                _provider_local.name = "scrapingbee"
                 return results
             logger.warning("ScrapingBee returned 0 results for: %s", query[:60])
         except Exception as e:
@@ -482,7 +526,10 @@ def search_articles(
     # 7. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
         try:
-            return _search_ddg_news(query, limit)
+            results = _search_ddg_news(query, limit)
+            if results:
+                _provider_local.name = "ddg"
+            return results
         except Exception as e:
             logger.warning("DDG failed: %s", e)
     else:
