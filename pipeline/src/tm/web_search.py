@@ -3,10 +3,16 @@ Multi-provider news search with fallback chain.
 Python equivalent of daatan's webSearch.ts utility.
 
 Fallback order:
-  1. SerpAPI (serpapi.com)       (SERPAPI_KEY)
-  2. Serper.dev /news endpoint  (SERPERDEV_KEY)
-  3. Brave News Search           (BRAVE_API_KEY)
-  4. DuckDuckGo Lite             (free, no key)
+  1. SerpAPI (serpapi.com)          SERPAPI_KEY
+  2. Serper.dev /news endpoint      SERPERDEV_KEY
+  3. Brave News Search              BRAVE_API_KEY
+  4. BrightData SERP API            BRIGHTDATA_API_KEY
+  5. Nimbleway SERP API             NIMBLEWAY_API_KEY
+  6. ScrapingBee Google Search      SCRAPINGBEE_API_KEY
+  7. DuckDuckGo Lite                (free, no key — skipped on EC2)
+
+All keys are loaded from the environment first, then from AWS Secrets Manager
+(openclaw/* namespace) as a fallback. See _secret().
 
 Usage:
     from tm.web_search import search_articles
@@ -28,6 +34,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List, Optional
+from urllib.parse import urlencode
 
 import httpx
 from ddgs import DDGS
@@ -54,6 +61,9 @@ def _secret(env_var: str, secret_name: str) -> Optional[str]:
 SERPAPI_KEY: Optional[str] = _secret("SERPAPI_KEY", "openclaw/serpapi-key")
 SERPERDEV_KEY: Optional[str] = _secret("SERPERDEV_KEY", "openclaw/serperdev-key")
 BRAVE_API_KEY: Optional[str] = _secret("BRAVE_API_KEY", "openclaw/brave-api-key")
+BRIGHTDATA_API_KEY: Optional[str] = _secret("BRIGHTDATA_API_KEY", "openclaw/brightdata-api-key")
+NIMBLEWAY_API_KEY: Optional[str] = _secret("NIMBLEWAY_API_KEY", "openclaw/nimbleway-api-key")
+SCRAPINGBEE_API_KEY: Optional[str] = _secret("SCRAPINGBEE_API_KEY", "openclaw/scrapingbee-api-key")
 
 
 def _running_on_ec2() -> bool:
@@ -79,6 +89,9 @@ DDG_MIN_INTERVAL = 2.0
 
 _BRAVE_QUOTA_EXHAUSTED: bool = False
 _SERPER_QUOTA_EXHAUSTED: bool = False
+_BRIGHTDATA_QUOTA_EXHAUSTED: bool = False
+_NIMBLEWAY_QUOTA_EXHAUSTED: bool = False
+_SCRAPINGBEE_QUOTA_EXHAUSTED: bool = False
 
 
 @dataclass
@@ -239,6 +252,121 @@ def _search_brave_news(
 
 
 # ──────────────────────────────────────────────
+# Provider: BrightData SERP API
+# ──────────────────────────────────────────────
+
+def _search_brightdata(query: str, limit: int) -> List[SearchResult]:
+    global _BRIGHTDATA_QUOTA_EXHAUSTED
+    if not BRIGHTDATA_API_KEY:
+        raise RuntimeError("BRIGHTDATA_API_KEY not set")
+
+    search_url = "https://www.google.com/search?" + urlencode({"q": query, "gl": "us", "hl": "en"})
+    r = httpx.post(
+        "https://api.brightdata.com/request",
+        json={"zone": "serp_api1", "url": search_url, "format": "raw"},
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {BRIGHTDATA_API_KEY}"},
+        timeout=20,
+    )
+    if r.status_code in (401, 402):
+        _BRIGHTDATA_QUOTA_EXHAUSTED = True
+        raise RuntimeError(f"BrightData quota/auth error ({r.status_code})")
+    r.raise_for_status()
+
+    html = r.text
+    result_pat = re.compile(r'href="(https://[^"#]+)"[^>]*>[^<]*<h3[^>]*class="LC20lb[^>]*>([^<]+)</h3>')
+    snippet_pat = re.compile(r'class="VwiC3b[^"]*"[^>]*>(.*?)</div>')
+
+    pairs = [(m.group(1), m.group(2)) for m in result_pat.finditer(html)]
+    snippets = [re.sub(r'<[^>]+>', '', m.group(1)).strip() for m in snippet_pat.finditer(html)]
+
+    return [
+        SearchResult(
+            title=title,
+            url=url,
+            snippet=snippets[i] if i < len(snippets) else "",
+            source=_extract_domain(url),
+        )
+        for i, (url, title) in enumerate(pairs[:limit])
+    ]
+
+
+# ──────────────────────────────────────────────
+# Provider: Nimbleway SERP API
+# ──────────────────────────────────────────────
+
+def _search_nimbleway(query: str, limit: int) -> List[SearchResult]:
+    global _NIMBLEWAY_QUOTA_EXHAUSTED
+    if not NIMBLEWAY_API_KEY:
+        raise RuntimeError("NIMBLEWAY_API_KEY not set")
+
+    r = httpx.post(
+        "https://api.webit.live/api/v1/realtime/serp",
+        json={"search_engine": "google_search", "country": "US", "query": query, "parse": True},
+        headers={"Authorization": f"Bearer {NIMBLEWAY_API_KEY}", "Content-Type": "application/json"},
+        timeout=20,
+    )
+    if r.status_code == 402:
+        _NIMBLEWAY_QUOTA_EXHAUSTED = True
+        raise RuntimeError("Nimbleway quota exhausted (402)")
+    r.raise_for_status()
+
+    data = r.json()
+    if data.get("status") != "success":
+        raise RuntimeError(f"Nimbleway error: {data.get('status')}")
+
+    items = data.get("parsing", {}).get("entities", {}).get("OrganicResult", [])
+    return [
+        SearchResult(
+            title=item.get("title", ""),
+            url=item.get("url", ""),
+            snippet=item.get("snippet", ""),
+            source=item.get("cleaned_domain") or _extract_domain(item.get("url", "")),
+        )
+        for item in items[:limit]
+        if item.get("url")
+    ]
+
+
+# ──────────────────────────────────────────────
+# Provider: ScrapingBee Google Search
+# ──────────────────────────────────────────────
+
+def _search_scrapingbee(query: str, limit: int) -> List[SearchResult]:
+    global _SCRAPINGBEE_QUOTA_EXHAUSTED
+    if not SCRAPINGBEE_API_KEY:
+        raise RuntimeError("SCRAPINGBEE_API_KEY not set")
+
+    r = httpx.get(
+        "https://app.scrapingbee.com/api/v1/store/google",
+        params={"api_key": SCRAPINGBEE_API_KEY, "search": query, "nb_results": limit},
+        timeout=20,
+    )
+    if r.status_code == 402:
+        _SCRAPINGBEE_QUOTA_EXHAUSTED = True
+        raise RuntimeError("ScrapingBee quota exhausted (402)")
+    r.raise_for_status()
+
+    data = r.json()
+    items = (
+        data.get("news_results")
+        or data.get("top_stories")
+        or data.get("organic_results")
+        or []
+    )
+    return [
+        SearchResult(
+            title=item.get("title", ""),
+            url=item.get("url", ""),
+            snippet=item.get("description", ""),
+            source=item.get("domain") or _extract_domain(item.get("url", "")),
+            published_date=item.get("date_utc") or item.get("date") or "",
+        )
+        for item in items[:limit]
+        if item.get("url")
+    ]
+
+
+# ──────────────────────────────────────────────
 # Provider: DuckDuckGo Lite (free fallback)
 # ──────────────────────────────────────────────
 
@@ -275,8 +403,12 @@ def search_articles(
 ) -> List[SearchResult]:
     """
     Search for news articles matching *query*, returning up to *limit* results.
-    Tries providers in order: SerpAPI → Serper.dev → Brave → DuckDuckGo.
-    Providers without an API key are skipped.
+
+    Tries providers in order, skipping any without a configured key or with
+    an exhausted quota flag set for this process lifetime:
+      SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → DDG
+
+    DDG is skipped on EC2 (AWS IPs are blocked by DDG/Yahoo).
 
     Args:
         query:     Search string. Include `site:domain.com` to restrict to a source.
@@ -287,7 +419,7 @@ def search_articles(
     Returns:
         List of SearchResult(title, url, snippet, source, published_date).
     """
-    # 1. SerpAPI (primary — working key confirmed)
+    # 1. SerpAPI
     if SERPAPI_KEY:
         try:
             results = _search_serpapi_news(query, limit, date_from, date_to)
@@ -317,7 +449,37 @@ def search_articles(
         except Exception as e:
             logger.warning("Brave failed: %s", e)
 
-    # 4. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
+    # 4. BrightData SERP API
+    if BRIGHTDATA_API_KEY and not _BRIGHTDATA_QUOTA_EXHAUSTED:
+        try:
+            results = _search_brightdata(query, limit)
+            if results:
+                return results
+            logger.warning("BrightData returned 0 results for: %s", query[:60])
+        except Exception as e:
+            logger.warning("BrightData failed: %s", e)
+
+    # 5. Nimbleway SERP API
+    if NIMBLEWAY_API_KEY and not _NIMBLEWAY_QUOTA_EXHAUSTED:
+        try:
+            results = _search_nimbleway(query, limit)
+            if results:
+                return results
+            logger.warning("Nimbleway returned 0 results for: %s", query[:60])
+        except Exception as e:
+            logger.warning("Nimbleway failed: %s", e)
+
+    # 6. ScrapingBee Google Search
+    if SCRAPINGBEE_API_KEY and not _SCRAPINGBEE_QUOTA_EXHAUSTED:
+        try:
+            results = _search_scrapingbee(query, limit)
+            if results:
+                return results
+            logger.warning("ScrapingBee returned 0 results for: %s", query[:60])
+        except Exception as e:
+            logger.warning("ScrapingBee failed: %s", e)
+
+    # 7. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
         try:
             return _search_ddg_news(query, limit)
