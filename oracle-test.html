@@ -350,6 +350,30 @@
       flex-wrap: wrap; gap: .5rem;
     }
 
+    /* ── Tooltips ─────────────────────────────────── */
+    [data-tip] { position: relative; cursor: help; }
+    [data-tip]::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 7px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0a1628;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: .71rem;
+      font-weight: 400;
+      padding: .4rem .65rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.4);
+    }
+    [data-tip]:hover::after { opacity: 1; }
+
     details { margin-top: 1rem; }
     summary { font-size: .78rem; color: var(--muted); cursor: pointer; user-select: none; }
     summary:hover { color: var(--text-dim); }
@@ -396,7 +420,7 @@
         <button class="quick-btn" onclick="setQ(this, 'Will Iran launch a direct military strike on Israel before the end of 2026?')">Iran strikes Israel</button>
         <button class="quick-btn" onclick="setQ(this, 'Will the US Federal Reserve cut interest rates in 2026?')">Fed rate cut in 2026</button>
         <button class="quick-btn" onclick="setQ(this, 'Will Donald Trump win the 2028 US presidential election?')">Trump wins 2028</button>
-        <button class="quick-btn" onclick="setQ(this, 'Will the S&P 500 reach 7000 by end of 2025?')">S&P 500 reaches 7000</button>
+        <button class="quick-btn" onclick="setQ(this, 'Will the S&P 500 reach 6000 by end of 2026?')">S&P 500 reaches 6000 in 2026</button>
         <button class="quick-btn" onclick="setQ(this, 'Will Russia and Ukraine reach a ceasefire agreement in 2026?')">Russia–Ukraine ceasefire</button>
         <button class="quick-btn" onclick="setQ(this, 'Will Bitcoin exceed $200,000 in 2026?')">Bitcoin exceeds $200k</button>
       </div>
@@ -562,16 +586,26 @@
     const sourcesHtml = (data.sources || []).map(s => {
       const sp = (s.stance + 1) / 2
       const barColor = sp > .55 ? 'var(--yes)' : sp < .45 ? 'var(--no)' : 'var(--muted)'
-      const credChip = s.credibility_weight > 1.05
-        ? `<span class="chip hi">Trust ×${s.credibility_weight.toFixed(2)}</span>`
+      const credTip = s.credibility_weight > 1.05
+        ? 'Historical accuracy above average — predictions weighted up'
         : s.credibility_weight < 0.95
-        ? `<span class="chip no">Trust ×${s.credibility_weight.toFixed(2)}</span>`
-        : `<span class="chip">Trust ×${s.credibility_weight.toFixed(2)}</span>`
-      const stanceChip = sp > .55
-        ? `<span class="chip yes">YES ${Math.round(sp * 100)}%</span>`
+        ? 'Historical accuracy below average — predictions weighted down'
+        : 'Historical accuracy at baseline — no adjustment applied'
+      const credChip = s.credibility_weight > 1.05
+        ? `<span class="chip hi" data-tip="${credTip}">Trust ×${s.credibility_weight.toFixed(2)}</span>`
+        : s.credibility_weight < 0.95
+        ? `<span class="chip no" data-tip="${credTip}">Trust ×${s.credibility_weight.toFixed(2)}</span>`
+        : `<span class="chip" data-tip="${credTip}">Trust ×${s.credibility_weight.toFixed(2)}</span>`
+      const stanceTip = sp > .55
+        ? 'This source leans YES — LLM-extracted stance averaged across its articles'
         : sp < .45
-        ? `<span class="chip no">NO ${Math.round((1-sp)*100)}%</span>`
-        : `<span class="chip">Neutral</span>`
+        ? 'This source leans NO — LLM-extracted stance averaged across its articles'
+        : 'This source is neutral or mixed on the question'
+      const stanceChip = sp > .55
+        ? `<span class="chip yes" data-tip="${stanceTip}">YES ${Math.round(sp * 100)}%</span>`
+        : sp < .45
+        ? `<span class="chip no" data-tip="${stanceTip}">NO ${Math.round((1-sp)*100)}%</span>`
+        : `<span class="chip" data-tip="${stanceTip}">Neutral</span>`
       const claims = s.claims.map(c => `<li>${escHtml(c)}</li>`).join('')
       const domain = (() => { try { return new URL(s.url).hostname.replace(/^www\./, '') } catch { return s.url } })()
       return `
@@ -583,7 +617,7 @@
             ${claims ? `<ul class="source-claims">${claims}</ul>` : ''}
             <div class="source-chips">
               ${stanceChip}
-              <span class="chip">Certainty ${Math.round(s.certainty * 100)}%</span>
+              <span class="chip" data-tip="How confidently the author stated their prediction (0 = heavily hedged, 100 = stated as certain) — extracted by LLM">Certainty ${Math.round(s.certainty * 100)}%</span>
               ${credChip}
             </div>
           </div>
@@ -591,7 +625,7 @@
     }).join('')
 
     const placeholderNotice = data.placeholder ? `
-      <div class="notice warn">⚠ Pipeline stub — scores are placeholders. Real articles found but not processed.</div>
+      <div class="notice warn">⚠ No usable results — all search providers exhausted or no predictive articles found for this question.</div>
     ` : ''
 
     const noDataNotice = data.articles_used === 0 ? `
@@ -632,16 +666,16 @@
             <span class="stat-val" style="font-size:.78rem;text-align:right;max-width:220px;word-break:break-word">${escHtml(question)}</span>
           </div>
           <div class="stat-row">
-            <span class="stat-key">Articles used</span>
+            <span class="stat-key" data-tip="Articles that passed the relevance filter and contained at least one extractable prediction">Articles used</span>
             <span class="stat-val">${data.articles_used}</span>
           </div>
           <div class="stat-row">
-            <span class="stat-key">Raw stance</span>
+            <span class="stat-key" data-tip="Credibility-weighted mean across all sources. −1 = strong NO, +1 = strong YES. Converts to probability via (stance + 1) ÷ 2">Raw stance</span>
             <span class="stat-val">${data.mean.toFixed(3)} <span style="font-weight:400;color:var(--muted)">± ${data.std.toFixed(3)}</span></span>
           </div>
 
           <div style="margin-top:.85rem">
-            <div style="font-size:.72rem;color:var(--muted);margin-bottom:.35rem">95% Confidence Interval</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:.35rem" data-tip="Range within which the true probability lies with 95% confidence, based on spread across sources">95% Confidence Interval</div>
             <div class="ci-bar-track">
               <div class="ci-bar-fill" style="left:${ciLow*100}%;width:${(ciHigh-ciLow)*100}%"></div>
               <div class="ci-bar-point" style="left:${prob*100}%"></div>
