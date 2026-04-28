@@ -34,14 +34,12 @@
 - [x] Deployed to both EC2 worktrees (`oracle-api` + `truthmachine`); services reloaded
 - [x] `BRIGHTDATA_API_KEY` + `NIMBLEWAY_API_KEY` added to daatan `src/env.ts` Zod schema
 
-### Phase 2 — Oracle as search gateway (next)
+### Phase 2 — Oracle as search gateway ✅ Done (2026-04-28)
 
-- [ ] Add `POST /search` endpoint to oracle API — same auth as `/forecast`, returns `List[SearchResult]`
-  - Use `asyncio.to_thread(search_articles, ...)` (web_search.py is synchronous)
-  - Separate rate-limit bucket (120/min, not the 10/min forecast limit)
-- [ ] Add `GET /search/health` endpoint — per-provider credit status (calls provider account APIs)
-- [ ] Create `src/lib/services/oracleSearch.ts` in daatan — thin client, returns `null` on failure
-- [ ] Update `context/route.ts` + `research/route.ts` in daatan: try `oracleSearch` first, fall through to local `searchArticles` on failure
+- [x] `POST /search` — `searcher.run_search()` via `asyncio.to_thread`; 60/min rate limit; query, limit, date_from, date_to
+- [x] `GET /search/health` — per-provider: configured, in-process exhaustion flag, live credits where API exists (Serper → balance, SerpAPI → searches_left, ScrapingBee → max-used). Overall: ok/degraded/down
+- [ ] Create `src/lib/services/oracleSearch.ts` in daatan — thin client, returns `null` on failure *(tracked in daatan TODO)*
+- [ ] Update `context/route.ts` + `research/route.ts` in daatan: try `oracleSearch` first, fall through to local `searchArticles` on failure *(tracked in daatan TODO)*
 - [ ] Unify env var names: `SERPAPI_KEY` → `SERPAPI_API_KEY`, `SERPERDEV_KEY` → `SERPER_API_KEY` in `web_search.py` (do atomically: update SM paths, update code, reload)
 
 ### Phase 3 — Observability (after Phase 2 stable)
