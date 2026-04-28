@@ -22,7 +22,7 @@ import trafilatura
 
 from tm.gatekeeper import check_is_prediction
 from tm.extractor import extract_predictions
-from tm.web_search import search_articles, SearchResult
+from tm.web_search import search_articles, SearchResult, get_last_search_provider
 
 from .cache import forecast_cache
 from .leaderboard import get_credibility_weight
@@ -342,6 +342,7 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
         search_ms,
         question=req.question,
         results=len(search_results),
+        provider=get_last_search_provider(),
     )
 
     if not search_results:

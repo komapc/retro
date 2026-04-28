@@ -42,25 +42,20 @@
 - [ ] Update `context/route.ts` + `research/route.ts` in daatan: try `oracleSearch` first, fall through to local `searchArticles` on failure *(tracked in daatan TODO)*
 - [ ] Unify env var names: `SERPAPI_KEY` → `SERPAPI_API_KEY`, `SERPERDEV_KEY` → `SERPER_API_KEY` in `web_search.py` (do atomically: update SM paths, update code, reload)
 
-### Phase 3 — Observability (after Phase 2 stable)
+### Phase 3 — Observability ✅ Done (2026-04-28, retro side)
 
-- [ ] Add `search_provider_used=<name>` field to oracle's structured `_log_phase("search", ...)` output
-- [ ] Add hourly cron route in daatan (`/api/cron/search-health`) polling oracle's `/search/health`; fire Telegram on low credits
-- [ ] Add `notifyOracleSearchUnavailable()` to daatan `telegram.ts` (fired when oracleSearch times out/errors, rate-limited to 5 min)
-- [ ] Add key-refresh logic to pipeline: re-fetch from Secrets Manager if cached key is >24h old (currently refreshed only on process restart)
+- [x] `search_provider_used=<name>` in `_log_phase("search", ...)` — thread-local set inside `search_articles()`, read in `forecaster.py` after the thread returns
+- [x] Key-refresh logic — `_refresh_keys_if_stale()` called at top of `search_articles()`; re-fetches all keys from Secrets Manager after 24h
+- [ ] Hourly cron route in daatan (`/api/cron/search-health`) polling oracle's `/search/health`; fire Telegram on low credits *(daatan side, pending)*
+- [x] `notifyOracleSearchUnavailable()` — done in daatan PR #699
 
 ## Ingest / Coverage
 
-- [ ] **GDELT DOC API** — query `doc.gdeltproject.org/api/v2/artlist` by domain + keyword + date range.
-  Free, no API key, strong coverage for English sources. Good complement to Wayback CDX for
-  events where CDX coverage is sparse. Implement as a second fallback after CDX, or run in
-  parallel with GNews. Hebrew coverage is weaker.
+- [x] **GDELT DOC API** — already implemented as Step 4 fallback in `gnews_ingest.py` (`search_gdelt()`, circuit-breaker, rate-limiting). No further work needed.
 
 ## Data Quality
 
-- [ ] Audit `llm_referee_criteria` for all 70 events — many are placeholders (e.g. `"B, E"`).
-  Replace with a clear binary question ("Will X happen?") so the extractor can anchor stance
-  correctly. Then `--force-reextract` affected events.
+- [x] Audit `llm_referee_criteria` for all 70 events — all 70 have proper binary criteria. No placeholders found.
 
 ## Duel: TruthMachine vs Polymarket
 
