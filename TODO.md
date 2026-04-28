@@ -19,6 +19,36 @@
 - [x] **daatan integration** — `oracle.ts` wired into `context` + `express/guess` routes with LLM fallback (shipped in daatan v1.9.0)
 - [ ] **daatan bot integration** — wire `getOracleProbability` into the bot-runner so autonomous bots use the Oracle when forming their predictions
 
+## Search & Secrets Unification
+
+> Context: all three paid providers (SerpAPI, Serper, Brave) exhausted simultaneously on 2026-04-28,
+> causing the oracle to return `placeholder:true` for all requests. Root cause: oracle and daatan were
+> consuming the same provider quotas independently with no visibility into each other's usage.
+> Full plan: see conversation 2026-04-28 ("Create an elaborate plan FOR BOTH REPOS").
+
+### Phase 1 — Expand provider chain ✅ Done (2026-04-28)
+
+- [x] Add BrightData, Nimbleway, ScrapingBee to `web_search.py` (fallback chain is now 6 providers + DDG)
+- [x] Keys stored in Secrets Manager (`openclaw/brightdata-api-key`, `openclaw/nimbleway-api-key`, `openclaw/scrapingbee-api-key`)
+- [x] IAM policy `openclaw-secrets-read` applied to `truthmachine-ec2-role` (GetSecretValue on `openclaw/*`)
+- [x] Deployed to both EC2 worktrees (`oracle-api` + `truthmachine`); services reloaded
+- [x] `BRIGHTDATA_API_KEY` + `NIMBLEWAY_API_KEY` added to daatan `src/env.ts` Zod schema
+
+### Phase 2 — Oracle as search gateway ✅ Done (2026-04-28)
+
+- [x] `POST /search` — `searcher.run_search()` via `asyncio.to_thread`; 60/min rate limit; query, limit, date_from, date_to
+- [x] `GET /search/health` — per-provider: configured, in-process exhaustion flag, live credits where API exists (Serper → balance, SerpAPI → searches_left, ScrapingBee → max-used). Overall: ok/degraded/down
+- [ ] Create `src/lib/services/oracleSearch.ts` in daatan — thin client, returns `null` on failure *(tracked in daatan TODO)*
+- [ ] Update `context/route.ts` + `research/route.ts` in daatan: try `oracleSearch` first, fall through to local `searchArticles` on failure *(tracked in daatan TODO)*
+- [ ] Unify env var names: `SERPAPI_KEY` → `SERPAPI_API_KEY`, `SERPERDEV_KEY` → `SERPER_API_KEY` in `web_search.py` (do atomically: update SM paths, update code, reload)
+
+### Phase 3 — Observability (after Phase 2 stable)
+
+- [ ] Add `search_provider_used=<name>` field to oracle's structured `_log_phase("search", ...)` output
+- [ ] Add hourly cron route in daatan (`/api/cron/search-health`) polling oracle's `/search/health`; fire Telegram on low credits
+- [ ] Add `notifyOracleSearchUnavailable()` to daatan `telegram.ts` (fired when oracleSearch times out/errors, rate-limited to 5 min)
+- [ ] Add key-refresh logic to pipeline: re-fetch from Secrets Manager if cached key is >24h old (currently refreshed only on process restart)
+
 ## Ingest / Coverage
 
 - [ ] **GDELT DOC API** — query `doc.gdeltproject.org/api/v2/artlist` by domain + keyword + date range.

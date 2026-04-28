@@ -13,7 +13,8 @@ from .config import settings
 from .forecaster import run_forecast
 from .leaderboard import background_refresh_loop, leaderboard_size, refresh_cache
 from .limiter import limiter
-from .models import ForecastRequest, ForecastResponse
+from .models import ForecastRequest, ForecastResponse, SearchRequest, SearchResponse, SearchHealthResponse
+from .searcher import run_search, run_search_health
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s — %(message)s")
 logger = logging.getLogger(__name__)
@@ -108,3 +109,28 @@ async def forecast(
     Convert to probability [0, 1] with: `p = (mean + 1) / 2`
     """
     return await run_forecast(body)
+
+
+@app.post("/search", response_model=SearchResponse, tags=["Search"])
+@limiter.limit("60/minute")
+async def search(
+    request: Request,  # required by slowapi
+    body: SearchRequest,
+    _: None = Depends(verify_api_key),
+):
+    """
+    Search for news articles using the full provider fallback chain.
+
+    Tries: SerpAPI → Serper → Brave → BrightData → Nimbleway → ScrapingBee → DDG.
+    DDG is skipped when the service is running on EC2.
+    """
+    return await run_search(body)
+
+
+@app.get("/search/health", response_model=SearchHealthResponse, tags=["Search"])
+async def search_health(_: None = Depends(verify_api_key)):
+    """
+    Per-provider search health: key configured, in-process quota flag, and live credit
+    count where the provider exposes a credit API (Serper, SerpAPI, ScrapingBee).
+    """
+    return await run_search_health()

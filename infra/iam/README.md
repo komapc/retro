@@ -19,6 +19,41 @@ Inline policy for the existing `truthmachine-ec2-role` (attached to the batch-pi
 |------|---------|
 | `truthmachine-ec2-s3-snapshots-policy.json` | Read/write access to `truthmachine-atlas-snapshots-<ACCOUNT_ID>` only. Lists the bucket, and gets/puts/deletes objects (including versioned deletes so the per-cycle `snapshots/` lifecycle rule works). |
 
+## 3. TruthMachine EC2 → Secrets Manager (search API keys)
+
+Inline policy for the existing `truthmachine-ec2-role`. Grants read-only access to the `openclaw/*` secret namespace so `web_search.py` can fetch search API keys at startup without needing them in the `.env` file.
+
+| File | Purpose |
+|------|---------|
+| `truthmachine-ec2-secrets-policy.json` | `secretsmanager:GetSecretValue` on `arn:aws:secretsmanager:eu-central-1:<ACCOUNT_ID>:secret:openclaw/*`. No write, no list, no other namespaces. |
+
+**Apply:**
+```bash
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+sed "s/<ACCOUNT_ID>/$ACCOUNT_ID/g" infra/iam/truthmachine-ec2-secrets-policy.json > /tmp/secrets-policy.json
+aws iam put-role-policy \
+  --role-name truthmachine-ec2-role \
+  --policy-name openclaw-secrets-read \
+  --policy-document file:///tmp/secrets-policy.json
+```
+
+**Before applying, also store the new keys in Secrets Manager** (values come from daatan's env bundle):
+```bash
+aws secretsmanager create-secret --region eu-central-1 \
+  --name openclaw/brightdata-api-key --secret-string "<VALUE>"
+aws secretsmanager create-secret --region eu-central-1 \
+  --name openclaw/nimbleway-api-key --secret-string "<VALUE>"
+aws secretsmanager create-secret --region eu-central-1 \
+  --name openclaw/scrapingbee-api-key --secret-string "<VALUE>"
+```
+
+**After applying, reload oracle and restart the pipeline** to pick up the new keys:
+```bash
+# Via SSM:
+sudo systemctl reload oracle-api
+sudo systemctl restart truthmachine
+```
+
 ## Placeholders to replace
 
 Before applying:
