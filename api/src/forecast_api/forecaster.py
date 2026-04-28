@@ -26,7 +26,7 @@ from tm.web_search import search_articles, SearchResult, get_last_search_provide
 
 from .cache import forecast_cache
 from .leaderboard import get_credibility_weight
-from .models import ForecastRequest, ForecastResponse, SourceSignal
+from .models import ArticleInput, ForecastRequest, ForecastResponse, SourceSignal
 from .config import settings
 
 logger = logging.getLogger(__name__)
@@ -220,9 +220,13 @@ async def _process_article(
     if not fallback or len(fallback) < 20:
         return None
 
-    # Fetch full article content (blocking I/O → thread)
+    # Use caller-supplied text if available; otherwise fetch via trafilatura.
     fetch_start = time.perf_counter()
-    text = await asyncio.to_thread(_fetch_article_text, result.url, fallback)
+    if result._prefetched_text:
+        text = result._prefetched_text
+        logger.info("event=article_fetch outcome=prefetched url=%s", result.url)
+    else:
+        text = await asyncio.to_thread(_fetch_article_text, result.url, fallback)
     fetch_ms = (time.perf_counter() - fetch_start) * 1000
     if not text:
         timings.append({"url": result.url, "fetch_ms": fetch_ms, "outcome": "empty_text"})
@@ -314,9 +318,15 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
     limit = req.max_articles or settings.max_articles
     total_start = time.perf_counter()
 
-    # Step 0: cache lookup — identical (question, max_articles) within the TTL
-    # returns instantly. Placeholder responses are never cached.
-    cache_key = forecast_cache.make_key(req.question, req.max_articles)
+    # Step 0: cache lookup.
+    # When caller supplies articles, key includes an MD5 of sorted URLs so
+    # two calls with the same question but different article sets don't collide.
+    articles_hash: Optional[str] = None
+    if req.articles:
+        articles_hash = hashlib.md5(
+            "|".join(sorted(a.url for a in req.articles)).encode()
+        ).hexdigest()[:12]
+    cache_key = forecast_cache.make_key(req.question, req.max_articles, articles_hash)
     cached = forecast_cache.get(cache_key)
     if cached is not None:
         _log_phase(
@@ -327,23 +337,42 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
         )
         return cached
 
-    # Step 1: search
+    # Step 1: search (skipped when caller provides articles directly)
     search_start = time.perf_counter()
-    try:
-        search_results: list[SearchResult] = await asyncio.to_thread(
-            search_articles, req.question, limit
+    if req.articles:
+        search_results: list[SearchResult] = [
+            SearchResult(
+                title=a.title,
+                url=a.url,
+                snippet=a.snippet,
+                source=a.source,
+                published_date=a.published_date,
+                _prefetched_text=a.text,
+            )
+            for a in req.articles
+        ]
+        _log_phase(
+            "search",
+            (time.perf_counter() - search_start) * 1000,
+            question=req.question,
+            results=len(search_results),
+            provider="caller",
         )
-    except Exception as exc:
-        logger.error("Search failed: %s", exc)
-        search_results = []
-    search_ms = (time.perf_counter() - search_start) * 1000
-    _log_phase(
-        "search",
-        search_ms,
-        question=req.question,
-        results=len(search_results),
-        provider=get_last_search_provider(),
-    )
+    else:
+        try:
+            search_results = await asyncio.to_thread(
+                search_articles, req.question, limit
+            )
+        except Exception as exc:
+            logger.error("Search failed: %s", exc)
+            search_results = []
+        _log_phase(
+            "search",
+            (time.perf_counter() - search_start) * 1000,
+            question=req.question,
+            results=len(search_results),
+            provider=get_last_search_provider(),
+        )
 
     if not search_results:
         logger.warning("No articles found for: %s", req.question[:80])
