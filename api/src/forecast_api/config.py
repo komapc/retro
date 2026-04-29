@@ -24,6 +24,12 @@ class ApiSettings(BaseSettings):
     cache_ttl_seconds: int = 3600
     cache_max_entries: int = 512
 
+    # Search-result cache keyed by sha256(question, limit). Longer TTL than
+    # forecast cache — article lists for a given query are stable for hours.
+    # search_cache_ttl_seconds=0 disables search caching.
+    search_cache_ttl_seconds: int = 14400  # 4 hours
+    search_cache_max_entries: int = 256
+
     @property
     def resolved_leaderboard_path(self) -> Path:
         if self.leaderboard_path != Path(""):

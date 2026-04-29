@@ -40,6 +40,12 @@ class _Entry:
 
 
 @dataclass
+class _SearchEntry:
+    results: list
+    expires_at: float
+
+
+@dataclass
 class CacheStats:
     hits: int = 0
     misses: int = 0
@@ -134,8 +140,60 @@ class ForecastCache:
             )
 
 
+class SearchCache:
+    """Bounded TTL cache for raw search results (list[SearchResult]).
+
+    Keyed on sha256(normalized_question | limit). Separate from ForecastCache
+    so the same article set can be reused across multiple forecast calls for
+    the same question even after the 1-hour forecast TTL expires. Default TTL
+    is 4 hours — news search results are stable within that window.
+
+    Empty result lists are never cached; a failed search should retry rather
+    than returning a stale empty list for hours.
+    """
+
+    def __init__(self, *, ttl_seconds: int, max_entries: int) -> None:
+        self._ttl = max(0, ttl_seconds)
+        self._max = max(1, max_entries)
+        self._data: "OrderedDict[str, _SearchEntry]" = OrderedDict()
+        self._lock = Lock()
+
+    @property
+    def enabled(self) -> bool:
+        return self._ttl > 0
+
+    @staticmethod
+    def make_key(question: str, limit: int) -> str:
+        normalized = question.strip().casefold()
+        return hashlib.sha256(f"{normalized}|{limit}".encode("utf-8")).hexdigest()
+
+    def get(self, key: str) -> Optional[list]:
+        if not self.enabled:
+            return None
+        now = time.time()
+        with self._lock:
+            entry = self._data.get(key)
+            if entry is None:
+                return None
+            if entry.expires_at <= now:
+                del self._data[key]
+                return None
+            self._data.move_to_end(key)
+            return entry.results
+
+    def set(self, key: str, results: list) -> None:
+        if not self.enabled or not results:
+            return
+        now = time.time()
+        with self._lock:
+            self._data[key] = _SearchEntry(results=results, expires_at=now + self._ttl)
+            self._data.move_to_end(key)
+            while len(self._data) > self._max:
+                self._data.popitem(last=False)
+
+
 def build_cache_from_settings() -> ForecastCache:
-    """Construct the process-wide cache from :mod:`.config` settings."""
+    """Construct the process-wide forecast cache from :mod:`.config` settings."""
     from .config import settings
     return ForecastCache(
         ttl_seconds=settings.cache_ttl_seconds,
@@ -143,5 +201,15 @@ def build_cache_from_settings() -> ForecastCache:
     )
 
 
-# Process-wide singleton. Imported by forecaster and exposed via /health.
+def build_search_cache_from_settings() -> SearchCache:
+    """Construct the process-wide search cache from :mod:`.config` settings."""
+    from .config import settings
+    return SearchCache(
+        ttl_seconds=settings.search_cache_ttl_seconds,
+        max_entries=settings.search_cache_max_entries,
+    )
+
+
+# Process-wide singletons. Imported by forecaster and exposed via /health.
 forecast_cache: ForecastCache = build_cache_from_settings()
+search_cache: SearchCache = build_search_cache_from_settings()
