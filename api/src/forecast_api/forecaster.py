@@ -24,12 +24,17 @@ from tm.gatekeeper import check_is_prediction
 from tm.extractor import extract_predictions
 from tm.web_search import search_articles, SearchResult, get_last_search_provider
 
-from .cache import forecast_cache
+from .cache import forecast_cache, search_cache
 from .leaderboard import get_credibility_weight
 from .models import ArticleInput, ForecastRequest, ForecastResponse, SourceSignal
 from .config import settings
 
 logger = logging.getLogger(__name__)
+
+# In-flight deduplication: cache_key → asyncio.Event.
+# When a second request arrives for a key that's already being processed,
+# it waits on this event instead of launching a duplicate pipeline.
+_inflight: dict[str, asyncio.Event] = {}
 
 
 def _question_hash(question: str) -> str:
@@ -318,7 +323,7 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
     limit = req.max_articles or settings.max_articles
     total_start = time.perf_counter()
 
-    # Step 0: cache lookup.
+    # Step 0a: forecast cache lookup.
     # When caller supplies articles, key includes an MD5 of sorted URLs so
     # two calls with the same question but different article sets don't collide.
     articles_hash: Optional[str] = None
@@ -337,6 +342,35 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
         )
         return cached
 
+    # Step 0b: in-flight deduplication.
+    # If another coroutine is already processing this exact key, wait for it
+    # and return its result rather than launching a duplicate pipeline.
+    if cache_key in _inflight:
+        logger.info(
+            "event=inflight_wait question_hash=%s", _question_hash(req.question)
+        )
+        await _inflight[cache_key].wait()
+        result = forecast_cache.get(cache_key)
+        if result is not None:
+            return result
+        return _empty_response(req.question)
+
+    event = asyncio.Event()
+    _inflight[cache_key] = event
+
+    try:
+        return await _run_forecast_inner(req, cache_key, limit, total_start)
+    finally:
+        event.set()
+        _inflight.pop(cache_key, None)
+
+
+async def _run_forecast_inner(
+    req: ForecastRequest,
+    cache_key: str,
+    limit: int,
+    total_start: float,
+) -> ForecastResponse:
     # Step 1: search (skipped when caller provides articles directly)
     search_start = time.perf_counter()
     if req.articles:
@@ -359,20 +393,34 @@ async def run_forecast(req: ForecastRequest) -> ForecastResponse:
             provider="caller",
         )
     else:
-        try:
-            search_results = await asyncio.to_thread(
-                search_articles, req.question, limit
+        # Check search cache before hitting provider APIs.
+        search_key = search_cache.make_key(req.question, limit)
+        cached_results = search_cache.get(search_key)
+        if cached_results is not None:
+            search_results = cached_results
+            _log_phase(
+                "search",
+                (time.perf_counter() - search_start) * 1000,
+                question=req.question,
+                results=len(search_results),
+                provider="search_cache",
             )
-        except Exception as exc:
-            logger.error("Search failed: %s", exc)
-            search_results = []
-        _log_phase(
-            "search",
-            (time.perf_counter() - search_start) * 1000,
-            question=req.question,
-            results=len(search_results),
-            provider=get_last_search_provider(),
-        )
+        else:
+            try:
+                search_results = await asyncio.to_thread(
+                    search_articles, req.question, limit
+                )
+            except Exception as exc:
+                logger.error("Search failed: %s", exc)
+                search_results = []
+            _log_phase(
+                "search",
+                (time.perf_counter() - search_start) * 1000,
+                question=req.question,
+                results=len(search_results),
+                provider=get_last_search_provider(),
+            )
+            search_cache.set(search_key, search_results)
 
     if not search_results:
         logger.warning("No articles found for: %s", req.question[:80])
