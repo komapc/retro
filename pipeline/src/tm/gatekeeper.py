@@ -62,7 +62,8 @@ async def check_is_prediction(
     source_name: str,
     article_date: str,
     event_name: str,
-) -> GatekeeperOutput:
+) -> tuple["GatekeeperOutput", dict]:
+    """Returns (GatekeeperOutput, usage) where usage has prompt_tokens/completion_tokens/total_tokens."""
     _BACKOFF = [30, 60, 120]
     last_exc: Exception = RuntimeError("no attempts")
     for attempt, wait in enumerate([0] + _BACKOFF):
@@ -92,7 +93,16 @@ async def check_is_prediction(
                 kwargs["api_key"] = settings.model_api_key
             if settings.aws_region:
                 kwargs["aws_region_name"] = settings.aws_region
-            return await _client.chat.completions.create(**kwargs)
+            output, completion = await _client.chat.completions.create_with_completion(**kwargs)
+            usage = {}
+            if completion and hasattr(completion, "usage") and completion.usage:
+                u = completion.usage
+                usage = {
+                    "prompt_tokens": getattr(u, "prompt_tokens", 0),
+                    "completion_tokens": getattr(u, "completion_tokens", 0),
+                    "total_tokens": getattr(u, "total_tokens", 0),
+                }
+            return output, usage
         except Exception as e:
             err = str(e).lower()
             if "rate" in err or "429" in err or "limit" in err or "temporarily" in err:

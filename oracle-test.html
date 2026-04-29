@@ -389,6 +389,75 @@
       line-height: 1.6;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
+
+    /* ── Debug panel ───────────────────────── */
+    .debug-panel {
+      margin-top: 1.5rem;
+      border: 1px solid #1c2d44;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .debug-header {
+      background: #0b1829;
+      padding: .6rem 1rem;
+      display: flex; align-items: center; gap: .5rem;
+      cursor: pointer; user-select: none;
+      font-size: .78rem; font-weight: 600; color: var(--text-dim);
+    }
+    .debug-header:hover { color: var(--text); }
+    .debug-body { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .debug-section-label {
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--muted); margin-bottom: .4rem;
+    }
+    .debug-kv { display: grid; grid-template-columns: 160px 1fr; row-gap: .3rem; font-size: .8rem; }
+    .debug-kv dt { color: var(--text-dim); }
+    .debug-kv dd { color: var(--text); font-family: ui-monospace, monospace; word-break: break-all; }
+
+    .provider-chain {
+      display: flex; align-items: center; gap: .3rem; flex-wrap: wrap; font-size: .78rem;
+    }
+    .provider-tag {
+      padding: .15rem .5rem; border-radius: 4px;
+      border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text-dim); font-family: ui-monospace, monospace;
+    }
+    .provider-tag.winner { border-color: var(--accent); color: var(--accent-hi); }
+    .provider-tag.cache  { border-color: #166534; color: var(--yes); }
+    .provider-arrow { color: var(--muted); }
+
+    .article-debug-list { display: flex; flex-direction: column; gap: .5rem; }
+    .article-debug-row {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .6rem .85rem;
+      font-size: .78rem;
+    }
+    .article-debug-row.ok     { border-left: 3px solid var(--yes); }
+    .article-debug-row.reject { border-left: 3px solid var(--no); }
+    .article-debug-row.skip   { border-left: 3px solid var(--muted); }
+    .adr-top { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+    .adr-url { color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px; }
+    .adr-url a { color: inherit; text-decoration: none; }
+    .adr-url a:hover { color: var(--accent-hi); }
+    .adr-outcome { font-weight: 600; }
+    .adr-outcome.ok     { color: var(--yes); }
+    .adr-outcome.reject { color: var(--no); }
+    .adr-outcome.skip   { color: var(--muted); }
+    .adr-chips { display: flex; gap: .3rem; flex-wrap: wrap; margin-top: .35rem; }
+    .adr-reason { margin-top: .3rem; color: var(--text-dim); font-style: italic; font-size: .75rem; }
+    .token-badge {
+      font-size: .68rem; padding: .1rem .4rem; border-radius: 3px;
+      background: #0e1a2e; border: 1px solid #1c3452; color: #7da3c8;
+      font-family: ui-monospace, monospace;
+    }
+    .ms-badge {
+      font-size: .68rem; padding: .1rem .4rem; border-radius: 3px;
+      background: #0e1f10; border: 1px solid #1a3d1e; color: #6abf7a;
+      font-family: ui-monospace, monospace;
+    }
   </style>
 </head>
 <body>
@@ -446,6 +515,10 @@
           <span>Articles</span>
           <input id="max-articles" type="number" value="5" min="1" max="20" />
         </div>
+        <label class="articles-input" style="cursor:pointer;gap:.35rem" title="Include token counts, gatekeeper scores, search chain, and prompts in response">
+          <input type="checkbox" id="debug-toggle" style="accent-color:var(--accent)" />
+          <span>Debug</span>
+        </label>
         <button class="run-btn" id="run-btn" onclick="runForecast()">
           <div class="spinner" id="spinner"></div>
           <span id="run-label">Run Forecast</span>
@@ -530,10 +603,11 @@
     const t0 = Date.now()
 
     try {
+      const debugMode = $('debug-toggle').checked
       const res = await fetch(`${API_URL}/forecast`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
-        body: JSON.stringify({ question: q, max_articles: parseInt($('max-articles').value) || 5 }),
+        body: JSON.stringify({ question: q, max_articles: parseInt($('max-articles').value) || 5, debug: debugMode }),
         signal: AbortSignal.timeout(120000),
       })
 
@@ -703,6 +777,8 @@
         <summary>Raw JSON</summary>
         <pre>${escHtml(JSON.stringify(data, null, 2))}</pre>
       </details>
+
+      ${renderDebug(data.debug)}
     `
 
     $('result-area').style.display = 'block'
@@ -711,6 +787,98 @@
 
   function escHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+  }
+
+  // ── Debug panel ───────────────────────────
+  function renderDebug(dbg) {
+    if (!dbg) return ''
+
+    // Provider chain
+    const chain = dbg.search_provider_chain || []
+    const winner = dbg.search_provider
+    const chainHtml = chain.length ? chain.map((p, i) => {
+      const isWinner = p === winner
+      const isCache = p === 'search_cache' || p === 'caller'
+      const cls = isCache ? 'cache' : isWinner ? 'winner' : ''
+      return `${i > 0 ? '<span class="provider-arrow">→</span>' : ''}<span class="provider-tag ${cls}">${escHtml(p)}</span>`
+    }).join('') : `<span class="provider-tag winner">${escHtml(winner)}</span>`
+
+    // Per-article rows
+    const articleRows = (dbg.per_article || []).map(a => {
+      const domain = (() => { try { return new URL(a.url).hostname.replace(/^www\./, '') } catch { return a.url } })()
+      const outcomeClass = a.outcome === 'ok' ? 'ok' : a.outcome.includes('reject') ? 'reject' : 'skip'
+      const outcomeLabel = a.outcome === 'ok' ? '✓ used' : a.outcome === 'gate_rejected' ? '✗ gatekeeper rejected' : `✗ ${a.outcome}`
+
+      const chips = []
+      if (a.fetch_ms != null) chips.push(`<span class="ms-badge">fetch ${a.fetch_ms}ms</span>`)
+      if (a.gate_ms  != null) chips.push(`<span class="ms-badge">gate ${a.gate_ms}ms</span>`)
+      if (a.extract_ms != null) chips.push(`<span class="ms-badge">extract ${a.extract_ms}ms</span>`)
+      if (a.gate_tokens != null) chips.push(`<span class="token-badge">gate ${a.gate_tokens}tok</span>`)
+      if (a.extract_tokens != null) chips.push(`<span class="token-badge">extract ${a.extract_tokens}tok</span>`)
+      if (a.total_tokens != null) chips.push(`<span class="token-badge">total ${a.total_tokens}tok</span>`)
+      if (a.gate_prediction_count_estimate != null)
+        chips.push(`<span class="chip">signals est. ${a.gate_prediction_count_estimate}</span>`)
+
+      return `
+        <div class="article-debug-row ${outcomeClass}">
+          <div class="adr-top">
+            <span class="adr-outcome ${outcomeClass}">${outcomeLabel}</span>
+            <span class="adr-url"><a href="${escHtml(a.url)}" target="_blank" rel="noopener">${escHtml(domain)}</a></span>
+          </div>
+          ${chips.length ? `<div class="adr-chips">${chips.join('')}</div>` : ''}
+          ${a.gate_reason ? `<div class="adr-reason">"${escHtml(a.gate_reason)}"</div>` : ''}
+        </div>`
+    }).join('')
+
+    const totalTok = dbg.total_tokens || 0
+    const approxCost = ((totalTok / 1_000_000) * 0.15).toFixed(4)  // GPT-4o-mini input rate
+
+    return `
+      <div class="debug-panel">
+        <div class="debug-header" onclick="this.nextElementSibling.hidden = !this.nextElementSibling.hidden">
+          🛠 Debug info &nbsp;<span style="color:var(--muted);font-weight:400">(${totalTok.toLocaleString()} tokens · ~$${approxCost})</span>
+        </div>
+        <div class="debug-body">
+
+          <div>
+            <div class="debug-section-label">Search</div>
+            <div class="debug-kv">
+              <dt>Query</dt><dd>${escHtml(dbg.search_query)}</dd>
+              <dt>Provider used</dt><dd>${escHtml(dbg.search_provider)}</dd>
+              <dt>Fallback chain</dt><dd><div class="provider-chain">${chainHtml}</div></dd>
+              <dt>Articles fetched</dt><dd>${dbg.articles_fetched}</dd>
+            </div>
+          </div>
+
+          <div>
+            <div class="debug-section-label">Pipeline</div>
+            <div class="debug-kv">
+              <dt>Gatekeeper model</dt><dd>${escHtml(dbg.gatekeeper_model)}</dd>
+              <dt>Extractor model</dt><dd>${escHtml(dbg.extractor_model)}</dd>
+              <dt>Gate passed</dt><dd>${dbg.articles_gate_passed} / ${dbg.articles_fetched}</dd>
+              <dt>Extracted</dt><dd>${dbg.articles_extracted} / ${dbg.articles_gate_passed}</dd>
+              <dt>Total tokens</dt><dd>${totalTok.toLocaleString()} <span style="color:var(--muted)">(~$${approxCost} @ GPT-4o-mini rate)</span></dd>
+            </div>
+          </div>
+
+          ${articleRows ? `
+          <div>
+            <div class="debug-section-label">Per-article breakdown</div>
+            <div class="article-debug-list">${articleRows}</div>
+          </div>` : ''}
+
+          <details>
+            <summary>Gatekeeper prompt</summary>
+            <pre>${escHtml(dbg.gatekeeper_prompt)}</pre>
+          </details>
+
+          <details>
+            <summary>Extractor prompt</summary>
+            <pre>${escHtml(dbg.extractor_prompt)}</pre>
+          </details>
+
+        </div>
+      </div>`
   }
 </script>
 </body>

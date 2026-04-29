@@ -20,13 +20,13 @@ from urllib.parse import urlparse
 import httpx
 import trafilatura
 
-from tm.gatekeeper import check_is_prediction
-from tm.extractor import extract_predictions
-from tm.web_search import search_articles, SearchResult, get_last_search_provider
+from tm.gatekeeper import check_is_prediction, PROMPT as GATEKEEPER_PROMPT
+from tm.extractor import extract_predictions, PROMPT as EXTRACTOR_PROMPT
+from tm.web_search import search_articles, SearchResult, get_last_search_provider, get_last_search_provider_chain
 
 from .cache import forecast_cache, search_cache
 from .leaderboard import get_credibility_weight
-from .models import ArticleInput, ForecastRequest, ForecastResponse, SourceSignal
+from .models import ArticleDebug, ArticleInput, DebugInfo, ForecastRequest, ForecastResponse, SourceSignal
 from .config import settings
 
 logger = logging.getLogger(__name__)
@@ -213,11 +213,12 @@ async def _process_article(
     *,
     max_article_chars: int,
     timings: list[dict],
+    article_debugs: list[ArticleDebug],
 ) -> tuple[SearchResult, list] | None:
     """
     Run gatekeeper + extractor for one article.
     Fetches full article text via trafilatura; falls back to title+snippet.
-    Appends per-phase durations to ``timings`` for aggregate logging.
+    Appends per-phase durations to ``timings`` and an ArticleDebug to ``article_debugs``.
     """
     # Fallback text = title + snippet
     parts = [p for p in [result.title, result.snippet] if p and p.strip()]
@@ -235,6 +236,7 @@ async def _process_article(
     fetch_ms = (time.perf_counter() - fetch_start) * 1000
     if not text:
         timings.append({"url": result.url, "fetch_ms": fetch_ms, "outcome": "empty_text"})
+        article_debugs.append(ArticleDebug(url=result.url, outcome="empty_text", fetch_ms=round(fetch_ms, 1)))
         return None
 
     text = _truncate_article(text, max_article_chars)
@@ -244,7 +246,7 @@ async def _process_article(
 
     gate_start = time.perf_counter()
     try:
-        gate = await check_is_prediction(
+        gate, gate_usage = await check_is_prediction(
             article_text=text,
             source_name=source_name,
             article_date=article_date,
@@ -252,19 +254,19 @@ async def _process_article(
         )
     except Exception as exc:
         logger.warning("Gatekeeper failed for %s: %s", result.url, exc)
+        gate_ms = (time.perf_counter() - gate_start) * 1000
         timings.append({
             "url": result.url, "fetch_ms": fetch_ms,
-            "gate_ms": (time.perf_counter() - gate_start) * 1000,
-            "outcome": "gate_error",
+            "gate_ms": gate_ms, "outcome": "gate_error",
         })
+        article_debugs.append(ArticleDebug(
+            url=result.url, outcome="gate_error",
+            fetch_ms=round(fetch_ms, 1), gate_ms=round(gate_ms, 1),
+        ))
         return None
     gate_ms = (time.perf_counter() - gate_start) * 1000
 
     if not gate.is_prediction:
-        # Bumped from DEBUG → INFO so rejections surface in oracle_log.txt.
-        # The gatekeeper's `reason` is the only explanation we have for why an
-        # article that *looked* relevant from search was tossed; without it
-        # "No usable predictions extracted from N articles" is opaque.
         logger.info(
             "event=article_outcome outcome=gate_rejected url=%s reason=%r",
             result.url,
@@ -274,11 +276,19 @@ async def _process_article(
             "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
             "outcome": "gate_rejected",
         })
+        article_debugs.append(ArticleDebug(
+            url=result.url, outcome="gate_rejected",
+            gate_passed=False,
+            gate_reason=gate.reason,
+            gate_prediction_count_estimate=gate.prediction_count_estimate,
+            gate_tokens=gate_usage.get("total_tokens"),
+            fetch_ms=round(fetch_ms, 1), gate_ms=round(gate_ms, 1),
+        ))
         return None
 
     extract_start = time.perf_counter()
     try:
-        extraction = await extract_predictions(
+        extraction, extract_usage = await extract_predictions(
             article_text=text,
             source_name=source_name,
             article_date=article_date,
@@ -287,11 +297,19 @@ async def _process_article(
         )
     except Exception as exc:
         logger.warning("Extractor failed for %s: %s", result.url, exc)
+        extract_ms = (time.perf_counter() - extract_start) * 1000
         timings.append({
             "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
-            "extract_ms": (time.perf_counter() - extract_start) * 1000,
-            "outcome": "extract_error",
+            "extract_ms": extract_ms, "outcome": "extract_error",
         })
+        article_debugs.append(ArticleDebug(
+            url=result.url, outcome="extract_error",
+            gate_passed=True,
+            gate_reason=gate.reason,
+            gate_prediction_count_estimate=gate.prediction_count_estimate,
+            gate_tokens=gate_usage.get("total_tokens"),
+            fetch_ms=round(fetch_ms, 1), gate_ms=round(gate_ms, 1), extract_ms=round(extract_ms, 1),
+        ))
         return None
     extract_ms = (time.perf_counter() - extract_start) * 1000
 
@@ -300,11 +318,18 @@ async def _process_article(
             "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
             "extract_ms": extract_ms, "outcome": "no_predictions",
         })
+        article_debugs.append(ArticleDebug(
+            url=result.url, outcome="no_predictions",
+            gate_passed=True,
+            gate_reason=gate.reason,
+            gate_prediction_count_estimate=gate.prediction_count_estimate,
+            gate_tokens=gate_usage.get("total_tokens"),
+            extract_tokens=extract_usage.get("total_tokens"),
+            total_tokens=(gate_usage.get("total_tokens", 0) + extract_usage.get("total_tokens", 0)) or None,
+            fetch_ms=round(fetch_ms, 1), gate_ms=round(gate_ms, 1), extract_ms=round(extract_ms, 1),
+        ))
         return None
 
-    # One INFO line per accepted article so we can reconstruct exactly what
-    # each source contributed (stance, certainty, claim) from logs alone.
-    # Avg over the article's predictions matches what aggregator will use.
     avg_stance = sum(p.stance for p in extraction.predictions) / len(extraction.predictions)
     avg_certainty = sum(p.certainty for p in extraction.predictions) / len(extraction.predictions)
     first_claim = (extraction.predictions[0].claim or "")[:160]
@@ -316,6 +341,18 @@ async def _process_article(
         "url": result.url, "fetch_ms": fetch_ms, "gate_ms": gate_ms,
         "extract_ms": extract_ms, "outcome": "ok",
     })
+    gate_tok = gate_usage.get("total_tokens", 0)
+    ext_tok = extract_usage.get("total_tokens", 0)
+    article_debugs.append(ArticleDebug(
+        url=result.url, outcome="ok",
+        gate_passed=True,
+        gate_reason=gate.reason,
+        gate_prediction_count_estimate=gate.prediction_count_estimate,
+        gate_tokens=gate_tok or None,
+        extract_tokens=ext_tok or None,
+        total_tokens=(gate_tok + ext_tok) or None,
+        fetch_ms=round(fetch_ms, 1), gate_ms=round(gate_ms, 1), extract_ms=round(extract_ms, 1),
+    ))
     return (result, extraction.predictions)
 
 
@@ -373,6 +410,8 @@ async def _run_forecast_inner(
 ) -> ForecastResponse:
     # Step 1: search (skipped when caller provides articles directly)
     search_start = time.perf_counter()
+    search_provider: str
+    provider_chain: list[str]
     if req.articles:
         search_results: list[SearchResult] = [
             SearchResult(
@@ -385,12 +424,14 @@ async def _run_forecast_inner(
             )
             for a in req.articles
         ]
+        search_provider = "caller"
+        provider_chain = ["caller"]
         _log_phase(
             "search",
             (time.perf_counter() - search_start) * 1000,
             question=req.question,
             results=len(search_results),
-            provider="caller",
+            provider=search_provider,
         )
     else:
         # Check search cache before hitting provider APIs.
@@ -398,12 +439,14 @@ async def _run_forecast_inner(
         cached_results = search_cache.get(search_key)
         if cached_results is not None:
             search_results = cached_results
+            search_provider = "search_cache"
+            provider_chain = ["search_cache"]
             _log_phase(
                 "search",
                 (time.perf_counter() - search_start) * 1000,
                 question=req.question,
                 results=len(search_results),
-                provider="search_cache",
+                provider=search_provider,
             )
         else:
             try:
@@ -413,12 +456,14 @@ async def _run_forecast_inner(
             except Exception as exc:
                 logger.error("Search failed: %s", exc)
                 search_results = []
+            search_provider = get_last_search_provider()
+            provider_chain = get_last_search_provider_chain()
             _log_phase(
                 "search",
                 (time.perf_counter() - search_start) * 1000,
                 question=req.question,
                 results=len(search_results),
-                provider=get_last_search_provider(),
+                provider=search_provider,
             )
             search_cache.set(search_key, search_results)
 
@@ -431,7 +476,25 @@ async def _run_forecast_inner(
             articles_used=0,
             outcome="no_search_results",
         )
-        return _empty_response(req.question)
+        resp = _empty_response(req.question)
+        if req.debug:
+            resp.debug = DebugInfo(
+                search_query=req.question,
+                search_provider=search_provider,
+                search_provider_chain=provider_chain,
+                gatekeeper_model=settings.gatekeeper_model,
+                extractor_model=settings.extractor_model,
+                articles_fetched=0,
+                articles_gate_passed=0,
+                articles_extracted=0,
+                total_prompt_tokens=0,
+                total_completion_tokens=0,
+                total_tokens=0,
+                per_article=[],
+                gatekeeper_prompt=GATEKEEPER_PROMPT,
+                extractor_prompt=EXTRACTOR_PROMPT,
+            )
+        return resp
 
     # Log the URLs that came back so we can trace exactly which articles each
     # downstream phase saw. The search query == the question (we don't rewrite
@@ -446,6 +509,7 @@ async def _run_forecast_inner(
     # Step 2: gatekeeper + extractor in parallel
     process_start = time.perf_counter()
     timings: list[dict] = []
+    article_debugs: list[ArticleDebug] = []
     outcomes = await asyncio.gather(
         *[
             _process_article(
@@ -453,6 +517,7 @@ async def _run_forecast_inner(
                 req.question,
                 max_article_chars=settings.max_article_chars,
                 timings=timings,
+                article_debugs=article_debugs,
             )
             for r in search_results
         ],
@@ -537,6 +602,32 @@ async def _run_forecast_inner(
         mean, std, ci_low, ci_high, n,
     )
 
+    debug_info: Optional[DebugInfo] = None
+    if req.debug:
+        total_prompt_tok = sum(
+            (d.gate_tokens or 0) + (d.extract_tokens or 0)
+            for d in article_debugs
+        )
+        debug_info = DebugInfo(
+            search_query=req.question,
+            search_provider=search_provider,
+            search_provider_chain=provider_chain,
+            gatekeeper_model=settings.gatekeeper_model,
+            extractor_model=settings.extractor_model,
+            articles_fetched=len(search_results),
+            articles_gate_passed=sum(1 for d in article_debugs if d.gate_passed),
+            articles_extracted=n,
+            total_prompt_tokens=sum(
+                (d.gate_tokens or 0) + (d.extract_tokens or 0)
+                for d in article_debugs
+            ),
+            total_completion_tokens=0,
+            total_tokens=total_prompt_tok,
+            per_article=article_debugs,
+            gatekeeper_prompt=GATEKEEPER_PROMPT,
+            extractor_prompt=EXTRACTOR_PROMPT,
+        )
+
     response = ForecastResponse(
         question=req.question,
         mean=round(mean, 4),
@@ -546,6 +637,7 @@ async def _run_forecast_inner(
         articles_used=n,
         sources=source_signals,
         placeholder=False,
+        debug=debug_info,
     )
 
     forecast_cache.set(cache_key, response)
