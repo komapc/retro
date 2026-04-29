@@ -38,15 +38,15 @@
 
 - [x] `POST /search` — `searcher.run_search()` via `asyncio.to_thread`; 60/min rate limit; query, limit, date_from, date_to
 - [x] `GET /search/health` — per-provider: configured, in-process exhaustion flag, live credits where API exists (Serper → balance, SerpAPI → searches_left, ScrapingBee → max-used). Overall: ok/degraded/down
-- [ ] Create `src/lib/services/oracleSearch.ts` in daatan — thin client, returns `null` on failure *(tracked in daatan TODO)*
-- [ ] Update `context/route.ts` + `research/route.ts` in daatan: try `oracleSearch` first, fall through to local `searchArticles` on failure *(tracked in daatan TODO)*
+- [x] Create `src/lib/services/oracleSearch.ts` in daatan — thin client, returns `null` on failure (daatan v1.10.54, PR #699)
+- [x] Update `context/route.ts` + `research/route.ts` in daatan: try `oracleSearch` first, fall through to local `searchArticles` on failure (daatan v1.10.54, PR #699)
 - [x] Unify env var names: `SERPAPI_KEY` → `SERPAPI_API_KEY`, `SERPERDEV_KEY` → `SERPER_API_KEY` in `web_search.py`
 
 ### Phase 3 — Observability ✅ Done (2026-04-28, retro side)
 
 - [x] `search_provider_used=<name>` in `_log_phase("search", ...)` — thread-local set inside `search_articles()`, read in `forecaster.py` after the thread returns
 - [x] Key-refresh logic — `_refresh_keys_if_stale()` called at top of `search_articles()`; re-fetches all keys from Secrets Manager after 24h
-- [ ] Hourly cron route in daatan (`/api/cron/search-health`) polling oracle's `/search/health`; fire Telegram on low credits *(daatan side, pending)*
+- [x] Hourly cron route in daatan (`/api/cron/search-health`) polling oracle's `/search/health`; fire Telegram on low credits (daatan v1.10.58, PR #703)
 - [x] `notifyOracleSearchUnavailable()` — done in daatan PR #699
 
 ## Ingest / Coverage
