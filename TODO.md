@@ -68,10 +68,9 @@
 
 ## Scoring
 
-- [ ] Time-decay Brier score — predictions made closer to the event date should count more
-  (or less, depending on design goal). Currently all predictions are weighted equally.
+- [x] Time-decay Brier score — `time_decay_weight(article_date, outcome_date, half_life_days=30)` in `scorer.py`; exponential decay so predictions closer to the event weigh more; `time_decay_brier_score` added to leaderboard entries.
 
-- [ ] Calibration curve — plot implied_p vs actual outcome rate across probability buckets.
+- [x] Calibration curve — `_compute_calibration_bins()` in both `scorer.py` (writes `data/calibration.json`) and `render_atlas.py` (inline Chart.js scatter in the Scoring section); `poc_report.py` already has PM calibration.
 
 ## Bugs (from code review 2026-04-16) — all resolved in PR #35
 
