@@ -1,10 +1,55 @@
 import json
 import math
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import trueskill
+
+
+def time_decay_weight(article_date: str, outcome_date: str, half_life_days: float = 30.0) -> float:
+    """Weight predictions closer to the event more heavily.
+
+    Uses exponential decay: weight = 2^(-days_before / half_life_days).
+    A prediction made on the event date gets weight 1.0; one made
+    `half_life_days` before gets 0.5. Returns 1.0 when dates are missing.
+    """
+    if not article_date or not outcome_date:
+        return 1.0
+    try:
+        art_dt = datetime.fromisoformat(article_date[:10])
+        evt_dt = datetime.fromisoformat(outcome_date[:10])
+        days_before = max(0, (evt_dt - art_dt).days)
+        return 2.0 ** (-days_before / half_life_days)
+    except (ValueError, TypeError):
+        return 1.0
+
+
+def _compute_calibration_bins(
+    pairs: list[tuple[float, float]], n_bins: int = 10
+) -> Optional[dict]:
+    """Bin (implied_p, outcome) pairs and compute actual outcome rate per bin.
+
+    Returns None when there are fewer than 10 data points.
+    """
+    bins: list[list[float]] = [[] for _ in range(n_bins)]
+    for p, outcome in pairs:
+        idx = min(int(p * n_bins), n_bins - 1)
+        bins[idx].append(outcome)
+
+    if sum(len(b) for b in bins) < 10:
+        return None
+
+    labels, predicted, actual, counts = [], [], [], []
+    for i, b in enumerate(bins):
+        lo, hi = i / n_bins, (i + 1) / n_bins
+        labels.append(f"{int(lo*100)}–{int(hi*100)}%")
+        predicted.append(round((lo + hi) / 2, 3))
+        actual.append(round(sum(b) / len(b), 3) if b else 0.0)
+        counts.append(len(b))
+
+    return {"labels": labels, "predicted": predicted, "actual": actual, "counts": counts}
 
 
 class Scorer:
@@ -14,6 +59,7 @@ class Scorer:
         self.events_dir = data_dir / "events"
         self.sources_dir = data_dir / "sources"
         self.scores_path = data_dir / "leaderboard.json"
+        self.calibration_path = data_dir / "calibration.json"
 
     # ─────────────────────────────────────────────
     # Core scoring primitives
@@ -55,6 +101,8 @@ class Scorer:
             "name": name,
             "brier_total": 0.0,
             "weighted_brier_total": 0.0,
+            "time_decay_brier_total": 0.0,
+            "time_decay_weight_total": 0.0,
             "log_score_total": 0.0,
             "correct_count": 0,
             "prediction_count": 0,
@@ -82,11 +130,15 @@ class Scorer:
             global_stats[sid] = self._empty_bucket(source["name"])
             ts_ratings[sid] = ts_env.create_rating()
 
+        # Global (implied_p, outcome) pairs for calibration curve
+        calib_pairs: list[tuple[float, float]] = []
+
         # Score every event
         for event_file in sorted(self.events_dir.glob("*.json")):
             event = json.loads(event_file.read_text())
             eid = event["id"]
             outcome = event["outcome"]
+            outcome_date: str = event.get("outcome_date", "")
             categories: List[str] = event.get("category", [])
 
             atlas_event_dir = self.atlas_dir / eid
@@ -120,7 +172,7 @@ class Scorer:
                     if not preds:
                         continue
 
-                    stances    = [p.get("stance", 0.0) for p in preds]
+                    stances     = [p.get("stance", 0.0) for p in preds]
                     certainties = [p.get("certainty", 0.5) for p in preds]
                     avg_stance    = sum(stances) / len(stances)
                     avg_certainty = sum(certainties) / len(certainties)
@@ -130,12 +182,17 @@ class Scorer:
                     ls  = self.calculate_log_score(avg_stance, outcome)
                     acc = self.calculate_accuracy(avg_stance, outcome)
 
+                    article_date: str = entry.get("article_date", "")
+                    decay = time_decay_weight(article_date, outcome_date)
+
                     # Global bucket
-                    global_stats[sid]["brier_total"]          += b
-                    global_stats[sid]["weighted_brier_total"] += wb
-                    global_stats[sid]["log_score_total"]      += ls
-                    global_stats[sid]["correct_count"]        += acc
-                    global_stats[sid]["prediction_count"]     += 1
+                    global_stats[sid]["brier_total"]              += b
+                    global_stats[sid]["weighted_brier_total"]     += wb
+                    global_stats[sid]["time_decay_brier_total"]   += b * decay
+                    global_stats[sid]["time_decay_weight_total"]  += decay
+                    global_stats[sid]["log_score_total"]          += ls
+                    global_stats[sid]["correct_count"]            += acc
+                    global_stats[sid]["prediction_count"]         += 1
 
                     # Per-category buckets
                     for cat in categories:
@@ -144,6 +201,9 @@ class Scorer:
                         category_stats[sid][cat]["log_score_total"]      += ls
                         category_stats[sid][cat]["correct_count"]        += acc
                         category_stats[sid][cat]["prediction_count"]     += 1
+
+                    implied_p = (avg_stance + 1.0) / 2.0
+                    calib_pairs.append((implied_p, 1.0 if outcome else 0.0))
 
                     event_predictions.append((sid, avg_stance))
                     covered = True
@@ -181,26 +241,46 @@ class Scorer:
                     "events":               cstats["events_covered"],
                 }
 
+            tw = stats["time_decay_weight_total"]
+            time_decay_brier = (
+                round(stats["time_decay_brier_total"] / tw, 4) if tw > 0 else None
+            )
+
             leaderboard.append({
-                "id":                   sid,
-                "name":                 stats["name"],
-                "brier_score":          round(stats["brier_total"] / n, 4),
-                "weighted_brier_score": round(stats["weighted_brier_total"] / n, 4),
-                "log_score":            round(stats["log_score_total"] / n, 4),
-                "accuracy":             round(stats["correct_count"] / n, 4),
-                "elo":                  round(stats["elo"], 0),
-                "trueskill_mu":         round(ts_r.mu, 2) if ts_r else 25.0,
-                "trueskill_sigma":      round(ts_r.sigma, 2) if ts_r else 8.33,
+                "id":                     sid,
+                "name":                   stats["name"],
+                "brier_score":            round(stats["brier_total"] / n, 4),
+                "weighted_brier_score":   round(stats["weighted_brier_total"] / n, 4),
+                "time_decay_brier_score": time_decay_brier,
+                "log_score":              round(stats["log_score_total"] / n, 4),
+                "accuracy":               round(stats["correct_count"] / n, 4),
+                "elo":                    round(stats["elo"], 0),
+                "trueskill_mu":           round(ts_r.mu, 2) if ts_r else 25.0,
+                "trueskill_sigma":        round(ts_r.sigma, 2) if ts_r else 8.33,
                 "trueskill_conservative": round(ts_r.mu - 3 * ts_r.sigma, 2) if ts_r else 0.0,
-                "predictions":          n,
-                "events":               stats["events_covered"],
-                "by_category":          per_category,
+                "predictions":            n,
+                "events":                 stats["events_covered"],
+                "by_category":            per_category,
             })
 
         leaderboard.sort(key=lambda x: x["trueskill_conservative"], reverse=True)
 
         self.scores_path.write_text(json.dumps(leaderboard, indent=2))
         print(f"Scoring complete. {len(leaderboard)} sources scored → {self.scores_path}")
+
+        # ── Calibration curve ──────────────────────────────────────────────────
+        calibration = _compute_calibration_bins(calib_pairs)
+        self.calibration_path.write_text(
+            json.dumps(
+                {"n_predictions": len(calib_pairs), "calibration": calibration},
+                indent=2,
+            )
+        )
+        if calibration:
+            print(f"Calibration written ({len(calib_pairs)} predictions) → {self.calibration_path}")
+        else:
+            print(f"Not enough predictions ({len(calib_pairs)}) for calibration curve")
+
         return leaderboard
 
     # ─────────────────────────────────────────────

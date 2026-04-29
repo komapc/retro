@@ -40,7 +40,7 @@
 - [x] `GET /search/health` — per-provider: configured, in-process exhaustion flag, live credits where API exists (Serper → balance, SerpAPI → searches_left, ScrapingBee → max-used). Overall: ok/degraded/down
 - [ ] Create `src/lib/services/oracleSearch.ts` in daatan — thin client, returns `null` on failure *(tracked in daatan TODO)*
 - [ ] Update `context/route.ts` + `research/route.ts` in daatan: try `oracleSearch` first, fall through to local `searchArticles` on failure *(tracked in daatan TODO)*
-- [ ] Unify env var names: `SERPAPI_KEY` → `SERPAPI_API_KEY`, `SERPERDEV_KEY` → `SERPER_API_KEY` in `web_search.py` (do atomically: update SM paths, update code, reload)
+- [x] Unify env var names: `SERPAPI_KEY` → `SERPAPI_API_KEY`, `SERPERDEV_KEY` → `SERPER_API_KEY` in `web_search.py`
 
 ### Phase 3 — Observability ✅ Done (2026-04-28, retro side)
 
@@ -63,15 +63,14 @@
 - [x] PoC event generation (`poc_event_gen.py`) — convert harvested markets → pipeline event JSONs
 - [x] Duel report generator (`poc_report.py`) — interactive HTML with charts, calibration, event browser
 - [x] `duel.html` generated and deployed to GitHub Pages
-- [ ] **Wire TM predictions into duel report** — the "TruthMachine vs Polymarket" section is still a placeholder
-- [ ] **Brier comparison** — compute TM Brier vs PM Brier per event and display in the duel page
+- [x] **Wire TM predictions into duel report** — `load_tm_predictions()` scans vault2/extractions, mean stance → probability per event
+- [x] **Brier comparison** — TM Brier vs PM Brier per event; avg comparison bar chart + scatter plot; per-event table with winner column
 
 ## Scoring
 
-- [ ] Time-decay Brier score — predictions made closer to the event date should count more
-  (or less, depending on design goal). Currently all predictions are weighted equally.
+- [x] Time-decay Brier score — `time_decay_weight(article_date, outcome_date, half_life_days=30)` in `scorer.py`; exponential decay so predictions closer to the event weigh more; `time_decay_brier_score` added to leaderboard entries.
 
-- [ ] Calibration curve — plot implied_p vs actual outcome rate across probability buckets.
+- [x] Calibration curve — `_compute_calibration_bins()` in both `scorer.py` (writes `data/calibration.json`) and `render_atlas.py` (inline Chart.js scatter in the Scoring section); `poc_report.py` already has PM calibration.
 
 ## Bugs (from code review 2026-04-16) — all resolved in PR #35
 

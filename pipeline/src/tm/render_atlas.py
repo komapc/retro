@@ -200,17 +200,42 @@ def build_timeseries(cells: dict, events: dict, eid: str,
 
 # ── scoring ───────────────────────────────────────────────────────────────────
 
+def _compute_calibration_bins(
+    pairs: list[tuple[float, float]], n_bins: int = 10
+) -> Optional[dict]:
+    """Bin (implied_p, outcome) pairs → actual outcome rate per bin."""
+    bins: list[list[float]] = [[] for _ in range(n_bins)]
+    for p, outcome in pairs:
+        idx = min(int(p * n_bins), n_bins - 1)
+        bins[idx].append(outcome)
+
+    if sum(len(b) for b in bins) < 10:
+        return None
+
+    labels, predicted, actual, counts = [], [], [], []
+    for i, b in enumerate(bins):
+        lo, hi = i / n_bins, (i + 1) / n_bins
+        labels.append(f"{int(lo*100)}–{int(hi*100)}%")
+        predicted.append(round((lo + hi) / 2, 3))
+        actual.append(round(sum(b) / len(b), 3) if b else 0.0)
+        counts.append(len(b))
+
+    return {"labels": labels, "predicted": predicted, "actual": actual, "counts": counts}
+
+
 def compute_brier_scores(cells: dict, events: dict) -> dict:
     """
     Returns {
       'by_event': {eid: {n, avg_stance, implied_p, brier, outcome}},
       'by_source': {sid: {n, brier}},
       'overall': {n, brier, skill},
+      'calibration': {labels, predicted, actual, counts} | None,
     }
     skill = 1 - (brier / 0.25)  — positive means better than random (always-50%)
     """
     by_event: dict[str, dict] = {}
     by_source: dict[str, list] = {sid: [] for sid in SOURCES}
+    calib_pairs: list[tuple[float, float]] = []
 
     for eid in MVP_EVENTS:
         ev = events.get(eid)
@@ -226,6 +251,7 @@ def compute_brier_scores(cells: dict, events: dict) -> dict:
                     bs = (p - outcome) ** 2
                     scores.append(bs)
                     by_source[sid].append(bs)
+                    calib_pairs.append((p, outcome))
 
         if scores:
             avg_bs = sum(scores) / len(scores)
@@ -254,8 +280,12 @@ def compute_brier_scores(cells: dict, events: dict) -> dict:
                 "brier": round(sum(lst) / len(lst), 3),
             }
 
-    return dict(by_event=by_event, by_source=source_summary,
-                overall=dict(n=len(all_scores), brier=overall_brier, skill=skill))
+    return dict(
+        by_event=by_event,
+        by_source=source_summary,
+        overall=dict(n=len(all_scores), brier=overall_brier, skill=skill),
+        calibration=_compute_calibration_bins(calib_pairs),
+    )
 
 
 def compute_competitive_scores(
@@ -618,6 +648,72 @@ def _render_scoring(scores: dict, events: dict) -> str:
             f'</tr>'
         )
     html += '</tbody></table>'
+
+    # ── calibration curve ──
+    calibration = scores.get("calibration")
+    if calibration:
+        calib_json = json.dumps(calibration)
+        html += f"""
+<h3 style="font-size:14px;font-weight:600;margin:32px 0 8px;color:var(--text)">Calibration Curve</h3>
+<p style="color:var(--muted);font-size:12px;margin-bottom:12px">
+  Implied probability vs actual YES rate across 10 buckets.
+  Points on the diagonal = perfectly calibrated. Dot size = number of predictions.
+</p>
+<div style="max-width:480px">
+  <canvas id="tm-calib-chart"></canvas>
+</div>
+<script>
+(function() {{
+  var calib = {calib_json};
+  new Chart(document.getElementById('tm-calib-chart'), {{
+    type: 'scatter',
+    data: {{
+      datasets: [
+        {{
+          label: 'TruthMachine',
+          data: calib.predicted.map(function(x,i) {{ return {{x: x, y: calib.actual[i]}}; }}),
+          backgroundColor: '#6366f1cc',
+          pointRadius: calib.counts.map(function(c) {{ return Math.max(4, Math.min(14, c)); }}),
+          pointHoverRadius: 8,
+        }},
+        {{
+          label: 'Perfect calibration',
+          data: [{{x:0,y:0}},{{x:1,y:1}}],
+          type: 'line',
+          borderColor: '#4b5563',
+          borderDash: [4,4],
+          pointRadius: 0,
+          fill: false,
+        }},
+      ]
+    }},
+    options: {{
+      responsive: true,
+      scales: {{
+        x: {{ min:0, max:1, title: {{display:true, text:'Implied probability'}}, grid: {{color:'rgba(255,255,255,0.06)'}} }},
+        y: {{ min:0, max:1, title: {{display:true, text:'Actual YES rate'}}, grid: {{color:'rgba(255,255,255,0.06)'}} }},
+      }},
+      plugins: {{
+        legend: {{position:'top'}},
+        tooltip: {{
+          callbacks: {{
+            label: function(ctx) {{
+              var i = ctx.dataIndex;
+              return calib.labels[i] + ': actual=' + (calib.actual[i]*100).toFixed(1) + '% (n=' + calib.counts[i] + ')';
+            }}
+          }}
+        }}
+      }}
+    }}
+  }});
+}})();
+</script>
+"""
+    else:
+        html += (
+            '<p style="color:var(--muted);font-size:12px;margin-top:24px">'
+            'Calibration curve — not enough predictions yet (need ≥ 10).</p>'
+        )
 
     return html
 
