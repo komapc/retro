@@ -3,8 +3,8 @@ Multi-provider news search with fallback chain.
 Python equivalent of daatan's webSearch.ts utility.
 
 Fallback order:
-  1. SerpAPI (serpapi.com)          SERPAPI_KEY
-  2. Serper.dev /news endpoint      SERPERDEV_KEY
+  1. SerpAPI (serpapi.com)          SERPAPI_API_KEY
+  2. Serper.dev /news endpoint      SERPER_API_KEY
   3. Brave News Search              BRAVE_API_KEY
   4. BrightData SERP API            BRIGHTDATA_API_KEY
   5. Nimbleway SERP API             NIMBLEWAY_API_KEY
@@ -68,8 +68,8 @@ def _secret(env_var: str, secret_name: str) -> Optional[str]:
         return None
 
 
-SERPAPI_KEY: Optional[str] = _secret("SERPAPI_KEY", "openclaw/serpapi-key")
-SERPERDEV_KEY: Optional[str] = _secret("SERPERDEV_KEY", "openclaw/serperdev-key")
+SERPAPI_API_KEY: Optional[str] = _secret("SERPAPI_API_KEY", "openclaw/serpapi-key")
+SERPER_API_KEY: Optional[str] = _secret("SERPER_API_KEY", "openclaw/serperdev-key")
 BRAVE_API_KEY: Optional[str] = _secret("BRAVE_API_KEY", "openclaw/brave-api-key")
 BRIGHTDATA_API_KEY: Optional[str] = _secret("BRIGHTDATA_API_KEY", "openclaw/brightdata-api-key")
 NIMBLEWAY_API_KEY: Optional[str] = _secret("NIMBLEWAY_API_KEY", "openclaw/nimbleway-api-key")
@@ -86,14 +86,14 @@ def _refresh_keys_if_stale() -> None:
     pipeline can run for days) would use stale keys after rotation. This
     function is called at the top of search_articles() to catch that case.
     """
-    global SERPAPI_KEY, SERPERDEV_KEY, BRAVE_API_KEY
+    global SERPAPI_API_KEY, SERPER_API_KEY, BRAVE_API_KEY
     global BRIGHTDATA_API_KEY, NIMBLEWAY_API_KEY, SCRAPINGBEE_API_KEY
     global _KEY_LOADED_AT
     if time.time() - _KEY_LOADED_AT < _KEY_MAX_AGE_SECONDS:
         return
     logger.info("Refreshing search API keys from Secrets Manager (>24h since last fetch)")
-    SERPAPI_KEY = _secret("SERPAPI_KEY", "openclaw/serpapi-key")
-    SERPERDEV_KEY = _secret("SERPERDEV_KEY", "openclaw/serperdev-key")
+    SERPAPI_API_KEY = _secret("SERPAPI_API_KEY", "openclaw/serpapi-key")
+    SERPER_API_KEY = _secret("SERPER_API_KEY", "openclaw/serperdev-key")
     BRAVE_API_KEY = _secret("BRAVE_API_KEY", "openclaw/brave-api-key")
     BRIGHTDATA_API_KEY = _secret("BRIGHTDATA_API_KEY", "openclaw/brightdata-api-key")
     NIMBLEWAY_API_KEY = _secret("NIMBLEWAY_API_KEY", "openclaw/nimbleway-api-key")
@@ -149,8 +149,8 @@ def _search_serpapi_news(
     date_from: Optional[datetime] = None,
     date_to: Optional[datetime] = None,
 ) -> List[SearchResult]:
-    if not SERPAPI_KEY:
-        raise RuntimeError("SERPAPI_KEY not set")
+    if not SERPAPI_API_KEY:
+        raise RuntimeError("SERPAPI_API_KEY not set")
 
     # SerpAPI news (tbm=nws) doesn't support site: operator — strip it.
     # Results are filtered by domain by the caller anyway.
@@ -161,7 +161,7 @@ def _search_serpapi_news(
         "q": clean_query,
         "tbm": "nws",
         "num": min(limit, 100),
-        "api_key": SERPAPI_KEY,
+        "api_key": SERPAPI_API_KEY,
     }
     if date_from:
         params["tbs"] = f"cdr:1,cd_min:{date_from.month}/{date_from.day}/{date_from.year}"
@@ -200,8 +200,8 @@ def _search_serper_news(
     date_to: Optional[datetime] = None,
 ) -> List[SearchResult]:
     global _SERPER_QUOTA_EXHAUSTED
-    if not SERPERDEV_KEY:
-        raise RuntimeError("SERPERDEV_KEY not set")
+    if not SERPER_API_KEY:
+        raise RuntimeError("SERPER_API_KEY not set")
 
     body: dict = {"q": query, "num": limit}
     if date_from and date_to:
@@ -213,7 +213,7 @@ def _search_serper_news(
     r = httpx.post(
         "https://google.serper.dev/news",
         json=body,
-        headers={"X-API-KEY": SERPERDEV_KEY, "Content-Type": "application/json"},
+        headers={"X-API-KEY": SERPER_API_KEY, "Content-Type": "application/json"},
         timeout=10,
     )
     if r.status_code == 400 and "credits" in r.text.lower():
@@ -459,7 +459,7 @@ def search_articles(
     _provider_local.name = "none"
 
     # 1. SerpAPI
-    if SERPAPI_KEY:
+    if SERPAPI_API_KEY:
         try:
             results = _search_serpapi_news(query, limit, date_from, date_to)
             if results:
@@ -470,7 +470,7 @@ def search_articles(
             logger.warning("SerpAPI failed: %s", e)
 
     # 2. Serper.dev news
-    if SERPERDEV_KEY and not _SERPER_QUOTA_EXHAUSTED:
+    if SERPER_API_KEY and not _SERPER_QUOTA_EXHAUSTED:
         try:
             results = _search_serper_news(query, limit, date_from, date_to)
             if results:

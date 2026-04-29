@@ -17,6 +17,7 @@ Usage:
 import argparse
 import json
 import os
+import re
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -39,6 +40,44 @@ def load_events(data_dir: Path) -> list[dict]:
             if line:
                 events.append(json.loads(line))
     return events
+
+
+def _pm_id_to_event_id(pm_id: str) -> str:
+    """Mirror of poc_event_gen._question_to_event_id."""
+    safe = re.sub(r'[^a-zA-Z0-9]', '', str(pm_id))[:8]
+    return f"pm{safe}"
+
+
+def load_tm_predictions(data_dir: Path) -> dict[str, float]:
+    """Load TM predictions from vault2 extractions. Returns {event_id: probability}.
+
+    Scans data_dir/vault2/extractions/ for files named {hash}_{event_id}_v1.json,
+    averages stance values per event, then converts to probability: (stance+1)/2.
+    """
+    extractions_dir = data_dir / "vault2" / "extractions"
+    if not extractions_dir.exists():
+        return {}
+
+    event_stances: dict[str, list[float]] = defaultdict(list)
+    for path in extractions_dir.glob("*.json"):
+        m = re.match(r'^[0-9a-f]+_([A-Za-z0-9]+)_v\d+\.json$', path.name)
+        if not m:
+            continue
+        event_id = m.group(1)
+        try:
+            data = json.loads(path.read_text())
+            for pred in data.get("extraction", {}).get("predictions", []):
+                stance = pred.get("stance")
+                if isinstance(stance, (int, float)):
+                    event_stances[event_id].append(float(stance))
+        except Exception:
+            continue
+
+    return {
+        eid: round((sum(stances) / len(stances) + 1) / 2, 3)
+        for eid, stances in event_stances.items()
+        if stances
+    }
 
 
 def get_final_price(event: dict, days_before: int = 1) -> float | None:
@@ -86,7 +125,6 @@ def category_breakdown(events: list[dict]) -> dict:
             cats[cat]["yes"] += 1
         else:
             cats[cat]["no"] += 1
-    # Sort by total desc, top 10
     sorted_cats = sorted(cats.items(), key=lambda x: -(x[1]["yes"] + x[1]["no"]))[:10]
     return {
         "labels": [c for c, _ in sorted_cats],
@@ -111,20 +149,45 @@ def outcome_by_year(events: list[dict]) -> dict:
     }
 
 
-def build_event_rows(events: list[dict]) -> list[dict]:
+def build_event_rows(events: list[dict], tm_preds: dict[str, float]) -> list[dict]:
     """Compact event summaries for the browser table."""
     rows = []
     for ev in events:
         final_p = get_final_price(ev, days_before=1)
+        event_id = _pm_id_to_event_id(str(ev.get("pm_id", "")))
+        tm_p = tm_preds.get(event_id)
         rows.append({
             "q": ev["question"][:120],
             "out": ev["outcome"],
             "date": ev["outcome_date"],
             "cat": (ev.get("category") or "Politics")[:25],
             "pm_p": round(final_p, 3) if final_p is not None else None,
+            "tm_p": tm_p,
             "url": ev.get("pm_url", ""),
         })
     return rows
+
+
+def compute_brier_pairs(events: list[dict], tm_preds: dict[str, float]) -> list[dict]:
+    """Return list of events with both TM and PM probabilities, including Brier scores."""
+    pairs = []
+    for ev in events:
+        event_id = _pm_id_to_event_id(str(ev.get("pm_id", "")))
+        tm_p = tm_preds.get(event_id)
+        pm_p = get_final_price(ev, days_before=1)
+        if tm_p is None or pm_p is None:
+            continue
+        outcome_val = 1 if ev["outcome"] else 0
+        pairs.append({
+            "q": ev["question"][:80],
+            "event_id": event_id,
+            "outcome": outcome_val,
+            "tm_p": tm_p,
+            "pm_p": round(pm_p, 3),
+            "tm_brier": round((tm_p - outcome_val) ** 2, 4),
+            "pm_brier": round((pm_p - outcome_val) ** 2, 4),
+        })
+    return pairs
 
 
 # ── HTML generation ───────────────────────────────────────────────────────────
@@ -138,10 +201,18 @@ def render(data_dir: Path, out_path: Path) -> None:
     has_prices = sum(1 for e in events if e.get("prices"))
     console.print(f"  {has_prices} with price history")
 
+    tm_preds = load_tm_predictions(data_dir)
+    console.print(f"  {len(tm_preds)} events with TM predictions")
+
     calib = compute_calibration(events, days_before=7) if has_prices >= 50 else None
     cat_data = category_breakdown(events)
     year_data = outcome_by_year(events)
-    rows = build_event_rows(events)
+    rows = build_event_rows(events, tm_preds)
+    brier_pairs = compute_brier_pairs(events, tm_preds)
+    n_compared = len(brier_pairs)
+
+    avg_tm_brier = round(sum(p["tm_brier"] for p in brier_pairs) / n_compared, 4) if n_compared else None
+    avg_pm_brier = round(sum(p["pm_brier"] for p in brier_pairs) / n_compared, 4) if n_compared else None
 
     yes_count = sum(1 for e in events if e["outcome"])
     no_count = len(events) - yes_count
@@ -149,11 +220,71 @@ def render(data_dir: Path, out_path: Path) -> None:
 
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
 
-    # Inline all chart data as JSON
     calib_json = json.dumps(calib) if calib else "null"
     cat_json = json.dumps(cat_data)
     year_json = json.dumps(year_data)
     rows_json = json.dumps(rows)
+    brier_json = json.dumps(brier_pairs)
+
+    # ── Brier section HTML ────────────────────────────────────────────────────
+    if n_compared >= 2:
+        tm_wins = sum(1 for p in brier_pairs if p["tm_brier"] < p["pm_brier"])
+        pm_wins = n_compared - tm_wins
+        brier_section = f"""
+  <div class="charts-row">
+    <div class="chart-box">
+      <h3>Average Brier Score (lower = better, {n_compared} events)</h3>
+      <canvas id="brierAvgChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>TM Probability vs PM Probability</h3>
+      <canvas id="brierScatterChart"></canvas>
+    </div>
+  </div>
+  <div style="margin-top:1rem;color:var(--muted);font-size:0.85rem">
+    TM beats PM on {tm_wins}/{n_compared} events · PM beats TM on {pm_wins}/{n_compared} events
+  </div>
+  <div style="margin-top:1.5rem">
+    <table style="width:100%;border-collapse:collapse;font-size:0.82rem">
+      <thead><tr>
+        <th style="text-align:left;padding:0.4rem 0.75rem;color:var(--muted);border-bottom:1px solid var(--border)">Question</th>
+        <th style="text-align:left;padding:0.4rem 0.75rem;color:var(--muted);border-bottom:1px solid var(--border)">Outcome</th>
+        <th style="text-align:right;padding:0.4rem 0.75rem;color:var(--muted);border-bottom:1px solid var(--border)">TM Prob</th>
+        <th style="text-align:right;padding:0.4rem 0.75rem;color:var(--muted);border-bottom:1px solid var(--border)">PM Prob</th>
+        <th style="text-align:right;padding:0.4rem 0.75rem;color:var(--muted);border-bottom:1px solid var(--border)">TM Brier</th>
+        <th style="text-align:right;padding:0.4rem 0.75rem;color:var(--muted);border-bottom:1px solid var(--border)">PM Brier</th>
+        <th style="text-align:left;padding:0.4rem 0.75rem;color:var(--muted);border-bottom:1px solid var(--border)">Winner</th>
+      </tr></thead>
+      <tbody id="brierBody"></tbody>
+    </table>
+  </div>"""
+    elif n_compared == 1:
+        p = brier_pairs[0]
+        brier_section = f"""
+  <div style="color:var(--muted);font-size:0.85rem;margin-bottom:0.75rem">
+    Only 1 event with both TM and PM data — need more events for a meaningful comparison.
+  </div>
+  <div style="font-size:0.9rem">
+    <strong>{p['q'][:80]}</strong> — Outcome: {'YES' if p['outcome'] else 'NO'}<br>
+    TM: {p['tm_p']:.1%} (Brier {p['tm_brier']}) · PM: {p['pm_p']:.1%} (Brier {p['pm_brier']})
+  </div>"""
+    else:
+        tm_count = len(tm_preds)
+        brier_section = f"""
+  <div class="placeholder">
+    <div class="icon">🤖</div>
+    <div>
+      {'<strong>' + str(tm_count) + ' TM predictions loaded</strong> — but no overlap with events that have PM price history yet.<br><small>Run the pipeline on PoC events to generate more predictions.</small>' if tm_count else 'TM predictions not yet available.<br><small>Pipeline is ingesting articles and extracting predictions — check back soon.</small>'}
+    </div>
+  </div>"""
+
+    # ── Brier stat cards ──────────────────────────────────────────────────────
+    if avg_tm_brier is not None:
+        tm_card = f'<div class="stat-card"><div class="val" style="color:var(--accent)">{avg_tm_brier:.3f}</div><div class="lbl">TM avg Brier</div></div>'
+        pm_card = f'<div class="stat-card"><div class="val" style="color:var(--yellow)">{avg_pm_brier:.3f}</div><div class="lbl">PM avg Brier</div></div>'
+        compared_card = f'<div class="stat-card"><div class="val">{n_compared}</div><div class="lbl">Events compared</div></div>'
+    else:
+        tm_card = pm_card = compared_card = ""
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -220,6 +351,8 @@ def render(data_dir: Path, out_path: Path) -> None:
   .out-no  {{ color: var(--red); font-weight: 600; }}
   .prob-bar {{ display: inline-block; width: 40px; height: 6px; background: var(--border); border-radius: 3px; vertical-align: middle; margin-right: 4px; }}
   .prob-fill {{ height: 100%; border-radius: 3px; background: var(--accent); }}
+  .prob-fill-tm {{ background: #6366f1; }}
+  .prob-fill-pm {{ background: #f59e0b; }}
 
   .pagination {{ display: flex; gap: 0.5rem; align-items: center; margin-top: 1rem; justify-content: center; color: var(--muted); font-size: 0.85rem; }}
   .pagination button {{ background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
@@ -242,10 +375,14 @@ def render(data_dir: Path, out_path: Path) -> None:
   <div class="stat-card"><div class="val">{yes_count:,}</div><div class="lbl">Resolved YES</div></div>
   <div class="stat-card"><div class="val">{no_count:,}</div><div class="lbl">Resolved NO</div></div>
   <div class="stat-card"><div class="val">{has_prices:,}</div><div class="lbl">With price history</div></div>
+  <div class="stat-card"><div class="val">{len(tm_preds):,}</div><div class="lbl">TM predictions</div></div>
   <div class="stat-card" style="border-color:{'#6366f1' if calib else 'var(--border)'}">
     <div class="val" style="color:{'#10b981' if calib else 'var(--muted)'}">{'✓' if calib else '…'}</div>
     <div class="lbl">Calibration ready</div>
   </div>
+  {tm_card}
+  {pm_card}
+  {compared_card}
 </div>
 
 <div class="coverage-bar">
@@ -270,11 +407,7 @@ def render(data_dir: Path, out_path: Path) -> None:
 
 <div class="section">
   <h2>TruthMachine vs Polymarket</h2>
-  <div class="placeholder">
-    <div class="icon">🤖</div>
-    <div>TM predictions not yet available<br>
-    <small>Pipeline is ingesting articles and extracting predictions — check back soon</small></div>
-  </div>
+  {brier_section}
 </div>
 
 <div class="section">
@@ -301,6 +434,7 @@ def render(data_dir: Path, out_path: Path) -> None:
       <th onclick="sortTable('date')">Date ↕</th>
       <th onclick="sortTable('out')">Outcome ↕</th>
       <th onclick="sortTable('pm_p')">PM Prob ↕</th>
+      <th onclick="sortTable('tm_p')">TM Prob ↕</th>
     </tr></thead>
     <tbody id="evtBody"></tbody>
   </table>
@@ -321,12 +455,14 @@ const EVENTS = {rows_json};
 const CALIB  = {calib_json};
 const CAT    = {cat_json};
 const YEAR   = {year_json};
+const BRIER  = {brier_json};
 
 // ── Charts ────────────────────────────────────────────────────────────────────
 const GRID   = 'rgba(255,255,255,0.06)';
 const ACCENT = '#6366f1';
 const GREEN  = '#10b981';
 const RED    = '#ef4444';
+const YELLOW = '#f59e0b';
 
 Chart.defaults.color = '#8892a4';
 Chart.defaults.borderColor = GRID;
@@ -382,6 +518,72 @@ if (CALIB) {{
   }});
 }}
 
+// ── Brier charts ──────────────────────────────────────────────────────────────
+const brierAvgEl = document.getElementById('brierAvgChart');
+const brierScatEl = document.getElementById('brierScatterChart');
+const brierBodyEl = document.getElementById('brierBody');
+
+if (BRIER.length >= 2 && brierAvgEl) {{
+  const avgTM = BRIER.reduce((s,p) => s + p.tm_brier, 0) / BRIER.length;
+  const avgPM = BRIER.reduce((s,p) => s + p.pm_brier, 0) / BRIER.length;
+  new Chart(brierAvgEl, {{
+    type: 'bar',
+    data: {{
+      labels: ['TruthMachine', 'Polymarket'],
+      datasets: [{{ data: [avgTM, avgPM], backgroundColor: [ACCENT + 'cc', YELLOW + 'cc'] }}]
+    }},
+    options: {{
+      responsive: true, plugins: {{ legend: {{ display: false }},
+        tooltip: {{ callbacks: {{ label: ctx => `Brier: ${{ctx.raw.toFixed(4)}}` }} }} }},
+      scales: {{ y: {{ min: 0, max: 0.5, title: {{ display: true, text: 'Avg Brier Score (lower = better)' }}, grid: {{ color: GRID }} }}, x: {{ grid: {{ color: GRID }} }} }}
+    }}
+  }});
+}}
+
+if (BRIER.length >= 2 && brierScatEl) {{
+  new Chart(brierScatEl, {{
+    type: 'scatter',
+    data: {{
+      datasets: [
+        {{ label: 'YES outcome', data: BRIER.filter(p => p.outcome).map(p => ({{x: p.tm_p, y: p.pm_p, q: p.q}})),
+           backgroundColor: GREEN + 'cc', pointRadius: 6, pointHoverRadius: 8 }},
+        {{ label: 'NO outcome',  data: BRIER.filter(p => !p.outcome).map(p => ({{x: p.tm_p, y: p.pm_p, q: p.q}})),
+           backgroundColor: RED + 'cc',   pointRadius: 6, pointHoverRadius: 8 }},
+        {{ label: 'Agreement line', data: [{{x:0,y:0}},{{x:1,y:1}}],
+           type: 'line', borderColor: '#4b5563', borderDash: [4,4], pointRadius: 0 }},
+      ]
+    }},
+    options: {{
+      responsive: true,
+      scales: {{
+        x: {{ min:0, max:1, title: {{ display:true, text:'TM Probability' }}, grid: {{ color: GRID }} }},
+        y: {{ min:0, max:1, title: {{ display:true, text:'PM Probability' }}, grid: {{ color: GRID }} }},
+      }},
+      plugins: {{
+        tooltip: {{ callbacks: {{ label: ctx => ctx.raw.q ? ctx.raw.q.slice(0,60) : '' }} }},
+        legend: {{ position: 'top' }},
+      }}
+    }}
+  }});
+}}
+
+if (BRIER.length > 0 && brierBodyEl) {{
+  brierBodyEl.innerHTML = BRIER.map(p => {{
+    const winner = p.tm_brier < p.pm_brier ? '<span style="color:var(--accent)">TM ✓</span>' :
+                   p.pm_brier < p.tm_brier ? '<span style="color:var(--yellow)">PM ✓</span>' :
+                   '<span style="color:var(--muted)">Tie</span>';
+    return `<tr>
+      <td style="max-width:300px">${{p.q}}</td>
+      <td class="${{p.outcome ? 'out-yes' : 'out-no'}}">${{p.outcome ? 'YES' : 'NO'}}</td>
+      <td style="text-align:right">${{(p.tm_p*100).toFixed(0)}}%</td>
+      <td style="text-align:right">${{(p.pm_p*100).toFixed(0)}}%</td>
+      <td style="text-align:right;color:var(--accent)">${{p.tm_brier}}</td>
+      <td style="text-align:right;color:var(--yellow)">${{p.pm_brier}}</td>
+      <td>${{winner}}</td>
+    </tr>`;
+  }}).join('');
+}}
+
 // ── Event browser ─────────────────────────────────────────────────────────────
 const PAGE_SIZE = 50;
 let filtered = [...EVENTS];
@@ -389,7 +591,6 @@ let currentPage = 0;
 let sortKey = 'date';
 let sortDir = -1;
 
-// Populate filter dropdowns
 const cats = [...new Set(EVENTS.map(e => e.cat))].sort();
 const years = [...new Set(EVENTS.map(e => e.date.slice(0,4)))].sort().reverse();
 const catSel = document.getElementById('catFilter');
@@ -426,21 +627,24 @@ function changePage(delta) {{
   renderTable();
 }}
 
+function probCell(p, cls) {{
+  if (p === null || p === undefined) return '<span style="color:var(--muted)">—</span>';
+  return `<div class="prob-bar"><div class="prob-fill ${{cls}}" style="width:${{(p*100).toFixed(0)}}%"></div></div>${{(p*100).toFixed(0)}}%`;
+}}
+
 function renderTable() {{
   const start = currentPage * PAGE_SIZE;
   const page  = filtered.slice(start, start + PAGE_SIZE);
   const tbody = document.getElementById('evtBody');
   tbody.innerHTML = page.map(e => {{
-    const probBar = e.pm_p !== null
-      ? `<div class="prob-bar"><div class="prob-fill" style="width:${{(e.pm_p*100).toFixed(0)}}%"></div></div>${{(e.pm_p*100).toFixed(0)}}%`
-      : '<span style="color:var(--muted)">—</span>';
     const link = e.url ? `<a href="${{e.url}}" target="_blank">${{e.q}}</a>` : e.q;
     return `<tr>
       <td>${{link}}</td>
       <td>${{e.cat}}</td>
       <td>${{e.date}}</td>
       <td class="${{e.out ? 'out-yes' : 'out-no'}}">${{e.out ? 'YES' : 'NO'}}</td>
-      <td>${{probBar}}</td>
+      <td>${{probCell(e.pm_p, 'prob-fill-pm')}}</td>
+      <td>${{probCell(e.tm_p, 'prob-fill-tm')}}</td>
     </tr>`;
   }}).join('');
 
