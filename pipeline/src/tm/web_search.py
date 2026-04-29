@@ -43,13 +43,19 @@ from ddgs import DDGS
 logger = logging.getLogger(__name__)
 
 # Thread-local: stores the provider name that served the last search_articles()
-# call in this thread. Read via get_last_search_provider() after the call returns.
+# call in this thread, and the full chain of providers attempted.
+# Read via get_last_search_provider() / get_last_search_provider_chain() after the call returns.
 _provider_local = threading.local()
 
 
 def get_last_search_provider() -> str:
     """Return the provider that served the most recent search_articles() call in this thread."""
     return getattr(_provider_local, "name", "none")
+
+
+def get_last_search_provider_chain() -> list[str]:
+    """Return the ordered list of providers attempted in the most recent search_articles() call."""
+    return list(getattr(_provider_local, "chain", []))
 
 
 def _secret(env_var: str, secret_name: str) -> Optional[str]:
@@ -457,9 +463,11 @@ def search_articles(
     """
     _refresh_keys_if_stale()
     _provider_local.name = "none"
+    _provider_local.chain = []
 
     # 1. SerpAPI
     if SERPAPI_API_KEY:
+        _provider_local.chain.append("serpapi")
         try:
             results = _search_serpapi_news(query, limit, date_from, date_to)
             if results:
@@ -471,6 +479,7 @@ def search_articles(
 
     # 2. Serper.dev news
     if SERPER_API_KEY and not _SERPER_QUOTA_EXHAUSTED:
+        _provider_local.chain.append("serper")
         try:
             results = _search_serper_news(query, limit, date_from, date_to)
             if results:
@@ -482,6 +491,7 @@ def search_articles(
 
     # 3. Brave News
     if BRAVE_API_KEY and not _BRAVE_QUOTA_EXHAUSTED:
+        _provider_local.chain.append("brave")
         try:
             results = _search_brave_news(query, limit, date_from, date_to)
             if results:
@@ -493,6 +503,7 @@ def search_articles(
 
     # 4. BrightData SERP API
     if BRIGHTDATA_API_KEY and not _BRIGHTDATA_QUOTA_EXHAUSTED:
+        _provider_local.chain.append("brightdata")
         try:
             results = _search_brightdata(query, limit)
             if results:
@@ -504,6 +515,7 @@ def search_articles(
 
     # 5. Nimbleway SERP API
     if NIMBLEWAY_API_KEY and not _NIMBLEWAY_QUOTA_EXHAUSTED:
+        _provider_local.chain.append("nimbleway")
         try:
             results = _search_nimbleway(query, limit)
             if results:
@@ -515,6 +527,7 @@ def search_articles(
 
     # 6. ScrapingBee Google Search
     if SCRAPINGBEE_API_KEY and not _SCRAPINGBEE_QUOTA_EXHAUSTED:
+        _provider_local.chain.append("scrapingbee")
         try:
             results = _search_scrapingbee(query, limit)
             if results:
@@ -526,6 +539,7 @@ def search_articles(
 
     # 7. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
+        _provider_local.chain.append("ddg")
         try:
             results = _search_ddg_news(query, limit)
             if results:

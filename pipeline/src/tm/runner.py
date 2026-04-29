@@ -43,7 +43,7 @@ async def run_article(article: ArticleInput) -> PipelineResult:
 
     try:
         # Stage 1: Gatekeeper
-        gate = await check_is_prediction(
+        gate, _ = await check_is_prediction(
             article_text=article.text,
             source_name=article.source_name,
             article_date=article.article_date,
@@ -59,7 +59,7 @@ async def run_article(article: ArticleInput) -> PipelineResult:
             )
 
         # Stage 2: Extraction
-        extraction = await extract_predictions(
+        extraction, _ = await extract_predictions(
             article_text=article.text,
             source_name=article.source_name,
             article_date=article.article_date,
