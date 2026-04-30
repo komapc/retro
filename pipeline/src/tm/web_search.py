@@ -3,13 +3,14 @@ Multi-provider news search with fallback chain.
 Python equivalent of daatan's webSearch.ts utility.
 
 Fallback order:
-  1. SerpAPI (serpapi.com)          SERPAPI_API_KEY
-  2. Serper.dev /news endpoint      SERPER_API_KEY
-  3. Brave News Search              BRAVE_API_KEY
-  4. BrightData SERP API            BRIGHTDATA_API_KEY
-  5. Nimbleway SERP API             NIMBLEWAY_API_KEY
-  6. ScrapingBee Google Search      SCRAPINGBEE_API_KEY
-  7. DuckDuckGo Lite                (free, no key — skipped on EC2)
+  1. DataForSEO Google News         DATAFORSEO_API_KEY
+  2. SerpAPI (serpapi.com)          SERPAPI_API_KEY
+  3. Serper.dev /news endpoint      SERPER_API_KEY
+  4. Brave News Search              BRAVE_API_KEY
+  5. BrightData SERP API            BRIGHTDATA_API_KEY
+  6. Nimbleway SERP API             NIMBLEWAY_API_KEY
+  7. ScrapingBee Google Search      SCRAPINGBEE_API_KEY
+  8. DuckDuckGo Lite                (free, no key — skipped on EC2)
 
 All keys are loaded from the environment first, then from AWS Secrets Manager
 (openclaw/* namespace) as a fallback. See _secret().
@@ -74,6 +75,7 @@ def _secret(env_var: str, secret_name: str) -> Optional[str]:
         return None
 
 
+DATAFORSEO_API_KEY: Optional[str] = _secret("DATAFORSEO_API_KEY", "openclaw/dataforseo-key")
 SERPAPI_API_KEY: Optional[str] = _secret("SERPAPI_API_KEY", "openclaw/serpapi-key")
 SERPER_API_KEY: Optional[str] = _secret("SERPER_API_KEY", "openclaw/serperdev-key")
 BRAVE_API_KEY: Optional[str] = _secret("BRAVE_API_KEY", "openclaw/brave-api-key")
@@ -92,12 +94,13 @@ def _refresh_keys_if_stale() -> None:
     pipeline can run for days) would use stale keys after rotation. This
     function is called at the top of search_articles() to catch that case.
     """
-    global SERPAPI_API_KEY, SERPER_API_KEY, BRAVE_API_KEY
+    global DATAFORSEO_API_KEY, SERPAPI_API_KEY, SERPER_API_KEY, BRAVE_API_KEY
     global BRIGHTDATA_API_KEY, NIMBLEWAY_API_KEY, SCRAPINGBEE_API_KEY
     global _KEY_LOADED_AT
     if time.time() - _KEY_LOADED_AT < _KEY_MAX_AGE_SECONDS:
         return
     logger.info("Refreshing search API keys from Secrets Manager (>24h since last fetch)")
+    DATAFORSEO_API_KEY = _secret("DATAFORSEO_API_KEY", "openclaw/dataforseo-key")
     SERPAPI_API_KEY = _secret("SERPAPI_API_KEY", "openclaw/serpapi-key")
     SERPER_API_KEY = _secret("SERPER_API_KEY", "openclaw/serperdev-key")
     BRAVE_API_KEY = _secret("BRAVE_API_KEY", "openclaw/brave-api-key")
@@ -128,6 +131,7 @@ def _running_on_ec2() -> bool:
 _DDG_LAST_CALL: float = 0.0
 DDG_MIN_INTERVAL = 2.0
 
+_DATAFORSEO_QUOTA_EXHAUSTED: bool = False
 _BRAVE_QUOTA_EXHAUSTED: bool = False
 _SERPER_QUOTA_EXHAUSTED: bool = False
 _BRIGHTDATA_QUOTA_EXHAUSTED: bool = False
@@ -143,6 +147,67 @@ class SearchResult:
     source: str = ""
     published_date: str = ""
     _prefetched_text: Optional[str] = field(default=None)
+
+
+# ──────────────────────────────────────────────
+# Provider: DataForSEO Google News
+# ──────────────────────────────────────────────
+
+def _search_dataforseo(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
+    global _DATAFORSEO_QUOTA_EXHAUSTED
+    if not DATAFORSEO_API_KEY:
+        raise RuntimeError("DATAFORSEO_API_KEY not set")
+
+    task: dict = {
+        "keyword": query,
+        "language_code": "en",
+        "location_code": 2840,  # United States
+        "depth": min(limit, 100),
+    }
+    if date_from:
+        task["date_from"] = date_from.strftime("%Y-%m-%d")
+    if date_to:
+        task["date_to"] = date_to.strftime("%Y-%m-%d")
+
+    r = httpx.post(
+        "https://api.dataforseo.com/v3/serp/google/news/live/advanced",
+        headers={
+            "Authorization": f"Basic {DATAFORSEO_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json=[task],
+        timeout=20,
+    )
+    r.raise_for_status()
+    data = r.json()
+    api_task = (data.get("tasks") or [{}])[0]
+    task_code = api_task.get("status_code", 0)
+    # 40101 = account suspended, 40201/40202/40203 = insufficient funds / billing
+    if task_code in (40101, 40201, 40202, 40203):
+        _DATAFORSEO_QUOTA_EXHAUSTED = True
+        raise RuntimeError(f"DataForSEO billing/quota error: status_code={task_code}")
+    items = ((api_task.get("result") or [{}])[0].get("items")) or []
+    results = []
+    for item in items[:limit]:
+        url = item.get("url", "")
+        if not url:
+            continue
+        source = (item.get("source") or {}).get("name", "") or item.get("domain", "")
+        raw_date = item.get("date_published", "")
+        published_date = raw_date[:10] if raw_date else ""
+        results.append(SearchResult(
+            title=item.get("title", ""),
+            url=url,
+            snippet=item.get("snippet", ""),
+            source=source,
+            published_date=published_date,
+        ))
+    return results
 
 
 # ──────────────────────────────────────────────
@@ -448,7 +513,7 @@ def search_articles(
 
     Tries providers in order, skipping any without a configured key or with
     an exhausted quota flag set for this process lifetime:
-      SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → DDG
+      DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → DDG
 
     DDG is skipped on EC2 (AWS IPs are blocked by DDG/Yahoo).
 
@@ -465,7 +530,19 @@ def search_articles(
     _provider_local.name = "none"
     _provider_local.chain = []
 
-    # 1. SerpAPI
+    # 1. DataForSEO (first — structured JSON, no scraping)
+    if DATAFORSEO_API_KEY and not _DATAFORSEO_QUOTA_EXHAUSTED:
+        _provider_local.chain.append("dataforseo")
+        try:
+            results = _search_dataforseo(query, limit, date_from, date_to)
+            if results:
+                _provider_local.name = "dataforseo"
+                return results
+            logger.warning("DataForSEO returned 0 results for: %s", query[:60])
+        except Exception as e:
+            logger.warning("DataForSEO failed: %s", e)
+
+    # 2. SerpAPI
     if SERPAPI_API_KEY:
         _provider_local.chain.append("serpapi")
         try:
@@ -477,7 +554,7 @@ def search_articles(
         except Exception as e:
             logger.warning("SerpAPI failed: %s", e)
 
-    # 2. Serper.dev news
+    # 3. Serper.dev news
     if SERPER_API_KEY and not _SERPER_QUOTA_EXHAUSTED:
         _provider_local.chain.append("serper")
         try:
@@ -489,7 +566,7 @@ def search_articles(
         except Exception as e:
             logger.warning("Serper failed: %s", e)
 
-    # 3. Brave News
+    # 4. Brave News
     if BRAVE_API_KEY and not _BRAVE_QUOTA_EXHAUSTED:
         _provider_local.chain.append("brave")
         try:
@@ -501,7 +578,7 @@ def search_articles(
         except Exception as e:
             logger.warning("Brave failed: %s", e)
 
-    # 4. BrightData SERP API
+    # 5. BrightData SERP API
     if BRIGHTDATA_API_KEY and not _BRIGHTDATA_QUOTA_EXHAUSTED:
         _provider_local.chain.append("brightdata")
         try:
@@ -513,7 +590,7 @@ def search_articles(
         except Exception as e:
             logger.warning("BrightData failed: %s", e)
 
-    # 5. Nimbleway SERP API
+    # 6. Nimbleway SERP API
     if NIMBLEWAY_API_KEY and not _NIMBLEWAY_QUOTA_EXHAUSTED:
         _provider_local.chain.append("nimbleway")
         try:
@@ -525,7 +602,7 @@ def search_articles(
         except Exception as e:
             logger.warning("Nimbleway failed: %s", e)
 
-    # 6. ScrapingBee Google Search
+    # 7. ScrapingBee Google Search
     if SCRAPINGBEE_API_KEY and not _SCRAPINGBEE_QUOTA_EXHAUSTED:
         _provider_local.chain.append("scrapingbee")
         try:
@@ -537,7 +614,7 @@ def search_articles(
         except Exception as e:
             logger.warning("ScrapingBee failed: %s", e)
 
-    # 7. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
+    # 8. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
         _provider_local.chain.append("ddg")
         try:
