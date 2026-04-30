@@ -45,8 +45,29 @@ async def run_search(req: SearchRequest) -> SearchResponse:
 
 # ── Per-provider credit checks ────────────────────────────────────────────────
 
+async def _check_dataforseo() -> ProviderStatus:
+    if not _ws.DATAFORSEO_API_KEY:
+        return ProviderStatus(configured=False, exhausted=False, status="not_configured")
+    if _ws._DATAFORSEO_QUOTA_EXHAUSTED:
+        return ProviderStatus(configured=True, exhausted=True, status="exhausted")
+    try:
+        async with httpx.AsyncClient(timeout=5) as c:
+            r = await c.get(
+                "https://api.dataforseo.com/v3/appendix/user_data",
+                headers={"Authorization": f"Basic {_ws.DATAFORSEO_API_KEY}"},
+            )
+        if not r.is_success:
+            return ProviderStatus(configured=True, exhausted=False, status="error", error=f"HTTP {r.status_code}")
+        result = (r.json().get("tasks") or [{}])[0].get("result", [{}])[0]
+        balance = (result.get("money_data") or {}).get("balance")
+        credits = int(balance) if balance is not None else None
+        return ProviderStatus(configured=True, exhausted=False, status="ok", credits=credits)
+    except Exception as e:
+        return ProviderStatus(configured=True, exhausted=False, status="error", error=str(e))
+
+
 async def _check_serper() -> ProviderStatus:
-    if not _ws.SERPERDEV_KEY:
+    if not _ws.SERPER_API_KEY:
         return ProviderStatus(configured=False, exhausted=False, status="not_configured")
     if _ws._SERPER_QUOTA_EXHAUSTED:
         return ProviderStatus(configured=True, exhausted=True, status="exhausted")
@@ -54,7 +75,7 @@ async def _check_serper() -> ProviderStatus:
         async with httpx.AsyncClient(timeout=5) as c:
             r = await c.get(
                 "https://google.serper.dev/account",
-                headers={"X-API-KEY": _ws.SERPERDEV_KEY},
+                headers={"X-API-KEY": _ws.SERPER_API_KEY},
             )
         if not r.is_success:
             return ProviderStatus(configured=True, exhausted=False, status="error", error=f"HTTP {r.status_code}")
@@ -65,11 +86,11 @@ async def _check_serper() -> ProviderStatus:
 
 
 async def _check_serpapi() -> ProviderStatus:
-    if not _ws.SERPAPI_KEY:
+    if not _ws.SERPAPI_API_KEY:
         return ProviderStatus(configured=False, exhausted=False, status="not_configured")
     try:
         async with httpx.AsyncClient(timeout=5) as c:
-            r = await c.get(f"https://serpapi.com/account.json?api_key={_ws.SERPAPI_KEY}")
+            r = await c.get(f"https://serpapi.com/account.json?api_key={_ws.SERPAPI_API_KEY}")
         if not r.is_success:
             return ProviderStatus(configured=True, exhausted=False, status="error", error=f"HTTP {r.status_code}")
         credits = r.json().get("searches_left")
@@ -127,6 +148,7 @@ async def _check_scrapingbee() -> ProviderStatus:
 
 async def run_search_health() -> SearchHealthResponse:
     checks = await asyncio.gather(
+        _check_dataforseo(),
         _check_serper(),
         _check_serpapi(),
         _check_brave(),
@@ -135,12 +157,13 @@ async def run_search_health() -> SearchHealthResponse:
         _check_scrapingbee(),
     )
     providers: dict[str, ProviderStatus] = {
-        "serpapi":    checks[1],
-        "serper":     checks[0],
-        "brave":      checks[2],
-        "brightdata": checks[3],
-        "nimbleway":  checks[4],
-        "scrapingbee":checks[5],
+        "dataforseo": checks[0],
+        "serpapi":    checks[2],
+        "serper":     checks[1],
+        "brave":      checks[3],
+        "brightdata": checks[4],
+        "nimbleway":  checks[5],
+        "scrapingbee":checks[6],
         "ddg": ProviderStatus(
             configured=True, exhausted=False, status="ok",
         ),
