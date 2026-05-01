@@ -22,5 +22,6 @@
     "url": "https://polymarket.com/event/any-hostage-deal-brokered-with-hamas-by-nov-1",
     "question": "Any hostage deal brokered with Hamas by Nov 1?",
     "match_quality": "close"
-  }
+  },
+  "oracle_question": "Was a hostage deal reached between Israel and Hamas, pausing the fighting in Gaza?"
 }

@@ -24,5 +24,6 @@
     "url": "https://polymarket.com/event/icc-issues-an-arrest-warrant-for-netanyahu",
     "question": "ICC issues an arrest warrant for Netanyahu?",
     "match_quality": "exact"
-  }
+  },
+  "oracle_question": "Did the ICC issue an arrest warrant for Israeli Prime Minister Netanyahu?"
 }

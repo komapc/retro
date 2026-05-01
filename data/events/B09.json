@@ -24,5 +24,6 @@
     "question": "Haniyeh still in Hamas leadership through March 1?",
     "match_quality": "indirect",
     "invert": true
-  }
+  },
+  "oracle_question": "Was Hamas political leader Ismail Haniyeh assassinated in Tehran?"
 }

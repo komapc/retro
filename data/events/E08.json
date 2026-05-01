@@ -22,5 +22,6 @@
     "url": "https://polymarket.com/event/fed-interest-rates-september-2024",
     "question": "Fed Interest Rates: September 2024",
     "match_quality": "exact"
-  }
+  },
+  "oracle_question": "Did the US Federal Reserve begin cutting interest rates in 2024?"
 }
