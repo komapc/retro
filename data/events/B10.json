@@ -23,5 +23,6 @@
     "question": "Yahya Sinwar still Hamas leader by October 31?",
     "match_quality": "exact",
     "invert": true
-  }
+  },
+  "oracle_question": "Was Hamas military leader Yahya Sinwar killed in Gaza?"
 }

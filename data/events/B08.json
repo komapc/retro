@@ -21,5 +21,6 @@
     "url": "https://polymarket.com/event/will-israel-launch-a-major-ground-offensive-in-south-gaza-by-dec-8",
     "question": "Will Israel launch a major ground offensive in South Gaza by Dec 8?",
     "match_quality": "close"
-  }
+  },
+  "oracle_question": "Did the IDF begin a ground operation in Rafah, Gaza?"
 }

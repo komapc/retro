@@ -23,5 +23,6 @@
     "question": "Will Assad remain President of Syria through 2024?",
     "match_quality": "exact",
     "invert": true
-  }
+  },
+  "oracle_question": "Did the Assad regime fall in Syria?"
 }

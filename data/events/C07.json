@@ -24,5 +24,6 @@
     "question": "Nasrallah remains Hezbollah leader through Oct 31?",
     "match_quality": "exact",
     "invert": true
-  }
+  },
+  "oracle_question": "Was Hezbollah leader Hassan Nasrallah assassinated?"
 }

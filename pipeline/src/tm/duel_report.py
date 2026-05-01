@@ -1,17 +1,22 @@
 """
 Duel Report — TruthMachine vs Polymarket on 70-event main dataset.
 
-For each event that has both a Polymarket price cache and TM extractions,
+For each event that has both a Polymarket price cache and oracle_question,
 computes temporally-valid Brier scores for both sides and renders duel.html.
 
 Comparison protocol:
   T = 7 days before outcome_date
   PM probability  : last available price on or before T (inverted if ev["polymarket"]["invert"])
-  TM probability  : mean stance from articles where published_at <= T, converted (stance+1)/2
+  TM probability  : Oracle API forecast using articles published <= T, converted (stance+1)/2
+
+TM predictions are fetched live from oracle.daatan.com (or ORACLE_URL) and
+cached in data/duel_oracle/{event_id}.json.  Set ORACLE_API_KEY or configure
+AWS Secrets Manager (openclaw/oracle-api-key) before running.
 
 Usage:
-    DATA_DIR=data python -m tm.duel_report
-    DATA_DIR=data python -m tm.duel_report --out duel.html --t-days 7
+    ORACLE_API_KEY=sk-... DATA_DIR=data python -m tm.duel_report
+    ORACLE_API_KEY=sk-... DATA_DIR=data python -m tm.duel_report --out duel.html --t-days 7
+    DATA_DIR=data python -m tm.duel_report --html-only  # re-render from cache, no API calls
 """
 
 import argparse
@@ -19,11 +24,13 @@ import json
 import math
 import os
 import re
+import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
+import httpx
 from rich.console import Console
 
 console = Console()
@@ -73,49 +80,158 @@ def pm_probability(ev: dict, t_days: int) -> Optional[float]:
     return round(raw_prob, 4)
 
 
-def load_tm_probabilities(data_dir: Path, events: list[dict], t_days: int) -> dict[str, dict]:
+def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dict]:
     """
-    For each event, average stance from articles where published_at <= outcome_date - t_days.
-    Returns {event_id: {"probability": float, "n_articles": int, "dates": [str]}}
+    Return vault2 articles for event ``eid`` published on or before ``cutoff_str``.
+    Each dict has url, title, text, published_date — ready for Oracle ArticleInput.
     """
+    from urllib.parse import urlparse
+    import re as _re
+
     extractions_dir = data_dir / "vault2" / "extractions"
     articles_dir = data_dir / "vault2" / "articles"
+    cutoff_dt = datetime.strptime(cutoff_str, "%Y-%m-%d").date()
 
+    seen_hashes: set[str] = set()
+    articles = []
+    for path in extractions_dir.glob(f"*_{eid}_v*.json"):
+        article_hash = path.stem.split("_")[0]
+        if article_hash in seen_hashes:
+            continue
+        seen_hashes.add(article_hash)
+        art_path = articles_dir / f"{article_hash}.json"
+        if not art_path.exists():
+            continue
+        art = json.loads(art_path.read_text())
+        pub = datetime.strptime(art["published_at"], "%Y-%m-%d").date()
+        if pub > cutoff_dt:
+            continue
+        url = art.get("url", "")
+        domain = _re.sub(r"^www\.", "", urlparse(url).netloc)
+        articles.append({
+            "url": url,
+            "title": art.get("headline", ""),
+            "snippet": "",
+            "source": domain,
+            "published_date": art["published_at"],
+            "text": art.get("text", ""),
+        })
+    return articles
+
+
+def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: int) -> dict[str, dict]:
+    """
+    For each event with oracle_question, run Oracle's full pipeline on vault2 articles.
+
+    Flow per event:
+      1. Gather vault2 articles published on or before outcome_date - t_days
+      2. POST /forecast with question + articles (text= pre-fetched → skips trafilatura)
+    Results cached in data/duel_oracle/{event_id}.json keyed on cutoff_date.
+
+    Returns {event_id: {"probability": float, "articles_used": int, "mean_stance": float, ...}}
+    """
+    oracle_url = os.environ.get("ORACLE_URL", "https://oracle.daatan.com").rstrip("/")
+    api_key = os.environ.get("ORACLE_API_KEY", "")
+    if not api_key:
+        try:
+            import boto3
+            sm = boto3.client("secretsmanager", region_name="eu-central-1")
+            api_key = sm.get_secret_value(SecretId="openclaw/oracle-api-key")["SecretString"]
+            console.print("[dim]Oracle API key loaded from Secrets Manager[/dim]")
+        except Exception as e:
+            console.print(f"[red]ORACLE_API_KEY not set and AWS fetch failed: {e}[/red]")
+
+    if not api_key:
+        console.print("[red bold]No Oracle API key — cannot fetch TM predictions. Set ORACLE_API_KEY.[/red bold]")
+        return {}
+
+    cache_dir = data_dir / "duel_oracle"
+    cache_dir.mkdir(exist_ok=True)
+
+    headers = {"x-api-key": api_key, "Content-Type": "application/json"}
     result: dict[str, dict] = {}
+    forecast_calls = 0  # pace /forecast calls under 10/min
+
     for ev in events:
+        question = ev.get("oracle_question")
+        if not question:
+            console.print(f"  [yellow]{ev['id']}: no oracle_question — skipped[/yellow]")
+            continue
+
         eid = ev["id"]
         outcome_dt = datetime.strptime(ev["outcome_date"], "%Y-%m-%d").date()
         cutoff = outcome_dt - timedelta(days=t_days)
+        cutoff_str = cutoff.strftime("%Y-%m-%d")
 
-        stances = []
-        dates_used = []
-        for path in extractions_dir.glob(f"*_{eid}_v*.json"):
-            article_hash = path.stem.split("_")[0]
-            art_path = articles_dir / f"{article_hash}.json"
-            if not art_path.exists():
-                continue
-            art = json.loads(art_path.read_text())
-            pub = datetime.strptime(art["published_at"], "%Y-%m-%d").date()
-            if pub > cutoff:
-                continue
-            try:
-                data = json.loads(path.read_text())
-                for pred in data.get("extraction", {}).get("predictions", []):
-                    s = pred.get("stance")
-                    if isinstance(s, (int, float)):
-                        stances.append(float(s))
-                dates_used.append(art["published_at"])
-            except Exception:
+        # Serve from cache when cutoff matches
+        cache_path = cache_dir / f"{eid}.json"
+        if cache_path.exists():
+            cached = json.loads(cache_path.read_text())
+            if cached.get("cutoff_date") == cutoff_str and cached.get("probability") is not None:
+                result[eid] = cached
+                console.print(f"  [dim]{eid}: cache hit → p={cached['probability']} (n={cached.get('articles_used', '?')})[/dim]")
                 continue
 
-        if stances:
-            mean_stance = sum(stances) / len(stances)
-            result[eid] = {
-                "probability": round((mean_stance + 1) / 2, 4),
-                "n_articles": len(dates_used),
-                "dates": sorted(dates_used),
-                "mean_stance": round(mean_stance, 4),
-            }
+        # Gather vault2 articles pre-dating the cutoff
+        articles = _load_vault2_articles(data_dir, eid, cutoff_str)
+        console.print(f"  [cyan]{eid}: {len(articles)} vault2 articles before {cutoff_str}[/cyan]")
+        if not articles:
+            console.print(f"  [yellow]{eid}: no vault2 articles before cutoff — skipped[/yellow]")
+            continue
+
+        # Rate-limit: /forecast is 10/min, space calls ≥7s apart
+        if forecast_calls > 0:
+            time.sleep(7)
+
+        try:
+            fr = httpx.post(
+                f"{oracle_url}/forecast",
+                json={
+                    "question": question,
+                    "articles": [
+                        {
+                            "url": a["url"],
+                            "title": a["title"],
+                            "snippet": a["snippet"],
+                            "source": a["source"],
+                            "published_date": a["published_date"],
+                            "text": a["text"] or None,
+                        }
+                        for a in articles
+                    ],
+                },
+                headers=headers,
+                timeout=120,
+            )
+            forecast_calls += 1
+            if fr.status_code != 200:
+                console.print(f"  [red]{eid}: /forecast {fr.status_code} — {fr.text[:120]}[/red]")
+                continue
+            forecast = fr.json()
+        except Exception as e:
+            console.print(f"  [red]{eid}: /forecast error: {e}[/red]")
+            continue
+
+        if forecast.get("placeholder"):
+            console.print(f"  [yellow]{eid}: Oracle returned placeholder (no usable articles)[/yellow]")
+
+        mean = forecast.get("mean", 0.0)
+        articles_used = forecast.get("articles_used", 0)
+        probability = round((mean + 1) / 2, 4)
+
+        entry = {
+            "event_id": eid,
+            "probability": probability,
+            "mean_stance": round(mean, 4),
+            "articles_used": articles_used,
+            "question": question,
+            "cutoff_date": cutoff_str,
+            "placeholder": forecast.get("placeholder", False),
+        }
+        cache_path.write_text(json.dumps(entry, indent=2))
+        result[eid] = entry
+        console.print(f"  [green]{eid}: p={probability} (n={articles_used} Oracle articles)[/green]")
+
     return result
 
 
@@ -149,7 +265,7 @@ def build_rows(events: list[dict], tm_probs: dict, t_days: int) -> list[dict]:
             "pm_invert": pm_meta.get("invert", False),
             "pm_p": pm_p,
             "tm_p": tm_p,
-            "tm_n_articles": tm_info["n_articles"] if tm_info else 0,
+            "tm_articles_used": tm_info["articles_used"] if tm_info else 0,
             "tm_mean_stance": tm_info["mean_stance"] if tm_info else None,
             "pm_brier": pm_brier,
             "tm_brier": tm_brier,
@@ -381,7 +497,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
               <span class="brier-val"> Brier: {brier_val if brier_val is not None else '—'}</span>
             </div>"""
 
-        tm_block = _prob_block("TruthMachine", r["tm_p"], "tm", r["tm_brier"], r["tm_n_articles"])
+        tm_block = _prob_block("TruthMachine", r["tm_p"], "tm", r["tm_brier"], r["tm_articles_used"])
         pm_block = _prob_block(f"Polymarket (T-{t_days}d)", r["pm_p"], "pm", r["pm_brier"])
 
         # Sparkline
@@ -464,7 +580,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
           <td class="outcome-yes">YES</td>
           <td>{r['pm_question'][:40]}{inv_mark}</td>
           <td>{pm_p_str}</td>
-          <td>{tm_p_str} <span style="font-size:0.7rem;color:#475569">({r['tm_n_articles']}art)</span></td>
+          <td>{tm_p_str} <span style="font-size:0.7rem;color:#475569">({r['tm_articles_used']}art)</span></td>
           <td>{pm_b_str}</td>
           <td>{tm_b_str}</td>
           <td>{winner_str}</td>
@@ -495,7 +611,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
   <strong>Methodology:</strong>
   PM probability = last CLOB price on or before <em>outcome_date − {t_days} days</em>
   (inverted where PM question is framed as "will X survive?" vs our event "X was killed").<br>
-  TM probability = mean article stance (vault2 extractions) from articles published ≤ T, converted (stance+1)/2.<br>
+  TM probability = Oracle API forecast (gatekeeper+extractor+credibility weighting) on vault2 articles published ≤ T, converted (stance+1)/2.<br>
   All 11 events resolved YES (our dataset captures things that happened).
   Brier score: lower = better. Range [0, 1].
 </div>
@@ -570,7 +686,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
 
 <footer>
   Generated {datetime.utcnow().strftime('%Y-%m-%d %H:%M')} UTC ·
-  TruthMachine data: vault2 extractions ·
+  TruthMachine data: Oracle API (oracle.daatan.com) ·
   Polymarket data: CLOB API (gamma-api.polymarket.com) ·
   T = {t_days} days before outcome_date
 </footer>
@@ -651,6 +767,11 @@ def main():
     ap.add_argument("--data-dir", default=os.environ.get("DATA_DIR", "data"))
     ap.add_argument("--out", default="duel.html")
     ap.add_argument("--t-days", type=int, default=T_DAYS_DEFAULT)
+    ap.add_argument(
+        "--html-only",
+        action="store_true",
+        help="Re-render duel.html from existing duel_oracle cache — no API calls",
+    )
     args = ap.parse_args()
 
     data_dir = Path(args.data_dir)
@@ -659,8 +780,23 @@ def main():
     events = load_events_with_pm(data_dir)
     console.print(f"Events with PM price data: {len(events)}")
 
-    tm_probs = load_tm_probabilities(data_dir, events, args.t_days)
-    console.print(f"Events with TM predictions (T-{args.t_days}d filter): {len(tm_probs)}")
+    if args.html_only:
+        # Load from cache only — no API calls
+        cache_dir = data_dir / "duel_oracle"
+        tm_probs: dict[str, dict] = {}
+        outcome_dt_map = {ev["id"]: ev["outcome_date"] for ev in events}
+        for ev in events:
+            eid = ev["id"]
+            cache_path = cache_dir / f"{eid}.json"
+            if cache_path.exists():
+                cached = json.loads(cache_path.read_text())
+                if cached.get("probability") is not None:
+                    tm_probs[eid] = cached
+        console.print(f"Events loaded from cache (--html-only): {len(tm_probs)}")
+    else:
+        console.print(f"Fetching TM predictions from Oracle API (T-{args.t_days}d cutoff)...")
+        tm_probs = fetch_tm_probabilities_oracle(data_dir, events, args.t_days)
+        console.print(f"Events with Oracle predictions: {len(tm_probs)}")
 
     rows = build_rows(events, tm_probs, args.t_days)
 

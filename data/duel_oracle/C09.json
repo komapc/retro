@@ -1,0 +1,9 @@
+{
+  "event_id": "C09",
+  "probability": 0.69,
+  "mean_stance": 0.38,
+  "articles_used": 1,
+  "question": "Did the Assad regime fall in Syria?",
+  "cutoff_date": "2024-12-01",
+  "placeholder": false
+}
