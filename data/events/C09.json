@@ -21,6 +21,7 @@
   "polymarket": {
     "url": "https://polymarket.com/event/will-assad-remain-president-of-syria-through-2024",
     "question": "Will Assad remain President of Syria through 2024?",
-    "match_quality": "exact"
+    "match_quality": "exact",
+    "invert": true
   }
 }

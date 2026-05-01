@@ -1,0 +1,34 @@
+{
+  "event_id": "B05",
+  "condition_id": "0x730ef2027578b92de4c2a21b6cad0a7ebc8c9082eef445953fdff86fae92e7d8",
+  "clob_token_yes": "75061673277127452723908685346996786298644360588658834326703325534980273695356",
+  "question": "Will the Hamas x Israel ceasefire last the full 4 days?",
+  "market_url": "https://polymarket.com/event/will-the-hamas-x-israel-ceasefire-last-the-full-4-days",
+  "invert": false,
+  "prices": [
+    {
+      "date": "2023-11-23",
+      "probability": 0.775
+    },
+    {
+      "date": "2023-11-24",
+      "probability": 0.77
+    },
+    {
+      "date": "2023-11-25",
+      "probability": 0.77
+    },
+    {
+      "date": "2023-11-26",
+      "probability": 0.8
+    },
+    {
+      "date": "2023-11-27",
+      "probability": 0.956
+    },
+    {
+      "date": "2023-11-28",
+      "probability": 0.995
+    }
+  ]
+}

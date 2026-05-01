@@ -1,0 +1,214 @@
+{
+  "event_id": "B10",
+  "condition_id": "0x44a23a99b4106399813d921551bc08e69c699fc8c14a8868724eea8b1827a435",
+  "clob_token_yes": "111507083162180262377318727539617278970405230463785673993045338565869335674065",
+  "question": "Yahya Sinwar still Hamas leader by October 31?",
+  "market_url": "https://polymarket.com/event/yahya-sinwar-still-hamas-leader-through-november",
+  "invert": false,
+  "prices": [
+    {
+      "date": "2024-08-27",
+      "probability": 0.805
+    },
+    {
+      "date": "2024-08-28",
+      "probability": 0.785
+    },
+    {
+      "date": "2024-08-29",
+      "probability": 0.71
+    },
+    {
+      "date": "2024-08-30",
+      "probability": 0.72
+    },
+    {
+      "date": "2024-08-31",
+      "probability": 0.71
+    },
+    {
+      "date": "2024-09-01",
+      "probability": 0.705
+    },
+    {
+      "date": "2024-09-02",
+      "probability": 0.755
+    },
+    {
+      "date": "2024-09-03",
+      "probability": 0.765
+    },
+    {
+      "date": "2024-09-04",
+      "probability": 0.785
+    },
+    {
+      "date": "2024-09-05",
+      "probability": 0.775
+    },
+    {
+      "date": "2024-09-06",
+      "probability": 0.765
+    },
+    {
+      "date": "2024-09-07",
+      "probability": 0.77
+    },
+    {
+      "date": "2024-09-08",
+      "probability": 0.775
+    },
+    {
+      "date": "2024-09-09",
+      "probability": 0.81
+    },
+    {
+      "date": "2024-09-10",
+      "probability": 0.82
+    },
+    {
+      "date": "2024-09-11",
+      "probability": 0.82
+    },
+    {
+      "date": "2024-09-12",
+      "probability": 0.835
+    },
+    {
+      "date": "2024-09-13",
+      "probability": 0.855
+    },
+    {
+      "date": "2024-09-14",
+      "probability": 0.86
+    },
+    {
+      "date": "2024-09-15",
+      "probability": 0.865
+    },
+    {
+      "date": "2024-09-16",
+      "probability": 0.875
+    },
+    {
+      "date": "2024-09-17",
+      "probability": 0.88
+    },
+    {
+      "date": "2024-09-18",
+      "probability": 0.88
+    },
+    {
+      "date": "2024-09-19",
+      "probability": 0.89
+    },
+    {
+      "date": "2024-09-20",
+      "probability": 0.88
+    },
+    {
+      "date": "2024-09-21",
+      "probability": 0.88
+    },
+    {
+      "date": "2024-09-22",
+      "probability": 0.895
+    },
+    {
+      "date": "2024-09-23",
+      "probability": 0.72
+    },
+    {
+      "date": "2024-09-24",
+      "probability": 0.745
+    },
+    {
+      "date": "2024-09-25",
+      "probability": 0.72
+    },
+    {
+      "date": "2024-09-26",
+      "probability": 0.715
+    },
+    {
+      "date": "2024-09-27",
+      "probability": 0.73
+    },
+    {
+      "date": "2024-09-28",
+      "probability": 0.705
+    },
+    {
+      "date": "2024-09-29",
+      "probability": 0.715
+    },
+    {
+      "date": "2024-09-30",
+      "probability": 0.725
+    },
+    {
+      "date": "2024-10-01",
+      "probability": 0.73
+    },
+    {
+      "date": "2024-10-02",
+      "probability": 0.72
+    },
+    {
+      "date": "2024-10-03",
+      "probability": 0.725
+    },
+    {
+      "date": "2024-10-04",
+      "probability": 0.73
+    },
+    {
+      "date": "2024-10-05",
+      "probability": 0.78
+    },
+    {
+      "date": "2024-10-06",
+      "probability": 0.645
+    },
+    {
+      "date": "2024-10-07",
+      "probability": 0.735
+    },
+    {
+      "date": "2024-10-08",
+      "probability": 0.84
+    },
+    {
+      "date": "2024-10-09",
+      "probability": 0.805
+    },
+    {
+      "date": "2024-10-10",
+      "probability": 0.84
+    },
+    {
+      "date": "2024-10-11",
+      "probability": 0.56
+    },
+    {
+      "date": "2024-10-12",
+      "probability": 0.815
+    },
+    {
+      "date": "2024-10-13",
+      "probability": 0.82
+    },
+    {
+      "date": "2024-10-14",
+      "probability": 0.875
+    },
+    {
+      "date": "2024-10-15",
+      "probability": 0.825
+    },
+    {
+      "date": "2024-10-16",
+      "probability": 0.83
+    }
+  ]
+}

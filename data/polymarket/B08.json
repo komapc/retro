@@ -1,0 +1,34 @@
+{
+  "event_id": "B08",
+  "condition_id": "0xeceb5cd0ff9f907ee97724dfd809e07f7c06362e0026d8630e315b8c443004bb",
+  "clob_token_yes": "34156323518216468932522339566935281359904491396097395956821254694677184166202",
+  "question": "Will Israel launch a major ground offensive in South Gaza by Dec 8?",
+  "market_url": "https://polymarket.com/event/will-israel-launch-a-major-ground-offensive-in-south-gaza-by-dec-8",
+  "invert": false,
+  "prices": [
+    {
+      "date": "2023-11-29",
+      "probability": 0.375
+    },
+    {
+      "date": "2023-11-30",
+      "probability": 0.285
+    },
+    {
+      "date": "2023-12-01",
+      "probability": 0.315
+    },
+    {
+      "date": "2023-12-02",
+      "probability": 0.515
+    },
+    {
+      "date": "2023-12-03",
+      "probability": 0.5
+    },
+    {
+      "date": "2023-12-04",
+      "probability": 0.982
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "event_id": "C08",
+  "condition_id": "0x54a1d0da9b18ac0dd1b1ae10fad2eb782427733e4ad2f14f190b979bbb5c7d65",
+  "clob_token_yes": "17591104758522950413326744526150502106648525094010529215394967309981213513392",
+  "question": "Israel x Hezbollah Ceasefire in 2024?",
+  "market_url": "https://polymarket.com/event/israel-x-hezbollah-ceasefire-in-2024",
+  "invert": false,
+  "prices": [
+    {
+      "date": "2024-09-25",
+      "probability": 0.25
+    },
+    {
+      "date": "2024-09-26",
+      "probability": 0.365
+    },
+    {
+      "date": "2024-09-27",
+      "probability": 0.4
+    },
+    {
+      "date": "2024-09-28",
+      "probability": 0.395
+    },
+    {
+      "date": "2024-09-29",
+      "probability": 0.365
+    },
+    {
+      "date": "2024-09-30",
+      "probability": 0.375
+    },
+    {
+      "date": "2024-10-01",
+      "probability": 0.275
+    },
+    {
+      "date": "2024-10-02",
+      "probability": 0.34
+    },
+    {
+      "date": "2024-10-03",
+      "probability": 0.34
+    },
+    {
+      "date": "2024-10-04",
+      "probability": 0.395
+    },
+    {
+      "date": "2024-10-05",
+      "probability": 0.415
+    },
+    {
+      "date": "2024-10-06",
+      "probability": 0.355
+    },
+    {
+      "date": "2024-10-07",
+      "probability": 0.325
+    },
+    {
+      "date": "2024-10-08",
+      "probability": 0.285
+    },
+    {
+      "date": "2024-10-09",
+      "probability": 0.415
+    },
+    {
+      "date": "2024-10-10",
+      "probability": 0.34
+    },
+    {
+      "date": "2024-10-11",
+      "probability": 0.37
+    },
+    {
+      "date": "2024-10-12",
+      "probability": 0.36
+    },
+    {
+      "date": "2024-10-13",
+      "probability": 0.35
+    },
+    {
+      "date": "2024-10-14",
+      "probability": 0.325
+    },
+    {
+      "date": "2024-10-15",
+      "probability": 0.305
+    },
+    {
+      "date": "2024-10-16",
+      "probability": 0.31
+    },
+    {
+      "date": "2024-10-17",
+      "probability": 0.31
+    },
+    {
+      "date": "2024-10-18",
+      "probability": 0.36
+    },
+    {
+      "date": "2024-10-19",
+      "probability": 0.35
+    },
+    {
+      "date": "2024-10-20",
+      "probability": 0.365
+    },
+    {
+      "date": "2024-10-21",
+      "probability": 0.315
+    },
+    {
+      "date": "2024-10-22",
+      "probability": 0.31
+    },
+    {
+      "date": "2024-10-23",
+      "probability": 0.3
+    },
+    {
+      "date": "2024-10-24",
+      "probability": 0.325
+    },
+    {
+      "date": "2024-10-25",
+      "probability": 0.34
+    },
+    {
+      "date": "2024-10-26",
+      "probability": 0.36
+    },
+    {
+      "date": "2024-10-27",
+      "probability": 0.375
+    },
+    {
+      "date": "2024-10-28",
+      "probability": 0.38
+    },
+    {
+      "date": "2024-10-29",
+      "probability": 0.39
+    },
+    {
+      "date": "2024-10-30",
+      "probability": 0.565
+    },
+    {
+      "date": "2024-10-31",
+      "probability": 0.785
+    },
+    {
+      "date": "2024-11-01",
+      "probability": 0.555
+    },
+    {
+      "date": "2024-11-02",
+      "probability": 0.47
+    },
+    {
+      "date": "2024-11-03",
+      "probability": 0.525
+    },
+    {
+      "date": "2024-11-04",
+      "probability": 0.505
+    },
+    {
+      "date": "2024-11-05",
+      "probability": 0.43
+    },
+    {
+      "date": "2024-11-06",
+      "probability": 0.435
+    },
+    {
+      "date": "2024-11-07",
+      "probability": 0.26
+    },
+    {
+      "date": "2024-11-08",
+      "probability": 0.34
+    },
+    {
+      "date": "2024-11-09",
+      "probability": 0.33
+    },
+    {
+      "date": "2024-11-10",
+      "probability": 0.345
+    },
+    {
+      "date": "2024-11-11",
+      "probability": 0.365
+    },
+    {
+      "date": "2024-11-12",
+      "probability": 0.345
+    },
+    {
+      "date": "2024-11-13",
+      "probability": 0.3
+    },
+    {
+      "date": "2024-11-14",
+      "probability": 0.27
+    },
+    {
+      "date": "2024-11-15",
+      "probability": 0.335
+    },
+    {
+      "date": "2024-11-16",
+      "probability": 0.385
+    },
+    {
+      "date": "2024-11-17",
+      "probability": 0.37
+    },
+    {
+      "date": "2024-11-18",
+      "probability": 0.49
+    },
+    {
+      "date": "2024-11-19",
+      "probability": 0.61
+    },
+    {
+      "date": "2024-11-20",
+      "probability": 0.405
+    },
+    {
+      "date": "2024-11-21",
+      "probability": 0.44
+    },
+    {
+      "date": "2024-11-22",
+      "probability": 0.475
+    },
+    {
+      "date": "2024-11-23",
+      "probability": 0.475
+    },
+    {
+      "date": "2024-11-24",
+      "probability": 0.405
+    },
+    {
+      "date": "2024-11-25",
+      "probability": 0.615
+    },
+    {
+      "date": "2024-11-26",
+      "probability": 0.835
+    },
+    {
+      "date": "2024-11-27",
+      "probability": 0.979
+    }
+  ]
+}

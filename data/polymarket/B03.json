@@ -1,0 +1,9 @@
+{
+  "event_id": "B03",
+  "condition_id": "0x3e86f4b3e8cc3f64be00ada95b3d7b1104dfe43acc3aab97e581d72b00407e79",
+  "clob_token_yes": "17345795364796853142949832006270474705374264533541837086928092593379631230783",
+  "question": "Will Israel launch a major ground offensive in Gaza by October 31?",
+  "market_url": "https://polymarket.com/event/will-israel-launch-a-major-ground-offensive-in-gaza-by-october-31",
+  "invert": false,
+  "prices": []
+}

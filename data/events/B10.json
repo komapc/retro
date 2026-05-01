@@ -21,6 +21,7 @@
   "polymarket": {
     "url": "https://polymarket.com/event/yahya-sinwar-still-hamas-leader-through-november",
     "question": "Yahya Sinwar still Hamas leader by October 31?",
-    "match_quality": "exact"
+    "match_quality": "exact",
+    "invert": true
   }
 }

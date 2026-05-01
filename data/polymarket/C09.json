@@ -1,0 +1,90 @@
+{
+  "event_id": "C09",
+  "condition_id": "0x9ce4ce441b98560634b67589135dac0034a45edaacf13455c9add1ddbb6b7dec",
+  "clob_token_yes": "71881462068360341862122310129791911298023735258994401167377841924837767345287",
+  "question": "Will Assad remain President of Syria through 2024?",
+  "market_url": "https://polymarket.com/event/will-assad-remain-president-of-syria-through-2024",
+  "invert": false,
+  "prices": [
+    {
+      "date": "2024-11-19",
+      "probability": 0.935
+    },
+    {
+      "date": "2024-11-20",
+      "probability": 0.945
+    },
+    {
+      "date": "2024-11-21",
+      "probability": 0.97
+    },
+    {
+      "date": "2024-11-22",
+      "probability": 0.9635
+    },
+    {
+      "date": "2024-11-23",
+      "probability": 0.9705
+    },
+    {
+      "date": "2024-11-24",
+      "probability": 0.975
+    },
+    {
+      "date": "2024-11-25",
+      "probability": 0.9755
+    },
+    {
+      "date": "2024-11-26",
+      "probability": 0.966
+    },
+    {
+      "date": "2024-11-27",
+      "probability": 0.9665
+    },
+    {
+      "date": "2024-11-28",
+      "probability": 0.9625
+    },
+    {
+      "date": "2024-11-29",
+      "probability": 0.9635
+    },
+    {
+      "date": "2024-11-30",
+      "probability": 0.9325
+    },
+    {
+      "date": "2024-12-01",
+      "probability": 0.807
+    },
+    {
+      "date": "2024-12-02",
+      "probability": 0.926
+    },
+    {
+      "date": "2024-12-03",
+      "probability": 0.923
+    },
+    {
+      "date": "2024-12-04",
+      "probability": 0.917
+    },
+    {
+      "date": "2024-12-05",
+      "probability": 0.924
+    },
+    {
+      "date": "2024-12-06",
+      "probability": 0.778
+    },
+    {
+      "date": "2024-12-07",
+      "probability": 0.4975
+    },
+    {
+      "date": "2024-12-08",
+      "probability": 0.233
+    }
+  ]
+}
