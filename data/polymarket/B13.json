@@ -1,0 +1,9 @@
+{
+  "event_id": "B13",
+  "condition_id": "0x8415f32702f1555a74a161d37ddc6b080306d77ed3ca85fa6542dd84741bba3f",
+  "clob_token_yes": "113314036276271391181055534354763814836556050164776867199964474136547260424185",
+  "question": "U.S. arms embargo on Israel in 2024?",
+  "market_url": "https://polymarket.com/event/us-arms-embargo-on-israel-in-2024",
+  "invert": false,
+  "prices": []
+}

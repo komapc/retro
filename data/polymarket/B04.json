@@ -1,0 +1,58 @@
+{
+  "event_id": "B04",
+  "condition_id": "0x1acfccfe1321cb4076e140bf9c835d32ef3195d8ab2b3aa600841ff4b72fc7bf",
+  "clob_token_yes": "68952538507606483961956364629228947999462898938335932282531867917034232433182",
+  "question": "Any hostage deal brokered with Hamas by Nov 1?",
+  "market_url": "https://polymarket.com/event/any-hostage-deal-brokered-with-hamas-by-nov-1",
+  "invert": false,
+  "prices": [
+    {
+      "date": "2023-10-10",
+      "probability": 0.565
+    },
+    {
+      "date": "2023-10-11",
+      "probability": 0.345
+    },
+    {
+      "date": "2023-10-12",
+      "probability": 0.36
+    },
+    {
+      "date": "2023-10-13",
+      "probability": 0.305
+    },
+    {
+      "date": "2023-10-14",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-10-15",
+      "probability": 0.205
+    },
+    {
+      "date": "2023-10-16",
+      "probability": 0.2
+    },
+    {
+      "date": "2023-10-17",
+      "probability": 0.22
+    },
+    {
+      "date": "2023-10-18",
+      "probability": 0.305
+    },
+    {
+      "date": "2023-10-19",
+      "probability": 0.275
+    },
+    {
+      "date": "2023-10-20",
+      "probability": 0.265
+    },
+    {
+      "date": "2023-10-21",
+      "probability": 0.9995
+    }
+  ]
+}

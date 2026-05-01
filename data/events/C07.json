@@ -22,6 +22,7 @@
   "polymarket": {
     "url": "https://polymarket.com/event/nasrallah-remains-leader-of-hezbollah-through-october-31",
     "question": "Nasrallah remains Hezbollah leader through Oct 31?",
-    "match_quality": "exact"
+    "match_quality": "exact",
+    "invert": true
   }
 }
