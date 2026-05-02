@@ -62,6 +62,21 @@ def load_events_with_pm(data_dir: Path) -> list[dict]:
     return events
 
 
+def load_all_events(data_dir: Path) -> list[dict]:
+    """Return all events, attaching _pm data where a price cache exists."""
+    pm_dir = data_dir / "polymarket"
+    events = []
+    for f in sorted((data_dir / "events").glob("*.json")):
+        ev = json.loads(f.read_text())
+        cache = pm_dir / f"{ev['id']}.json"
+        if cache.exists():
+            pm_data = json.loads(cache.read_text())
+            if pm_data.get("prices"):
+                ev["_pm"] = pm_data
+        events.append(ev)
+    return events
+
+
 def pm_probability(ev: dict, t_days: int) -> Optional[float]:
     """
     PM probability of our event happening, measured at T = outcome_date - t_days.
@@ -416,6 +431,12 @@ tr:hover td { background: #242840; }
 
 footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #2d3748;
          font-size: 0.75rem; color: #475569; text-align: center; }
+
+/* Coverage table */
+.cov-both { color: #4ade80; }
+.cov-pm   { color: #fb923c; }
+.cov-none { color: #475569; }
+.cov-dot  { font-size: 1rem; }
 """
 
 _SPARKLINE_JS = """
@@ -483,7 +504,56 @@ def _bar_width(brier_val: Optional[float], max_brier: float = 0.5) -> int:
     return max(2, int((brier_val / max_brier) * 300))
 
 
-def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
+def _render_coverage_table(coverage_rows: list[dict] | None) -> str:
+    if not coverage_rows:
+        return ""
+    n_both = sum(1 for r in coverage_rows if r["has_pm"] and r["has_tm"])
+    n_pm_only = sum(1 for r in coverage_rows if r["has_pm"] and not r["has_tm"])
+    n_none = sum(1 for r in coverage_rows if not r["has_pm"])
+
+    trs = []
+    for r in coverage_rows:
+        if r["has_pm"] and r["has_tm"]:
+            css, pm_dot, tm_dot = "cov-both", "●", "●"
+        elif r["has_pm"]:
+            css, pm_dot, tm_dot = "cov-pm", "●", "○"
+        else:
+            css, pm_dot, tm_dot = "cov-none", "○", "○"
+        trs.append(
+            f'<tr class="{css}">'
+            f'<td>{r["id"]}</td>'
+            f'<td>{html.escape(r["name"])}</td>'
+            f'<td>{r["category"]}</td>'
+            f'<td>{r["outcome_date"]}</td>'
+            f'<td class="cov-dot">{pm_dot}</td>'
+            f'<td class="cov-dot">{tm_dot}</td>'
+            f'</tr>'
+        )
+    rows_html = "\n".join(trs)
+    return f"""
+<!-- Coverage table -->
+<h2 style="margin-top:3rem">Dataset coverage
+  <span style="font-size:0.75rem;color:#475569">({len(coverage_rows)} events · <span class="cov-both">{n_both} both</span> · <span class="cov-pm">{n_pm_only} PM only</span> · <span class="cov-none">{n_none} neither</span>)</span>
+</h2>
+<p style="font-size:0.82rem;color:#64748b;margin-bottom:1rem">
+  ● = data present · ○ = not yet fetched · only "both" rows enter the Brier comparison above
+</p>
+<div style="overflow-x:auto">
+<table>
+  <thead>
+    <tr>
+      <th>ID</th><th>Event</th><th>Category</th><th>Outcome date</th>
+      <th>PM</th><th>TM</th>
+    </tr>
+  </thead>
+  <tbody>
+{rows_html}
+  </tbody>
+</table>
+</div>"""
+
+
+def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: list[dict] | None = None) -> None:
     compared = [r for r in rows if r["pm_p"] is not None and r["tm_p"] is not None]
     tm_avg = avg_brier(compared, "tm_brier")
     pm_avg = avg_brier(compared, "pm_brier")
@@ -730,6 +800,8 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
 </table>
 </div>
 
+{_render_coverage_table(coverage_rows)}
+
 <footer>
   Generated {datetime.utcnow().strftime('%Y-%m-%d %H:%M')} UTC ·
   TruthMachine data: Oracle API (oracle.daatan.com) ·
@@ -867,7 +939,20 @@ def main():
         w = r["winner"] or "—"
         console.print(f"  {r['id']}: {tm_str} {pm_str} → {w}")
 
-    render_html(rows, args.t_days, out_path)
+    all_events = load_all_events(data_dir)
+    coverage_rows = [
+        {
+            "id": ev["id"],
+            "name": ev.get("name", ""),
+            "category": ev.get("category", ""),
+            "outcome_date": ev.get("outcome_date", ""),
+            "has_pm": "_pm" in ev,
+            "has_tm": ev["id"] in tm_probs and not tm_probs[ev["id"]].get("placeholder"),
+        }
+        for ev in all_events
+    ]
+
+    render_html(rows, args.t_days, out_path, coverage_rows)
 
 
 if __name__ == "__main__":
