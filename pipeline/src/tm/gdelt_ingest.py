@@ -188,6 +188,8 @@ async def ingest_event(
     kw_groups = [keywords, keywords[1:]] if len(keywords) > 1 else [keywords]
     for kws in kw_groups[:2]:
         results = await _gdelt_query(kws, start_dt, outcome_dt, max_records=limit)
+        if not results:
+            break  # GDELT is rate-limited or dry; skip second query group
         for art in results:
             if art["url"] and art["url"] not in seen_urls:
                 seen_urls.add(art["url"])
