@@ -130,6 +130,7 @@ async def ingest_event(
             "headline": result.title,
             "text": text,
             "published_at": pub_date,
+            "estimated_date": not bool((result.published_date or "")[:10]),
             "author": "Unknown",
             "url": result.url,
             "snippet": result.snippet,

@@ -230,6 +230,7 @@ async def ingest_cell(
             "headline": url.split("/")[-1].replace("-", " ").strip("/"),
             "text": text,
             "published_at": art_date,
+            "estimated_date": not bool(_parse_date_from_url(url, "")),
             "author": "Unknown",
             "url": url,
         }
