@@ -10,7 +10,8 @@ Fallback order:
   5. BrightData SERP API            BRIGHTDATA_API_KEY
   6. Nimbleway SERP API             NIMBLEWAY_API_KEY
   7. ScrapingBee Google Search      SCRAPINGBEE_API_KEY
-  8. DuckDuckGo Lite                (free, no key — skipped on EC2)
+  8. GDELT Doc API                  (free, no key — news-only, reliable dates)
+  9. DuckDuckGo Lite                (free, no key — skipped on EC2)
 
 All keys are loaded from the environment first, then from AWS Secrets Manager
 (openclaw/* namespace) as a fallback. See _secret().
@@ -130,6 +131,8 @@ def _running_on_ec2() -> bool:
 
 _DDG_LAST_CALL: float = 0.0
 DDG_MIN_INTERVAL = 2.0
+_GDELT_LAST_CALL: float = 0.0
+GDELT_MIN_INTERVAL = 10.0  # GDELT rate limit: 1 req / 10s
 
 _DATAFORSEO_QUOTA_EXHAUSTED: bool = False
 _BRAVE_QUOTA_EXHAUSTED: bool = False
@@ -474,6 +477,66 @@ def _search_scrapingbee(query: str, limit: int) -> List[SearchResult]:
 
 
 # ──────────────────────────────────────────────
+# Provider: GDELT Doc API (free, reliable dates)
+# ──────────────────────────────────────────────
+
+def _search_gdelt(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
+    global _GDELT_LAST_CALL
+    elapsed = time.time() - _GDELT_LAST_CALL
+    if elapsed < GDELT_MIN_INTERVAL:
+        time.sleep(GDELT_MIN_INTERVAL - elapsed)
+
+    # Translate Google-style site: operator to GDELT domain: filter
+    gdelt_query = re.sub(r"site:(\S+)", r"domain:\1", query)
+
+    params: dict = {
+        "query": gdelt_query,
+        "mode": "artlist",
+        "format": "json",
+        "maxrecords": min(limit, 25),
+        "sort": "DateDesc",
+    }
+    if date_from:
+        params["startdatetime"] = date_from.strftime("%Y%m%d000000")
+    if date_to:
+        params["enddatetime"] = date_to.strftime("%Y%m%d235959")
+
+    try:
+        r = httpx.get(
+            "https://api.gdeltproject.org/api/v2/doc/doc",
+            params=params,
+            timeout=20,
+        )
+    finally:
+        _GDELT_LAST_CALL = time.time()
+
+    if r.status_code != 200:
+        raise RuntimeError(f"GDELT returned HTTP {r.status_code}")
+
+    articles = r.json().get("articles") or []
+    results = []
+    for art in articles:
+        pub = art.get("seendate", "")
+        try:
+            pub_str = datetime.strptime(pub[:8], "%Y%m%d").strftime("%Y-%m-%d")
+        except ValueError:
+            pub_str = ""
+        results.append(SearchResult(
+            title=art.get("title", ""),
+            url=art.get("url", ""),
+            snippet="",  # GDELT artlist mode returns no body text
+            source=art.get("domain", _extract_domain(art.get("url", ""))),
+            published_date=pub_str,
+        ))
+    return results[:limit]
+
+
+# ──────────────────────────────────────────────
 # Provider: DuckDuckGo Lite (free fallback)
 # ──────────────────────────────────────────────
 
@@ -513,7 +576,7 @@ def search_articles(
 
     Tries providers in order, skipping any without a configured key or with
     an exhausted quota flag set for this process lifetime:
-      DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → DDG
+      DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → GDELT → DDG
 
     DDG is skipped on EC2 (AWS IPs are blocked by DDG/Yahoo).
 
@@ -614,7 +677,18 @@ def search_articles(
         except Exception as e:
             logger.warning("ScrapingBee failed: %s", e)
 
-    # 8. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
+    # 8. GDELT (free, no key) — news-only, reliable historical dates, no snippets
+    _provider_local.chain.append("gdelt")
+    try:
+        results = _search_gdelt(query, limit, date_from, date_to)
+        if results:
+            _provider_local.name = "gdelt"
+            return results
+        logger.warning("GDELT returned 0 results for: %s", query[:60])
+    except Exception as e:
+        logger.warning("GDELT failed: %s", e)
+
+    # 9. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
         _provider_local.chain.append("ddg")
         try:

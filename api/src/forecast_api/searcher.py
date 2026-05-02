@@ -108,6 +108,20 @@ async def _check_brave() -> ProviderStatus:
     return ProviderStatus(configured=True, exhausted=False, status="ok")
 
 
+async def _check_gdelt() -> ProviderStatus:
+    try:
+        async with httpx.AsyncClient(timeout=10) as c:
+            r = await c.get(
+                "https://api.gdeltproject.org/api/v2/doc/doc",
+                params={"query": "test", "mode": "artlist", "format": "json", "maxrecords": 1},
+            )
+        if not r.is_success:
+            return ProviderStatus(configured=True, exhausted=False, status="error", error=f"HTTP {r.status_code}")
+        return ProviderStatus(configured=True, exhausted=False, status="ok")
+    except Exception as e:
+        return ProviderStatus(configured=True, exhausted=False, status="error", error=str(e))
+
+
 async def _check_brightdata() -> ProviderStatus:
     if not _ws.BRIGHTDATA_API_KEY:
         return ProviderStatus(configured=False, exhausted=False, status="not_configured")
@@ -155,6 +169,7 @@ async def run_search_health() -> SearchHealthResponse:
         _check_brightdata(),
         _check_nimbleway(),
         _check_scrapingbee(),
+        _check_gdelt(),
     )
     providers: dict[str, ProviderStatus] = {
         "dataforseo": checks[0],
@@ -164,6 +179,7 @@ async def run_search_health() -> SearchHealthResponse:
         "brightdata": checks[4],
         "nimbleway":  checks[5],
         "scrapingbee":checks[6],
+        "gdelt":      checks[7],
         "ddg": ProviderStatus(
             configured=True, exhausted=False, status="ok",
         ),
