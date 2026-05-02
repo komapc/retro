@@ -1,0 +1,13 @@
+{
+  "id": "gdelt",
+  "name": "GDELT",
+  "url": "https://api.gdeltproject.org",
+  "country": null,
+  "language": "en",
+  "type": "aggregated",
+  "api_provider": "gdelt",
+  "ingestion_status": "active",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "Articles indexed by GDELT Doc API v2. Source domain varies per article."
+}

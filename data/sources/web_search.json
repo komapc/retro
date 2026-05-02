@@ -1,0 +1,13 @@
+{
+  "id": "web_search",
+  "name": "Web Search",
+  "url": null,
+  "country": null,
+  "language": "en",
+  "type": "aggregated",
+  "api_provider": "dataforseo",
+  "ingestion_status": "active",
+  "political_lean": null,
+  "economic_lean": null,
+  "notes": "Multi-source articles fetched via web search API (DataForSEO/SerpAPI/etc). Source domain varies per article."
+}
