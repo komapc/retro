@@ -45,12 +45,7 @@ MVP_EVENTS = [
 ]
 
 
-def _is_ascii(s: str) -> bool:
-    try:
-        s.encode("ascii")
-        return True
-    except UnicodeEncodeError:
-        return False
+from .utils import _is_ascii
 
 
 async def _gdelt_query(

@@ -20,6 +20,7 @@ Usage:
 """
 
 import argparse
+import html
 import json
 import math
 import os
@@ -101,6 +102,7 @@ def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dic
         seen_hashes.add(article_hash)
         art_path = articles_dir / f"{article_hash}.json"
         if not art_path.exists():
+            console.print(f"  [yellow]Warning: article file missing for hash {article_hash} (event {eid})[/yellow]")
             continue
         art = json.loads(art_path.read_text())
         pub = datetime.strptime(art["published_at"], "%Y-%m-%d").date()
@@ -163,11 +165,13 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
         cutoff = outcome_dt - timedelta(days=t_days)
         cutoff_str = cutoff.strftime("%Y-%m-%d")
 
-        # Serve from cache when cutoff matches
+        # Serve from cache when cutoff and t_days match
         cache_path = cache_dir / f"{eid}.json"
         if cache_path.exists():
             cached = json.loads(cache_path.read_text())
-            if cached.get("cutoff_date") == cutoff_str and cached.get("probability") is not None:
+            if (cached.get("cutoff_date") == cutoff_str
+                    and cached.get("t_days") == t_days
+                    and cached.get("probability") is not None):
                 result[eid] = cached
                 console.print(f"  [dim]{eid}: cache hit → p={cached['probability']} (n={cached.get('articles_used', '?')})[/dim]")
                 continue
@@ -183,33 +187,45 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
         if forecast_calls > 0:
             time.sleep(7)
 
-        try:
-            fr = httpx.post(
-                f"{oracle_url}/forecast",
-                json={
-                    "question": question,
-                    "articles": [
-                        {
-                            "url": a["url"],
-                            "title": a["title"],
-                            "snippet": a["snippet"],
-                            "source": a["source"],
-                            "published_date": a["published_date"],
-                            "text": a["text"] or None,
-                        }
-                        for a in articles
-                    ],
-                },
-                headers=headers,
-                timeout=120,
-            )
-            forecast_calls += 1
-            if fr.status_code != 200:
-                console.print(f"  [red]{eid}: /forecast {fr.status_code} — {fr.text[:120]}[/red]")
-                continue
-            forecast = fr.json()
-        except Exception as e:
-            console.print(f"  [red]{eid}: /forecast error: {e}[/red]")
+        payload = {
+            "question": question,
+            "articles": [
+                {
+                    "url": a["url"],
+                    "title": a["title"],
+                    "snippet": a["snippet"],
+                    "source": a["source"],
+                    "published_date": a["published_date"],
+                    "text": a["text"] or None,
+                }
+                for a in articles
+            ],
+        }
+        forecast = None
+        for attempt in range(3):
+            if attempt > 0:
+                backoff = 15 * (2 ** (attempt - 1))
+                console.print(f"  [dim]Oracle retry {attempt}/2 — backoff {backoff}s[/dim]")
+                time.sleep(backoff)
+            try:
+                fr = httpx.post(
+                    f"{oracle_url}/forecast",
+                    json=payload,
+                    headers=headers,
+                    timeout=120,
+                )
+                forecast_calls += 1
+                if fr.status_code in (429, 500, 502, 503):
+                    console.print(f"  [dim yellow]{eid}: /forecast {fr.status_code} — will retry[/dim yellow]")
+                    continue
+                if fr.status_code != 200:
+                    console.print(f"  [red]{eid}: /forecast {fr.status_code} — {fr.text[:120]}[/red]")
+                    break
+                forecast = fr.json()
+                break
+            except Exception as e:
+                console.print(f"  [dim yellow]{eid}: /forecast error: {e}[/dim yellow]")
+        if forecast is None:
             continue
 
         if forecast.get("placeholder"):
@@ -226,6 +242,7 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
             "articles_used": articles_used,
             "question": question,
             "cutoff_date": cutoff_str,
+            "t_days": t_days,
             "placeholder": forecast.get("placeholder", False),
         }
         cache_path.write_text(json.dumps(entry, indent=2))
@@ -480,7 +497,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
             winner_badge = '<span class="badge badge-tie">Tie</span>'
 
         inv_note = ' <span class="inv">(inverted)</span>' if r["pm_invert"] else ""
-        pm_q_html = f'<div class="event-pm-q">PM: {r["pm_question"]}{inv_note}</div>'
+        pm_q_html = f'<div class="event-pm-q">PM: {html.escape(r["pm_question"])}{inv_note}</div>'
 
         # Probability bars
         def _prob_block(label, val, css_class, brier_val, n_art=None):
@@ -578,7 +595,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
           <td>{r['id']}</td>
           <td>{r['name'][:45]}</td>
           <td class="outcome-yes">YES</td>
-          <td>{r['pm_question'][:40]}{inv_mark}</td>
+          <td>{html.escape(r['pm_question'][:40])}{inv_mark}</td>
           <td>{pm_p_str}</td>
           <td>{tm_p_str} <span style="font-size:0.7rem;color:#475569">({r['tm_articles_used']}art)</span></td>
           <td>{pm_b_str}</td>

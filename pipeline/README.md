@@ -68,8 +68,8 @@ uv sync
 | `AWS_REGION` | No | AWS region for Bedrock (default: `us-east-1`) |
 | `OPENROUTER_API_KEY` | No | OpenRouter key — alternative LLM provider |
 | `BRAVE_API_KEY` | No | Brave Search — URL resolution fallback |
-| `SERPAPI_KEY` | No | SerpAPI — news search provider (highest priority) |
-| `SERPERDEV_KEY` | No | Serper.dev — news search provider (second priority) |
+| `SERPAPI_API_KEY` | No | SerpAPI — news search provider (highest priority) |
+| `SERPER_API_KEY` | No | Serper.dev — news search provider (second priority) |
 | `DATA_DIR` | No | Path to data directory (default: `../data`) |
 | `VAULT_DIR` | No | Path to vault directory (default: `$DATA_DIR/vault`) |
 

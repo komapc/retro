@@ -14,6 +14,7 @@ from .aggregator import aggregate_predictions, needs_aggregation, aggregate_arti
 from .runner import run_article, ArticleInput, PipelineResult
 from .progress import update_cell, load_state
 from .ingestor import BraveIngestor, GDELTIngestor, DDGIngestor
+from .utils import KNOWN_SOURCE_IDS
 import httpx
 from bs4 import BeautifulSoup
 
@@ -81,8 +82,7 @@ class Orchestrator:
             with open(source_file, "r") as f:
                 source = json.load(f)
             
-            if source["id"] not in ["ynet", "haaretz", "haaretz_he", "toi", "globes", "reuters", "jpost",
-                                    "israel_hayom", "walla", "n12", "maariv", "ch13", "kan11"]:
+            if source["id"] not in KNOWN_SOURCE_IDS:
                 continue
 
             state = load_state()
