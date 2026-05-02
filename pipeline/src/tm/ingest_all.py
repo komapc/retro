@@ -59,12 +59,10 @@ async def run_all(
     # ── GDELT ──────────────────────────────────────────────────────────────────
     if "gdelt" not in skip:
         console.print(Rule("[bold cyan]GDELT[/bold cyan]"))
-        gdelt_sources = [(sid, dom) for sid, dom, _ in gdelt_ingest.SOURCES]
         total = 0
         for eid, event in events.items():
-            for source_id, source_domain in gdelt_sources:
-                count = await gdelt_ingest.ingest_cell(event, source_id, source_domain, raw_ingest_dir, force)
-                total += count
+            count = await gdelt_ingest.ingest_event(event, raw_ingest_dir, limit, force)
+            total += count
         totals["gdelt"] = total
         console.print(f"GDELT total: [green]{total}[/green] articles\n")
     else:
