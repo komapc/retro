@@ -186,7 +186,7 @@ async def ingest_cell(
 
     results = await gdelt_search(
         domain=source_domain,
-        keywords=event.get("search_keywords", []),
+        keywords=event.get("duel_keywords") or event.get("search_keywords", []),
         start_date=start_dt,
         end_date=outcome_dt,
         max_records=5,

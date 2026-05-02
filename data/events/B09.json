@@ -25,5 +25,9 @@
     "match_quality": "indirect",
     "invert": true
   },
-  "oracle_question": "Was Hamas political leader Ismail Haniyeh assassinated in Tehran?"
+  "oracle_question": "Was Hamas political leader Ismail Haniyeh assassinated in Tehran?",
+  "duel_keywords": [
+    "Ismail Haniyeh Hamas",
+    "Hamas political bureau chief"
+  ]
 }

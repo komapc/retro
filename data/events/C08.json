@@ -24,5 +24,9 @@
     "question": "Israel x Hezbollah Ceasefire in 2024?",
     "match_quality": "exact"
   },
-  "oracle_question": "Was a ceasefire agreement reached between Israel and Hezbollah in Lebanon?"
+  "oracle_question": "Was a ceasefire agreement reached between Israel and Hezbollah in Lebanon?",
+  "duel_keywords": [
+    "Lebanon ceasefire Israel Hezbollah",
+    "Israel Hezbollah ceasefire deal"
+  ]
 }

@@ -212,7 +212,7 @@ async def ingest_cell(
     outcome_dt = datetime.strptime(event["outcome_date"], "%Y-%m-%d")
     window = int(event.get("predictive_window_days", 14))
     start_dt = outcome_dt - timedelta(days=window)
-    kws = event.get("search_keywords", [])
+    kws = event.get("duel_keywords") or event.get("search_keywords", [])
 
     urls = await search_fn(kws, start_dt, outcome_dt)
     if not urls:

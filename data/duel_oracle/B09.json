@@ -1,7 +1,7 @@
 {
   "event_id": "B09",
-  "probability": 0.74,
-  "mean_stance": 0.48,
+  "probability": 0.8666,
+  "mean_stance": 0.7333,
   "articles_used": 1,
   "question": "Was Hamas political leader Ismail Haniyeh assassinated in Tehran?",
   "cutoff_date": "2024-07-24",
