@@ -17,6 +17,8 @@ data/poc/ingest_offset
 pipeline_log.txt
 poc_log.txt
 gdelt_ingest.log
+duel.html
+pipeline/duel.html
 
 # Python
 __pycache__/

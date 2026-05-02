@@ -87,7 +87,6 @@ def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dic
     Each dict has url, title, text, published_date — ready for Oracle ArticleInput.
     """
     from urllib.parse import urlparse
-    import re as _re
 
     extractions_dir = data_dir / "vault2" / "extractions"
     articles_dir = data_dir / "vault2" / "articles"
@@ -95,11 +94,14 @@ def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dic
 
     seen_hashes: set[str] = set()
     articles = []
+    n_total = 0
+    n_date_ok = 0
     for path in extractions_dir.glob(f"*_{eid}_v*.json"):
         article_hash = path.stem.split("_")[0]
         if article_hash in seen_hashes:
             continue
         seen_hashes.add(article_hash)
+        n_total += 1
         art_path = articles_dir / f"{article_hash}.json"
         if not art_path.exists():
             console.print(f"  [yellow]Warning: article file missing for hash {article_hash} (event {eid})[/yellow]")
@@ -108,8 +110,9 @@ def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dic
         pub = datetime.strptime(art["published_at"], "%Y-%m-%d").date()
         if pub > cutoff_dt:
             continue
+        n_date_ok += 1
         url = art.get("url", "")
-        domain = _re.sub(r"^www\.", "", urlparse(url).netloc)
+        domain = re.sub(r"^www\.", "", urlparse(url).netloc)
         articles.append({
             "url": url,
             "title": art.get("headline", ""),
@@ -118,6 +121,7 @@ def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dic
             "published_date": art["published_at"],
             "text": art.get("text", ""),
         })
+    console.print(f"  [dim]{eid}: {n_total} extractions, {n_date_ok} before {cutoff_str}, {len(articles)} returned[/dim]")
     return articles
 
 
@@ -789,10 +793,22 @@ def main():
         action="store_true",
         help="Re-render duel.html from existing duel_oracle cache — no API calls",
     )
+    ap.add_argument(
+        "--clear-cache",
+        action="store_true",
+        help="Delete all duel_oracle/*.json cache files before fetching",
+    )
     args = ap.parse_args()
 
     data_dir = Path(args.data_dir)
     out_path = Path(args.out)
+
+    if args.clear_cache:
+        cache_dir = data_dir / "duel_oracle"
+        removed = list(cache_dir.glob("*.json"))
+        for f in removed:
+            f.unlink()
+        console.print(f"[yellow]Cleared {len(removed)} cached Oracle results[/yellow]")
 
     events = load_events_with_pm(data_dir)
     console.print(f"Events with PM price data: {len(events)}")
