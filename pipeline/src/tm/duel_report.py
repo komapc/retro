@@ -24,6 +24,7 @@ import html
 import json
 import math
 import os
+import random
 import re
 import time
 from collections import defaultdict
@@ -173,11 +174,15 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
         cache_path = cache_dir / f"{eid}.json"
         if cache_path.exists():
             cached = json.loads(cache_path.read_text())
-            if (cached.get("cutoff_date") == cutoff_str
-                    and cached.get("t_days") == t_days
-                    and cached.get("probability") is not None):
+            cache_valid = (
+                cached.get("cutoff_date") == cutoff_str
+                and cached.get("t_days") == t_days
+                and (cached.get("probability") is not None or cached.get("placeholder"))
+            )
+            if cache_valid:
                 result[eid] = cached
-                console.print(f"  [dim]{eid}: cache hit → p={cached['probability']} (n={cached.get('articles_used', '?')})[/dim]")
+                label = "placeholder" if cached.get("placeholder") else f"p={cached['probability']} (n={cached.get('articles_used', '?')})"
+                console.print(f"  [dim]{eid}: cache hit → {label}[/dim]")
                 continue
 
         # Gather vault2 articles pre-dating the cutoff
@@ -232,22 +237,23 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
         if forecast is None:
             continue
 
-        if forecast.get("placeholder"):
-            console.print(f"  [yellow]{eid}: Oracle returned placeholder (no usable articles)[/yellow]")
+        is_placeholder = bool(forecast.get("placeholder"))
+        if is_placeholder:
+            console.print(f"  [yellow]{eid}: Oracle returned placeholder (gatekeeper rejected all articles)[/yellow]")
 
-        mean = forecast.get("mean", 0.0)
+        mean = forecast.get("mean", 0.0) if not is_placeholder else None
         articles_used = forecast.get("articles_used", 0)
-        probability = round((mean + 1) / 2, 4)
+        probability = round((mean + 1) / 2, 4) if mean is not None else None
 
         entry = {
             "event_id": eid,
             "probability": probability,
-            "mean_stance": round(mean, 4),
+            "mean_stance": round(mean, 4) if mean is not None else None,
             "articles_used": articles_used,
             "question": question,
             "cutoff_date": cutoff_str,
             "t_days": t_days,
-            "placeholder": forecast.get("placeholder", False),
+            "placeholder": is_placeholder,
         }
         cache_path.write_text(json.dumps(entry, indent=2))
         result[eid] = entry
@@ -275,6 +281,7 @@ def build_rows(events: list[dict], tm_probs: dict, t_days: int) -> list[dict]:
         tm_brier = brier(tm_p, outcome) if tm_p is not None else None
 
         pm_meta = ev.get("polymarket") or {}
+        tm_placeholder = bool(tm_info.get("placeholder")) if tm_info else False
         rows.append({
             "id": eid,
             "name": ev.get("name", ""),
@@ -286,6 +293,7 @@ def build_rows(events: list[dict], tm_probs: dict, t_days: int) -> list[dict]:
             "pm_invert": pm_meta.get("invert", False),
             "pm_p": pm_p,
             "tm_p": tm_p,
+            "tm_placeholder": tm_placeholder,
             "tm_articles_used": tm_info["articles_used"] if tm_info else 0,
             "tm_mean_stance": tm_info["mean_stance"] if tm_info else None,
             "pm_brier": pm_brier,
@@ -306,6 +314,18 @@ def build_rows(events: list[dict], tm_probs: dict, t_days: int) -> list[dict]:
 def avg_brier(rows: list[dict], key: str) -> Optional[float]:
     vals = [r[key] for r in rows if r[key] is not None]
     return round(sum(vals) / len(vals), 4) if vals else None
+
+
+def bootstrap_ci(
+    vals: list[float], n_boot: int = 10_000, seed: int = 42
+) -> tuple[Optional[float], Optional[float]]:
+    """Return (lo, hi) 95% bootstrap CI for the mean of vals."""
+    if len(vals) < 2:
+        return None, None
+    rng = random.Random(seed)
+    n = len(vals)
+    boot_means = sorted(sum(rng.choices(vals, k=n)) / n for _ in range(n_boot))
+    return round(boot_means[int(0.025 * n_boot)], 4), round(boot_means[int(0.975 * n_boot)], 4)
 
 
 # ── HTML rendering ─────────────────────────────────────────────────────────────
@@ -467,6 +487,8 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
     compared = [r for r in rows if r["pm_p"] is not None and r["tm_p"] is not None]
     tm_avg = avg_brier(compared, "tm_brier")
     pm_avg = avg_brier(compared, "pm_brier")
+    tm_ci = bootstrap_ci([r["tm_brier"] for r in compared if r["tm_brier"] is not None])
+    pm_ci = bootstrap_ci([r["pm_brier"] for r in compared if r["pm_brier"] is not None])
 
     if tm_avg is not None and pm_avg is not None:
         if tm_avg < pm_avg:
@@ -504,9 +526,10 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
         pm_q_html = f'<div class="event-pm-q">PM: {html.escape(r["pm_question"])}{inv_note}</div>'
 
         # Probability bars
-        def _prob_block(label, val, css_class, brier_val, n_art=None):
+        def _prob_block(label, val, css_class, brier_val, n_art=None, placeholder=False):
             if val is None:
-                return f'<div class="prob-block"><div class="prob-label">{label}</div><div class="no-data">no data</div></div>'
+                msg = "insufficient data" if placeholder else "no data"
+                return f'<div class="prob-block"><div class="prob-label">{label}</div><div class="no-data">{msg}</div></div>'
             pct = int(val * 100)
             w = int(val * 100)
             art_note = f" ({n_art} art.)" if n_art is not None else ""
@@ -518,7 +541,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
               <span class="brier-val"> Brier: {brier_val if brier_val is not None else '—'}</span>
             </div>"""
 
-        tm_block = _prob_block("TruthMachine", r["tm_p"], "tm", r["tm_brier"], r["tm_articles_used"])
+        tm_block = _prob_block("TruthMachine", r["tm_p"], "tm", r["tm_brier"], r["tm_articles_used"], r["tm_placeholder"])
         pm_block = _prob_block(f"Polymarket (T-{t_days}d)", r["pm_p"], "pm", r["pm_brier"])
 
         # Sparkline
@@ -643,6 +666,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
     <h2>TruthMachine</h2>
     <div class="brier tm-color">{tm_avg if tm_avg is not None else "—"}</div>
     <div class="label">avg Brier ({n_compared} events)</div>
+    {'<div class="label" style="margin-top:0.25rem;font-size:0.72rem">95% CI: [' + str(tm_ci[0]) + '–' + str(tm_ci[1]) + ']</div>' if tm_ci[0] is not None else ''}
     <div class="label" style="margin-top:0.5rem">wins: {tm_wins} / {n_compared}</div>
   </div>
   <div class="vs-divider">VS</div>
@@ -650,6 +674,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path) -> None:
     <h2>Polymarket</h2>
     <div class="brier pm-color">{pm_avg if pm_avg is not None else "—"}</div>
     <div class="label">avg Brier ({n_compared} events)</div>
+    {'<div class="label" style="margin-top:0.25rem;font-size:0.72rem">95% CI: [' + str(pm_ci[0]) + '–' + str(pm_ci[1]) + ']</div>' if pm_ci[0] is not None else ''}
     <div class="label" style="margin-top:0.5rem">wins: {pm_wins} / {n_compared}</div>
   </div>
 </div>
@@ -823,7 +848,7 @@ def main():
             cache_path = cache_dir / f"{eid}.json"
             if cache_path.exists():
                 cached = json.loads(cache_path.read_text())
-                if cached.get("probability") is not None:
+                if cached.get("probability") is not None or cached.get("placeholder"):
                     tm_probs[eid] = cached
         console.print(f"Events loaded from cache (--html-only): {len(tm_probs)}")
     else:
