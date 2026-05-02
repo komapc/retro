@@ -208,6 +208,7 @@ async def ingest_event(
             "headline": art["title"],
             "text": text,
             "published_at": art["date"] or start_dt.strftime("%Y-%m-%d"),
+            "estimated_date": not bool(art["date"]),
             "author": "Unknown",
             "url": url,
             "source_domain": art["domain"],
