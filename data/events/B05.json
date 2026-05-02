@@ -23,5 +23,9 @@
     "question": "Will the Hamas x Israel ceasefire last the full 4 days?",
     "match_quality": "close"
   },
-  "oracle_question": "Were the first phase hostage releases completed between Israel and Hamas?"
+  "oracle_question": "Were the first phase hostage releases completed between Israel and Hamas?",
+  "duel_keywords": [
+    "Gaza hostage release",
+    "Hamas hostages deal ceasefire"
+  ]
 }

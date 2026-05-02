@@ -1,7 +1,7 @@
 {
   "event_id": "B04",
-  "probability": 0.5735,
-  "mean_stance": 0.1469,
+  "probability": 0.5407,
+  "mean_stance": 0.0814,
   "articles_used": 2,
   "question": "Was a hostage deal reached between Israel and Hamas, pausing the fighting in Gaza?",
   "cutoff_date": "2023-11-15",

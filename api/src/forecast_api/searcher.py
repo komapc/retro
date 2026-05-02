@@ -88,13 +88,20 @@ async def _check_serper() -> ProviderStatus:
 async def _check_serpapi() -> ProviderStatus:
     if not _ws.SERPAPI_API_KEY:
         return ProviderStatus(configured=False, exhausted=False, status="not_configured")
+    if _ws._SERPAPI_QUOTA_EXHAUSTED:
+        return ProviderStatus(configured=True, exhausted=True, status="exhausted")
     try:
         async with httpx.AsyncClient(timeout=5) as c:
             r = await c.get(f"https://serpapi.com/account.json?api_key={_ws.SERPAPI_API_KEY}")
         if not r.is_success:
             return ProviderStatus(configured=True, exhausted=False, status="error", error=f"HTTP {r.status_code}")
-        credits = r.json().get("searches_left")
-        return ProviderStatus(configured=True, exhausted=False, status="ok", credits=credits)
+        data = r.json()
+        credits = data.get("total_searches_left")
+        exhausted = credits == 0
+        if exhausted:
+            _ws._SERPAPI_QUOTA_EXHAUSTED = True
+        return ProviderStatus(configured=True, exhausted=exhausted,
+                              status="exhausted" if exhausted else "ok", credits=credits)
     except Exception as e:
         return ProviderStatus(configured=True, exhausted=False, status="error", error=str(e))
 
@@ -106,6 +113,20 @@ async def _check_brave() -> ProviderStatus:
         return ProviderStatus(configured=True, exhausted=True, status="exhausted")
     # Brave has no public credit-check API; report key presence + in-process flag only
     return ProviderStatus(configured=True, exhausted=False, status="ok")
+
+
+async def _check_gdelt() -> ProviderStatus:
+    try:
+        async with httpx.AsyncClient(timeout=10) as c:
+            r = await c.get(
+                "https://api.gdeltproject.org/api/v2/doc/doc",
+                params={"query": "test", "mode": "artlist", "format": "json", "maxrecords": 1},
+            )
+        if not r.is_success:
+            return ProviderStatus(configured=True, exhausted=False, status="error", error=f"HTTP {r.status_code}")
+        return ProviderStatus(configured=True, exhausted=False, status="ok")
+    except Exception as e:
+        return ProviderStatus(configured=True, exhausted=False, status="error", error=str(e))
 
 
 async def _check_brightdata() -> ProviderStatus:
@@ -155,6 +176,7 @@ async def run_search_health() -> SearchHealthResponse:
         _check_brightdata(),
         _check_nimbleway(),
         _check_scrapingbee(),
+        _check_gdelt(),
     )
     providers: dict[str, ProviderStatus] = {
         "dataforseo": checks[0],
@@ -164,6 +186,7 @@ async def run_search_health() -> SearchHealthResponse:
         "brightdata": checks[4],
         "nimbleway":  checks[5],
         "scrapingbee":checks[6],
+        "gdelt":      checks[7],
         "ddg": ProviderStatus(
             configured=True, exhausted=False, status="ok",
         ),

@@ -1,27 +1,29 @@
 """
-GDELT batch ingestor — fills data/raw_ingest/ for all events × sources.
+GDELT batch ingestor — unfiltered keyword search across all ~65k GDELT sources.
 
-Runs sequentially with 2s delay between API calls to stay within GDELT rate limits.
+Runs one query per event (no hardcoded domain list). Results land in
+data/raw_ingest/gdelt/{event_id}/, same schema as site_search.py and
+web_search_ingest.py, so the orchestrator picks them up unchanged.
+
+Rate limit: GDELT enforces ~1 req / 10s. We use a 12s gap to be safe.
 Retries on 429/5xx with exponential backoff.
-Skips event×source pairs already in raw_ingest/.
-After running, use: uv run python -m tm.orchestrator local_file
 
 Usage:
     DATA_DIR=/path/to/data uv run python -m tm.gdelt_ingest
     DATA_DIR=/path/to/data uv run python -m tm.gdelt_ingest --events C05 C07 E07
-    DATA_DIR=/path/to/data uv run python -m tm.gdelt_ingest --sources reuters toi
+    DATA_DIR=/path/to/data uv run python -m tm.gdelt_ingest --limit 15 --force
 """
 
 import asyncio
 import json
 import os
-import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Optional
 
 import httpx
+from bs4 import BeautifulSoup
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, MofNCompleteColumn
 from rich.table import Table
@@ -29,15 +31,8 @@ from rich.table import Table
 console = Console()
 
 GDELT_BASE = "https://api.gdeltproject.org/api/v2/doc/doc"
-
-# Sources: (id, domain, language)
-SOURCES = [
-    ("reuters",      "reuters.com",           "en"),
-    ("toi",          "timesofisrael.com",      "en"),
-    ("haaretz",      "haaretz.com",            "en"),  # English edition
-    ("jpost",        "jpost.com",              "en"),
-    ("globes",       "en.globes.co.il",        "en"),  # English Globes
-]
+GDELT_MIN_INTERVAL = 12.0  # seconds between calls
+_last_call: float = 0.0
 
 MVP_EVENTS = [
     "C05", "C06", "C07", "C08", "C09",
@@ -58,8 +53,7 @@ def _is_ascii(s: str) -> bool:
         return False
 
 
-async def gdelt_search(
-    domain: str,
+async def _gdelt_query(
     keywords: List[str],
     start_date: datetime,
     end_date: datetime,
@@ -67,60 +61,68 @@ async def gdelt_search(
     retries: int = 4,
 ) -> List[Dict]:
     """
-    Query GDELT Doc API. Returns list of {title, url, seendate}.
-    Retries on 429/5xx with exponential backoff.
+    Query GDELT Doc API without a domain filter.
+    Returns list of {title, url, date, domain}.
     """
+    global _last_call
     english_kws = [k.strip('"') for k in keywords if _is_ascii(k) and k.strip('"')]
     if not english_kws:
         return []
 
-    # Build query: top keywords + domain
+    # OR-join up to 3 keywords — no domain: filter
     kw_query = " OR ".join(f'"{kw}"' for kw in english_kws[:3])
-    query = f"({kw_query}) domain:{domain}"
-
-    start_str = start_date.strftime("%Y%m%d000000")
-    end_str = (end_date - timedelta(days=1)).strftime("%Y%m%d235959")
 
     params = {
-        "query": query,
+        "query": kw_query,
         "mode": "artlist",
         "format": "json",
-        "startdatetime": start_str,
-        "enddatetime": end_str,
+        "startdatetime": start_date.strftime("%Y%m%d000000"),
+        "enddatetime": end_date.strftime("%Y%m%d235959"),
         "maxrecords": max_records,
         "sort": "DateDesc",
     }
 
     for attempt in range(retries):
-        delay = 6.0 * (2 ** attempt)  # 6, 12, 24, 48 seconds
+        # Enforce rate limit
+        elapsed = time.time() - _last_call
+        wait = GDELT_MIN_INTERVAL - elapsed
+        if wait > 0:
+            await asyncio.sleep(wait)
         if attempt > 0:
-            console.print(f"    [dim]GDELT retry {attempt}/{retries-1} in {delay:.0f}s…[/dim]")
-            await asyncio.sleep(delay)
-        else:
-            await asyncio.sleep(6.0)  # GDELT rate limit: 1 req / 5s (use 6s to be safe)
+            backoff = GDELT_MIN_INTERVAL * (2 ** attempt)
+            console.print(f"    [dim]GDELT retry {attempt}/{retries-1} — backoff {backoff:.0f}s[/dim]")
+            await asyncio.sleep(backoff)
 
         try:
             async with httpx.AsyncClient(timeout=30) as client:
                 r = await client.get(GDELT_BASE, params=params)
+            _last_call = time.time()
 
             if r.status_code == 200:
-                data = r.json()
+                try:
+                    data = r.json()
+                except Exception:
+                    # GDELT sometimes returns 200 with empty/whitespace body under load
+                    console.print(f"    [dim yellow]GDELT 200 but empty body — treating as rate-limit[/dim yellow]")
+                    _last_call = time.time()
+                    continue
                 articles = []
-                for art in data.get("articles", []):
+                for art in data.get("articles") or []:
                     pub = art.get("seendate", "")
                     try:
                         pub_str = datetime.strptime(pub[:8], "%Y%m%d").strftime("%Y-%m-%d")
                     except ValueError:
-                        pub_str = start_date.strftime("%Y-%m-%d")
+                        pub_str = ""
                     articles.append({
                         "title": art.get("title", ""),
                         "url": art.get("url", ""),
                         "date": pub_str,
-                        "domain": art.get("domain", domain),
+                        "domain": art.get("domain", ""),
                     })
                 return articles
 
             elif r.status_code in (429, 500, 502, 503):
+                _last_call = time.time()
                 console.print(f"    [dim yellow]GDELT {r.status_code} — will retry[/dim yellow]")
                 continue
             else:
@@ -128,6 +130,7 @@ async def gdelt_search(
                 return []
 
         except Exception as e:
+            _last_call = time.time()
             console.print(f"    [dim red]GDELT error: {e}[/dim red]")
             if attempt == retries - 1:
                 return []
@@ -135,8 +138,7 @@ async def gdelt_search(
     return []
 
 
-async def fetch_full_text(url: str) -> str:
-    """Scrape full article text, stripping navigation/scripts."""
+async def _fetch_text(url: str) -> str:
     try:
         async with httpx.AsyncClient(
             timeout=20,
@@ -146,13 +148,11 @@ async def fetch_full_text(url: str) -> str:
             r = await client.get(url)
             if r.status_code != 200:
                 return ""
-        from bs4 import BeautifulSoup
         soup = BeautifulSoup(r.text, "html.parser")
         for tag in soup(["script", "style", "nav", "footer", "header", "aside", "figure"]):
             tag.extract()
-        # Try to extract article body specifically
-        for selector in ["article", "main", '[class*="article"]', '[class*="content"]']:
-            el = soup.select_one(selector)
+        for sel in ["article", "main", '[class*="article"]', '[class*="content"]']:
+            el = soup.select_one(sel)
             if el:
                 text = el.get_text(separator=" ", strip=True)
                 if len(text) > 300:
@@ -162,62 +162,64 @@ async def fetch_full_text(url: str) -> str:
         return ""
 
 
-async def ingest_cell(
+async def ingest_event(
     event: dict,
-    source_id: str,
-    source_domain: str,
     raw_ingest_dir: Path,
+    limit: int = 10,
     force: bool = False,
 ) -> int:
-    """
-    Fetch and save articles for one (event, source) pair.
-    Returns number of articles saved.
-    """
-    cell_dir = raw_ingest_dir / source_id / event["id"]
-
-    # Skip if already populated (unless --force)
+    """Fetch and save GDELT articles for one event. Returns number saved."""
+    eid = event["id"]
+    cell_dir = raw_ingest_dir / "gdelt" / eid
     existing = list(cell_dir.glob("article_*.json")) if cell_dir.exists() else []
     if existing and not force:
         return len(existing)
 
     outcome_dt = datetime.strptime(event["outcome_date"], "%Y-%m-%d")
-    window = int(event.get("predictive_window_days", 14))
+    window = int(event.get("predictive_window_days", 30))
     start_dt = outcome_dt - timedelta(days=window)
 
-    results = await gdelt_search(
-        domain=source_domain,
-        keywords=event.get("search_keywords", []),
-        start_date=start_dt,
-        end_date=outcome_dt,
-        max_records=5,
-    )
+    keywords = event.get("duel_keywords") or event.get("search_keywords", [])
 
-    if not results:
+    # Run up to 2 keyword queries (different keyword sets) and merge results
+    seen_urls: set[str] = set()
+    candidates: list[dict] = []
+
+    kw_groups = [keywords, keywords[1:]] if len(keywords) > 1 else [keywords]
+    for kws in kw_groups[:2]:
+        results = await _gdelt_query(kws, start_dt, outcome_dt, max_records=limit)
+        if not results:
+            break  # GDELT is rate-limited or dry; skip second query group
+        for art in results:
+            if art["url"] and art["url"] not in seen_urls:
+                seen_urls.add(art["url"])
+                candidates.append(art)
+
+    if not candidates:
         return 0
 
     cell_dir.mkdir(parents=True, exist_ok=True)
     saved = 0
+    article_idx = len(existing)
 
-    for i, art in enumerate(results[:5]):
-        url = art.get("url", "")
-        if not url:
-            continue
-
-        text = await fetch_full_text(url)
+    for art in candidates[:limit]:
+        await asyncio.sleep(1.0)
+        url = art["url"]
+        text = await _fetch_text(url)
         if len(text) < 200:
             continue
 
         article = {
-            "headline": art.get("title", ""),
+            "headline": art["title"],
             "text": text,
-            "published_at": art.get("date", start_dt.strftime("%Y-%m-%d")),
+            "published_at": art["date"] or start_dt.strftime("%Y-%m-%d"),
             "author": "Unknown",
             "url": url,
+            "source_domain": art["domain"],
         }
-
-        out_path = cell_dir / f"article_{i+1:02d}.json"
-        with open(out_path, "w", encoding="utf-8") as f:
-            json.dump(article, f, indent=2, ensure_ascii=False)
+        article_idx += 1
+        out = cell_dir / f"article_{article_idx:02d}.json"
+        out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
         saved += 1
 
     return saved
@@ -226,86 +228,71 @@ async def ingest_cell(
 async def run_batch(
     data_dir: Path,
     event_ids: List[str],
-    source_filter: Optional[List[str]],
+    limit: int,
     force: bool,
 ):
     events_dir = data_dir / "events"
     raw_ingest_dir = data_dir / "raw_ingest"
 
-    # Load events
-    events = {}
+    events: dict[str, dict] = {}
     for eid in event_ids:
         p = events_dir / f"{eid}.json"
         if p.exists():
-            events[eid] = json.load(open(p))
+            events[eid] = json.loads(p.read_text())
         else:
             console.print(f"[yellow]Event {eid} not found, skipping[/yellow]")
 
-    sources = [(sid, dom) for sid, dom, _ in SOURCES
-               if source_filter is None or sid in source_filter]
+    console.print(
+        f"\n[bold]GDELT Batch Ingest[/bold]  "
+        f"{len(events)} events · up to {limit} articles each\n"
+    )
 
-    total = len(events) * len(sources)
-    results: dict[str, dict] = {}  # eid → {sid: count}
-
-    console.print(f"\n[bold]GDELT Batch Ingest[/bold]  {len(events)} events × {len(sources)} sources = {total} cells\n")
+    results: dict[str, int] = {}
 
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
-        MofNCompleteColumn(),
+        BarColumn(), MofNCompleteColumn(),
         console=console,
     ) as progress:
-        task = progress.add_task("Fetching…", total=total)
+        task = progress.add_task("Fetching…", total=len(events))
 
         for eid, event in events.items():
-            results[eid] = {}
-            for source_id, source_domain in sources:
-                progress.update(task, description=f"[cyan]{eid}[/cyan] / [blue]{source_id}[/blue]")
+            progress.update(task, description=f"[cyan]{eid}[/cyan] — {event['name'][:40]}")
+            count = await ingest_event(event, raw_ingest_dir, limit, force)
+            results[eid] = count
+            label = f"[green]{count} saved[/green]" if count else "[dim]0[/dim]"
+            console.print(f"  {eid}: {label}")
+            progress.advance(task)
 
-                count = await ingest_cell(event, source_id, source_domain, raw_ingest_dir, force)
-                results[eid][source_id] = count
-
-                status = f"[green]{count} art[/green]" if count else "[dim]0[/dim]"
-                console.print(f"  {eid}/{source_id}: {status}")
-                progress.advance(task)
-
-    # Summary table
-    table = Table(title="Ingest Summary", show_header=True)
+    table = Table(title="GDELT Ingest Summary")
     table.add_column("Event", style="cyan")
-    for sid, _ in sources:
-        table.add_column(sid, justify="center")
-    table.add_column("Total", justify="right", style="bold")
-
-    grand_total = 0
+    table.add_column("Articles saved", justify="right")
+    grand = 0
     for eid in event_ids:
         if eid not in results:
             continue
-        row = [eid]
-        row_total = 0
-        for sid, _ in sources:
-            n = results[eid].get(sid, 0)
-            row.append(str(n) if n else "·")
-            row_total += n
-        row.append(str(row_total))
-        table.add_row(*row)
-        grand_total += row_total
+        n = results[eid]
+        table.add_row(eid, str(n) if n else "·")
+        grand += n
 
     console.print(table)
-    console.print(f"\n[bold green]Total articles saved: {grand_total}[/bold green]")
-    console.print(f"\nNext step: [bold]uv run python -m tm.orchestrator local_file[/bold]")
+    console.print(f"\n[bold green]Total articles saved: {grand}[/bold green]")
+    console.print(
+        f"Next: [bold]DATA_DIR={data_dir} uv run python -m tm.orchestrator local_file[/bold]"
+    )
 
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="GDELT batch ingestor")
-    parser.add_argument("--events", nargs="+", default=MVP_EVENTS, metavar="EID")
-    parser.add_argument("--sources", nargs="+", default=None, metavar="SID")
-    parser.add_argument("--force", action="store_true", help="Re-fetch already populated cells")
-    args = parser.parse_args()
+    p = argparse.ArgumentParser(description="GDELT batch ingestor (unfiltered keyword search)")
+    p.add_argument("--events", nargs="+", default=MVP_EVENTS, metavar="EID")
+    p.add_argument("--limit", type=int, default=10, help="Max articles per event (default 10)")
+    p.add_argument("--force", action="store_true", help="Re-fetch already populated cells")
+    args = p.parse_args()
 
     data_dir = Path(os.environ.get("DATA_DIR", "/app/data"))
-    asyncio.run(run_batch(data_dir, args.events, args.sources, args.force))
+    asyncio.run(run_batch(data_dir, args.events, args.limit, args.force))
 
 
 if __name__ == "__main__":

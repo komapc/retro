@@ -24,5 +24,9 @@
     "match_quality": "exact",
     "invert": true
   },
-  "oracle_question": "Did the Assad regime fall in Syria?"
+  "oracle_question": "Did the Assad regime fall in Syria?",
+  "duel_keywords": [
+    "Bashar Assad Syria rebels",
+    "Syrian rebels HTS offensive"
+  ]
 }

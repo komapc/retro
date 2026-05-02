@@ -25,5 +25,9 @@
     "question": "ICC issues an arrest warrant for Netanyahu?",
     "match_quality": "exact"
   },
-  "oracle_question": "Did the ICC issue an arrest warrant for Israeli Prime Minister Netanyahu?"
+  "oracle_question": "Did the ICC issue an arrest warrant for Israeli Prime Minister Netanyahu?",
+  "duel_keywords": [
+    "Netanyahu ICC arrest warrant",
+    "International Criminal Court Israel"
+  ]
 }

@@ -22,5 +22,9 @@
     "question": "Will Israel launch a major ground offensive in South Gaza by Dec 8?",
     "match_quality": "close"
   },
-  "oracle_question": "Did the IDF begin a ground operation in Rafah, Gaza?"
+  "oracle_question": "Did the IDF begin a ground operation in Rafah, Gaza?",
+  "duel_keywords": [
+    "Rafah offensive IDF",
+    "IDF Rafah military operation"
+  ]
 }

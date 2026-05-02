@@ -10,7 +10,8 @@ Fallback order:
   5. BrightData SERP API            BRIGHTDATA_API_KEY
   6. Nimbleway SERP API             NIMBLEWAY_API_KEY
   7. ScrapingBee Google Search      SCRAPINGBEE_API_KEY
-  8. DuckDuckGo Lite                (free, no key — skipped on EC2)
+  8. GDELT Doc API                  (free, no key — news-only, reliable dates)
+  9. DuckDuckGo Lite                (free, no key — skipped on EC2)
 
 All keys are loaded from the environment first, then from AWS Secrets Manager
 (openclaw/* namespace) as a fallback. See _secret().
@@ -130,8 +131,11 @@ def _running_on_ec2() -> bool:
 
 _DDG_LAST_CALL: float = 0.0
 DDG_MIN_INTERVAL = 2.0
+_GDELT_LAST_CALL: float = 0.0
+GDELT_MIN_INTERVAL = 10.0  # GDELT rate limit: 1 req / 10s
 
 _DATAFORSEO_QUOTA_EXHAUSTED: bool = False
+_SERPAPI_QUOTA_EXHAUSTED: bool = False
 _BRAVE_QUOTA_EXHAUSTED: bool = False
 _SERPER_QUOTA_EXHAUSTED: bool = False
 _BRIGHTDATA_QUOTA_EXHAUSTED: bool = False
@@ -147,6 +151,47 @@ class SearchResult:
     source: str = ""
     published_date: str = ""
     _prefetched_text: Optional[str] = field(default=None)
+
+
+# ──────────────────────────────────────────────
+# Date helpers shared across providers
+# ──────────────────────────────────────────────
+
+def _date_query_suffix(date_from: Optional[datetime], date_to: Optional[datetime]) -> str:
+    """Append Google after:/before: operators for providers without native date params."""
+    parts = []
+    if date_from:
+        parts.append(f"after:{date_from.strftime('%Y-%m-%d')}")
+    if date_to:
+        parts.append(f"before:{date_to.strftime('%Y-%m-%d')}")
+    return (" " + " ".join(parts)) if parts else ""
+
+
+def _filter_by_date(
+    results: List["SearchResult"],
+    date_from: Optional[datetime],
+    date_to: Optional[datetime],
+) -> List["SearchResult"]:
+    """Post-filter results to the requested window using published_date.
+    Entries without a parseable date are kept (benefit of the doubt).
+    """
+    if not date_from and not date_to:
+        return results
+    out = []
+    for r in results:
+        if not r.published_date:
+            out.append(r)
+            continue
+        try:
+            d = datetime.strptime(r.published_date[:10], "%Y-%m-%d")
+            if date_from and d < date_from:
+                continue
+            if date_to and d > date_to:
+                continue
+            out.append(r)
+        except ValueError:
+            out.append(r)
+    return out
 
 
 # ──────────────────────────────────────────────
@@ -198,7 +243,8 @@ def _search_dataforseo(
         if not url:
             continue
         source = (item.get("source") or {}).get("name", "") or item.get("domain", "")
-        raw_date = item.get("date_published", "")
+        # DataForSEO returns "timestamp" (e.g. "2024-09-20 14:32:00 +00:00"), not "date_published"
+        raw_date = item.get("timestamp") or item.get("date_published", "")
         published_date = raw_date[:10] if raw_date else ""
         results.append(SearchResult(
             title=item.get("title", ""),
@@ -207,7 +253,9 @@ def _search_dataforseo(
             source=source,
             published_date=published_date,
         ))
-    return results
+    # DataForSEO date_from/date_to params are not reliably enforced by Google News;
+    # post-filter to ensure we stay within the requested window.
+    return _filter_by_date(results, date_from, date_to)
 
 
 # ──────────────────────────────────────────────
@@ -220,6 +268,7 @@ def _search_serpapi_news(
     date_from: Optional[datetime] = None,
     date_to: Optional[datetime] = None,
 ) -> List[SearchResult]:
+    global _SERPAPI_QUOTA_EXHAUSTED
     if not SERPAPI_API_KEY:
         raise RuntimeError("SERPAPI_API_KEY not set")
 
@@ -244,10 +293,16 @@ def _search_serpapi_news(
         params=params,
         timeout=12,
     )
+    if r.status_code == 429:
+        body = r.text.lower()
+        if "run out" in body or "quota" in body or "searches" in body:
+            _SERPAPI_QUOTA_EXHAUSTED = True
+            raise RuntimeError("SerpAPI quota exhausted")
+        raise RuntimeError("SerpAPI rate-limited (429)")
     r.raise_for_status()
     items = r.json().get("news_results", [])
 
-    return [
+    results = [
         SearchResult(
             title=item.get("title", ""),
             url=item.get("link", ""),
@@ -258,6 +313,7 @@ def _search_serpapi_news(
         for item in items[:limit]
         if item.get("link")
     ]
+    return _filter_by_date(results, date_from, date_to)
 
 
 # ──────────────────────────────────────────────
@@ -294,7 +350,7 @@ def _search_serper_news(
     data = r.json()
     items = data.get("news", [])
 
-    return [
+    results = [
         SearchResult(
             title=item.get("title", ""),
             url=item.get("link", ""),
@@ -305,6 +361,7 @@ def _search_serper_news(
         for item in items[:limit]
         if item.get("link")
     ]
+    return _filter_by_date(results, date_from, date_to)
 
 
 # ──────────────────────────────────────────────
@@ -321,14 +378,14 @@ def _search_brave_news(
     if not BRAVE_API_KEY:
         raise RuntimeError("BRAVE_API_KEY not set")
 
+    # Brave has no arbitrary date-range param; inject Google-style operators into query.
+    dated_query = query + _date_query_suffix(date_from, date_to)
     params: dict = {
-        "q": query,
+        "q": dated_query,
         "count": min(limit, 20),
         "search_lang": "en",
         "country": "us",
     }
-    # Brave supports freshness but not arbitrary date ranges; skip date filter here
-    # (caller should include dates in the query string instead)
 
     r = httpx.get(
         "https://api.search.brave.com/res/v1/news/search",
@@ -345,7 +402,7 @@ def _search_brave_news(
     r.raise_for_status()
 
     items = r.json().get("results", [])
-    return [
+    results = [
         SearchResult(
             title=item.get("title", ""),
             url=item.get("url", ""),
@@ -356,18 +413,28 @@ def _search_brave_news(
         for item in items[:limit]
         if item.get("url")
     ]
+    return _filter_by_date(results, date_from, date_to)
 
 
 # ──────────────────────────────────────────────
 # Provider: BrightData SERP API
 # ──────────────────────────────────────────────
 
-def _search_brightdata(query: str, limit: int) -> List[SearchResult]:
+def _search_brightdata(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
     global _BRIGHTDATA_QUOTA_EXHAUSTED
     if not BRIGHTDATA_API_KEY:
         raise RuntimeError("BRIGHTDATA_API_KEY not set")
 
-    search_url = "https://www.google.com/search?" + urlencode({"q": query, "gl": "us", "hl": "en"})
+    # Inject Google date operators since BrightData proxies Google.
+    # NOTE: zone "serp_api1" returns empty body (zone not configured); keeping the
+    # implementation correct for when the zone is fixed.
+    dated_query = query + _date_query_suffix(date_from, date_to)
+    search_url = "https://www.google.com/search?" + urlencode({"q": dated_query, "gl": "us", "hl": "en"})
     r = httpx.post(
         "https://api.brightdata.com/request",
         json={"zone": "serp_api1", "url": search_url, "format": "raw"},
@@ -380,13 +447,22 @@ def _search_brightdata(query: str, limit: int) -> List[SearchResult]:
     r.raise_for_status()
 
     html = r.text
-    result_pat = re.compile(r'href="(https://[^"#]+)"[^>]*>[^<]*<h3[^>]*class="LC20lb[^>]*>([^<]+)</h3>')
-    snippet_pat = re.compile(r'class="VwiC3b[^"]*"[^>]*>(.*?)</div>')
+    if not html:
+        return []
 
-    pairs = [(m.group(1), m.group(2)) for m in result_pat.finditer(html)]
+    # Google's CSS classes rotate; try several known variants
+    for title_cls in ["LC20lb", "DKV0Md", "vvjwJb"]:
+        result_pat = re.compile(
+            rf'href="(https://[^"#]+)"[^>]*>[^<]*<h3[^>]*class="{title_cls}[^"]*">([^<]+)</h3>'
+        )
+        pairs = [(m.group(1), m.group(2)) for m in result_pat.finditer(html)]
+        if pairs:
+            break
+
+    snippet_pat = re.compile(r'class="(?:VwiC3b|yXK7lf|MUxGbd)[^"]*"[^>]*>(.*?)</div>')
     snippets = [re.sub(r'<[^>]+>', '', m.group(1)).strip() for m in snippet_pat.finditer(html)]
 
-    return [
+    results = [
         SearchResult(
             title=title,
             url=url,
@@ -395,20 +471,27 @@ def _search_brightdata(query: str, limit: int) -> List[SearchResult]:
         )
         for i, (url, title) in enumerate(pairs[:limit])
     ]
+    return _filter_by_date(results, date_from, date_to)
 
 
 # ──────────────────────────────────────────────
 # Provider: Nimbleway SERP API
 # ──────────────────────────────────────────────
 
-def _search_nimbleway(query: str, limit: int) -> List[SearchResult]:
+def _search_nimbleway(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
     global _NIMBLEWAY_QUOTA_EXHAUSTED
     if not NIMBLEWAY_API_KEY:
         raise RuntimeError("NIMBLEWAY_API_KEY not set")
 
+    dated_query = query + _date_query_suffix(date_from, date_to)
     r = httpx.post(
         "https://api.webit.live/api/v1/realtime/serp",
-        json={"search_engine": "google_search", "country": "US", "query": query, "parse": True},
+        json={"search_engine": "google_search", "country": "US", "query": dated_query, "parse": True},
         headers={"Authorization": f"Bearer {NIMBLEWAY_API_KEY}", "Content-Type": "application/json"},
         timeout=20,
     )
@@ -422,7 +505,7 @@ def _search_nimbleway(query: str, limit: int) -> List[SearchResult]:
         raise RuntimeError(f"Nimbleway error: {data.get('status')}")
 
     items = data.get("parsing", {}).get("entities", {}).get("OrganicResult", [])
-    return [
+    results = [
         SearchResult(
             title=item.get("title", ""),
             url=item.get("url", ""),
@@ -432,20 +515,27 @@ def _search_nimbleway(query: str, limit: int) -> List[SearchResult]:
         for item in items[:limit]
         if item.get("url")
     ]
+    return _filter_by_date(results, date_from, date_to)
 
 
 # ──────────────────────────────────────────────
 # Provider: ScrapingBee Google Search
 # ──────────────────────────────────────────────
 
-def _search_scrapingbee(query: str, limit: int) -> List[SearchResult]:
+def _search_scrapingbee(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
     global _SCRAPINGBEE_QUOTA_EXHAUSTED
     if not SCRAPINGBEE_API_KEY:
         raise RuntimeError("SCRAPINGBEE_API_KEY not set")
 
+    dated_query = query + _date_query_suffix(date_from, date_to)
     r = httpx.get(
         "https://app.scrapingbee.com/api/v1/store/google",
-        params={"api_key": SCRAPINGBEE_API_KEY, "search": query, "nb_results": limit},
+        params={"api_key": SCRAPINGBEE_API_KEY, "search": dated_query, "nb_results": limit},
         timeout=20,
     )
     if r.status_code == 402:
@@ -460,7 +550,7 @@ def _search_scrapingbee(query: str, limit: int) -> List[SearchResult]:
         or data.get("organic_results")
         or []
     )
-    return [
+    results = [
         SearchResult(
             title=item.get("title", ""),
             url=item.get("url", ""),
@@ -471,31 +561,101 @@ def _search_scrapingbee(query: str, limit: int) -> List[SearchResult]:
         for item in items[:limit]
         if item.get("url")
     ]
+    return _filter_by_date(results, date_from, date_to)
+
+
+# ──────────────────────────────────────────────
+# Provider: GDELT Doc API (free, reliable dates)
+# ──────────────────────────────────────────────
+
+def _search_gdelt(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
+    global _GDELT_LAST_CALL
+    elapsed = time.time() - _GDELT_LAST_CALL
+    if elapsed < GDELT_MIN_INTERVAL:
+        time.sleep(GDELT_MIN_INTERVAL - elapsed)
+
+    # Translate Google-style site: operator to GDELT domain: filter
+    gdelt_query = re.sub(r"site:(\S+)", r"domain:\1", query)
+
+    params: dict = {
+        "query": gdelt_query,
+        "mode": "artlist",
+        "format": "json",
+        "maxrecords": min(limit, 25),
+        "sort": "DateDesc",
+    }
+    if date_from:
+        params["startdatetime"] = date_from.strftime("%Y%m%d000000")
+    if date_to:
+        params["enddatetime"] = date_to.strftime("%Y%m%d235959")
+
+    try:
+        r = httpx.get(
+            "https://api.gdeltproject.org/api/v2/doc/doc",
+            params=params,
+            timeout=20,
+        )
+    finally:
+        _GDELT_LAST_CALL = time.time()
+
+    if r.status_code != 200:
+        raise RuntimeError(f"GDELT returned HTTP {r.status_code}")
+
+    articles = r.json().get("articles") or []
+    results = []
+    for art in articles:
+        pub = art.get("seendate", "")
+        try:
+            pub_str = datetime.strptime(pub[:8], "%Y%m%d").strftime("%Y-%m-%d")
+        except ValueError:
+            pub_str = ""
+        results.append(SearchResult(
+            title=art.get("title", ""),
+            url=art.get("url", ""),
+            snippet="",  # GDELT artlist mode returns no body text
+            source=art.get("domain", _extract_domain(art.get("url", ""))),
+            published_date=pub_str,
+        ))
+    # GDELT occasionally leaks ±1 day past enddatetime; post-filter to be strict.
+    return _filter_by_date(results[:limit], date_from, date_to)
 
 
 # ──────────────────────────────────────────────
 # Provider: DuckDuckGo Lite (free fallback)
 # ──────────────────────────────────────────────
 
-def _search_ddg_news(query: str, limit: int) -> List[SearchResult]:
+def _search_ddg_news(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
     global _DDG_LAST_CALL
     elapsed = time.time() - _DDG_LAST_CALL
     if elapsed < DDG_MIN_INTERVAL:
         time.sleep(DDG_MIN_INTERVAL - elapsed)
 
+    # DDG has no arbitrary date range; inject after:/before: operators (Bing honours them).
+    dated_query = query + _date_query_suffix(date_from, date_to)
     results = []
     with DDGS() as d:
-        for item in d.text(query, max_results=limit):
+        for item in d.text(dated_query, max_results=limit):
             results.append(
                 SearchResult(
                     title=item.get("title", ""),
                     url=item.get("href", ""),
                     snippet=item.get("body", ""),
                     source=_extract_domain(item.get("href", "")),
+                    published_date=item.get("published", "")[:10] if item.get("published") else "",
                 )
             )
     _DDG_LAST_CALL = time.time()
-    return results[:limit]
+    return _filter_by_date(results[:limit], date_from, date_to)
 
 
 # ──────────────────────────────────────────────
@@ -513,7 +673,7 @@ def search_articles(
 
     Tries providers in order, skipping any without a configured key or with
     an exhausted quota flag set for this process lifetime:
-      DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → DDG
+      DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → GDELT → DDG
 
     DDG is skipped on EC2 (AWS IPs are blocked by DDG/Yahoo).
 
@@ -543,7 +703,7 @@ def search_articles(
             logger.warning("DataForSEO failed: %s", e)
 
     # 2. SerpAPI
-    if SERPAPI_API_KEY:
+    if SERPAPI_API_KEY and not _SERPAPI_QUOTA_EXHAUSTED:
         _provider_local.chain.append("serpapi")
         try:
             results = _search_serpapi_news(query, limit, date_from, date_to)
@@ -582,7 +742,7 @@ def search_articles(
     if BRIGHTDATA_API_KEY and not _BRIGHTDATA_QUOTA_EXHAUSTED:
         _provider_local.chain.append("brightdata")
         try:
-            results = _search_brightdata(query, limit)
+            results = _search_brightdata(query, limit, date_from, date_to)
             if results:
                 _provider_local.name = "brightdata"
                 return results
@@ -594,7 +754,7 @@ def search_articles(
     if NIMBLEWAY_API_KEY and not _NIMBLEWAY_QUOTA_EXHAUSTED:
         _provider_local.chain.append("nimbleway")
         try:
-            results = _search_nimbleway(query, limit)
+            results = _search_nimbleway(query, limit, date_from, date_to)
             if results:
                 _provider_local.name = "nimbleway"
                 return results
@@ -606,7 +766,7 @@ def search_articles(
     if SCRAPINGBEE_API_KEY and not _SCRAPINGBEE_QUOTA_EXHAUSTED:
         _provider_local.chain.append("scrapingbee")
         try:
-            results = _search_scrapingbee(query, limit)
+            results = _search_scrapingbee(query, limit, date_from, date_to)
             if results:
                 _provider_local.name = "scrapingbee"
                 return results
@@ -614,11 +774,22 @@ def search_articles(
         except Exception as e:
             logger.warning("ScrapingBee failed: %s", e)
 
-    # 8. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
+    # 8. GDELT (free, no key) — news-only, reliable historical dates, no snippets
+    _provider_local.chain.append("gdelt")
+    try:
+        results = _search_gdelt(query, limit, date_from, date_to)
+        if results:
+            _provider_local.name = "gdelt"
+            return results
+        logger.warning("GDELT returned 0 results for: %s", query[:60])
+    except Exception as e:
+        logger.warning("GDELT failed: %s", e)
+
+    # 9. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
         _provider_local.chain.append("ddg")
         try:
-            results = _search_ddg_news(query, limit)
+            results = _search_ddg_news(query, limit, date_from, date_to)
             if results:
                 _provider_local.name = "ddg"
             return results

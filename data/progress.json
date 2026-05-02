@@ -5879,7 +5879,84 @@
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
+    },
+    "A19:kan11": {
+      "event_id": "A19",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:kan11": {
+      "event_id": "B04",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B05:kan11": {
+      "event_id": "B05",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:kan11": {
+      "event_id": "B08",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:kan11": {
+      "event_id": "B09",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:kan11": {
+      "event_id": "B10",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:kan11": {
+      "event_id": "C07",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C08:kan11": {
+      "event_id": "C08",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:kan11": {
+      "event_id": "C09",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:kan11": {
+      "event_id": "E07",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E08:kan11": {
+      "event_id": "E08",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
     }
   },
-  "last_updated": "2026-04-17T11:32:47.547828"
+  "last_updated": "2026-05-01T13:50:59.459941"
 }
