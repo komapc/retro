@@ -626,66 +626,6 @@ def _search_gdelt(
 
 
 # ──────────────────────────────────────────────
-# Provider: GDELT Doc API (free, reliable dates)
-# ──────────────────────────────────────────────
-
-def _search_gdelt(
-    query: str,
-    limit: int,
-    date_from: Optional[datetime] = None,
-    date_to: Optional[datetime] = None,
-) -> List[SearchResult]:
-    global _GDELT_LAST_CALL
-    elapsed = time.time() - _GDELT_LAST_CALL
-    if elapsed < GDELT_MIN_INTERVAL:
-        time.sleep(GDELT_MIN_INTERVAL - elapsed)
-
-    # Translate Google-style site: operator to GDELT domain: filter
-    gdelt_query = re.sub(r"site:(\S+)", r"domain:\1", query)
-
-    params: dict = {
-        "query": gdelt_query,
-        "mode": "artlist",
-        "format": "json",
-        "maxrecords": min(limit, 25),
-        "sort": "DateDesc",
-    }
-    if date_from:
-        params["startdatetime"] = date_from.strftime("%Y%m%d000000")
-    if date_to:
-        params["enddatetime"] = date_to.strftime("%Y%m%d235959")
-
-    try:
-        r = httpx.get(
-            "https://api.gdeltproject.org/api/v2/doc/doc",
-            params=params,
-            timeout=20,
-        )
-    finally:
-        _GDELT_LAST_CALL = time.time()
-
-    if r.status_code != 200:
-        raise RuntimeError(f"GDELT returned HTTP {r.status_code}")
-
-    articles = r.json().get("articles") or []
-    results = []
-    for art in articles:
-        pub = art.get("seendate", "")
-        try:
-            pub_str = datetime.strptime(pub[:8], "%Y%m%d").strftime("%Y-%m-%d")
-        except ValueError:
-            pub_str = ""
-        results.append(SearchResult(
-            title=art.get("title", ""),
-            url=art.get("url", ""),
-            snippet="",  # GDELT artlist mode returns no body text
-            source=art.get("domain", _extract_domain(art.get("url", ""))),
-            published_date=pub_str,
-        ))
-    return results[:limit]
-
-
-# ──────────────────────────────────────────────
 # Provider: DuckDuckGo Lite (free fallback)
 # ──────────────────────────────────────────────
 
