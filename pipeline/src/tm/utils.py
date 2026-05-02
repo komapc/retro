@@ -9,11 +9,10 @@ def _is_ascii(s: str) -> bool:
         return False
 
 
-# Source IDs that the orchestrator recognises as named-source cells.
-# Ingest pipelines (GDELT, web_search) write to raw_ingest/{source}/{event}/;
-# the orchestrator reads any directory name, but only these 13 get classified
-# as a "site_search" cell in atlas state tracking.
+# Source IDs the orchestrator recognises as named-source cells.
+# Each entry must have a matching data/sources/{id}.json file.
 KNOWN_SOURCE_IDS: list[str] = [
     "ynet", "haaretz", "haaretz_he", "toi", "globes", "reuters", "jpost",
     "israel_hayom", "walla", "n12", "maariv", "ch13", "kan11",
+    "web_search", "gdelt",
 ]
