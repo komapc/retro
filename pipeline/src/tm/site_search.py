@@ -179,11 +179,7 @@ def _parse_date_from_url(url: str, fallback: str) -> str:
     return fallback
 
 
-def _is_ascii(s: str) -> bool:
-    try:
-        s.encode("ascii"); return True
-    except UnicodeEncodeError:
-        return False
+from .utils import _is_ascii
 
 
 def _in_window(date_str: str, start: datetime, end: datetime) -> bool:
@@ -257,7 +253,7 @@ async def run_batch(
     for eid in event_ids:
         p = events_dir / f"{eid}.json"
         if p.exists():
-            events[eid] = json.load(open(p))
+            events[eid] = json.loads(p.read_text())
         else:
             console.print(f"[yellow]Event {eid} not found, skipping[/yellow]")
 

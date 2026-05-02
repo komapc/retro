@@ -44,12 +44,8 @@ HEADERS = {
 }
 
 
-def _is_ascii(s: str) -> bool:
-    try:
-        s.encode("ascii")
-        return True
-    except UnicodeEncodeError:
-        return False
+from .utils import _is_ascii
+
 
 
 async def _fetch_text(url: str) -> str:

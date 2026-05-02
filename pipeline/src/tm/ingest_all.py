@@ -99,6 +99,8 @@ async def run_all(
     for src, n in totals.items():
         console.print(f"  {src}: {n}")
     console.print(f"\n[bold green]Grand total new articles: {grand}[/bold green]")
+    if grand == 0:
+        console.print("[bold yellow]Warning: no new articles ingested. Use --force to re-fetch existing cells.[/bold yellow]")
     console.print(
         f"\nNext: [bold]DATA_DIR={data_dir} uv run python -m tm.orchestrator local_file "
         f"--events {' '.join(event_ids)}[/bold]"
