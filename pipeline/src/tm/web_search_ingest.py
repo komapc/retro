@@ -17,9 +17,10 @@ Usage:
 import asyncio
 import json
 import os
+import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import httpx
 from bs4 import BeautifulSoup
@@ -30,6 +31,89 @@ from rich.table import Table
 from tm import web_search as _ws
 
 console = Console()
+
+_MONTH_ABBR = {
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+    "jul": 7, "aug": 8, "sep": 9, "sept": 9, "oct": 10, "nov": 11, "dec": 12,
+}
+
+_URL_DATE_RE = re.compile(
+    r"/(?P<y>20\d{2})/"
+    r"(?P<m>0?[1-9]|1[0-2]|jan|feb|mar|apr|may|jun|jul|aug|sept?|oct|nov|dec)/"
+    r"(?P<d>0?[1-9]|[12]\d|3[01])(?:/|$)",
+    re.IGNORECASE,
+)
+
+
+def _date_from_url(url: str) -> Optional[str]:
+    """Extract YYYY-MM-DD from URL paths like /2025/dec/11/ or /2024/03/15/."""
+    m = _URL_DATE_RE.search(url)
+    if not m:
+        return None
+    y = int(m.group("y"))
+    raw_m = m.group("m").lower()
+    mo = _MONTH_ABBR.get(raw_m, int(raw_m) if raw_m.isdigit() else 0)
+    d = int(m.group("d"))
+    if not (1 <= mo <= 12 and 1 <= d <= 31):
+        return None
+    try:
+        return datetime(y, mo, d).strftime("%Y-%m-%d")
+    except ValueError:
+        return None
+
+
+def _date_from_html(soup: BeautifulSoup) -> Optional[str]:
+    """Extract publish date from common HTML metadata locations."""
+    # OpenGraph / article meta
+    for sel in [
+        ('meta[property="article:published_time"]', "content"),
+        ('meta[name="article:published_time"]', "content"),
+        ('meta[property="og:article:published_time"]', "content"),
+        ('meta[name="datePublished"]', "content"),
+        ('meta[itemprop="datePublished"]', "content"),
+        ('meta[name="pubdate"]', "content"),
+        ('meta[name="publishdate"]', "content"),
+        ('meta[name="DC.date.issued"]', "content"),
+        ('meta[property="article:modified_time"]', "content"),
+    ]:
+        el = soup.select_one(sel[0])
+        if el and el.get(sel[1]):
+            d = _parse_iso_date(el[sel[1]])
+            if d:
+                return d
+    # <time datetime="...">
+    el = soup.find("time", attrs={"datetime": True})
+    if el and el.get("datetime"):
+        d = _parse_iso_date(el["datetime"])
+        if d:
+            return d
+    # JSON-LD blocks with datePublished
+    for script in soup.find_all("script", type="application/ld+json"):
+        try:
+            data = json.loads(script.string or "")
+        except Exception:
+            continue
+        for entry in (data if isinstance(data, list) else [data]):
+            if not isinstance(entry, dict):
+                continue
+            for key in ("datePublished", "dateCreated", "uploadDate"):
+                if key in entry:
+                    d = _parse_iso_date(entry[key])
+                    if d:
+                        return d
+    return None
+
+
+def _parse_iso_date(raw: str) -> Optional[str]:
+    """Best-effort ISO-8601 → YYYY-MM-DD."""
+    if not raw or not isinstance(raw, str):
+        return None
+    s = raw.strip()[:10]
+    try:
+        datetime.strptime(s, "%Y-%m-%d")
+        return s
+    except ValueError:
+        return None
 
 DUEL_EVENTS = [
     "A19", "B04", "B05", "B08", "B09", "B10",
@@ -48,25 +132,28 @@ from .utils import _is_ascii
 
 
 
-async def _fetch_text(url: str) -> str:
+async def _fetch_text(url: str) -> Tuple[str, Optional[str]]:
+    """Return (visible_text, html_publish_date_or_None) for the page."""
     try:
         async with httpx.AsyncClient(headers=HEADERS, timeout=25, follow_redirects=True) as c:
             r = await c.get(url)
             if r.status_code != 200:
-                return ""
-        soup = BeautifulSoup(r.text, "html.parser")
-        for tag in soup(["script", "style", "nav", "footer", "header", "aside", "iframe", "figure"]):
+                return "", None
+        full_soup = BeautifulSoup(r.text, "html.parser")
+        html_date = _date_from_html(full_soup)
+        # Strip non-content elements before extracting body text
+        for tag in full_soup(["script", "style", "nav", "footer", "header", "aside", "iframe", "figure"]):
             tag.extract()
         for sel in ["article", "main", ".article-body", ".article-content",
                     '[class*="article"]', '[class*="story"]']:
-            el = soup.select_one(sel)
+            el = full_soup.select_one(sel)
             if el:
                 t = el.get_text(separator=" ", strip=True)
                 if len(t) > 300:
-                    return t
-        return soup.get_text(separator=" ", strip=True)
+                    return t, html_date
+        return full_soup.get_text(separator=" ", strip=True), html_date
     except Exception:
-        return ""
+        return "", None
 
 
 async def ingest_event(
@@ -119,18 +206,30 @@ async def ingest_event(
     saved = 0
     article_idx = len(existing)  # continue numbering if partially populated
 
+    skipped_no_date = 0
     for result in candidates[:limit]:
         await asyncio.sleep(1.0)
-        text = await _fetch_text(result.url)
+        text, html_date = await _fetch_text(result.url)
         if len(text) < 250:
             continue
 
-        pub_date = (result.published_date or "")[:10] or start_dt.strftime("%Y-%m-%d")
+        # Resolve publish date: provider → URL path → page metadata. No fallback.
+        provider_date = (result.published_date or "")[:10]
+        url_date = _date_from_url(result.url)
+        pub_date = provider_date or url_date or html_date
+        if not pub_date:
+            skipped_no_date += 1
+            continue
+        if pub_date > outcome_dt.strftime("%Y-%m-%d"):
+            # Article published after the event resolved — drop, can't be predictive.
+            continue
+
         article = {
             "headline": result.title,
             "text": text,
             "published_at": pub_date,
-            "estimated_date": not bool((result.published_date or "")[:10]),
+            "estimated_date": False,
+            "date_source": "provider" if provider_date else ("url" if url_date else "html"),
             "author": "Unknown",
             "url": result.url,
             "snippet": result.snippet,
@@ -140,6 +239,8 @@ async def ingest_event(
         out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
         saved += 1
 
+    if skipped_no_date:
+        console.print(f"  [dim yellow]{eid}: dropped {skipped_no_date} articles with no resolvable date[/dim yellow]")
     return saved
 
 

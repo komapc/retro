@@ -126,9 +126,12 @@ def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dic
         pub = datetime.strptime(art["published_at"], "%Y-%m-%d").date()
         if pub > cutoff_dt:
             continue
-        n_date_ok += 1
         if art.get("estimated_date"):
-            console.print(f"    [dim yellow]{eid}: estimated date {art['published_at']} — {art.get('url', '')[:70]}[/dim yellow]")
+            # estimated_date=True means we couldn't recover a real publish date;
+            # don't trust it for temporal validity.
+            console.print(f"    [dim yellow]{eid}: skipping estimated-date article {art['published_at']} — {art.get('url', '')[:70]}[/dim yellow]")
+            continue
+        n_date_ok += 1
         url = art.get("url", "")
         domain = re.sub(r"^www\.", "", urlparse(url).netloc)
         articles.append({
