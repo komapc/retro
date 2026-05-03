@@ -115,6 +115,26 @@ def _parse_iso_date(raw: str) -> Optional[str]:
     except ValueError:
         return None
 
+
+# Domains whose pages stay live and get content-updated indefinitely. The
+# stored published_at reflects original creation, not the version we read,
+# so they leak post-cutoff outcomes regardless of date metadata.
+_EVERGREEN_DOMAIN_SUFFIXES = (
+    "wikipedia.org",
+    "britannica.com",
+    "cfr.org",
+    "encyclopedia.com",
+    "history.com",
+    "investopedia.com",
+)
+
+
+def _is_evergreen_domain(url: str) -> bool:
+    from urllib.parse import urlparse
+    netloc = urlparse(url).netloc.lower()
+    netloc = re.sub(r"^www\.", "", netloc)
+    return any(netloc.endswith(s) for s in _EVERGREEN_DOMAIN_SUFFIXES)
+
 DUEL_EVENTS = [
     "A19", "B04", "B05", "B08", "B09", "B10",
     "C07", "C08", "C09", "E07", "E08",
@@ -207,7 +227,15 @@ async def ingest_event(
     article_idx = len(existing)  # continue numbering if partially populated
 
     skipped_no_date = 0
+    skipped_evergreen = 0
     for result in candidates[:limit]:
+        # Skip encyclopedic / evergreen sources: their stored published_at is
+        # the page creation date, but the content is continuously updated, so
+        # reading the page now reveals outcomes that postdate any cutoff.
+        if _is_evergreen_domain(result.url):
+            skipped_evergreen += 1
+            continue
+
         await asyncio.sleep(1.0)
         text, html_date = await _fetch_text(result.url)
         if len(text) < 250:
@@ -241,6 +269,8 @@ async def ingest_event(
 
     if skipped_no_date:
         console.print(f"  [dim yellow]{eid}: dropped {skipped_no_date} articles with no resolvable date[/dim yellow]")
+    if skipped_evergreen:
+        console.print(f"  [dim yellow]{eid}: dropped {skipped_evergreen} evergreen-domain articles[/dim yellow]")
     return saved
 
 
