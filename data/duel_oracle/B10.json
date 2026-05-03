@@ -1,9 +1,10 @@
 {
   "event_id": "B10",
-  "probability": 0.7438,
-  "mean_stance": 0.4875,
-  "articles_used": 4,
+  "probability": 0.8412,
+  "mean_stance": 0.6824,
+  "articles_used": 5,
   "question": "Was Hamas military leader Yahya Sinwar killed in Gaza?",
   "cutoff_date": "2024-10-09",
+  "t_days": 7,
   "placeholder": false
 }
