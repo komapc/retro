@@ -1,9 +1,10 @@
 {
   "event_id": "A19",
-  "probability": 0.5,
-  "mean_stance": 0.0,
-  "articles_used": 0,
+  "probability": 0.6456,
+  "mean_stance": 0.2911,
+  "articles_used": 2,
   "question": "Did the ICC issue an arrest warrant for Israeli Prime Minister Netanyahu?",
   "cutoff_date": "2024-11-14",
-  "placeholder": true
+  "t_days": 7,
+  "placeholder": false
 }

@@ -97,6 +97,23 @@ def pm_probability(ev: dict, t_days: int) -> Optional[float]:
     return round(raw_prob, 4)
 
 
+# Evergreen / encyclopedic domains where published_at reflects page creation
+# but content is continuously updated — reading "Bashar al-Assad - Wikipedia"
+# in 2026 reveals the 2024 outcome regardless of the page's stored date.
+_EVERGREEN_DOMAIN_SUFFIXES = (
+    "wikipedia.org",
+    "britannica.com",
+    "cfr.org",
+    "encyclopedia.com",
+    "history.com",
+    "investopedia.com",
+)
+
+
+def _is_evergreen(domain: str) -> bool:
+    return any(domain.endswith(s) for s in _EVERGREEN_DOMAIN_SUFFIXES)
+
+
 def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dict]:
     """
     Return vault2 articles for event ``eid`` published on or before ``cutoff_str``.
@@ -126,11 +143,17 @@ def _load_vault2_articles(data_dir: Path, eid: str, cutoff_str: str) -> list[dic
         pub = datetime.strptime(art["published_at"], "%Y-%m-%d").date()
         if pub > cutoff_dt:
             continue
-        n_date_ok += 1
         if art.get("estimated_date"):
-            console.print(f"    [dim yellow]{eid}: estimated date {art['published_at']} — {art.get('url', '')[:70]}[/dim yellow]")
+            # estimated_date=True means we couldn't recover a real publish date;
+            # don't trust it for temporal validity.
+            console.print(f"    [dim yellow]{eid}: skipping estimated-date article {art['published_at']} — {art.get('url', '')[:70]}[/dim yellow]")
+            continue
         url = art.get("url", "")
-        domain = re.sub(r"^www\.", "", urlparse(url).netloc)
+        domain = re.sub(r"^www\.", "", urlparse(url).netloc).lower()
+        if _is_evergreen(domain):
+            console.print(f"    [dim yellow]{eid}: skipping evergreen source {domain} — {art.get('headline','')[:60]}[/dim yellow]")
+            continue
+        n_date_ok += 1
         articles.append({
             "url": url,
             "title": art.get("headline", ""),
