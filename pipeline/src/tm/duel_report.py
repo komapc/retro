@@ -709,7 +709,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
     pm_wins = sum(1 for r in compared if r["winner"] == "pm")
     ties = sum(1 for r in compared if r["winner"] == "tie")
 
-    html = f"""<!DOCTYPE html>
+    html_doc = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -876,7 +876,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
 </body>
 </html>"""
 
-    out_path.write_text(html)
+    out_path.write_text(html_doc)
     console.print(f"[bold green]Wrote {out_path}[/bold green] ({out_path.stat().st_size // 1024} KB)")
 
 
