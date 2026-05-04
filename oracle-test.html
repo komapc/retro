@@ -458,6 +458,102 @@
       background: #0e1f10; border: 1px solid #1a3d1e; color: #6abf7a;
       font-family: ui-monospace, monospace;
     }
+
+    /* ── Prompts toggle button ─────────────────── */
+    .prompts-btn {
+      background: var(--surface2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: .8rem;
+      padding: .4rem .75rem;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+      white-space: nowrap;
+    }
+    .prompts-btn:hover { color: var(--text); border-color: var(--accent); }
+    .prompts-btn.active { border-color: var(--accent); color: var(--accent-hi); background: #11213a; }
+
+    /* ── Prompt editor panel ───────────────────── */
+    .prompt-editor {
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      max-height: 340px;
+      flex-shrink: 0;
+    }
+    .prompt-editor-toolbar {
+      display: flex;
+      align-items: center;
+      padding: .4rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: .72rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .prompt-editor-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+      overflow: hidden;
+    }
+    @media (max-width: 860px) { .prompt-editor-inner { grid-template-columns: 1fr; } }
+    .prompt-col {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .prompt-col:last-child { border-right: none; }
+    .prompt-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .35rem .85rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+    .prompt-col-label {
+      font-size: .68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: var(--muted);
+    }
+    .prompt-textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .73rem;
+      line-height: 1.6;
+      padding: .75rem .85rem;
+      resize: none;
+      outline: none;
+      overflow-y: auto;
+      min-height: 180px;
+    }
+    .prompt-textarea::placeholder { color: var(--muted); font-style: italic; font-family: system-ui, sans-serif; }
+    .prompt-textarea:focus { background: #0a1422; }
+    .prompt-reset-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      font-size: .68rem;
+      padding: .15rem .45rem;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+    }
+    .prompt-reset-btn:hover { color: var(--text-dim); border-color: var(--accent); }
+    .prompt-reset-btn:disabled { opacity: .35; cursor: default; pointer-events: none; }
+    .prompt-modified-dot {
+      display: inline-block; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--warn);
+      margin-left: .4rem; vertical-align: middle;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -519,10 +615,40 @@
           <input type="checkbox" id="debug-toggle" style="accent-color:var(--accent)" />
           <span>Debug</span>
         </label>
+        <button class="prompts-btn" id="prompts-btn" onclick="togglePrompts()" title="View and edit the LLM prompts used by the pipeline">
+          Prompts<span class="prompt-modified-dot" id="prompts-modified-dot"></span>
+        </button>
         <button class="run-btn" id="run-btn" onclick="runForecast()">
           <div class="spinner" id="spinner"></div>
           <span id="run-label">Run Forecast</span>
         </button>
+      </div>
+    </div>
+
+    <!-- ── Prompt Editor ─────────────────────── -->
+    <div class="prompt-editor" id="prompt-editor" style="display:none">
+      <div class="prompt-editor-toolbar">
+        ✏ Edit the LLM prompts sent with each forecast. Enable Debug and run a forecast to load defaults, then modify and re-run.
+      </div>
+      <div class="prompt-editor-inner">
+        <div class="prompt-col">
+          <div class="prompt-col-header">
+            <span class="prompt-col-label">Gatekeeper Prompt <span class="prompt-modified-dot" id="gate-modified-dot"></span></span>
+            <button class="prompt-reset-btn" id="gate-reset-btn" onclick="resetPrompt('gatekeeper')" disabled>Reset to default</button>
+          </div>
+          <textarea id="gatekeeper-prompt" class="prompt-textarea"
+            placeholder="Run a forecast with Debug enabled to load the default gatekeeper prompt, then edit it here…"
+            oninput="markModified('gatekeeper')"></textarea>
+        </div>
+        <div class="prompt-col">
+          <div class="prompt-col-header">
+            <span class="prompt-col-label">Extractor Prompt <span class="prompt-modified-dot" id="extract-modified-dot"></span></span>
+            <button class="prompt-reset-btn" id="extract-reset-btn" onclick="resetPrompt('extractor')" disabled>Reset to default</button>
+          </div>
+          <textarea id="extractor-prompt" class="prompt-textarea"
+            placeholder="Run a forecast with Debug enabled to load the default extractor prompt, then edit it here…"
+            oninput="markModified('extractor')"></textarea>
+        </div>
       </div>
     </div>
 
@@ -539,6 +665,8 @@
 
 <script>
   const API_URL = 'https://oracle.daatan.com'
+  let defaultGatekeeperPrompt = ''
+  let defaultExtractorPrompt = ''
   const API_KEY = '9870459c54c22091444f55ac5757966b153021c2478a95aafa47e6510c623a46'
 
   const $ = id => document.getElementById(id)
@@ -604,10 +732,24 @@
 
     try {
       const debugMode = $('debug-toggle').checked
+      const promptEditorOpen = $('prompt-editor').style.display !== 'none'
+      const gatekeeperOverride = $('gatekeeper-prompt').value.trim()
+      const extractorOverride = $('extractor-prompt').value.trim()
+
+      const body = {
+        question: q,
+        max_articles: parseInt($('max-articles').value) || 5,
+        debug: debugMode || promptEditorOpen,
+      }
+      if (gatekeeperOverride && gatekeeperOverride !== defaultGatekeeperPrompt)
+        body.gatekeeper_prompt = gatekeeperOverride
+      if (extractorOverride && extractorOverride !== defaultExtractorPrompt)
+        body.extractor_prompt = extractorOverride
+
       const res = await fetch(`${API_URL}/forecast`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
-        body: JSON.stringify({ question: q, max_articles: parseInt($('max-articles').value) || 5, debug: debugMode }),
+        body: JSON.stringify(body),
         signal: AbortSignal.timeout(120000),
       })
 
@@ -783,10 +925,61 @@
 
     $('result-area').style.display = 'block'
     $('content').scrollTop = 0
+    populatePromptsFromDebug(data.debug)
   }
 
   function escHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+  }
+
+  // ── Prompt editor ─────────────────────────
+  function togglePrompts() {
+    const panel = $('prompt-editor')
+    const opening = panel.style.display === 'none'
+    panel.style.display = opening ? 'flex' : 'none'
+    $('prompts-btn').classList.toggle('active', opening)
+    if (opening && !$('gatekeeper-prompt').value) {
+      $('debug-toggle').checked = true
+    }
+  }
+
+  function resetPrompt(which) {
+    if (which === 'gatekeeper') {
+      $('gatekeeper-prompt').value = defaultGatekeeperPrompt
+      $('gate-modified-dot').style.display = 'none'
+    } else {
+      $('extractor-prompt').value = defaultExtractorPrompt
+      $('extract-modified-dot').style.display = 'none'
+    }
+    updatePromptsDot()
+  }
+
+  function markModified(which) {
+    const dot = which === 'gatekeeper' ? $('gate-modified-dot') : $('extract-modified-dot')
+    const val = which === 'gatekeeper' ? $('gatekeeper-prompt').value.trim() : $('extractor-prompt').value.trim()
+    const def = which === 'gatekeeper' ? defaultGatekeeperPrompt : defaultExtractorPrompt
+    dot.style.display = (def && val !== def) ? 'inline-block' : 'none'
+    updatePromptsDot()
+  }
+
+  function updatePromptsDot() {
+    const gateModified = $('gate-modified-dot').style.display !== 'none'
+    const extractModified = $('extract-modified-dot').style.display !== 'none'
+    $('prompts-modified-dot').style.display = (gateModified || extractModified) ? 'inline-block' : 'none'
+  }
+
+  function populatePromptsFromDebug(dbg) {
+    if (!dbg) return
+    if (dbg.gatekeeper_prompt && !defaultGatekeeperPrompt) {
+      defaultGatekeeperPrompt = dbg.gatekeeper_prompt
+      if (!$('gatekeeper-prompt').value) $('gatekeeper-prompt').value = dbg.gatekeeper_prompt
+      $('gate-reset-btn').disabled = false
+    }
+    if (dbg.extractor_prompt && !defaultExtractorPrompt) {
+      defaultExtractorPrompt = dbg.extractor_prompt
+      if (!$('extractor-prompt').value) $('extractor-prompt').value = dbg.extractor_prompt
+      $('extract-reset-btn').disabled = false
+    }
   }
 
   // ── Debug panel ───────────────────────────
