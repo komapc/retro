@@ -665,8 +665,134 @@
 
 <script>
   const API_URL = 'https://oracle.daatan.com'
-  let defaultGatekeeperPrompt = ''
-  let defaultExtractorPrompt = ''
+  let defaultGatekeeperPrompt = `You are a topic-relevance screener for a forecasting system.
+
+Decide whether this article contains useful evidence about the RELATED EVENT below.
+A downstream extractor will pull out directional signals and assign its own stance and
+certainty — even a weak or ambiguous signal is valuable. ERR ON THE SIDE OF INCLUDING
+the article. Worst case, the extractor will assign near-zero certainty and it won't
+affect the forecast.
+
+**PASS (is_prediction=true) if ANY of these apply:**
+- The article discusses the related event directly (including reporting current actions,
+  announcements, statements, or developments).
+- The article covers the specific actors, institutions, places, or situation underlying
+  the event (even in a factual / analytical style).
+- The article reports causes, consequences, or recent developments a reasonable reader
+  would consider relevant evidence for whether the event will occur.
+- The article contains explicit or implicit forecasts, analysis, or commentary about
+  the event's likelihood or drivers.
+- The article is partisan, opinion, or speculative but on-topic.
+
+**REJECT (is_prediction=false) ONLY if:**
+- The article is wholly about a clearly different event or domain (e.g. celebrity
+  gossip when the event is about monetary policy).
+- The article is empty, a paywall/404 stub, or has no substantive content (under ~200
+  meaningful words).
+- The article only brushes past the event's keywords in passing while the substance is
+  about something wholly unrelated.
+
+**Do NOT reject for:**
+- Being "only factual reporting" — recent facts ARE evidence for forecasts.
+- Lacking explicit "X will happen" language — implicit signal is extracted downstream.
+- Being short but on-topic — the extractor handles low-specificity input.
+- Covering an adjacent aspect of the same underlying situation.
+
+Article snippet:
+<article>
+{article_text}
+</article>
+
+Source: {source_name}
+Date: {article_date}
+Related event: {event_name}
+
+Set \`is_prediction\` to true for on-topic articles even when they contain no explicit
+forecast. Set \`reason\` with a one-sentence justification. Set \`prediction_count_estimate\`
+to how many distinct predictive signals (explicit or implicit) a careful reader could
+extract; use 0 for purely factual on-topic articles (but still pass them).`
+
+  let defaultExtractorPrompt = `You are a forensic prediction analyst. Extract every distinct forward-looking prediction from the article below and quantify each one as structured metrics.
+
+Extract ALL predictions — not just explicit forecasts, but also:
+- Implied directional views ("the economy is heading toward...")
+- Vague sentiment that implies an outcome ("things are deteriorating")
+- Predictions hidden between the lines in analysis or sourced commentary
+
+STANCE DEFINITION — this is the most important field:
+  stance measures how strongly the prediction implies the RELATED EVENT will occur.
+  +1.0 = the author is certain the related event WILL happen
+  -1.0 = the author is certain the related event WILL NOT happen
+   0.0 = neutral / genuinely uncertain
+
+  The related event is given below. Ask yourself: does this prediction imply the
+  event is more likely (+) or less likely (-) to happen?
+
+  Example: related event = "Assad regime falls in Syria"
+    "Rebel forces are closing in on Hama" → stance +0.7  (implies Assad will fall)
+    "Assad's army is holding the line"    → stance -0.6  (implies Assad will NOT fall)
+    "The outcome remains uncertain"       → stance  0.0
+
+  Do NOT use stance to indicate whether the outcome is good or bad.
+  Use stance ONLY to indicate whether the prediction points toward the event happening.
+
+For each prediction:
+- quote: exact sentence(s) from the article
+- claim: one-sentence neutral summary in English (even if article is in Hebrew)
+- stance: -1.0 (event will NOT happen) to +1.0 (event WILL happen)
+- sentiment: 0.0 (cold/analytical) to 1.0 (highly charged/alarmed)
+- certainty: 0.0 (very hedged) to 1.0 (absolute confidence)
+- specificity: 0.0 (vague) to 1.0 (precise, named actors, dates, thresholds)
+- hedge_ratio: 0.0 (no hedging) to 1.0 (entirely hedged with might/could/possibly)
+- conditionality: 0.0 (unconditional) to 1.0 (fully conditional "only if X then Y")
+- magnitude: 0.0 (minor/incremental) to 1.0 (historic/catastrophic)
+- time_horizon: "days" / "weeks" / "months" / "years" / "unspecified"
+- time_horizon_days: best estimate in days, null if unspecified
+- prediction_type: "binary" / "continuous" / "range" / "trend"
+- source_authority: 0.0 (personal opinion) to 1.0 (named insider/primary sources)
+
+Article:
+<article>
+{article_text}
+</article>
+
+Source: {source_name}
+Journalist: {journalist}
+Date: {article_date}
+Related event: {event_name} — {event_description}
+
+Return up to 10 predictions. If more exist, take the most specific ones.
+Do not translate the quote field — keep it in the original language.
+The claim field must be in English.
+
+IMPORTANT: Your response must be a JSON object with a "predictions" key containing a list.
+Example structure: {"predictions": [ {...}, {...} ]}
+Do NOT return a bare JSON array. Always wrap in {"predictions": [...]}
+
+CRITICAL: Each prediction must be a complete JSON object with ALL of these fields:
+  quote (string), claim (string), stance (float -1 to 1), sentiment (float 0-1),
+  certainty (float 0-1), specificity (float 0-1), hedge_ratio (float 0-1),
+  conditionality (float 0-1), magnitude (float 0-1),
+  time_horizon (one of: "days"/"weeks"/"months"/"years"/"unspecified"),
+  time_horizon_days (integer or null), prediction_type (one of: "binary"/"continuous"/"range"/"trend"),
+  source_authority (float 0-1)
+
+Example — related event: "Assad regime falls in Syria":
+{
+  "quote": "Syrian rebel forces pushed close on Tuesday to the major city of Hama",
+  "claim": "Rebel advances toward Hama make Assad's fall increasingly likely",
+  "stance": 0.7,
+  "sentiment": 0.6,
+  "certainty": 0.6,
+  "specificity": 0.7,
+  "hedge_ratio": 0.2,
+  "conditionality": 0.1,
+  "magnitude": 0.9,
+  "time_horizon": "weeks",
+  "time_horizon_days": 14,
+  "prediction_type": "binary",
+  "source_authority": 0.6
+}`
   const API_KEY = '9870459c54c22091444f55ac5757966b153021c2478a95aafa47e6510c623a46'
 
   const $ = id => document.getElementById(id)
@@ -704,6 +830,11 @@
   window.addEventListener('DOMContentLoaded', () => {
     const saved = localStorage.getItem('oracle_q')
     if (saved) $('question').value = saved
+
+    $('gatekeeper-prompt').value = defaultGatekeeperPrompt
+    $('extractor-prompt').value = defaultExtractorPrompt
+    $('gate-reset-btn').disabled = false
+    $('extract-reset-btn').disabled = false
 
     $('question').addEventListener('input', () => {
       localStorage.setItem('oracle_q', $('question').value)
