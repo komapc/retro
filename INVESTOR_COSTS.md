@@ -1,42 +1,23 @@
 # TruthMachine / Factum Atlas — Investor Budget
 
-**Two sequenced stages over 18 months.** Stage 1 builds the MVP and ships Daatan Forecast; Stage 2 covers the baseline cost of operating it at 100K users with production-grade infrastructure.
+**Two sequenced stages over 18 months. Technical and infrastructure costs only — personnel and GTM are scoped separately.** Stage 1 builds the MVP and ships Daatan Forecast; Stage 2 covers the baseline cost of operating it at 100K users with production-grade infrastructure.
 
 | Stage | Period | Headline cost | Primary outcome |
 |---|---|---|---|
-| 1 — MVP build | Months 1–6 | **$262,000** | 100×200 ME matrix, 5+ years retro fill, Daatan Forecast Android (target 200k MAU) |
-| 2 — Scale baseline | Months 7–18 | **$183,370** ($180K recurring + $3,370 one-time) | Multi-AZ HA infra, ML training capacity, oracle pipeline at scale |
-| **Total ask** | **18 months** | **~$445,370** | |
+| 1 — MVP build | Months 1–6 | **~$21,000** ($14.5K–$28.4K range) | 100×200 ME matrix, 5+ years retro fill, Daatan Forecast Android build |
+| 2 — Scale baseline | Months 7–18 | **$103,370** ($100K recurring + $3,370 one-time) | Multi-AZ HA infra, ML training capacity, oracle pipeline at scale |
+| **Total ask** | **18 months** | **~$124,370** | |
 
 > **Relationship to MVP_PLAN_6M.md.** That document describes an *aggressive* Months 7–18 plan — "Phase 2 — Worldwide Expansion" at ~$1M (Series A) targeting 5 regions and 10M MAU. The Stage 2 figure here is the **conservative operating baseline** for the same window: what it costs to keep the MVP running at 100K users without the worldwide push. They are two different scenarios for the same period, not duplicate accounting.
 
-> **Team-composition note.** Stage 1 personnel ($245.7K) covers two full-salary founders plus a math hire — the build cost. Stage 2 personnel ($80K) adds an ML researcher and a part-time DevOps contractor; founder salaries in Stage 2 are assumed covered by follow-on funding or revenue and are **not** included in the $183.37K figure.
-
-> **User-base-figure note.** Stage 1 targets **200k MAU** for Daatan Forecast (a consumer Android app — most usage is read-only / cached). Stage 2 sizes infrastructure for **100K total users** (~7K DAU, per the search-volume model in §6 of Stage 2) hitting the oracle pipeline at typical write/inference rates. The Stage 2 figure is the binding constraint on infra spend; the larger MAU figure is consistent because most of Daatan's surface is pre-computed.
-
 ---
 
-# Stage 1 — MVP Build (Months 1–6, $262,000)
+# Stage 1 — MVP Build (Months 1–6, ~$21,000)
 
-**Scope:** 100×200 Middle East matrix, 5+ years retro fill + Daatan Forecast Android app targeting 200k MAU.
-**Assumptions:** Israel-based team, zero revenue, promotion excluded, AWS infrastructure.
+**Scope:** 100×200 Middle East matrix, 5+ years retro fill + Daatan Forecast Android app.
+**Assumptions:** Zero revenue, AWS infrastructure.
 
-## 1. Personnel
-
-Three people: 2 founders (full market salary) + 1 mathematician / data engineer (new hire).
-
-| Role | Arrangement | NIS/mo | Duration | Total |
-|---|---|---|---|---|
-| Founder × 2 | Employee | 45,000 each = 90,000 | 6 months | ~₪691,000 (~$186,800) incl. employer costs |
-| Math consultant | Freelance | ~15,000 | Months 1–3 | ~₪45,000 (~$12,200) no employer costs |
-| Mathematician (full hire) | Employee | 45,000 | Months 4–6 | ~₪173,000 (~$46,700) incl. employer costs |
-| **Total personnel** | | | | **~$245,700** |
-
-> Mathematician engaged as a paid consultant in months 1–3 (feature design, model architecture) then transitions to full-time employee from month 4.
-> Israeli employer costs include bituach leumi, pension (6.5%), advanced training fund (7.5%).
-> Exchange rate assumed: ₪3.7 = $1.
-
-## 2. Paid content access — archives, paywalls, licensing
+## 1. Paid content access — archives, paywalls, licensing
 
 ~20 of 100 sources require paid access (Haaretz archive, Calcalist, Globes, key Arabic sources).
 CDX/Wayback covers the remaining ~80% for historical content.
@@ -51,20 +32,20 @@ CDX/Wayback covers the remaining ~80% for historical content.
 
 > One month only — subscribe, run retro scrape, cancel. No ongoing commitment.
 
-## 3. Cloud infrastructure (AWS)
+## 2. Cloud infrastructure (AWS)
 
 Currently <$100/mo. Scales with Daatan Forecast user growth.
 
 | Period | Monthly | Total |
 |---|---|---|
 | Months 1–3 (build + small user base) | ~$250–400 | ~$900 |
-| Months 4–6 (scaling to 200k MAU) | ~$600–1,200 | ~$2,400 |
+| Months 4–6 (post-launch) | ~$600–1,200 | ~$2,400 |
 | **Total 6 months** | | **$3,000–5,500** |
 
 > Includes EC2 (pipeline + API), RDS, S3, CloudFront, load balancer.
-> At 200k MAU the app is read-heavy with pre-computed data — manageable on 2–3 mid-range instances.
+> Post-launch, the app is read-heavy with pre-computed data — manageable on 2–3 mid-range instances.
 
-## 4. LLM API cost (retro fill + ongoing)
+## 3. LLM API cost (retro fill + ongoing)
 
 Pipeline uses Gemini 2.0 Flash Lite via OpenRouter (~$0.075/1M input tokens).
 
@@ -76,7 +57,7 @@ Pipeline uses Gemini 2.0 Flash Lite via OpenRouter (~$0.075/1M input tokens).
 
 > This is the cheapest line item. Gemini Flash Lite makes LLM costs almost negligible at this scale.
 
-## 5. Translation infrastructure (Google Translate API)
+## 4. Translation infrastructure (Google Translate API)
 
 Arabic + Turkish for MVP. Extraction is done in English post-translation.
 
@@ -86,7 +67,7 @@ Arabic + Turkish for MVP. Extraction is done in English post-translation.
 | Ongoing monthly | ~$200–400/mo → ~$1,200 over 6 months |
 | **Total** | **$5,000–8,500** |
 
-## 6. Legal / IP counsel + incorporation
+## 5. Legal / IP counsel + incorporation
 
 Company not yet incorporated.
 
@@ -97,7 +78,7 @@ Company not yet incorporated.
 | Light ongoing counsel (scraping ToS review, licensing) | $500–1,000/mo → $2,000–4,000 |
 | **Total** | **$5,000–10,500** |
 
-## 7. Prediction market & financial data feeds
+## 6. Prediction market & financial data feeds
 
 Polymarket currently scraped free. Minimal additional feeds needed for ME matrix.
 
@@ -106,58 +87,31 @@ Polymarket currently scraped free. Minimal additional feeds needed for ME matrix
 | Licensed / stable data feeds (contingency) | $500–2,000 |
 | **Total** | **$500–2,000** |
 
-## 8. Promotion / campaign
-
-**Excluded from this estimate.** Viral growth assumed for Daatan Forecast.
-
 ## Stage 1 — Consolidated Budget
 
 | Category | Low | High |
 |---|---|---|
-| Personnel (2 founders 6mo + consultant 1–3 + engineer 4–6) | $245,700 | $245,700 |
 | Paid content access (1-month scrape) | $500 | $1,200 |
 | Cloud infrastructure (AWS) | $3,000 | $5,500 |
 | Translation API | $5,000 | $8,500 |
 | Legal / incorporation | $5,000 | $10,500 |
 | LLM API (Gemini Flash Lite) | $500 | $700 |
 | Data feeds | $500 | $2,000 |
-| **Total** | **$255,000** | **$268,000** |
+| **Total** | **$14,500** | **$28,400** |
 
-**Working figure: ~$262,000 for 6 months.**
-
-> At ₪45,000 founder salaries this exceeds the YC $125k program. Suitable for a pre-seed or angel round, or YC standard batch ($500k for 7%).
+**Working figure: ~$21,000 for 6 months.**
 
 ## Stage 1 — Key observations
 
-1. **Personnel is 85–90% of total cost.** Everything else is noise by comparison.
-2. **LLM costs are negligible** — Gemini Flash Lite at $0.075/1M tokens makes the pipeline economics extremely favorable.
-3. **Translation is the #2 technical cost**, not LLM inference. Arabic/Turkish retro fill at scale costs more than all LLM calls combined.
-4. **Content access risk is real** — 83% of current test cells return no predictions, partly due to paywall gaps in Wayback. Budget ~$3–8k to patch the worst offenders.
-5. **Viral assumption is load-bearing** — if Daatan Forecast does not grow organically, the $0 promotion budget means the 200k MAU target is unachievable without additional spend.
+1. **LLM costs are negligible** — Gemini Flash Lite at $0.075/1M tokens makes the pipeline economics extremely favorable.
+2. **Translation is the #1 technical cost**, not LLM inference. Arabic/Turkish retro fill at scale costs more than all LLM calls combined.
+3. **Content access risk is real** — 83% of current test cells return no predictions, partly due to paywall gaps in Wayback. Budget ~$3–8k to patch the worst offenders.
 
 ---
 
-# Stage 2 — Scale Baseline (Months 7–18, $183,370)
+# Stage 2 — Scale Baseline (Months 7–18, $103,370)
 
-**Horizon:** 12 months · **People ceiling:** $80K · **Infrastructure ceiling:** $100K · **One-time backfill:** $3,370
-
-## Part A — People (Stage 2)
-
-| Role | Type | Annual |
-|---|---|---|
-| Prediction Researcher — ML/NLP | Full-time | $65,000 |
-| DevOps Engineer | Part-time contractor (~5 hrs/wk) | $15,000 |
-| **People total** | | **$80,000** |
-
-**Prediction Researcher** — Python, LLMs/fine-tuning, probability calibration, Bayesian scoring, NLP pipelines.
-*Project: train models for structured probability extraction from news; design scoring metrics; run RetroAnalysis over 10-year Israeli media archive.*
-
-**DevOps Contractor** — Terraform, EC2/RDS, GitHub Actions, nginx, systemd.
-*Project: maintain CI/CD, manage scaling events, on-call infra support.*
-
-> Founder salaries continue from Stage 1 but are assumed covered by follow-on funding or initial revenue and are **not** included in this $80K figure.
-
-## Part B — Infrastructure (Stage 2)
+**Horizon:** 12 months · **Infrastructure ceiling:** $100K · **One-time backfill:** $3,370
 
 > **Current state:** PostgreSQL runs inside Docker on a single t3.small with no dedicated DB server, no Multi-AZ, no load balancer, and no Redis. This is fine for hundreds of users but collapses under 100K.
 
@@ -216,7 +170,7 @@ Training custom stance/extraction models on domain-specific geopolitical text re
 
 > ⚠️ **Risk — experiment sprawl:** Hyperparameter search, ablation studies, failed runs. A single poorly supervised training campaign can burn 3–5× the planned GPU budget in a week. Actual range: **$6K–$20K/yr** depending on research intensity.
 
-> ⚠️ **Risk — model size creep:** If the researcher decides a 13B or 70B fine-tune is necessary, training costs multiply 5–10×. p4d.24xlarge spot is ~$10/hr — a 3-day training run = $720.
+> ⚠️ **Risk — model size creep:** A 13B or 70B fine-tune multiplies training costs 5–10×. p4d.24xlarge spot is ~$10/hr — a 3-day training run = $720.
 
 ### 5. RetroAnalysis — 10-Year Israeli Media Archive
 
@@ -271,7 +225,7 @@ At 21,000 oracle calls/day, each running gatekeeper + extractor on 5 articles:
 | Google Gemini Flash | RetroAnalysis bulk + research | ~$100 | ~$1,200 |
 | **Subtotal** | | **~$1,700/mo** | **~$20,400/yr** |
 
-> ⚠️ **Risk — model upgrade:** If the researcher determines that GPT-4o-mini quality is insufficient for accurate extraction and 50% of calls must use GPT-4o ($2.50/1M input, $10/1M output), the LLM bill doubles to **$40K+/yr**.
+> ⚠️ **Risk — model upgrade:** If GPT-4o-mini quality is insufficient for accurate extraction and 50% of calls must use GPT-4o ($2.50/1M input, $10/1M output), the LLM bill doubles to **$40K+/yr**.
 
 > ⚠️ **Risk — context window growth:** Adding more articles per oracle call (from 5 to 10), longer snippets, or chain-of-thought prompting → token count per call doubles, cost doubles.
 
@@ -376,12 +330,9 @@ Already provisioned, cost continues unchanged:
 
 | Category | 12-month |
 |---|---|
-| People | $80,000 |
 | Infrastructure (recurring) | $100,000 |
 | RetroAnalysis backfill (one-time) | $3,370 |
-| **Total** | **$183,370** |
-
-> People and infrastructure are roughly equal at scale — this is typical for AI-heavy products where compute is the second headcount.
+| **Total** | **$103,370** |
 
 ---
 
@@ -389,8 +340,6 @@ Already provisioned, cost continues unchanged:
 
 | Stage | Period | Total |
 |---|---|---|
-| Stage 1 — MVP build | Months 1–6 | $262,000 |
-| Stage 2 — Scale baseline | Months 7–18 | $183,370 |
-| **Combined ask** | **18 months** | **~$445,370** |
-
-*Promotion, revenue model, and valuation are addressed separately.*
+| Stage 1 — MVP build | Months 1–6 | ~$21,000 |
+| Stage 2 — Scale baseline | Months 7–18 | $103,370 |
+| **Combined ask** | **18 months** | **~$124,370** |
