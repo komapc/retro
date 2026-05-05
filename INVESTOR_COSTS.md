@@ -4,7 +4,7 @@
 
 | Stage | Period | Headline cost | Primary outcome |
 |---|---|---|---|
-| 1 — MVP build | Months 1–6 | **~$21,000** ($14.5K–$28.4K range) | 100×200 ME matrix, 5+ years retro fill, Daatan Forecast Android build |
+| 1 — MVP build | Months 1–6 | **~$15,000** ($10.5K–$21.4K range) | 100×200 ME matrix, 5+ years retro fill, Daatan Forecast Android build |
 | 2 — Scale baseline | Months 7–18 | **$103,370** ($100K recurring + $3,370 one-time) | Multi-AZ HA infra, ML training capacity, oracle pipeline at scale |
 | **Total ask** | **18 months** | **~$124,370** | |
 
@@ -22,15 +22,24 @@
 ~20 of 100 sources require paid access (Haaretz archive, Calcalist, Globes, key Arabic sources).
 CDX/Wayback covers the remaining ~80% for historical content.
 
-| Item | Cost (1-month subscription, scrape & cancel) |
+**One-time retro scrape** (subscribe, scrape, cancel):
+
+| Item | Cost |
 |---|---|
 | Haaretz digital archive | $150–300 |
 | Hebrew business press (Globes, Calcalist) | $100–200 |
 | Arabic source archives (2–3 key outlets) | $100–300 |
 | Contingency (additional sources) | $150–400 |
-| **Total** | **$500–1,200** |
+| **One-time total** | **$500–1,200** |
 
-> One month only — subscribe, run retro scrape, cancel. No ongoing commitment.
+**Ongoing subscriptions** (certain sources require active credentials for live ingestion; LLM extraction quality degrades significantly on truncated/paywalled content):
+
+| Source | Est. annual cost |
+|---|---|
+| Haaretz (English + Hebrew editions) | ~$200–300 |
+| Jerusalem Post | ~$100–200 |
+| Other paywalled sources (contingency) | ~$200–500 |
+| **Ongoing total** | **~$500–1,000/yr** |
 
 ## 2. Cloud infrastructure (AWS)
 
@@ -59,13 +68,11 @@ Pipeline uses Gemini 2.0 Flash Lite via OpenRouter (~$0.075/1M input tokens).
 
 ## 4. Translation infrastructure (Google Translate API)
 
-Arabic + Turkish for MVP. Extraction is done in English post-translation.
+Arabic, Turkish, Hebrew — contingency/fallback only. LLMs read these natively; translation reserved for edge cases or source-specific formatting issues.
 
 | Item | Estimate |
 |---|---|
-| Retro fill: ~30% of sources × 200k articles × ~5,000 chars | ~$4,000–7,000 one-time |
-| Ongoing monthly | ~$200–400/mo → ~$1,200 over 6 months |
-| **Total** | **$5,000–8,500** |
+| **Total** | **~$500** |
 
 ## 5. Legal / IP counsel + incorporation
 
@@ -91,21 +98,22 @@ Polymarket currently scraped free. Minimal additional feeds needed for ME matrix
 
 | Category | Low | High |
 |---|---|---|
-| Paid content access (1-month scrape) | $500 | $1,200 |
+| Paid content access — one-time scrape | $500 | $1,200 |
+| Paid content access — ongoing subscriptions | $500 | $1,000 |
 | Cloud infrastructure (AWS) | $3,000 | $5,500 |
-| Translation API | $5,000 | $8,500 |
 | Legal / incorporation | $5,000 | $10,500 |
 | LLM API (Gemini Flash Lite) | $500 | $700 |
+| Translation API (contingency) | $500 | $500 |
 | Data feeds | $500 | $2,000 |
-| **Total** | **$14,500** | **$28,400** |
+| **Total** | **$10,500** | **$21,400** |
 
-**Working figure: ~$21,000 for 6 months.**
+**Working figure: ~$15,000 for 6 months.**
 
 ## Stage 1 — Key observations
 
 1. **LLM costs are negligible** — Gemini Flash Lite at $0.075/1M tokens makes the pipeline economics extremely favorable.
-2. **Translation is the #1 technical cost**, not LLM inference. Arabic/Turkish retro fill at scale costs more than all LLM calls combined.
-3. **Content access risk is real** — 83% of current test cells return no predictions, partly due to paywall gaps in Wayback. Budget ~$3–8k to patch the worst offenders.
+2. **Translation is not a major cost** — LLMs read Hebrew, Arabic, and Turkish natively; Google Translate is contingency-only.
+3. **Content access risk is real** — 83% of current test cells return no predictions, partly due to paywall gaps in Wayback. Ongoing subscriptions for Haaretz and JPost are cheap insurance for coverage quality.
 
 ---
 
@@ -340,6 +348,6 @@ Already provisioned, cost continues unchanged:
 
 | Stage | Period | Total |
 |---|---|---|
-| Stage 1 — MVP build | Months 1–6 | ~$21,000 |
+| Stage 1 — MVP build | Months 1–6 | ~$15,000 |
 | Stage 2 — Scale baseline | Months 7–18 | $103,370 |
-| **Combined ask** | **18 months** | **~$124,370** |
+| **Combined ask** | **18 months** | **~$118,370** |
