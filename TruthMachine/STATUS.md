@@ -61,7 +61,7 @@ The pipeline loop (`infra/ec2_run.sh`) runs continuously: it sleeps 300s between
 | PoC event generation (`poc_event_gen.py`) | ✅ Complete |
 | Duel report generator (`poc_report.py`) | ✅ Complete |
 | `duel.html` generated and deployed to GitHub Pages | ✅ Live |
-| TM vs PM Brier comparison section | ✅ Live — 12 events scored, TM wins 7/12; aggregate Brier: TM ~0.149 vs PM ~0.374; [komapc.github.io/retro/duel.html](https://komapc.github.io/retro/duel.html) |
+| TM vs PM Brier comparison section | ✅ Live — 12 events scored, TM wins 7/12; aggregate Brier: TM ~0.131 vs PM ~0.374; Oracle n=5–19 per event (PR #82); [komapc.github.io/retro/duel.html](https://komapc.github.io/retro/duel.html) |
 
 ### Why is it sleeping?
 
