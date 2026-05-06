@@ -1,0 +1,9 @@
+{
+  "event_id": "G03",
+  "condition_id": "0x2338850858fff3136bc49baf5ef42138f898c95eab1ce28a855259746e94e2b6",
+  "clob_token_yes": "97461037756941814439474848990455721175330360139324172395997175172339419907147",
+  "question": "Will NVIDIA be the largest company in the world by market cap on December 31?",
+  "market_url": "https://polymarket.com/event/largest-company-eoy/will-nvidia-be-the-largest-company-in-the-world-by-market-cap-on-december-31",
+  "invert": false,
+  "prices": []
+}

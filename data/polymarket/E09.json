@@ -1,0 +1,9 @@
+{
+  "event_id": "E09",
+  "condition_id": "0xb7f8f6cd9fe1f55135abb1fed78297cb19ccfb2a4f5f1e796605e5efd5137ca7",
+  "clob_token_yes": "63627140628104983560595238363305681872053790611540449119961108055931748452712",
+  "question": "Will Liz Truss remain Prime Minister of the United Kingdom through 2022?",
+  "market_url": "https://polymarket.com/event/will-liz-truss-remain-prime-minister-of-the-united-kingdom-through-2022",
+  "invert": false,
+  "prices": []
+}

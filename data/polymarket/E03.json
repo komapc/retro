@@ -1,0 +1,9 @@
+{
+  "event_id": "E03",
+  "condition_id": "0x29b6429e5f762c658541e55e7f9e38fd6c99cabc2ee4733cb70a4632ff153ee4",
+  "clob_token_yes": "48723707783941142892748874128050730440749745433075755899671343781806433392448",
+  "question": "Republican House and Democratic Senate after U.S. 2022 Midterms?",
+  "market_url": "https://polymarket.com/event/balance-of-power-2022-us-midterms",
+  "invert": false,
+  "prices": []
+}

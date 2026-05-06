@@ -1,0 +1,9 @@
+{
+  "event_id": "G04",
+  "condition_id": "0x7555cd85227fc4cbd680d5f4c8d84ddbc34b89d7a661fb3ee1d760365d681749",
+  "clob_token_yes": null,
+  "question": "Will Elon Musk become CEO of Twitter by September 30?",
+  "market_url": "https://polymarket.com/event/will-elon-musk-become-ceo-of-twitter-by-september-30",
+  "invert": false,
+  "prices": []
+}
