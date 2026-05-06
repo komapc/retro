@@ -618,7 +618,10 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
             winner_badge = '<span class="badge badge-tie">Tie</span>'
 
         inv_note = ' <span class="inv">(inverted)</span>' if r["pm_invert"] else ""
-        pm_q_html = f'<div class="event-pm-q">PM: {html.escape(r["pm_question"])}{inv_note}</div>'
+        pm_q_text = html.escape(r["pm_question"])
+        if r.get("pm_url"):
+            pm_q_text = f'<a href="{html.escape(r["pm_url"])}" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">{pm_q_text}</a>'
+        pm_q_html = f'<div class="event-pm-q">PM: {pm_q_text}{inv_note}</div>'
 
         # Probability bars
         def _prob_block(label, val, css_class, brier_val, n_art=None, placeholder=False):
@@ -717,7 +720,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
           <td>{r['id']}</td>
           <td>{r['name'][:45]}</td>
           <td class="outcome-yes">YES</td>
-          <td>{html.escape(r['pm_question'][:40])}{inv_mark}</td>
+          <td>{"<a href='" + html.escape(r['pm_url']) + "' target='_blank' rel='noopener' style='color:#f97316'>" + html.escape(r['pm_question'][:40]) + "</a>" if r.get("pm_url") else html.escape(r['pm_question'][:40])}{inv_mark}</td>
           <td>{pm_p_str}</td>
           <td>{tm_p_str} <span style="font-size:0.7rem;color:#475569">({r['tm_articles_used']}art)</span></td>
           <td>{pm_b_str}</td>
@@ -751,7 +754,7 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
   PM probability = last CLOB price on or before <em>outcome_date − {t_days} days</em>
   (inverted where PM question is framed as "will X survive?" vs our event "X was killed").<br>
   TM probability = Oracle API forecast (gatekeeper+extractor+credibility weighting) on vault2 articles published ≤ T, converted (stance+1)/2.<br>
-  All 11 events resolved YES (our dataset captures things that happened).
+  All {n_compared} events resolved YES (our dataset captures things that happened).
   Brier score: lower = better. Range [0, 1].
 </div>
 
@@ -788,6 +791,12 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
 
 <!-- Per-event cards -->
 <h2>Per-event breakdown</h2>
+<p style="color:#94a3b8;font-size:0.85rem;margin-top:-0.5rem;margin-bottom:1rem">
+  Showing {len(rows)} of 70 atlas events — the {len(rows)} that have Polymarket CLOB price history.
+  Pre-2023 markets (Ukraine invasion, Kherson, JCPOA, Mahsa Amini, ChatGPT launch) are not in
+  Polymarket's CLOB system and cannot be scored. See the Dataset coverage table below for full
+  atlas coverage.
+</p>
 <div class="events-grid">
 {cards_joined}
 </div>

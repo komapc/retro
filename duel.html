@@ -109,7 +109,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #2d3748;
   PM probability = last CLOB price on or before <em>outcome_date − 7 days</em>
   (inverted where PM question is framed as "will X survive?" vs our event "X was killed").<br>
   TM probability = Oracle API forecast (gatekeeper+extractor+credibility weighting) on vault2 articles published ≤ T, converted (stance+1)/2.<br>
-  All 11 events resolved YES (our dataset captures things that happened).
+  All 12 events resolved YES (our dataset captures things that happened).
   Brier score: lower = better. Range [0, 1].
 </div>
 
@@ -202,6 +202,12 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
 
 <!-- Per-event cards -->
 <h2>Per-event breakdown</h2>
+<p style="color:#94a3b8;font-size:0.85rem;margin-top:-0.5rem;margin-bottom:1rem">
+  Showing 14 of 70 atlas events — the 14 that have Polymarket CLOB price history.
+  Pre-2023 markets (Ukraine invasion, Kherson, JCPOA, Mahsa Amini, ChatGPT launch) are not in
+  Polymarket's CLOB system and cannot be scored. See the Dataset coverage table below for full
+  atlas coverage.
+</p>
 <div class="events-grid">
 
         <div class="event-card tm-wins">
@@ -209,7 +215,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">A19 — ICC issues arrest warrant for Netanyahu</div>
               <div class="event-meta">2024-11-21 · outcome: <span class="outcome-yes">YES</span> · ['Israeli Politics', 'Gaza War', 'Regional Geopolitics']</div>
-              <div class="event-pm-q">PM: ICC issues an arrest warrant for Netanyahu?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/icc-issues-an-arrest-warrant-for-netanyahu" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">ICC issues an arrest warrant for Netanyahu?</a></div>
             </div>
             <span class="badge badge-tm">TM wins</span>
           </div>
@@ -247,7 +253,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">B04 — First hostage deal reached (pause in fighting)</div>
               <div class="event-meta">2023-11-22 · outcome: <span class="outcome-yes">YES</span> · ['Gaza War']</div>
-              <div class="event-pm-q">PM: Any hostage deal brokered with Hamas by Nov 1?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/any-hostage-deal-brokered-with-hamas-by-nov-1" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Any hostage deal brokered with Hamas by Nov 1?</a></div>
             </div>
             <span class="badge badge-pm">PM wins</span>
           </div>
@@ -285,7 +291,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">B05 — First phase hostage releases completed</div>
               <div class="event-meta">2023-11-30 · outcome: <span class="outcome-yes">YES</span> · ['Gaza War']</div>
-              <div class="event-pm-q">PM: Will the Hamas x Israel ceasefire last the full 4 days?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/will-the-hamas-x-israel-ceasefire-last-the-full-4-days" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Will the Hamas x Israel ceasefire last the full 4 days?</a></div>
             </div>
             <span class="badge badge-pm">PM wins</span>
           </div>
@@ -323,7 +329,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">B08 — IDF begins Rafah ground operation</div>
               <div class="event-meta">2024-05-07 · outcome: <span class="outcome-yes">YES</span> · ['Gaza War']</div>
-              <div class="event-pm-q">PM: Will Israel launch a major ground offensive in South Gaza by Dec 8?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/will-israel-launch-a-major-ground-offensive-in-south-gaza-by-dec-8" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Will Israel launch a major ground offensive in South Gaza by Dec 8?</a></div>
             </div>
             <span class="badge badge-pm">PM wins</span>
           </div>
@@ -361,7 +367,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">B09 — Haniyeh assassinated in Tehran</div>
               <div class="event-meta">2024-07-31 · outcome: <span class="outcome-yes">YES</span> · ['Gaza War', 'Regional Geopolitics']</div>
-              <div class="event-pm-q">PM: Haniyeh still in Hamas leadership through March 1? <span class="inv">(inverted)</span></div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/haniyeh-still-in-hamas-leadership-through-march-1" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Haniyeh still in Hamas leadership through March 1?</a> <span class="inv">(inverted)</span></div>
             </div>
             <span class="badge badge-tm">TM wins</span>
           </div>
@@ -399,7 +405,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">B10 — Sinwar killed in Gaza</div>
               <div class="event-meta">2024-10-16 · outcome: <span class="outcome-yes">YES</span> · ['Gaza War']</div>
-              <div class="event-pm-q">PM: Yahya Sinwar still Hamas leader by October 31? <span class="inv">(inverted)</span></div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/yahya-sinwar-still-hamas-leader-through-november" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Yahya Sinwar still Hamas leader by October 31?</a> <span class="inv">(inverted)</span></div>
             </div>
             <span class="badge badge-tm">TM wins</span>
           </div>
@@ -437,7 +443,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">C07 — Nasrallah assassinated</div>
               <div class="event-meta">2024-09-27 · outcome: <span class="outcome-yes">YES</span> · ['Gaza War', 'Regional Geopolitics']</div>
-              <div class="event-pm-q">PM: Nasrallah remains Hezbollah leader through Oct 31? <span class="inv">(inverted)</span></div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/nasrallah-remains-leader-of-hezbollah-through-october-31" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Nasrallah remains Hezbollah leader through Oct 31?</a> <span class="inv">(inverted)</span></div>
             </div>
             <span class="badge badge-tm">TM wins</span>
           </div>
@@ -475,7 +481,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">C08 — Lebanon ceasefire agreement reached</div>
               <div class="event-meta">2024-11-27 · outcome: <span class="outcome-yes">YES</span> · ['Gaza War', 'Regional Geopolitics']</div>
-              <div class="event-pm-q">PM: Israel x Hezbollah Ceasefire in 2024?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/israel-x-hezbollah-ceasefire-in-2024" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Israel x Hezbollah Ceasefire in 2024?</a></div>
             </div>
             <span class="badge badge-tm">TM wins</span>
           </div>
@@ -513,7 +519,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">C09 — Assad regime falls in Syria</div>
               <div class="event-meta">2024-12-08 · outcome: <span class="outcome-yes">YES</span> · ['Regional Geopolitics']</div>
-              <div class="event-pm-q">PM: Will Assad remain President of Syria through 2024? <span class="inv">(inverted)</span></div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/will-assad-remain-president-of-syria-through-2024" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Will Assad remain President of Syria through 2024?</a> <span class="inv">(inverted)</span></div>
             </div>
             <span class="badge badge-tm">TM wins</span>
           </div>
@@ -551,7 +557,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">E07 — Trump wins 2024 US presidential election</div>
               <div class="event-meta">2024-11-06 · outcome: <span class="outcome-yes">YES</span> · ['Global']</div>
-              <div class="event-pm-q">PM: Will Donald Trump win the 2024 US Presidential Election?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/presidential-election-winner-2024/will-donald-trump-win-the-2024-us-presidential-election" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Will Donald Trump win the 2024 US Presidential Election?</a></div>
             </div>
             <span class="badge badge-pm">PM wins</span>
           </div>
@@ -589,7 +595,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">E08 — US Federal Reserve begins rate cut cycle</div>
               <div class="event-meta">2024-09-18 · outcome: <span class="outcome-yes">YES</span> · ['Global']</div>
-              <div class="event-pm-q">PM: Fed decreases interest rates by 50+ bps after September 2024 meeting?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/fed-interest-rates-september-2024" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Fed decreases interest rates by 50+ bps after September 2024 meeting?</a></div>
             </div>
             <span class="badge badge-tm">TM wins</span>
           </div>
@@ -627,7 +633,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">E10 — Finland joins NATO</div>
               <div class="event-meta">2023-04-04 · outcome: <span class="outcome-yes">YES</span> · ['Global', 'Regional Geopolitics']</div>
-              <div class="event-pm-q">PM: Will NATO expand by June 30?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/will-nato-expand-by/will-nato-expand-by-june-30" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Will NATO expand by June 30?</a></div>
             </div>
             <span class="badge badge-pm">PM wins</span>
           </div>
@@ -665,7 +671,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">G02 — OpenAI board fires then reinstates Sam Altman</div>
               <div class="event-meta">2023-11-22 · outcome: <span class="outcome-yes">YES</span> · ['AI & Tech']</div>
-              <div class="event-pm-q">PM: Sam back as CEO of OpenAI?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/sam-back-as-ceo-of-openai" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Sam back as CEO of OpenAI?</a></div>
             </div>
             
           </div>
@@ -697,7 +703,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div>
               <div class="event-name">G07 — GPT-4 released publicly</div>
               <div class="event-meta">2023-03-14 · outcome: <span class="outcome-yes">YES</span> · ['AI & Tech']</div>
-              <div class="event-pm-q">PM: Will OpenAI release GPT-4 by May 31?</div>
+              <div class="event-pm-q">PM: <a href="https://polymarket.com/event/will-openai-release-gpt-4-by-may-31" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Will OpenAI release GPT-4 by May 31?</a></div>
             </div>
             
           </div>
@@ -877,7 +883,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>A19</td>
           <td>ICC issues arrest warrant for Netanyahu</td>
           <td class="outcome-yes">YES</td>
-          <td>ICC issues an arrest warrant for Netanya</td>
+          <td><a href='https://polymarket.com/event/icc-issues-an-arrest-warrant-for-netanyahu' target='_blank' rel='noopener' style='color:#f97316'>ICC issues an arrest warrant for Netanya</a></td>
           <td>0%</td>
           <td>52% <span style="font-size:0.7rem;color:#475569">(9art)</span></td>
           <td><span class="worse">0.991</span></td>
@@ -889,7 +895,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>B04</td>
           <td>First hostage deal reached (pause in fighting</td>
           <td class="outcome-yes">YES</td>
-          <td>Any hostage deal brokered with Hamas by </td>
+          <td><a href='https://polymarket.com/event/any-hostage-deal-brokered-with-hamas-by-nov-1' target='_blank' rel='noopener' style='color:#f97316'>Any hostage deal brokered with Hamas by </a></td>
           <td>99%</td>
           <td>69% <span style="font-size:0.7rem;color:#475569">(17art)</span></td>
           <td><span class="better">0.0</span></td>
@@ -901,7 +907,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>B05</td>
           <td>First phase hostage releases completed</td>
           <td class="outcome-yes">YES</td>
-          <td>Will the Hamas x Israel ceasefire last t</td>
+          <td><a href='https://polymarket.com/event/will-the-hamas-x-israel-ceasefire-last-the-full-4-days' target='_blank' rel='noopener' style='color:#f97316'>Will the Hamas x Israel ceasefire last t</a></td>
           <td>77%</td>
           <td>67% <span style="font-size:0.7rem;color:#475569">(19art)</span></td>
           <td><span class="better">0.0506</span></td>
@@ -913,7 +919,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>B08</td>
           <td>IDF begins Rafah ground operation</td>
           <td class="outcome-yes">YES</td>
-          <td>Will Israel launch a major ground offens</td>
+          <td><a href='https://polymarket.com/event/will-israel-launch-a-major-ground-offensive-in-south-gaza-by-dec-8' target='_blank' rel='noopener' style='color:#f97316'>Will Israel launch a major ground offens</a></td>
           <td>98%</td>
           <td>78% <span style="font-size:0.7rem;color:#475569">(10art)</span></td>
           <td><span class="better">0.0003</span></td>
@@ -925,7 +931,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>B09</td>
           <td>Haniyeh assassinated in Tehran</td>
           <td class="outcome-yes">YES</td>
-          <td>Haniyeh still in Hamas leadership throug ↻</td>
+          <td><a href='https://polymarket.com/event/haniyeh-still-in-hamas-leadership-through-march-1' target='_blank' rel='noopener' style='color:#f97316'>Haniyeh still in Hamas leadership throug</a> ↻</td>
           <td>49%</td>
           <td>76% <span style="font-size:0.7rem;color:#475569">(9art)</span></td>
           <td><span class="worse">0.2505</span></td>
@@ -937,7 +943,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>B10</td>
           <td>Sinwar killed in Gaza</td>
           <td class="outcome-yes">YES</td>
-          <td>Yahya Sinwar still Hamas leader by Octob ↻</td>
+          <td><a href='https://polymarket.com/event/yahya-sinwar-still-hamas-leader-through-november' target='_blank' rel='noopener' style='color:#f97316'>Yahya Sinwar still Hamas leader by Octob</a> ↻</td>
           <td>19%</td>
           <td>68% <span style="font-size:0.7rem;color:#475569">(18art)</span></td>
           <td><span class="worse">0.648</span></td>
@@ -949,7 +955,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>C07</td>
           <td>Nasrallah assassinated</td>
           <td class="outcome-yes">YES</td>
-          <td>Nasrallah remains Hezbollah leader throu ↻</td>
+          <td><a href='https://polymarket.com/event/nasrallah-remains-leader-of-hezbollah-through-october-31' target='_blank' rel='noopener' style='color:#f97316'>Nasrallah remains Hezbollah leader throu</a> ↻</td>
           <td>8%</td>
           <td>70% <span style="font-size:0.7rem;color:#475569">(5art)</span></td>
           <td><span class="worse">0.8372</span></td>
@@ -961,7 +967,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>C08</td>
           <td>Lebanon ceasefire agreement reached</td>
           <td class="outcome-yes">YES</td>
-          <td>Israel x Hezbollah Ceasefire in 2024?</td>
+          <td><a href='https://polymarket.com/event/israel-x-hezbollah-ceasefire-in-2024' target='_blank' rel='noopener' style='color:#f97316'>Israel x Hezbollah Ceasefire in 2024?</a></td>
           <td>40%</td>
           <td>49% <span style="font-size:0.7rem;color:#475569">(13art)</span></td>
           <td><span class="worse">0.354</span></td>
@@ -973,7 +979,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>C09</td>
           <td>Assad regime falls in Syria</td>
           <td class="outcome-yes">YES</td>
-          <td>Will Assad remain President of Syria thr ↻</td>
+          <td><a href='https://polymarket.com/event/will-assad-remain-president-of-syria-through-2024' target='_blank' rel='noopener' style='color:#f97316'>Will Assad remain President of Syria thr</a> ↻</td>
           <td>19%</td>
           <td>66% <span style="font-size:0.7rem;color:#475569">(1art)</span></td>
           <td><span class="worse">0.6512</span></td>
@@ -985,7 +991,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>E07</td>
           <td>Trump wins 2024 US presidential election</td>
           <td class="outcome-yes">YES</td>
-          <td>Will Donald Trump win the 2024 US Presid</td>
+          <td><a href='https://polymarket.com/event/presidential-election-winner-2024/will-donald-trump-win-the-2024-us-presidential-election' target='_blank' rel='noopener' style='color:#f97316'>Will Donald Trump win the 2024 US Presid</a></td>
           <td>66%</td>
           <td>63% <span style="font-size:0.7rem;color:#475569">(5art)</span></td>
           <td><span class="better">0.1119</span></td>
@@ -997,7 +1003,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>E08</td>
           <td>US Federal Reserve begins rate cut cycle</td>
           <td class="outcome-yes">YES</td>
-          <td>Fed decreases interest rates by 50+ bps </td>
+          <td><a href='https://polymarket.com/event/fed-interest-rates-september-2024' target='_blank' rel='noopener' style='color:#f97316'>Fed decreases interest rates by 50+ bps </a></td>
           <td>23%</td>
           <td>45% <span style="font-size:0.7rem;color:#475569">(3art)</span></td>
           <td><span class="worse">0.5852</span></td>
@@ -1009,7 +1015,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>E10</td>
           <td>Finland joins NATO</td>
           <td class="outcome-yes">YES</td>
-          <td>Will NATO expand by June 30?</td>
+          <td><a href='https://polymarket.com/event/will-nato-expand-by/will-nato-expand-by-june-30' target='_blank' rel='noopener' style='color:#f97316'>Will NATO expand by June 30?</a></td>
           <td>95%</td>
           <td>74% <span style="font-size:0.7rem;color:#475569">(7art)</span></td>
           <td><span class="better">0.0025</span></td>
@@ -1021,7 +1027,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>G02</td>
           <td>OpenAI board fires then reinstates Sam Altman</td>
           <td class="outcome-yes">YES</td>
-          <td>Sam back as CEO of OpenAI?</td>
+          <td><a href='https://polymarket.com/event/sam-back-as-ceo-of-openai' target='_blank' rel='noopener' style='color:#f97316'>Sam back as CEO of OpenAI?</a></td>
           <td>23%</td>
           <td><span class="no-data">—</span> <span style="font-size:0.7rem;color:#475569">(0art)</span></td>
           <td>0.5829</td>
@@ -1033,7 +1039,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>G07</td>
           <td>GPT-4 released publicly</td>
           <td class="outcome-yes">YES</td>
-          <td>Will OpenAI release GPT-4 by May 31?</td>
+          <td><a href='https://polymarket.com/event/will-openai-release-gpt-4-by-may-31' target='_blank' rel='noopener' style='color:#f97316'>Will OpenAI release GPT-4 by May 31?</a></td>
           <td>35%</td>
           <td><span class="no-data">—</span> <span style="font-size:0.7rem;color:#475569">(0art)</span></td>
           <td>0.4225</td>
@@ -1136,7 +1142,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
 </div>
 
 <footer>
-  Generated 2026-05-06 13:23 UTC ·
+  Generated 2026-05-06 16:20 UTC ·
   TruthMachine data: Oracle API (oracle.daatan.com) ·
   Polymarket data: CLOB API (gamma-api.polymarket.com) ·
   T = 7 days before outcome_date
