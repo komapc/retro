@@ -44,6 +44,7 @@ pipeline/
 
   scripts/
     improve_keywords.py    # One-time: LLM-generate search keywords for events
+    audit_event_criteria.py  # Lint llm_referee_criteria fields for weak/missing anchors
   tests/
     test_models.py
   smoke_test.py            # 3 hardcoded articles through full pipeline

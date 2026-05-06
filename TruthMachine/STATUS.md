@@ -1,6 +1,6 @@
 # TruthMachine / Factum Atlas — Status & Runbook
 
-_Last updated: 2026-04-17. The "Current State" snapshot below ages fast — cross-check with the live atlas before trusting specific numbers._
+_Last updated: 2026-05-06. The "Current State" snapshot below ages fast — cross-check with the live atlas before trusting specific numbers._
 
 ---
 
@@ -61,7 +61,7 @@ The pipeline loop (`infra/ec2_run.sh`) runs continuously: it sleeps 300s between
 | PoC event generation (`poc_event_gen.py`) | ✅ Complete |
 | Duel report generator (`poc_report.py`) | ✅ Complete |
 | `duel.html` generated and deployed to GitHub Pages | ✅ Live |
-| TM vs PM Brier comparison section | 🔲 Blocked — TM pipeline has never run on the PM universe; see "Wire TM into `duel.html`" under Low Priority Future Fixes for real scope |
+| TM vs PM Brier comparison section | ✅ Live — 12 events scored, TM wins 7/12; aggregate Brier: TM ~0.149 vs PM ~0.374; [komapc.github.io/retro/duel.html](https://komapc.github.io/retro/duel.html) |
 
 ### Why is it sleeping?
 
@@ -206,14 +206,7 @@ ec2_run.sh (systemd loop)
    - `pipeline/src/tm/backtest.py` — not yet run on EC2
    - Requires resolved events with known outcomes
 
-3. **Wire TM into `duel.html` — scope is larger than it looks**
-   - `duel.html` is rendered by `tm.poc_report` from `data/poc/pm_harvest/events.jsonl` (~thousands of Polymarket markets: "Will X win Y", "Will Biden get Coronavirus", etc.). That harvest data **does not exist** in the repo and the PoC pipeline (`tm.polymarket_harvest` → `tm.poc_event_gen` → orchestrator on those events) has never run end-to-end.
-   - The 70 Factum Atlas events (the ones the pipeline *is* running on) have a separate `data/polymarket/` mapping table, but only 14 of those have PM-market IDs filled in and **0 of the 14 have price history** (`"prices": []`).
-   - So "wire TM in" is one of three real projects, not a small fix:
-     - (a) Run the TM pipeline against the ~4600 PM markets — multi-week Bedrock-heavy campaign.
-     - (b) Harvest PM price history for the 14 mapped events + wire TM cell-signals for those 14 → mini-duel with n=14 (statistically weak but bounded).
-     - (c) Drop the comparison pretense and show a TM-only backtest leaderboard where the placeholder sits.
-   - Park until one of those is consciously chosen; do not treat as a trivial ticket.
+3. ~~**Wire TM into `duel.html`**~~ — ✅ Done (2026-05-06). PM price history harvested for 12 Atlas events; Oracle-driven TM probabilities computed; duel report live. TM wins 7/12. CLOB API ceiling reached at 12 events — pre-2023 markets (E01, E02, C01, C02, G01) not available in the CLOB system. Expanding beyond 12 requires newer events with sufficient PM CLOB history.
 
 ---
 
