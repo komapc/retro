@@ -102,14 +102,14 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #2d3748;
 <div class="container">
 
 <h1>TruthMachine <span style="color:#475569">vs</span> Polymarket</h1>
-<p class="subtitle">Phase 1 · 12 events · T = 7 days before resolution · all outcomes YES</p>
+<p class="subtitle">Phase 1 · 13 events · T = 7 days before resolution · all outcomes YES</p>
 
 <div class="note">
   <strong>Methodology:</strong>
   PM probability = last CLOB price on or before <em>outcome_date − 7 days</em>
   (inverted where PM question is framed as "will X survive?" vs our event "X was killed").<br>
   TM probability = Oracle API forecast (gatekeeper+extractor+credibility weighting) on vault2 articles published ≤ T, converted (stance+1)/2.<br>
-  All 12 events resolved YES (our dataset captures things that happened).
+  All 13 events resolved YES (our dataset captures things that happened).
   Brier score: lower = better. Range [0, 1].
 </div>
 
@@ -117,18 +117,18 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #2d3748;
 <div class="scorecard">
   <div class="scorecard-side">
     <h2>TruthMachine</h2>
-    <div class="brier tm-color">0.1313</div>
-    <div class="label">avg Brier (12 events)</div>
-    <div class="label" style="margin-top:0.25rem;font-size:0.72rem">95% CI: [0.0897–0.1774]</div>
-    <div class="label" style="margin-top:0.5rem">wins: 7 / 12</div>
+    <div class="brier tm-color">0.1233</div>
+    <div class="label">avg Brier (13 events)</div>
+    <div class="label" style="margin-top:0.25rem;font-size:0.72rem">95% CI: [0.0924–0.1547]</div>
+    <div class="label" style="margin-top:0.5rem">wins: 8 / 13</div>
   </div>
   <div class="vs-divider">VS</div>
   <div class="scorecard-side">
     <h2>Polymarket</h2>
-    <div class="brier pm-color">0.3735</div>
-    <div class="label">avg Brier (12 events)</div>
-    <div class="label" style="margin-top:0.25rem;font-size:0.72rem">95% CI: [0.1813–0.5717]</div>
-    <div class="label" style="margin-top:0.5rem">wins: 5 / 12</div>
+    <div class="brier pm-color">0.3773</div>
+    <div class="label">avg Brier (13 events)</div>
+    <div class="label" style="margin-top:0.25rem;font-size:0.72rem">95% CI: [0.2074–0.5605]</div>
+    <div class="label" style="margin-top:0.5rem">wins: 5 / 13</div>
   </div>
 </div>
 <div style="text-align:center;margin-bottom:2rem">
@@ -137,7 +137,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #2d3748;
   </span>
   &nbsp;
   <span style="color:#64748b;font-size:0.82rem">
-    (ties: 0 · ⚠ n=12 is small — results are indicative, not conclusive)
+    (ties: 0 · ⚠ n=13 is small — results are indicative, not conclusive)
   </span>
 </div>
 
@@ -222,10 +222,10 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <div class="event-body">
             
             <div class="prob-block">
-              <div class="prob-label">TruthMachine (9 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:52%"></div></div>
-              <span class="prob-val">52%</span>
-              <span class="brier-val"> Brier: 0.2252</span>
+              <div class="prob-label">TruthMachine (10 art.)</div>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:57%"></div></div>
+              <span class="prob-val">57%</span>
+              <span class="brier-val"> Brier: 0.1825</span>
             </div>
             
             <div class="prob-block">
@@ -241,7 +241,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-A19');
-              drawSparkline(el,[{"date": "2024-05-21", "probability": 0.405}, {"date": "2024-05-22", "probability": 0.58}, {"date": "2024-05-23", "probability": 0.58}, {"date": "2024-05-24", "probability": 0.585}, {"date": "2024-05-25", "probability": 0.535}, {"date": "2024-05-26", "probability": 0.545}, {"date": "2024-05-27", "probability": 0.545}, {"date": "2024-05-28", "probability": 0.535}, {"date": "2024-05-29", "probability": 0.535}, {"date": "2024-05-30", "probability": 0.54}, {"date": "2024-05-31", "probability": 0.54}, {"date": "2024-06-01", "probability": 0.54}, {"date": "2024-06-02", "probability": 0.48}, {"date": "2024-06-03", "probability": 0.475}, {"date": "2024-06-04", "probability": 0.48}, {"date": "2024-06-05", "probability": 0.48}, {"date": "2024-06-06", "probability": 0.48}, {"date": "2024-06-07", "probability": 0.48}, {"date": "2024-06-08", "probability": 0.48}, {"date": "2024-06-09", "probability": 0.48}, {"date": "2024-06-10", "probability": 0.48}, {"date": "2024-06-11", "probability": 0.48}, {"date": "2024-06-12", "probability": 0.48}, {"date": "2024-06-13", "probability": 0.51}, {"date": "2024-06-14", "probability": 0.505}, {"date": "2024-06-15", "probability": 0.505}, {"date": "2024-06-16", "probability": 0.5}, {"date": "2024-06-17", "probability": 0.49}, {"date": "2024-06-18", "probability": 0.49}, {"date": "2024-06-19", "probability": 0.49}, {"date": "2024-06-20", "probability": 0.49}, {"date": "2024-06-21", "probability": 0.485}, {"date": "2024-06-22", "probability": 0.485}, {"date": "2024-06-23", "probability": 0.485}, {"date": "2024-06-24", "probability": 0.485}, {"date": "2024-06-25", "probability": 0.485}, {"date": "2024-06-26", "probability": 0.69}, {"date": "2024-06-27", "probability": 0.695}, {"date": "2024-06-28", "probability": 0.515}, {"date": "2024-06-29", "probability": 0.51}, {"date": "2024-06-30", "probability": 0.45}, {"date": "2024-07-01", "probability": 0.445}, {"date": "2024-07-02", "probability": 0.445}, {"date": "2024-07-03", "probability": 0.45}, {"date": "2024-07-04", "probability": 0.45}, {"date": "2024-07-05", "probability": 0.45}, {"date": "2024-07-06", "probability": 0.46}, {"date": "2024-07-07", "probability": 0.495}, {"date": "2024-07-08", "probability": 0.425}, {"date": "2024-07-09", "probability": 0.425}, {"date": "2024-07-10", "probability": 0.42}, {"date": "2024-07-11", "probability": 0.42}, {"date": "2024-07-12", "probability": 0.34}, {"date": "2024-07-13", "probability": 0.34}, {"date": "2024-07-14", "probability": 0.345}, {"date": "2024-07-15", "probability": 0.655}, {"date": "2024-07-16", "probability": 0.65}, {"date": "2024-07-17", "probability": 0.48}, {"date": "2024-07-18", "probability": 0.585}, {"date": "2024-07-19", "probability": 0.585}, {"date": "2024-07-20", "probability": 0.48}, {"date": "2024-07-21", "probability": 0.505}, {"date": "2024-07-22", "probability": 0.505}, {"date": "2024-07-23", "probability": 0.645}, {"date": "2024-07-24", "probability": 0.215}, {"date": "2024-07-25", "probability": 0.345}, {"date": "2024-07-26", "probability": 0.345}, {"date": "2024-07-27", "probability": 0.38}, {"date": "2024-07-28", "probability": 0.485}, {"date": "2024-07-29", "probability": 0.47}, {"date": "2024-07-30", "probability": 0.49}, {"date": "2024-07-31", "probability": 0.66}, {"date": "2024-08-01", "probability": 0.36}, {"date": "2024-08-02", "probability": 0.27}, {"date": "2024-08-03", "probability": 0.23}, {"date": "2024-08-04", "probability": 0.23}, {"date": "2024-08-05", "probability": 0.23}, {"date": "2024-08-06", "probability": 0.59}, {"date": "2024-08-07", "probability": 0.65}, {"date": "2024-08-08", "probability": 0.48}, {"date": "2024-08-09", "probability": 0.48}, {"date": "2024-08-10", "probability": 0.12}, {"date": "2024-08-11", "probability": 0.155}, {"date": "2024-08-12", "probability": 0.24}, {"date": "2024-08-13", "probability": 0.245}, {"date": "2024-08-14", "probability": 0.25}, {"date": "2024-08-15", "probability": 0.25}, {"date": "2024-08-16", "probability": 0.245}, {"date": "2024-08-17", "probability": 0.245}, {"date": "2024-08-18", "probability": 0.245}, {"date": "2024-08-19", "probability": 0.245}, {"date": "2024-08-20", "probability": 0.245}, {"date": "2024-08-21", "probability": 0.245}, {"date": "2024-08-22", "probability": 0.245}, {"date": "2024-08-23", "probability": 0.195}, {"date": "2024-08-24", "probability": 0.195}, {"date": "2024-08-25", "probability": 0.195}, {"date": "2024-08-26", "probability": 0.195}, {"date": "2024-08-27", "probability": 0.195}, {"date": "2024-08-28", "probability": 0.205}, {"date": "2024-08-29", "probability": 0.205}, {"date": "2024-08-30", "probability": 0.205}, {"date": "2024-08-31", "probability": 0.165}, {"date": "2024-09-01", "probability": 0.13}, {"date": "2024-09-02", "probability": 0.115}, {"date": "2024-09-03", "probability": 0.135}, {"date": "2024-09-04", "probability": 0.135}, {"date": "2024-09-05", "probability": 0.135}, {"date": "2024-09-06", "probability": 0.135}, {"date": "2024-09-07", "probability": 0.295}, {"date": "2024-09-08", "probability": 0.305}, {"date": "2024-09-09", "probability": 0.265}, {"date": "2024-09-10", "probability": 0.265}, {"date": "2024-09-11", "probability": 0.235}, {"date": "2024-09-12", "probability": 0.235}, {"date": "2024-09-13", "probability": 0.235}, {"date": "2024-09-14", "probability": 0.24}, {"date": "2024-09-15", "probability": 0.27}, {"date": "2024-09-16", "probability": 0.34}, {"date": "2024-09-17", "probability": 0.375}, {"date": "2024-09-18", "probability": 0.37}, {"date": "2024-09-19", "probability": 0.365}, {"date": "2024-09-20", "probability": 0.31}, {"date": "2024-09-21", "probability": 0.31}, {"date": "2024-09-22", "probability": 0.31}, {"date": "2024-09-23", "probability": 0.245}, {"date": "2024-09-24", "probability": 0.24}, {"date": "2024-09-25", "probability": 0.24}, {"date": "2024-09-26", "probability": 0.275}, {"date": "2024-09-27", "probability": 0.265}, {"date": "2024-09-28", "probability": 0.175}, {"date": "2024-09-29", "probability": 0.28}, {"date": "2024-09-30", "probability": 0.295}, {"date": "2024-10-01", "probability": 0.475}, {"date": "2024-10-02", "probability": 0.365}, {"date": "2024-10-03", "probability": 0.345}, {"date": "2024-10-04", "probability": 0.34}, {"date": "2024-10-05", "probability": 0.32}, {"date": "2024-10-06", "probability": 0.32}, {"date": "2024-10-07", "probability": 0.305}, {"date": "2024-10-08", "probability": 0.31}, {"date": "2024-10-09", "probability": 0.2}, {"date": "2024-10-10", "probability": 0.22}, {"date": "2024-10-11", "probability": 0.19}, {"date": "2024-10-12", "probability": 0.18}, {"date": "2024-10-13", "probability": 0.18}, {"date": "2024-10-14", "probability": 0.175}, {"date": "2024-10-15", "probability": 0.195}, {"date": "2024-10-16", "probability": 0.195}, {"date": "2024-10-17", "probability": 0.195}, {"date": "2024-10-18", "probability": 0.2}, {"date": "2024-10-19", "probability": 0.135}, {"date": "2024-10-20", "probability": 0.115}, {"date": "2024-10-21", "probability": 0.11}, {"date": "2024-10-22", "probability": 0.075}, {"date": "2024-10-23", "probability": 0.06}, {"date": "2024-10-24", "probability": 0.055}, {"date": "2024-10-25", "probability": 0.065}, {"date": "2024-10-26", "probability": 0.06}, {"date": "2024-10-27", "probability": 0.06}, {"date": "2024-10-28", "probability": 0.065}, {"date": "2024-10-29", "probability": 0.165}, {"date": "2024-10-30", "probability": 0.1545}, {"date": "2024-10-31", "probability": 0.062}, {"date": "2024-11-01", "probability": 0.032}, {"date": "2024-11-02", "probability": 0.021}, {"date": "2024-11-03", "probability": 0.0315}, {"date": "2024-11-04", "probability": 0.029}, {"date": "2024-11-05", "probability": 0.0215}, {"date": "2024-11-06", "probability": 0.0165}, {"date": "2024-11-07", "probability": 0.016}, {"date": "2024-11-08", "probability": 0.0045}],{},0.5255,false);
+              drawSparkline(el,[{"date": "2024-05-21", "probability": 0.405}, {"date": "2024-05-22", "probability": 0.58}, {"date": "2024-05-23", "probability": 0.58}, {"date": "2024-05-24", "probability": 0.585}, {"date": "2024-05-25", "probability": 0.535}, {"date": "2024-05-26", "probability": 0.545}, {"date": "2024-05-27", "probability": 0.545}, {"date": "2024-05-28", "probability": 0.535}, {"date": "2024-05-29", "probability": 0.535}, {"date": "2024-05-30", "probability": 0.54}, {"date": "2024-05-31", "probability": 0.54}, {"date": "2024-06-01", "probability": 0.54}, {"date": "2024-06-02", "probability": 0.48}, {"date": "2024-06-03", "probability": 0.475}, {"date": "2024-06-04", "probability": 0.48}, {"date": "2024-06-05", "probability": 0.48}, {"date": "2024-06-06", "probability": 0.48}, {"date": "2024-06-07", "probability": 0.48}, {"date": "2024-06-08", "probability": 0.48}, {"date": "2024-06-09", "probability": 0.48}, {"date": "2024-06-10", "probability": 0.48}, {"date": "2024-06-11", "probability": 0.48}, {"date": "2024-06-12", "probability": 0.48}, {"date": "2024-06-13", "probability": 0.51}, {"date": "2024-06-14", "probability": 0.505}, {"date": "2024-06-15", "probability": 0.505}, {"date": "2024-06-16", "probability": 0.5}, {"date": "2024-06-17", "probability": 0.49}, {"date": "2024-06-18", "probability": 0.49}, {"date": "2024-06-19", "probability": 0.49}, {"date": "2024-06-20", "probability": 0.49}, {"date": "2024-06-21", "probability": 0.485}, {"date": "2024-06-22", "probability": 0.485}, {"date": "2024-06-23", "probability": 0.485}, {"date": "2024-06-24", "probability": 0.485}, {"date": "2024-06-25", "probability": 0.485}, {"date": "2024-06-26", "probability": 0.69}, {"date": "2024-06-27", "probability": 0.695}, {"date": "2024-06-28", "probability": 0.515}, {"date": "2024-06-29", "probability": 0.51}, {"date": "2024-06-30", "probability": 0.45}, {"date": "2024-07-01", "probability": 0.445}, {"date": "2024-07-02", "probability": 0.445}, {"date": "2024-07-03", "probability": 0.45}, {"date": "2024-07-04", "probability": 0.45}, {"date": "2024-07-05", "probability": 0.45}, {"date": "2024-07-06", "probability": 0.46}, {"date": "2024-07-07", "probability": 0.495}, {"date": "2024-07-08", "probability": 0.425}, {"date": "2024-07-09", "probability": 0.425}, {"date": "2024-07-10", "probability": 0.42}, {"date": "2024-07-11", "probability": 0.42}, {"date": "2024-07-12", "probability": 0.34}, {"date": "2024-07-13", "probability": 0.34}, {"date": "2024-07-14", "probability": 0.345}, {"date": "2024-07-15", "probability": 0.655}, {"date": "2024-07-16", "probability": 0.65}, {"date": "2024-07-17", "probability": 0.48}, {"date": "2024-07-18", "probability": 0.585}, {"date": "2024-07-19", "probability": 0.585}, {"date": "2024-07-20", "probability": 0.48}, {"date": "2024-07-21", "probability": 0.505}, {"date": "2024-07-22", "probability": 0.505}, {"date": "2024-07-23", "probability": 0.645}, {"date": "2024-07-24", "probability": 0.215}, {"date": "2024-07-25", "probability": 0.345}, {"date": "2024-07-26", "probability": 0.345}, {"date": "2024-07-27", "probability": 0.38}, {"date": "2024-07-28", "probability": 0.485}, {"date": "2024-07-29", "probability": 0.47}, {"date": "2024-07-30", "probability": 0.49}, {"date": "2024-07-31", "probability": 0.66}, {"date": "2024-08-01", "probability": 0.36}, {"date": "2024-08-02", "probability": 0.27}, {"date": "2024-08-03", "probability": 0.23}, {"date": "2024-08-04", "probability": 0.23}, {"date": "2024-08-05", "probability": 0.23}, {"date": "2024-08-06", "probability": 0.59}, {"date": "2024-08-07", "probability": 0.65}, {"date": "2024-08-08", "probability": 0.48}, {"date": "2024-08-09", "probability": 0.48}, {"date": "2024-08-10", "probability": 0.12}, {"date": "2024-08-11", "probability": 0.155}, {"date": "2024-08-12", "probability": 0.24}, {"date": "2024-08-13", "probability": 0.245}, {"date": "2024-08-14", "probability": 0.25}, {"date": "2024-08-15", "probability": 0.25}, {"date": "2024-08-16", "probability": 0.245}, {"date": "2024-08-17", "probability": 0.245}, {"date": "2024-08-18", "probability": 0.245}, {"date": "2024-08-19", "probability": 0.245}, {"date": "2024-08-20", "probability": 0.245}, {"date": "2024-08-21", "probability": 0.245}, {"date": "2024-08-22", "probability": 0.245}, {"date": "2024-08-23", "probability": 0.195}, {"date": "2024-08-24", "probability": 0.195}, {"date": "2024-08-25", "probability": 0.195}, {"date": "2024-08-26", "probability": 0.195}, {"date": "2024-08-27", "probability": 0.195}, {"date": "2024-08-28", "probability": 0.205}, {"date": "2024-08-29", "probability": 0.205}, {"date": "2024-08-30", "probability": 0.205}, {"date": "2024-08-31", "probability": 0.165}, {"date": "2024-09-01", "probability": 0.13}, {"date": "2024-09-02", "probability": 0.115}, {"date": "2024-09-03", "probability": 0.135}, {"date": "2024-09-04", "probability": 0.135}, {"date": "2024-09-05", "probability": 0.135}, {"date": "2024-09-06", "probability": 0.135}, {"date": "2024-09-07", "probability": 0.295}, {"date": "2024-09-08", "probability": 0.305}, {"date": "2024-09-09", "probability": 0.265}, {"date": "2024-09-10", "probability": 0.265}, {"date": "2024-09-11", "probability": 0.235}, {"date": "2024-09-12", "probability": 0.235}, {"date": "2024-09-13", "probability": 0.235}, {"date": "2024-09-14", "probability": 0.24}, {"date": "2024-09-15", "probability": 0.27}, {"date": "2024-09-16", "probability": 0.34}, {"date": "2024-09-17", "probability": 0.375}, {"date": "2024-09-18", "probability": 0.37}, {"date": "2024-09-19", "probability": 0.365}, {"date": "2024-09-20", "probability": 0.31}, {"date": "2024-09-21", "probability": 0.31}, {"date": "2024-09-22", "probability": 0.31}, {"date": "2024-09-23", "probability": 0.245}, {"date": "2024-09-24", "probability": 0.24}, {"date": "2024-09-25", "probability": 0.24}, {"date": "2024-09-26", "probability": 0.275}, {"date": "2024-09-27", "probability": 0.265}, {"date": "2024-09-28", "probability": 0.175}, {"date": "2024-09-29", "probability": 0.28}, {"date": "2024-09-30", "probability": 0.295}, {"date": "2024-10-01", "probability": 0.475}, {"date": "2024-10-02", "probability": 0.365}, {"date": "2024-10-03", "probability": 0.345}, {"date": "2024-10-04", "probability": 0.34}, {"date": "2024-10-05", "probability": 0.32}, {"date": "2024-10-06", "probability": 0.32}, {"date": "2024-10-07", "probability": 0.305}, {"date": "2024-10-08", "probability": 0.31}, {"date": "2024-10-09", "probability": 0.2}, {"date": "2024-10-10", "probability": 0.22}, {"date": "2024-10-11", "probability": 0.19}, {"date": "2024-10-12", "probability": 0.18}, {"date": "2024-10-13", "probability": 0.18}, {"date": "2024-10-14", "probability": 0.175}, {"date": "2024-10-15", "probability": 0.195}, {"date": "2024-10-16", "probability": 0.195}, {"date": "2024-10-17", "probability": 0.195}, {"date": "2024-10-18", "probability": 0.2}, {"date": "2024-10-19", "probability": 0.135}, {"date": "2024-10-20", "probability": 0.115}, {"date": "2024-10-21", "probability": 0.11}, {"date": "2024-10-22", "probability": 0.075}, {"date": "2024-10-23", "probability": 0.06}, {"date": "2024-10-24", "probability": 0.055}, {"date": "2024-10-25", "probability": 0.065}, {"date": "2024-10-26", "probability": 0.06}, {"date": "2024-10-27", "probability": 0.06}, {"date": "2024-10-28", "probability": 0.065}, {"date": "2024-10-29", "probability": 0.165}, {"date": "2024-10-30", "probability": 0.1545}, {"date": "2024-10-31", "probability": 0.062}, {"date": "2024-11-01", "probability": 0.032}, {"date": "2024-11-02", "probability": 0.021}, {"date": "2024-11-03", "probability": 0.0315}, {"date": "2024-11-04", "probability": 0.029}, {"date": "2024-11-05", "probability": 0.0215}, {"date": "2024-11-06", "probability": 0.0165}, {"date": "2024-11-07", "probability": 0.016}, {"date": "2024-11-08", "probability": 0.0045}],{},0.5728,false);
             })();
           </script>
         </div>
@@ -261,9 +261,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             
             <div class="prob-block">
               <div class="prob-label">TruthMachine (17 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:69%"></div></div>
-              <span class="prob-val">69%</span>
-              <span class="brier-val"> Brier: 0.096</span>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:70%"></div></div>
+              <span class="prob-val">70%</span>
+              <span class="brier-val"> Brier: 0.0873</span>
             </div>
             
             <div class="prob-block">
@@ -279,7 +279,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-B04');
-              drawSparkline(el,[{"date": "2023-10-10", "probability": 0.565}, {"date": "2023-10-11", "probability": 0.345}, {"date": "2023-10-12", "probability": 0.36}, {"date": "2023-10-13", "probability": 0.305}, {"date": "2023-10-14", "probability": 0.28}, {"date": "2023-10-15", "probability": 0.205}, {"date": "2023-10-16", "probability": 0.2}, {"date": "2023-10-17", "probability": 0.22}, {"date": "2023-10-18", "probability": 0.305}, {"date": "2023-10-19", "probability": 0.275}, {"date": "2023-10-20", "probability": 0.265}, {"date": "2023-10-21", "probability": 0.9995}],{},0.6902,false);
+              drawSparkline(el,[{"date": "2023-10-10", "probability": 0.565}, {"date": "2023-10-11", "probability": 0.345}, {"date": "2023-10-12", "probability": 0.36}, {"date": "2023-10-13", "probability": 0.305}, {"date": "2023-10-14", "probability": 0.28}, {"date": "2023-10-15", "probability": 0.205}, {"date": "2023-10-16", "probability": 0.2}, {"date": "2023-10-17", "probability": 0.22}, {"date": "2023-10-18", "probability": 0.305}, {"date": "2023-10-19", "probability": 0.275}, {"date": "2023-10-20", "probability": 0.265}, {"date": "2023-10-21", "probability": 0.9995}],{},0.7046,false);
             })();
           </script>
         </div>
@@ -301,7 +301,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
               <div class="prob-label">TruthMachine (19 art.)</div>
               <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:67%"></div></div>
               <span class="prob-val">67%</span>
-              <span class="brier-val"> Brier: 0.1034</span>
+              <span class="brier-val"> Brier: 0.1062</span>
             </div>
             
             <div class="prob-block">
@@ -317,7 +317,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-B05');
-              drawSparkline(el,[{"date": "2023-11-23", "probability": 0.775}, {"date": "2023-11-24", "probability": 0.77}, {"date": "2023-11-25", "probability": 0.77}, {"date": "2023-11-26", "probability": 0.8}, {"date": "2023-11-27", "probability": 0.956}, {"date": "2023-11-28", "probability": 0.995}],{},0.6784,false);
+              drawSparkline(el,[{"date": "2023-11-23", "probability": 0.775}, {"date": "2023-11-24", "probability": 0.77}, {"date": "2023-11-25", "probability": 0.77}, {"date": "2023-11-26", "probability": 0.8}, {"date": "2023-11-27", "probability": 0.956}, {"date": "2023-11-28", "probability": 0.995}],{},0.6741,false);
             })();
           </script>
         </div>
@@ -339,7 +339,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
               <div class="prob-label">TruthMachine (10 art.)</div>
               <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:78%"></div></div>
               <span class="prob-val">78%</span>
-              <span class="brier-val"> Brier: 0.0467</span>
+              <span class="brier-val"> Brier: 0.0454</span>
             </div>
             
             <div class="prob-block">
@@ -355,7 +355,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-B08');
-              drawSparkline(el,[{"date": "2023-11-29", "probability": 0.375}, {"date": "2023-11-30", "probability": 0.285}, {"date": "2023-12-01", "probability": 0.315}, {"date": "2023-12-02", "probability": 0.515}, {"date": "2023-12-03", "probability": 0.5}, {"date": "2023-12-04", "probability": 0.982}],{},0.7838,false);
+              drawSparkline(el,[{"date": "2023-11-29", "probability": 0.375}, {"date": "2023-11-30", "probability": 0.285}, {"date": "2023-12-01", "probability": 0.315}, {"date": "2023-12-02", "probability": 0.515}, {"date": "2023-12-03", "probability": 0.5}, {"date": "2023-12-04", "probability": 0.982}],{},0.7869,false);
             })();
           </script>
         </div>
@@ -375,9 +375,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             
             <div class="prob-block">
               <div class="prob-label">TruthMachine (9 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:76%"></div></div>
-              <span class="prob-val">76%</span>
-              <span class="brier-val"> Brier: 0.0561</span>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:68%"></div></div>
+              <span class="prob-val">68%</span>
+              <span class="brier-val"> Brier: 0.0966</span>
             </div>
             
             <div class="prob-block">
@@ -393,7 +393,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-B09');
-              drawSparkline(el,[{"date": "2023-12-14", "probability": 0.69}, {"date": "2023-12-15", "probability": 0.69}, {"date": "2023-12-16", "probability": 0.5}, {"date": "2023-12-17", "probability": 0.735}, {"date": "2023-12-18", "probability": 0.735}, {"date": "2023-12-19", "probability": 0.735}, {"date": "2023-12-20", "probability": 0.785}, {"date": "2023-12-21", "probability": 0.785}, {"date": "2023-12-22", "probability": 0.785}, {"date": "2023-12-23", "probability": 0.785}, {"date": "2023-12-24", "probability": 0.785}, {"date": "2023-12-25", "probability": 0.785}, {"date": "2023-12-26", "probability": 0.81}, {"date": "2023-12-27", "probability": 0.81}, {"date": "2023-12-28", "probability": 0.81}, {"date": "2023-12-29", "probability": 0.81}, {"date": "2023-12-30", "probability": 0.81}, {"date": "2023-12-31", "probability": 0.81}, {"date": "2024-01-01", "probability": 0.81}, {"date": "2024-01-02", "probability": 0.84}, {"date": "2024-01-03", "probability": 0.665}, {"date": "2024-01-04", "probability": 0.665}, {"date": "2024-01-05", "probability": 0.5}, {"date": "2024-01-06", "probability": 0.5}, {"date": "2024-01-07", "probability": 0.5}, {"date": "2024-01-08", "probability": 0.5}, {"date": "2024-01-09", "probability": 0.5}, {"date": "2024-01-10", "probability": 0.5}, {"date": "2024-01-11", "probability": 0.5}, {"date": "2024-01-12", "probability": 0.5}, {"date": "2024-01-13", "probability": 0.5}, {"date": "2024-01-14", "probability": 0.5}, {"date": "2024-01-15", "probability": 0.5}, {"date": "2024-01-16", "probability": 0.5}, {"date": "2024-01-17", "probability": 0.5}, {"date": "2024-01-18", "probability": 0.5}, {"date": "2024-01-19", "probability": 0.5}, {"date": "2024-01-20", "probability": 0.5}, {"date": "2024-01-21", "probability": 0.5}, {"date": "2024-01-22", "probability": 0.75}, {"date": "2024-01-23", "probability": 0.5}, {"date": "2024-01-24", "probability": 0.75}, {"date": "2024-01-25", "probability": 0.75}, {"date": "2024-01-26", "probability": 0.5}, {"date": "2024-01-27", "probability": 0.5}, {"date": "2024-01-28", "probability": 0.5}, {"date": "2024-01-29", "probability": 0.75}, {"date": "2024-01-30", "probability": 0.75}, {"date": "2024-01-31", "probability": 0.5}, {"date": "2024-02-01", "probability": 0.5}, {"date": "2024-02-02", "probability": 0.5}, {"date": "2024-02-03", "probability": 0.5}, {"date": "2024-02-04", "probability": 0.5}, {"date": "2024-02-05", "probability": 0.5}, {"date": "2024-02-06", "probability": 0.5}, {"date": "2024-02-07", "probability": 0.5}, {"date": "2024-02-08", "probability": 0.5}, {"date": "2024-02-09", "probability": 0.5}, {"date": "2024-02-10", "probability": 0.5}, {"date": "2024-02-11", "probability": 0.5}, {"date": "2024-02-12", "probability": 0.525}, {"date": "2024-02-13", "probability": 0.515}, {"date": "2024-02-14", "probability": 0.525}, {"date": "2024-02-15", "probability": 0.525}, {"date": "2024-02-16", "probability": 0.525}, {"date": "2024-02-17", "probability": 0.915}, {"date": "2024-02-18", "probability": 0.96}, {"date": "2024-02-19", "probability": 0.9655}, {"date": "2024-02-20", "probability": 0.965}, {"date": "2024-02-21", "probability": 0.9655}, {"date": "2024-02-22", "probability": 0.9665}, {"date": "2024-02-23", "probability": 0.9665}, {"date": "2024-02-24", "probability": 0.965}, {"date": "2024-02-25", "probability": 0.965}, {"date": "2024-02-26", "probability": 0.965}, {"date": "2024-02-27", "probability": 0.968}, {"date": "2024-02-28", "probability": 0.987}, {"date": "2024-02-29", "probability": 0.9865}, {"date": "2024-03-01", "probability": 0.988}, {"date": "2024-03-02", "probability": 0.5005}],{},0.7631,true);
+              drawSparkline(el,[{"date": "2023-12-14", "probability": 0.69}, {"date": "2023-12-15", "probability": 0.69}, {"date": "2023-12-16", "probability": 0.5}, {"date": "2023-12-17", "probability": 0.735}, {"date": "2023-12-18", "probability": 0.735}, {"date": "2023-12-19", "probability": 0.735}, {"date": "2023-12-20", "probability": 0.785}, {"date": "2023-12-21", "probability": 0.785}, {"date": "2023-12-22", "probability": 0.785}, {"date": "2023-12-23", "probability": 0.785}, {"date": "2023-12-24", "probability": 0.785}, {"date": "2023-12-25", "probability": 0.785}, {"date": "2023-12-26", "probability": 0.81}, {"date": "2023-12-27", "probability": 0.81}, {"date": "2023-12-28", "probability": 0.81}, {"date": "2023-12-29", "probability": 0.81}, {"date": "2023-12-30", "probability": 0.81}, {"date": "2023-12-31", "probability": 0.81}, {"date": "2024-01-01", "probability": 0.81}, {"date": "2024-01-02", "probability": 0.84}, {"date": "2024-01-03", "probability": 0.665}, {"date": "2024-01-04", "probability": 0.665}, {"date": "2024-01-05", "probability": 0.5}, {"date": "2024-01-06", "probability": 0.5}, {"date": "2024-01-07", "probability": 0.5}, {"date": "2024-01-08", "probability": 0.5}, {"date": "2024-01-09", "probability": 0.5}, {"date": "2024-01-10", "probability": 0.5}, {"date": "2024-01-11", "probability": 0.5}, {"date": "2024-01-12", "probability": 0.5}, {"date": "2024-01-13", "probability": 0.5}, {"date": "2024-01-14", "probability": 0.5}, {"date": "2024-01-15", "probability": 0.5}, {"date": "2024-01-16", "probability": 0.5}, {"date": "2024-01-17", "probability": 0.5}, {"date": "2024-01-18", "probability": 0.5}, {"date": "2024-01-19", "probability": 0.5}, {"date": "2024-01-20", "probability": 0.5}, {"date": "2024-01-21", "probability": 0.5}, {"date": "2024-01-22", "probability": 0.75}, {"date": "2024-01-23", "probability": 0.5}, {"date": "2024-01-24", "probability": 0.75}, {"date": "2024-01-25", "probability": 0.75}, {"date": "2024-01-26", "probability": 0.5}, {"date": "2024-01-27", "probability": 0.5}, {"date": "2024-01-28", "probability": 0.5}, {"date": "2024-01-29", "probability": 0.75}, {"date": "2024-01-30", "probability": 0.75}, {"date": "2024-01-31", "probability": 0.5}, {"date": "2024-02-01", "probability": 0.5}, {"date": "2024-02-02", "probability": 0.5}, {"date": "2024-02-03", "probability": 0.5}, {"date": "2024-02-04", "probability": 0.5}, {"date": "2024-02-05", "probability": 0.5}, {"date": "2024-02-06", "probability": 0.5}, {"date": "2024-02-07", "probability": 0.5}, {"date": "2024-02-08", "probability": 0.5}, {"date": "2024-02-09", "probability": 0.5}, {"date": "2024-02-10", "probability": 0.5}, {"date": "2024-02-11", "probability": 0.5}, {"date": "2024-02-12", "probability": 0.525}, {"date": "2024-02-13", "probability": 0.515}, {"date": "2024-02-14", "probability": 0.525}, {"date": "2024-02-15", "probability": 0.525}, {"date": "2024-02-16", "probability": 0.525}, {"date": "2024-02-17", "probability": 0.915}, {"date": "2024-02-18", "probability": 0.96}, {"date": "2024-02-19", "probability": 0.9655}, {"date": "2024-02-20", "probability": 0.965}, {"date": "2024-02-21", "probability": 0.9655}, {"date": "2024-02-22", "probability": 0.9665}, {"date": "2024-02-23", "probability": 0.9665}, {"date": "2024-02-24", "probability": 0.965}, {"date": "2024-02-25", "probability": 0.965}, {"date": "2024-02-26", "probability": 0.965}, {"date": "2024-02-27", "probability": 0.968}, {"date": "2024-02-28", "probability": 0.987}, {"date": "2024-02-29", "probability": 0.9865}, {"date": "2024-03-01", "probability": 0.988}, {"date": "2024-03-02", "probability": 0.5005}],{},0.6892,true);
             })();
           </script>
         </div>
@@ -412,10 +412,10 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <div class="event-body">
             
             <div class="prob-block">
-              <div class="prob-label">TruthMachine (18 art.)</div>
+              <div class="prob-label">TruthMachine (20 art.)</div>
               <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:68%"></div></div>
               <span class="prob-val">68%</span>
-              <span class="brier-val"> Brier: 0.0977</span>
+              <span class="brier-val"> Brier: 0.0983</span>
             </div>
             
             <div class="prob-block">
@@ -431,7 +431,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-B10');
-              drawSparkline(el,[{"date": "2024-08-27", "probability": 0.805}, {"date": "2024-08-28", "probability": 0.785}, {"date": "2024-08-29", "probability": 0.71}, {"date": "2024-08-30", "probability": 0.72}, {"date": "2024-08-31", "probability": 0.71}, {"date": "2024-09-01", "probability": 0.705}, {"date": "2024-09-02", "probability": 0.755}, {"date": "2024-09-03", "probability": 0.765}, {"date": "2024-09-04", "probability": 0.785}, {"date": "2024-09-05", "probability": 0.775}, {"date": "2024-09-06", "probability": 0.765}, {"date": "2024-09-07", "probability": 0.77}, {"date": "2024-09-08", "probability": 0.775}, {"date": "2024-09-09", "probability": 0.81}, {"date": "2024-09-10", "probability": 0.82}, {"date": "2024-09-11", "probability": 0.82}, {"date": "2024-09-12", "probability": 0.835}, {"date": "2024-09-13", "probability": 0.855}, {"date": "2024-09-14", "probability": 0.86}, {"date": "2024-09-15", "probability": 0.865}, {"date": "2024-09-16", "probability": 0.875}, {"date": "2024-09-17", "probability": 0.88}, {"date": "2024-09-18", "probability": 0.88}, {"date": "2024-09-19", "probability": 0.89}, {"date": "2024-09-20", "probability": 0.88}, {"date": "2024-09-21", "probability": 0.88}, {"date": "2024-09-22", "probability": 0.895}, {"date": "2024-09-23", "probability": 0.72}, {"date": "2024-09-24", "probability": 0.745}, {"date": "2024-09-25", "probability": 0.72}, {"date": "2024-09-26", "probability": 0.715}, {"date": "2024-09-27", "probability": 0.73}, {"date": "2024-09-28", "probability": 0.705}, {"date": "2024-09-29", "probability": 0.715}, {"date": "2024-09-30", "probability": 0.725}, {"date": "2024-10-01", "probability": 0.73}, {"date": "2024-10-02", "probability": 0.72}, {"date": "2024-10-03", "probability": 0.725}, {"date": "2024-10-04", "probability": 0.73}, {"date": "2024-10-05", "probability": 0.78}, {"date": "2024-10-06", "probability": 0.645}, {"date": "2024-10-07", "probability": 0.735}, {"date": "2024-10-08", "probability": 0.84}, {"date": "2024-10-09", "probability": 0.805}, {"date": "2024-10-10", "probability": 0.84}, {"date": "2024-10-11", "probability": 0.56}, {"date": "2024-10-12", "probability": 0.815}, {"date": "2024-10-13", "probability": 0.82}, {"date": "2024-10-14", "probability": 0.875}, {"date": "2024-10-15", "probability": 0.825}, {"date": "2024-10-16", "probability": 0.83}],{},0.6875,true);
+              drawSparkline(el,[{"date": "2024-08-27", "probability": 0.805}, {"date": "2024-08-28", "probability": 0.785}, {"date": "2024-08-29", "probability": 0.71}, {"date": "2024-08-30", "probability": 0.72}, {"date": "2024-08-31", "probability": 0.71}, {"date": "2024-09-01", "probability": 0.705}, {"date": "2024-09-02", "probability": 0.755}, {"date": "2024-09-03", "probability": 0.765}, {"date": "2024-09-04", "probability": 0.785}, {"date": "2024-09-05", "probability": 0.775}, {"date": "2024-09-06", "probability": 0.765}, {"date": "2024-09-07", "probability": 0.77}, {"date": "2024-09-08", "probability": 0.775}, {"date": "2024-09-09", "probability": 0.81}, {"date": "2024-09-10", "probability": 0.82}, {"date": "2024-09-11", "probability": 0.82}, {"date": "2024-09-12", "probability": 0.835}, {"date": "2024-09-13", "probability": 0.855}, {"date": "2024-09-14", "probability": 0.86}, {"date": "2024-09-15", "probability": 0.865}, {"date": "2024-09-16", "probability": 0.875}, {"date": "2024-09-17", "probability": 0.88}, {"date": "2024-09-18", "probability": 0.88}, {"date": "2024-09-19", "probability": 0.89}, {"date": "2024-09-20", "probability": 0.88}, {"date": "2024-09-21", "probability": 0.88}, {"date": "2024-09-22", "probability": 0.895}, {"date": "2024-09-23", "probability": 0.72}, {"date": "2024-09-24", "probability": 0.745}, {"date": "2024-09-25", "probability": 0.72}, {"date": "2024-09-26", "probability": 0.715}, {"date": "2024-09-27", "probability": 0.73}, {"date": "2024-09-28", "probability": 0.705}, {"date": "2024-09-29", "probability": 0.715}, {"date": "2024-09-30", "probability": 0.725}, {"date": "2024-10-01", "probability": 0.73}, {"date": "2024-10-02", "probability": 0.72}, {"date": "2024-10-03", "probability": 0.725}, {"date": "2024-10-04", "probability": 0.73}, {"date": "2024-10-05", "probability": 0.78}, {"date": "2024-10-06", "probability": 0.645}, {"date": "2024-10-07", "probability": 0.735}, {"date": "2024-10-08", "probability": 0.84}, {"date": "2024-10-09", "probability": 0.805}, {"date": "2024-10-10", "probability": 0.84}, {"date": "2024-10-11", "probability": 0.56}, {"date": "2024-10-12", "probability": 0.815}, {"date": "2024-10-13", "probability": 0.82}, {"date": "2024-10-14", "probability": 0.875}, {"date": "2024-10-15", "probability": 0.825}, {"date": "2024-10-16", "probability": 0.83}],{},0.6865,true);
             })();
           </script>
         </div>
@@ -450,10 +450,10 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <div class="event-body">
             
             <div class="prob-block">
-              <div class="prob-label">TruthMachine (5 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:70%"></div></div>
-              <span class="prob-val">70%</span>
-              <span class="brier-val"> Brier: 0.0861</span>
+              <div class="prob-label">TruthMachine (9 art.)</div>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:66%"></div></div>
+              <span class="prob-val">66%</span>
+              <span class="brier-val"> Brier: 0.1117</span>
             </div>
             
             <div class="prob-block">
@@ -469,7 +469,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-C07');
-              drawSparkline(el,[{"date": "2024-09-18", "probability": 0.905}, {"date": "2024-09-19", "probability": 0.91}, {"date": "2024-09-20", "probability": 0.915}, {"date": "2024-09-21", "probability": 0.9}, {"date": "2024-09-22", "probability": 0.895}, {"date": "2024-09-23", "probability": 0.905}, {"date": "2024-09-24", "probability": 0.86}, {"date": "2024-09-25", "probability": 0.865}, {"date": "2024-09-26", "probability": 0.865}, {"date": "2024-09-27", "probability": 0.88}],{},0.7065,true);
+              drawSparkline(el,[{"date": "2024-09-18", "probability": 0.905}, {"date": "2024-09-19", "probability": 0.91}, {"date": "2024-09-20", "probability": 0.915}, {"date": "2024-09-21", "probability": 0.9}, {"date": "2024-09-22", "probability": 0.895}, {"date": "2024-09-23", "probability": 0.905}, {"date": "2024-09-24", "probability": 0.86}, {"date": "2024-09-25", "probability": 0.865}, {"date": "2024-09-26", "probability": 0.865}, {"date": "2024-09-27", "probability": 0.88}],{},0.6658,true);
             })();
           </script>
         </div>
@@ -489,9 +489,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             
             <div class="prob-block">
               <div class="prob-label">TruthMachine (13 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:49%"></div></div>
-              <span class="prob-val">49%</span>
-              <span class="brier-val"> Brier: 0.2588</span>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:57%"></div></div>
+              <span class="prob-val">57%</span>
+              <span class="brier-val"> Brier: 0.1815</span>
             </div>
             
             <div class="prob-block">
@@ -507,7 +507,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-C08');
-              drawSparkline(el,[{"date": "2024-09-25", "probability": 0.25}, {"date": "2024-09-26", "probability": 0.365}, {"date": "2024-09-27", "probability": 0.4}, {"date": "2024-09-28", "probability": 0.395}, {"date": "2024-09-29", "probability": 0.365}, {"date": "2024-09-30", "probability": 0.375}, {"date": "2024-10-01", "probability": 0.275}, {"date": "2024-10-02", "probability": 0.34}, {"date": "2024-10-03", "probability": 0.34}, {"date": "2024-10-04", "probability": 0.395}, {"date": "2024-10-05", "probability": 0.415}, {"date": "2024-10-06", "probability": 0.355}, {"date": "2024-10-07", "probability": 0.325}, {"date": "2024-10-08", "probability": 0.285}, {"date": "2024-10-09", "probability": 0.415}, {"date": "2024-10-10", "probability": 0.34}, {"date": "2024-10-11", "probability": 0.37}, {"date": "2024-10-12", "probability": 0.36}, {"date": "2024-10-13", "probability": 0.35}, {"date": "2024-10-14", "probability": 0.325}, {"date": "2024-10-15", "probability": 0.305}, {"date": "2024-10-16", "probability": 0.31}, {"date": "2024-10-17", "probability": 0.31}, {"date": "2024-10-18", "probability": 0.36}, {"date": "2024-10-19", "probability": 0.35}, {"date": "2024-10-20", "probability": 0.365}, {"date": "2024-10-21", "probability": 0.315}, {"date": "2024-10-22", "probability": 0.31}, {"date": "2024-10-23", "probability": 0.3}, {"date": "2024-10-24", "probability": 0.325}, {"date": "2024-10-25", "probability": 0.34}, {"date": "2024-10-26", "probability": 0.36}, {"date": "2024-10-27", "probability": 0.375}, {"date": "2024-10-28", "probability": 0.38}, {"date": "2024-10-29", "probability": 0.39}, {"date": "2024-10-30", "probability": 0.565}, {"date": "2024-10-31", "probability": 0.785}, {"date": "2024-11-01", "probability": 0.555}, {"date": "2024-11-02", "probability": 0.47}, {"date": "2024-11-03", "probability": 0.525}, {"date": "2024-11-04", "probability": 0.505}, {"date": "2024-11-05", "probability": 0.43}, {"date": "2024-11-06", "probability": 0.435}, {"date": "2024-11-07", "probability": 0.26}, {"date": "2024-11-08", "probability": 0.34}, {"date": "2024-11-09", "probability": 0.33}, {"date": "2024-11-10", "probability": 0.345}, {"date": "2024-11-11", "probability": 0.365}, {"date": "2024-11-12", "probability": 0.345}, {"date": "2024-11-13", "probability": 0.3}, {"date": "2024-11-14", "probability": 0.27}, {"date": "2024-11-15", "probability": 0.335}, {"date": "2024-11-16", "probability": 0.385}, {"date": "2024-11-17", "probability": 0.37}, {"date": "2024-11-18", "probability": 0.49}, {"date": "2024-11-19", "probability": 0.61}, {"date": "2024-11-20", "probability": 0.405}, {"date": "2024-11-21", "probability": 0.44}, {"date": "2024-11-22", "probability": 0.475}, {"date": "2024-11-23", "probability": 0.475}, {"date": "2024-11-24", "probability": 0.405}, {"date": "2024-11-25", "probability": 0.615}, {"date": "2024-11-26", "probability": 0.835}, {"date": "2024-11-27", "probability": 0.979}],{},0.4913,false);
+              drawSparkline(el,[{"date": "2024-09-25", "probability": 0.25}, {"date": "2024-09-26", "probability": 0.365}, {"date": "2024-09-27", "probability": 0.4}, {"date": "2024-09-28", "probability": 0.395}, {"date": "2024-09-29", "probability": 0.365}, {"date": "2024-09-30", "probability": 0.375}, {"date": "2024-10-01", "probability": 0.275}, {"date": "2024-10-02", "probability": 0.34}, {"date": "2024-10-03", "probability": 0.34}, {"date": "2024-10-04", "probability": 0.395}, {"date": "2024-10-05", "probability": 0.415}, {"date": "2024-10-06", "probability": 0.355}, {"date": "2024-10-07", "probability": 0.325}, {"date": "2024-10-08", "probability": 0.285}, {"date": "2024-10-09", "probability": 0.415}, {"date": "2024-10-10", "probability": 0.34}, {"date": "2024-10-11", "probability": 0.37}, {"date": "2024-10-12", "probability": 0.36}, {"date": "2024-10-13", "probability": 0.35}, {"date": "2024-10-14", "probability": 0.325}, {"date": "2024-10-15", "probability": 0.305}, {"date": "2024-10-16", "probability": 0.31}, {"date": "2024-10-17", "probability": 0.31}, {"date": "2024-10-18", "probability": 0.36}, {"date": "2024-10-19", "probability": 0.35}, {"date": "2024-10-20", "probability": 0.365}, {"date": "2024-10-21", "probability": 0.315}, {"date": "2024-10-22", "probability": 0.31}, {"date": "2024-10-23", "probability": 0.3}, {"date": "2024-10-24", "probability": 0.325}, {"date": "2024-10-25", "probability": 0.34}, {"date": "2024-10-26", "probability": 0.36}, {"date": "2024-10-27", "probability": 0.375}, {"date": "2024-10-28", "probability": 0.38}, {"date": "2024-10-29", "probability": 0.39}, {"date": "2024-10-30", "probability": 0.565}, {"date": "2024-10-31", "probability": 0.785}, {"date": "2024-11-01", "probability": 0.555}, {"date": "2024-11-02", "probability": 0.47}, {"date": "2024-11-03", "probability": 0.525}, {"date": "2024-11-04", "probability": 0.505}, {"date": "2024-11-05", "probability": 0.43}, {"date": "2024-11-06", "probability": 0.435}, {"date": "2024-11-07", "probability": 0.26}, {"date": "2024-11-08", "probability": 0.34}, {"date": "2024-11-09", "probability": 0.33}, {"date": "2024-11-10", "probability": 0.345}, {"date": "2024-11-11", "probability": 0.365}, {"date": "2024-11-12", "probability": 0.345}, {"date": "2024-11-13", "probability": 0.3}, {"date": "2024-11-14", "probability": 0.27}, {"date": "2024-11-15", "probability": 0.335}, {"date": "2024-11-16", "probability": 0.385}, {"date": "2024-11-17", "probability": 0.37}, {"date": "2024-11-18", "probability": 0.49}, {"date": "2024-11-19", "probability": 0.61}, {"date": "2024-11-20", "probability": 0.405}, {"date": "2024-11-21", "probability": 0.44}, {"date": "2024-11-22", "probability": 0.475}, {"date": "2024-11-23", "probability": 0.475}, {"date": "2024-11-24", "probability": 0.405}, {"date": "2024-11-25", "probability": 0.615}, {"date": "2024-11-26", "probability": 0.835}, {"date": "2024-11-27", "probability": 0.979}],{},0.574,false);
             })();
           </script>
         </div>
@@ -526,10 +526,10 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <div class="event-body">
             
             <div class="prob-block">
-              <div class="prob-label">TruthMachine (1 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:66%"></div></div>
-              <span class="prob-val">66%</span>
-              <span class="brier-val"> Brier: 0.1156</span>
+              <div class="prob-label">TruthMachine (2 art.)</div>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:56%"></div></div>
+              <span class="prob-val">56%</span>
+              <span class="brier-val"> Brier: 0.1924</span>
             </div>
             
             <div class="prob-block">
@@ -545,7 +545,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-C09');
-              drawSparkline(el,[{"date": "2024-11-19", "probability": 0.935}, {"date": "2024-11-20", "probability": 0.945}, {"date": "2024-11-21", "probability": 0.97}, {"date": "2024-11-22", "probability": 0.9635}, {"date": "2024-11-23", "probability": 0.9705}, {"date": "2024-11-24", "probability": 0.975}, {"date": "2024-11-25", "probability": 0.9755}, {"date": "2024-11-26", "probability": 0.966}, {"date": "2024-11-27", "probability": 0.9665}, {"date": "2024-11-28", "probability": 0.9625}, {"date": "2024-11-29", "probability": 0.9635}, {"date": "2024-11-30", "probability": 0.9325}, {"date": "2024-12-01", "probability": 0.807}, {"date": "2024-12-02", "probability": 0.926}, {"date": "2024-12-03", "probability": 0.923}, {"date": "2024-12-04", "probability": 0.917}, {"date": "2024-12-05", "probability": 0.924}, {"date": "2024-12-06", "probability": 0.778}, {"date": "2024-12-07", "probability": 0.4975}, {"date": "2024-12-08", "probability": 0.233}],{},0.66,true);
+              drawSparkline(el,[{"date": "2024-11-19", "probability": 0.935}, {"date": "2024-11-20", "probability": 0.945}, {"date": "2024-11-21", "probability": 0.97}, {"date": "2024-11-22", "probability": 0.9635}, {"date": "2024-11-23", "probability": 0.9705}, {"date": "2024-11-24", "probability": 0.975}, {"date": "2024-11-25", "probability": 0.9755}, {"date": "2024-11-26", "probability": 0.966}, {"date": "2024-11-27", "probability": 0.9665}, {"date": "2024-11-28", "probability": 0.9625}, {"date": "2024-11-29", "probability": 0.9635}, {"date": "2024-11-30", "probability": 0.9325}, {"date": "2024-12-01", "probability": 0.807}, {"date": "2024-12-02", "probability": 0.926}, {"date": "2024-12-03", "probability": 0.923}, {"date": "2024-12-04", "probability": 0.917}, {"date": "2024-12-05", "probability": 0.924}, {"date": "2024-12-06", "probability": 0.778}, {"date": "2024-12-07", "probability": 0.4975}, {"date": "2024-12-08", "probability": 0.233}],{},0.5614,true);
             })();
           </script>
         </div>
@@ -564,10 +564,10 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <div class="event-body">
             
             <div class="prob-block">
-              <div class="prob-label">TruthMachine (5 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:63%"></div></div>
-              <span class="prob-val">63%</span>
-              <span class="brier-val"> Brier: 0.1312</span>
+              <div class="prob-label">TruthMachine (4 art.)</div>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:61%"></div></div>
+              <span class="prob-val">61%</span>
+              <span class="brier-val"> Brier: 0.1496</span>
             </div>
             
             <div class="prob-block">
@@ -583,7 +583,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-E07');
-              drawSparkline(el,[{"date": "2024-01-05", "probability": 0.5}, {"date": "2024-01-06", "probability": 0.405}, {"date": "2024-01-07", "probability": 0.405}, {"date": "2024-01-08", "probability": 0.475}, {"date": "2024-01-09", "probability": 0.465}, {"date": "2024-01-10", "probability": 0.455}, {"date": "2024-01-11", "probability": 0.465}, {"date": "2024-01-12", "probability": 0.475}, {"date": "2024-01-13", "probability": 0.485}, {"date": "2024-01-14", "probability": 0.485}, {"date": "2024-01-15", "probability": 0.475}, {"date": "2024-01-16", "probability": 0.475}, {"date": "2024-01-17", "probability": 0.485}, {"date": "2024-01-18", "probability": 0.485}, {"date": "2024-01-19", "probability": 0.485}, {"date": "2024-01-20", "probability": 0.485}, {"date": "2024-01-21", "probability": 0.485}, {"date": "2024-01-22", "probability": 0.485}, {"date": "2024-01-23", "probability": 0.545}, {"date": "2024-01-24", "probability": 0.545}, {"date": "2024-01-25", "probability": 0.545}, {"date": "2024-01-26", "probability": 0.545}, {"date": "2024-01-27", "probability": 0.545}, {"date": "2024-01-28", "probability": 0.545}, {"date": "2024-01-29", "probability": 0.545}, {"date": "2024-01-30", "probability": 0.545}, {"date": "2024-01-31", "probability": 0.545}, {"date": "2024-02-01", "probability": 0.525}, {"date": "2024-02-02", "probability": 0.525}, {"date": "2024-02-03", "probability": 0.525}, {"date": "2024-02-04", "probability": 0.525}, {"date": "2024-02-05", "probability": 0.525}, {"date": "2024-02-06", "probability": 0.525}, {"date": "2024-02-07", "probability": 0.525}, {"date": "2024-02-08", "probability": 0.525}, {"date": "2024-02-09", "probability": 0.525}, {"date": "2024-02-10", "probability": 0.515}, {"date": "2024-02-11", "probability": 0.525}, {"date": "2024-02-12", "probability": 0.525}, {"date": "2024-02-13", "probability": 0.535}, {"date": "2024-02-14", "probability": 0.525}, {"date": "2024-02-15", "probability": 0.525}, {"date": "2024-02-16", "probability": 0.53}, {"date": "2024-02-17", "probability": 0.525}, {"date": "2024-02-18", "probability": 0.525}, {"date": "2024-02-19", "probability": 0.535}, {"date": "2024-02-20", "probability": 0.545}, {"date": "2024-02-21", "probability": 0.545}, {"date": "2024-02-22", "probability": 0.545}, {"date": "2024-02-23", "probability": 0.545}, {"date": "2024-02-24", "probability": 0.535}, {"date": "2024-02-25", "probability": 0.535}, {"date": "2024-02-26", "probability": 0.535}, {"date": "2024-02-27", "probability": 0.525}, {"date": "2024-02-28", "probability": 0.525}, {"date": "2024-02-29", "probability": 0.525}, {"date": "2024-03-01", "probability": 0.525}, {"date": "2024-03-02", "probability": 0.525}, {"date": "2024-03-03", "probability": 0.535}, {"date": "2024-03-04", "probability": 0.535}, {"date": "2024-03-05", "probability": 0.535}, {"date": "2024-03-06", "probability": 0.535}, {"date": "2024-03-07", "probability": 0.535}, {"date": "2024-03-08", "probability": 0.535}, {"date": "2024-03-09", "probability": 0.535}, {"date": "2024-03-10", "probability": 0.535}, {"date": "2024-03-11", "probability": 0.515}, {"date": "2024-03-12", "probability": 0.515}, {"date": "2024-03-13", "probability": 0.515}, {"date": "2024-03-14", "probability": 0.515}, {"date": "2024-03-15", "probability": 0.515}, {"date": "2024-03-16", "probability": 0.515}, {"date": "2024-03-17", "probability": 0.515}, {"date": "2024-03-18", "probability": 0.515}, {"date": "2024-03-19", "probability": 0.515}, {"date": "2024-03-20", "probability": 0.515}, {"date": "2024-03-21", "probability": 0.515}, {"date": "2024-03-22", "probability": 0.515}, {"date": "2024-03-23", "probability": 0.515}, {"date": "2024-03-24", "probability": 0.495}, {"date": "2024-03-25", "probability": 0.495}, {"date": "2024-03-26", "probability": 0.495}, {"date": "2024-03-27", "probability": 0.495}, {"date": "2024-03-28", "probability": 0.495}, {"date": "2024-03-29", "probability": 0.495}, {"date": "2024-03-30", "probability": 0.485}, {"date": "2024-03-31", "probability": 0.485}, {"date": "2024-04-01", "probability": 0.485}, {"date": "2024-04-02", "probability": 0.485}, {"date": "2024-04-03", "probability": 0.485}, {"date": "2024-04-04", "probability": 0.475}, {"date": "2024-04-05", "probability": 0.465}, {"date": "2024-04-06", "probability": 0.465}, {"date": "2024-04-07", "probability": 0.465}, {"date": "2024-04-08", "probability": 0.465}, {"date": "2024-04-09", "probability": 0.465}, {"date": "2024-04-10", "probability": 0.465}, {"date": "2024-04-11", "probability": 0.455}, {"date": "2024-04-12", "probability": 0.455}, {"date": "2024-04-13", "probability": 0.455}, {"date": "2024-04-14", "probability": 0.455}, {"date": "2024-04-15", "probability": 0.455}, {"date": "2024-04-16", "probability": 0.455}, {"date": "2024-04-17", "probability": 0.445}, {"date": "2024-04-18", "probability": 0.445}, {"date": "2024-04-19", "probability": 0.425}, {"date": "2024-04-20", "probability": 0.425}, {"date": "2024-04-21", "probability": 0.435}, {"date": "2024-04-22", "probability": 0.435}, {"date": "2024-04-23", "probability": 0.435}, {"date": "2024-04-24", "probability": 0.435}, {"date": "2024-04-25", "probability": 0.425}, {"date": "2024-04-26", "probability": 0.425}, {"date": "2024-04-27", "probability": 0.435}, {"date": "2024-04-28", "probability": 0.435}, {"date": "2024-04-29", "probability": 0.435}, {"date": "2024-04-30", "probability": 0.435}, {"date": "2024-05-01", "probability": 0.445}, {"date": "2024-05-02", "probability": 0.455}, {"date": "2024-05-03", "probability": 0.455}, {"date": "2024-05-04", "probability": 0.465}, {"date": "2024-05-05", "probability": 0.465}, {"date": "2024-05-06", "probability": 0.465}, {"date": "2024-05-07", "probability": 0.465}, {"date": "2024-05-08", "probability": 0.465}, {"date": "2024-05-09", "probability": 0.455}, {"date": "2024-05-10", "probability": 0.445}, {"date": "2024-05-11", "probability": 0.445}, {"date": "2024-05-12", "probability": 0.445}, {"date": "2024-05-13", "probability": 0.445}, {"date": "2024-05-14", "probability": 0.51}, {"date": "2024-05-15", "probability": 0.485}, {"date": "2024-05-16", "probability": 0.495}, {"date": "2024-05-17", "probability": 0.495}, {"date": "2024-05-18", "probability": 0.505}, {"date": "2024-05-19", "probability": 0.515}, {"date": "2024-05-20", "probability": 0.515}, {"date": "2024-05-21", "probability": 0.54}, {"date": "2024-05-22", "probability": 0.545}, {"date": "2024-05-23", "probability": 0.55}, {"date": "2024-05-24", "probability": 0.545}, {"date": "2024-05-25", "probability": 0.545}, {"date": "2024-05-26", "probability": 0.555}, {"date": "2024-05-27", "probability": 0.555}, {"date": "2024-05-28", "probability": 0.555}, {"date": "2024-05-29", "probability": 0.565}, {"date": "2024-05-30", "probability": 0.565}, {"date": "2024-05-31", "probability": 0.535}, {"date": "2024-06-01", "probability": 0.545}, {"date": "2024-06-02", "probability": 0.535}, {"date": "2024-06-03", "probability": 0.535}, {"date": "2024-06-04", "probability": 0.535}, {"date": "2024-06-05", "probability": 0.555}, {"date": "2024-06-06", "probability": 0.555}, {"date": "2024-06-07", "probability": 0.545}, {"date": "2024-06-08", "probability": 0.555}, {"date": "2024-06-09", "probability": 0.555}, {"date": "2024-06-10", "probability": 0.555}, {"date": "2024-06-11", "probability": 0.565}, {"date": "2024-06-12", "probability": 0.555}, {"date": "2024-06-13", "probability": 0.565}, {"date": "2024-06-14", "probability": 0.565}, {"date": "2024-06-15", "probability": 0.565}, {"date": "2024-06-16", "probability": 0.565}, {"date": "2024-06-17", "probability": 0.565}, {"date": "2024-06-18", "probability": 0.565}, {"date": "2024-06-19", "probability": 0.565}, {"date": "2024-06-20", "probability": 0.565}, {"date": "2024-06-21", "probability": 0.565}, {"date": "2024-06-22", "probability": 0.565}, {"date": "2024-06-23", "probability": 0.575}, {"date": "2024-06-24", "probability": 0.575}, {"date": "2024-06-25", "probability": 0.585}, {"date": "2024-06-26", "probability": 0.595}, {"date": "2024-06-27", "probability": 0.595}, {"date": "2024-06-28", "probability": 0.605}, {"date": "2024-06-29", "probability": 0.625}, {"date": "2024-06-30", "probability": 0.625}, {"date": "2024-07-01", "probability": 0.615}, {"date": "2024-07-02", "probability": 0.66}, {"date": "2024-07-03", "probability": 0.65}, {"date": "2024-07-04", "probability": 0.615}, {"date": "2024-07-05", "probability": 0.605}, {"date": "2024-07-06", "probability": 0.605}, {"date": "2024-07-07", "probability": 0.625}, {"date": "2024-07-08", "probability": 0.625}, {"date": "2024-07-09", "probability": 0.605}, {"date": "2024-07-10", "probability": 0.625}, {"date": "2024-07-11", "probability": 0.625}, {"date": "2024-07-12", "probability": 0.6}, {"date": "2024-07-13", "probability": 0.595}, {"date": "2024-07-14", "probability": 0.675}, {"date": "2024-07-15", "probability": 0.695}, {"date": "2024-07-16", "probability": 0.705}, {"date": "2024-07-17", "probability": 0.685}, {"date": "2024-07-18", "probability": 0.675}, {"date": "2024-07-19", "probability": 0.615}, {"date": "2024-07-20", "probability": 0.645}, {"date": "2024-07-21", "probability": 0.64}, {"date": "2024-07-22", "probability": 0.63}, {"date": "2024-07-23", "probability": 0.625}, {"date": "2024-07-24", "probability": 0.605}, {"date": "2024-07-25", "probability": 0.625}, {"date": "2024-07-26", "probability": 0.615}, {"date": "2024-07-27", "probability": 0.585}, {"date": "2024-07-28", "probability": 0.575}, {"date": "2024-07-29", "probability": 0.585}, {"date": "2024-07-30", "probability": 0.595}, {"date": "2024-07-31", "probability": 0.585}, {"date": "2024-08-01", "probability": 0.555}, {"date": "2024-08-02", "probability": 0.535}, {"date": "2024-08-03", "probability": 0.525}, {"date": "2024-08-04", "probability": 0.545}, {"date": "2024-08-05", "probability": 0.515}, {"date": "2024-08-06", "probability": 0.535}, {"date": "2024-08-07", "probability": 0.515}, {"date": "2024-08-08", "probability": 0.485}, {"date": "2024-08-09", "probability": 0.4915}, {"date": "2024-08-10", "probability": 0.476}, {"date": "2024-08-11", "probability": 0.453}, {"date": "2024-08-12", "probability": 0.4555}, {"date": "2024-08-13", "probability": 0.4585}, {"date": "2024-08-14", "probability": 0.4555}, {"date": "2024-08-15", "probability": 0.447}, {"date": "2024-08-16", "probability": 0.443}, {"date": "2024-08-17", "probability": 0.4545}, {"date": "2024-08-18", "probability": 0.4865}, {"date": "2024-08-19", "probability": 0.4835}, {"date": "2024-08-20", "probability": 0.486}, {"date": "2024-08-21", "probability": 0.5025}, {"date": "2024-08-22", "probability": 0.5215}, {"date": "2024-08-23", "probability": 0.5175}, {"date": "2024-08-24", "probability": 0.5015}, {"date": "2024-08-25", "probability": 0.502}, {"date": "2024-08-26", "probability": 0.4955}, {"date": "2024-08-27", "probability": 0.4945}, {"date": "2024-08-28", "probability": 0.5035}, {"date": "2024-08-29", "probability": 0.503}, {"date": "2024-08-30", "probability": 0.498}, {"date": "2024-08-31", "probability": 0.4995}, {"date": "2024-09-01", "probability": 0.5025}, {"date": "2024-09-02", "probability": 0.5085}, {"date": "2024-09-03", "probability": 0.5175}, {"date": "2024-09-04", "probability": 0.5115}, {"date": "2024-09-05", "probability": 0.5295}, {"date": "2024-09-06", "probability": 0.528}, {"date": "2024-09-07", "probability": 0.5055}, {"date": "2024-09-08", "probability": 0.5}, {"date": "2024-09-09", "probability": 0.513}, {"date": "2024-09-10", "probability": 0.5225}, {"date": "2024-09-11", "probability": 0.5195}, {"date": "2024-09-12", "probability": 0.496}, {"date": "2024-09-13", "probability": 0.491}, {"date": "2024-09-14", "probability": 0.491}, {"date": "2024-09-15", "probability": 0.4885}, {"date": "2024-09-16", "probability": 0.494}, {"date": "2024-09-17", "probability": 0.4945}, {"date": "2024-09-18", "probability": 0.4805}, {"date": "2024-09-19", "probability": 0.4675}, {"date": "2024-09-20", "probability": 0.4715}, {"date": "2024-09-21", "probability": 0.479}, {"date": "2024-09-22", "probability": 0.4755}, {"date": "2024-09-23", "probability": 0.4695}, {"date": "2024-09-24", "probability": 0.4825}, {"date": "2024-09-25", "probability": 0.481}, {"date": "2024-09-26", "probability": 0.4885}, {"date": "2024-09-27", "probability": 0.4895}, {"date": "2024-09-28", "probability": 0.4855}, {"date": "2024-09-29", "probability": 0.4825}, {"date": "2024-09-30", "probability": 0.4905}, {"date": "2024-10-01", "probability": 0.4885}, {"date": "2024-10-02", "probability": 0.4825}, {"date": "2024-10-03", "probability": 0.4925}, {"date": "2024-10-04", "probability": 0.4965}, {"date": "2024-10-05", "probability": 0.4975}, {"date": "2024-10-06", "probability": 0.5015}, {"date": "2024-10-07", "probability": 0.5075}, {"date": "2024-10-08", "probability": 0.5395}, {"date": "2024-10-09", "probability": 0.529}, {"date": "2024-10-10", "probability": 0.5335}, {"date": "2024-10-11", "probability": 0.5545}, {"date": "2024-10-12", "probability": 0.5405}, {"date": "2024-10-13", "probability": 0.5495}, {"date": "2024-10-14", "probability": 0.5395}, {"date": "2024-10-15", "probability": 0.5505}, {"date": "2024-10-16", "probability": 0.5765}, {"date": "2024-10-17", "probability": 0.5855}, {"date": "2024-10-18", "probability": 0.6185}, {"date": "2024-10-19", "probability": 0.5995}, {"date": "2024-10-20", "probability": 0.6005}, {"date": "2024-10-21", "probability": 0.6065}, {"date": "2024-10-22", "probability": 0.649}, {"date": "2024-10-23", "probability": 0.6475}, {"date": "2024-10-24", "probability": 0.6155}, {"date": "2024-10-25", "probability": 0.641}, {"date": "2024-10-26", "probability": 0.6385}, {"date": "2024-10-27", "probability": 0.6455}, {"date": "2024-10-28", "probability": 0.6495}, {"date": "2024-10-29", "probability": 0.6585}, {"date": "2024-10-30", "probability": 0.6655}, {"date": "2024-10-31", "probability": 0.6475}, {"date": "2024-11-01", "probability": 0.6325}, {"date": "2024-11-02", "probability": 0.5825}, {"date": "2024-11-03", "probability": 0.5585}, {"date": "2024-11-04", "probability": 0.5635}, {"date": "2024-11-05", "probability": 0.5855}, {"date": "2024-11-06", "probability": 0.58}],{},0.6378,false);
+              drawSparkline(el,[{"date": "2024-01-05", "probability": 0.5}, {"date": "2024-01-06", "probability": 0.405}, {"date": "2024-01-07", "probability": 0.405}, {"date": "2024-01-08", "probability": 0.475}, {"date": "2024-01-09", "probability": 0.465}, {"date": "2024-01-10", "probability": 0.455}, {"date": "2024-01-11", "probability": 0.465}, {"date": "2024-01-12", "probability": 0.475}, {"date": "2024-01-13", "probability": 0.485}, {"date": "2024-01-14", "probability": 0.485}, {"date": "2024-01-15", "probability": 0.475}, {"date": "2024-01-16", "probability": 0.475}, {"date": "2024-01-17", "probability": 0.485}, {"date": "2024-01-18", "probability": 0.485}, {"date": "2024-01-19", "probability": 0.485}, {"date": "2024-01-20", "probability": 0.485}, {"date": "2024-01-21", "probability": 0.485}, {"date": "2024-01-22", "probability": 0.485}, {"date": "2024-01-23", "probability": 0.545}, {"date": "2024-01-24", "probability": 0.545}, {"date": "2024-01-25", "probability": 0.545}, {"date": "2024-01-26", "probability": 0.545}, {"date": "2024-01-27", "probability": 0.545}, {"date": "2024-01-28", "probability": 0.545}, {"date": "2024-01-29", "probability": 0.545}, {"date": "2024-01-30", "probability": 0.545}, {"date": "2024-01-31", "probability": 0.545}, {"date": "2024-02-01", "probability": 0.525}, {"date": "2024-02-02", "probability": 0.525}, {"date": "2024-02-03", "probability": 0.525}, {"date": "2024-02-04", "probability": 0.525}, {"date": "2024-02-05", "probability": 0.525}, {"date": "2024-02-06", "probability": 0.525}, {"date": "2024-02-07", "probability": 0.525}, {"date": "2024-02-08", "probability": 0.525}, {"date": "2024-02-09", "probability": 0.525}, {"date": "2024-02-10", "probability": 0.515}, {"date": "2024-02-11", "probability": 0.525}, {"date": "2024-02-12", "probability": 0.525}, {"date": "2024-02-13", "probability": 0.535}, {"date": "2024-02-14", "probability": 0.525}, {"date": "2024-02-15", "probability": 0.525}, {"date": "2024-02-16", "probability": 0.53}, {"date": "2024-02-17", "probability": 0.525}, {"date": "2024-02-18", "probability": 0.525}, {"date": "2024-02-19", "probability": 0.535}, {"date": "2024-02-20", "probability": 0.545}, {"date": "2024-02-21", "probability": 0.545}, {"date": "2024-02-22", "probability": 0.545}, {"date": "2024-02-23", "probability": 0.545}, {"date": "2024-02-24", "probability": 0.535}, {"date": "2024-02-25", "probability": 0.535}, {"date": "2024-02-26", "probability": 0.535}, {"date": "2024-02-27", "probability": 0.525}, {"date": "2024-02-28", "probability": 0.525}, {"date": "2024-02-29", "probability": 0.525}, {"date": "2024-03-01", "probability": 0.525}, {"date": "2024-03-02", "probability": 0.525}, {"date": "2024-03-03", "probability": 0.535}, {"date": "2024-03-04", "probability": 0.535}, {"date": "2024-03-05", "probability": 0.535}, {"date": "2024-03-06", "probability": 0.535}, {"date": "2024-03-07", "probability": 0.535}, {"date": "2024-03-08", "probability": 0.535}, {"date": "2024-03-09", "probability": 0.535}, {"date": "2024-03-10", "probability": 0.535}, {"date": "2024-03-11", "probability": 0.515}, {"date": "2024-03-12", "probability": 0.515}, {"date": "2024-03-13", "probability": 0.515}, {"date": "2024-03-14", "probability": 0.515}, {"date": "2024-03-15", "probability": 0.515}, {"date": "2024-03-16", "probability": 0.515}, {"date": "2024-03-17", "probability": 0.515}, {"date": "2024-03-18", "probability": 0.515}, {"date": "2024-03-19", "probability": 0.515}, {"date": "2024-03-20", "probability": 0.515}, {"date": "2024-03-21", "probability": 0.515}, {"date": "2024-03-22", "probability": 0.515}, {"date": "2024-03-23", "probability": 0.515}, {"date": "2024-03-24", "probability": 0.495}, {"date": "2024-03-25", "probability": 0.495}, {"date": "2024-03-26", "probability": 0.495}, {"date": "2024-03-27", "probability": 0.495}, {"date": "2024-03-28", "probability": 0.495}, {"date": "2024-03-29", "probability": 0.495}, {"date": "2024-03-30", "probability": 0.485}, {"date": "2024-03-31", "probability": 0.485}, {"date": "2024-04-01", "probability": 0.485}, {"date": "2024-04-02", "probability": 0.485}, {"date": "2024-04-03", "probability": 0.485}, {"date": "2024-04-04", "probability": 0.475}, {"date": "2024-04-05", "probability": 0.465}, {"date": "2024-04-06", "probability": 0.465}, {"date": "2024-04-07", "probability": 0.465}, {"date": "2024-04-08", "probability": 0.465}, {"date": "2024-04-09", "probability": 0.465}, {"date": "2024-04-10", "probability": 0.465}, {"date": "2024-04-11", "probability": 0.455}, {"date": "2024-04-12", "probability": 0.455}, {"date": "2024-04-13", "probability": 0.455}, {"date": "2024-04-14", "probability": 0.455}, {"date": "2024-04-15", "probability": 0.455}, {"date": "2024-04-16", "probability": 0.455}, {"date": "2024-04-17", "probability": 0.445}, {"date": "2024-04-18", "probability": 0.445}, {"date": "2024-04-19", "probability": 0.425}, {"date": "2024-04-20", "probability": 0.425}, {"date": "2024-04-21", "probability": 0.435}, {"date": "2024-04-22", "probability": 0.435}, {"date": "2024-04-23", "probability": 0.435}, {"date": "2024-04-24", "probability": 0.435}, {"date": "2024-04-25", "probability": 0.425}, {"date": "2024-04-26", "probability": 0.425}, {"date": "2024-04-27", "probability": 0.435}, {"date": "2024-04-28", "probability": 0.435}, {"date": "2024-04-29", "probability": 0.435}, {"date": "2024-04-30", "probability": 0.435}, {"date": "2024-05-01", "probability": 0.445}, {"date": "2024-05-02", "probability": 0.455}, {"date": "2024-05-03", "probability": 0.455}, {"date": "2024-05-04", "probability": 0.465}, {"date": "2024-05-05", "probability": 0.465}, {"date": "2024-05-06", "probability": 0.465}, {"date": "2024-05-07", "probability": 0.465}, {"date": "2024-05-08", "probability": 0.465}, {"date": "2024-05-09", "probability": 0.455}, {"date": "2024-05-10", "probability": 0.445}, {"date": "2024-05-11", "probability": 0.445}, {"date": "2024-05-12", "probability": 0.445}, {"date": "2024-05-13", "probability": 0.445}, {"date": "2024-05-14", "probability": 0.51}, {"date": "2024-05-15", "probability": 0.485}, {"date": "2024-05-16", "probability": 0.495}, {"date": "2024-05-17", "probability": 0.495}, {"date": "2024-05-18", "probability": 0.505}, {"date": "2024-05-19", "probability": 0.515}, {"date": "2024-05-20", "probability": 0.515}, {"date": "2024-05-21", "probability": 0.54}, {"date": "2024-05-22", "probability": 0.545}, {"date": "2024-05-23", "probability": 0.55}, {"date": "2024-05-24", "probability": 0.545}, {"date": "2024-05-25", "probability": 0.545}, {"date": "2024-05-26", "probability": 0.555}, {"date": "2024-05-27", "probability": 0.555}, {"date": "2024-05-28", "probability": 0.555}, {"date": "2024-05-29", "probability": 0.565}, {"date": "2024-05-30", "probability": 0.565}, {"date": "2024-05-31", "probability": 0.535}, {"date": "2024-06-01", "probability": 0.545}, {"date": "2024-06-02", "probability": 0.535}, {"date": "2024-06-03", "probability": 0.535}, {"date": "2024-06-04", "probability": 0.535}, {"date": "2024-06-05", "probability": 0.555}, {"date": "2024-06-06", "probability": 0.555}, {"date": "2024-06-07", "probability": 0.545}, {"date": "2024-06-08", "probability": 0.555}, {"date": "2024-06-09", "probability": 0.555}, {"date": "2024-06-10", "probability": 0.555}, {"date": "2024-06-11", "probability": 0.565}, {"date": "2024-06-12", "probability": 0.555}, {"date": "2024-06-13", "probability": 0.565}, {"date": "2024-06-14", "probability": 0.565}, {"date": "2024-06-15", "probability": 0.565}, {"date": "2024-06-16", "probability": 0.565}, {"date": "2024-06-17", "probability": 0.565}, {"date": "2024-06-18", "probability": 0.565}, {"date": "2024-06-19", "probability": 0.565}, {"date": "2024-06-20", "probability": 0.565}, {"date": "2024-06-21", "probability": 0.565}, {"date": "2024-06-22", "probability": 0.565}, {"date": "2024-06-23", "probability": 0.575}, {"date": "2024-06-24", "probability": 0.575}, {"date": "2024-06-25", "probability": 0.585}, {"date": "2024-06-26", "probability": 0.595}, {"date": "2024-06-27", "probability": 0.595}, {"date": "2024-06-28", "probability": 0.605}, {"date": "2024-06-29", "probability": 0.625}, {"date": "2024-06-30", "probability": 0.625}, {"date": "2024-07-01", "probability": 0.615}, {"date": "2024-07-02", "probability": 0.66}, {"date": "2024-07-03", "probability": 0.65}, {"date": "2024-07-04", "probability": 0.615}, {"date": "2024-07-05", "probability": 0.605}, {"date": "2024-07-06", "probability": 0.605}, {"date": "2024-07-07", "probability": 0.625}, {"date": "2024-07-08", "probability": 0.625}, {"date": "2024-07-09", "probability": 0.605}, {"date": "2024-07-10", "probability": 0.625}, {"date": "2024-07-11", "probability": 0.625}, {"date": "2024-07-12", "probability": 0.6}, {"date": "2024-07-13", "probability": 0.595}, {"date": "2024-07-14", "probability": 0.675}, {"date": "2024-07-15", "probability": 0.695}, {"date": "2024-07-16", "probability": 0.705}, {"date": "2024-07-17", "probability": 0.685}, {"date": "2024-07-18", "probability": 0.675}, {"date": "2024-07-19", "probability": 0.615}, {"date": "2024-07-20", "probability": 0.645}, {"date": "2024-07-21", "probability": 0.64}, {"date": "2024-07-22", "probability": 0.63}, {"date": "2024-07-23", "probability": 0.625}, {"date": "2024-07-24", "probability": 0.605}, {"date": "2024-07-25", "probability": 0.625}, {"date": "2024-07-26", "probability": 0.615}, {"date": "2024-07-27", "probability": 0.585}, {"date": "2024-07-28", "probability": 0.575}, {"date": "2024-07-29", "probability": 0.585}, {"date": "2024-07-30", "probability": 0.595}, {"date": "2024-07-31", "probability": 0.585}, {"date": "2024-08-01", "probability": 0.555}, {"date": "2024-08-02", "probability": 0.535}, {"date": "2024-08-03", "probability": 0.525}, {"date": "2024-08-04", "probability": 0.545}, {"date": "2024-08-05", "probability": 0.515}, {"date": "2024-08-06", "probability": 0.535}, {"date": "2024-08-07", "probability": 0.515}, {"date": "2024-08-08", "probability": 0.485}, {"date": "2024-08-09", "probability": 0.4915}, {"date": "2024-08-10", "probability": 0.476}, {"date": "2024-08-11", "probability": 0.453}, {"date": "2024-08-12", "probability": 0.4555}, {"date": "2024-08-13", "probability": 0.4585}, {"date": "2024-08-14", "probability": 0.4555}, {"date": "2024-08-15", "probability": 0.447}, {"date": "2024-08-16", "probability": 0.443}, {"date": "2024-08-17", "probability": 0.4545}, {"date": "2024-08-18", "probability": 0.4865}, {"date": "2024-08-19", "probability": 0.4835}, {"date": "2024-08-20", "probability": 0.486}, {"date": "2024-08-21", "probability": 0.5025}, {"date": "2024-08-22", "probability": 0.5215}, {"date": "2024-08-23", "probability": 0.5175}, {"date": "2024-08-24", "probability": 0.5015}, {"date": "2024-08-25", "probability": 0.502}, {"date": "2024-08-26", "probability": 0.4955}, {"date": "2024-08-27", "probability": 0.4945}, {"date": "2024-08-28", "probability": 0.5035}, {"date": "2024-08-29", "probability": 0.503}, {"date": "2024-08-30", "probability": 0.498}, {"date": "2024-08-31", "probability": 0.4995}, {"date": "2024-09-01", "probability": 0.5025}, {"date": "2024-09-02", "probability": 0.5085}, {"date": "2024-09-03", "probability": 0.5175}, {"date": "2024-09-04", "probability": 0.5115}, {"date": "2024-09-05", "probability": 0.5295}, {"date": "2024-09-06", "probability": 0.528}, {"date": "2024-09-07", "probability": 0.5055}, {"date": "2024-09-08", "probability": 0.5}, {"date": "2024-09-09", "probability": 0.513}, {"date": "2024-09-10", "probability": 0.5225}, {"date": "2024-09-11", "probability": 0.5195}, {"date": "2024-09-12", "probability": 0.496}, {"date": "2024-09-13", "probability": 0.491}, {"date": "2024-09-14", "probability": 0.491}, {"date": "2024-09-15", "probability": 0.4885}, {"date": "2024-09-16", "probability": 0.494}, {"date": "2024-09-17", "probability": 0.4945}, {"date": "2024-09-18", "probability": 0.4805}, {"date": "2024-09-19", "probability": 0.4675}, {"date": "2024-09-20", "probability": 0.4715}, {"date": "2024-09-21", "probability": 0.479}, {"date": "2024-09-22", "probability": 0.4755}, {"date": "2024-09-23", "probability": 0.4695}, {"date": "2024-09-24", "probability": 0.4825}, {"date": "2024-09-25", "probability": 0.481}, {"date": "2024-09-26", "probability": 0.4885}, {"date": "2024-09-27", "probability": 0.4895}, {"date": "2024-09-28", "probability": 0.4855}, {"date": "2024-09-29", "probability": 0.4825}, {"date": "2024-09-30", "probability": 0.4905}, {"date": "2024-10-01", "probability": 0.4885}, {"date": "2024-10-02", "probability": 0.4825}, {"date": "2024-10-03", "probability": 0.4925}, {"date": "2024-10-04", "probability": 0.4965}, {"date": "2024-10-05", "probability": 0.4975}, {"date": "2024-10-06", "probability": 0.5015}, {"date": "2024-10-07", "probability": 0.5075}, {"date": "2024-10-08", "probability": 0.5395}, {"date": "2024-10-09", "probability": 0.529}, {"date": "2024-10-10", "probability": 0.5335}, {"date": "2024-10-11", "probability": 0.5545}, {"date": "2024-10-12", "probability": 0.5405}, {"date": "2024-10-13", "probability": 0.5495}, {"date": "2024-10-14", "probability": 0.5395}, {"date": "2024-10-15", "probability": 0.5505}, {"date": "2024-10-16", "probability": 0.5765}, {"date": "2024-10-17", "probability": 0.5855}, {"date": "2024-10-18", "probability": 0.6185}, {"date": "2024-10-19", "probability": 0.5995}, {"date": "2024-10-20", "probability": 0.6005}, {"date": "2024-10-21", "probability": 0.6065}, {"date": "2024-10-22", "probability": 0.649}, {"date": "2024-10-23", "probability": 0.6475}, {"date": "2024-10-24", "probability": 0.6155}, {"date": "2024-10-25", "probability": 0.641}, {"date": "2024-10-26", "probability": 0.6385}, {"date": "2024-10-27", "probability": 0.6455}, {"date": "2024-10-28", "probability": 0.6495}, {"date": "2024-10-29", "probability": 0.6585}, {"date": "2024-10-30", "probability": 0.6655}, {"date": "2024-10-31", "probability": 0.6475}, {"date": "2024-11-01", "probability": 0.6325}, {"date": "2024-11-02", "probability": 0.5825}, {"date": "2024-11-03", "probability": 0.5585}, {"date": "2024-11-04", "probability": 0.5635}, {"date": "2024-11-05", "probability": 0.5855}, {"date": "2024-11-06", "probability": 0.58}],{},0.6132,false);
             })();
           </script>
         </div>
@@ -602,10 +602,10 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <div class="event-body">
             
             <div class="prob-block">
-              <div class="prob-label">TruthMachine (3 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:45%"></div></div>
-              <span class="prob-val">45%</span>
-              <span class="brier-val"> Brier: 0.2934</span>
+              <div class="prob-label">TruthMachine (5 art.)</div>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:51%"></div></div>
+              <span class="prob-val">51%</span>
+              <span class="brier-val"> Brier: 0.2362</span>
             </div>
             
             <div class="prob-block">
@@ -621,7 +621,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-E08');
-              drawSparkline(el,[{"date": "2024-07-26", "probability": 0.065}, {"date": "2024-07-27", "probability": 0.075}, {"date": "2024-07-28", "probability": 0.115}, {"date": "2024-07-29", "probability": 0.115}, {"date": "2024-07-30", "probability": 0.11}, {"date": "2024-07-31", "probability": 0.125}, {"date": "2024-08-01", "probability": 0.085}, {"date": "2024-08-02", "probability": 0.175}, {"date": "2024-08-03", "probability": 0.545}, {"date": "2024-08-04", "probability": 0.445}, {"date": "2024-08-05", "probability": 0.52}, {"date": "2024-08-06", "probability": 0.59}, {"date": "2024-08-07", "probability": 0.515}, {"date": "2024-08-08", "probability": 0.54}, {"date": "2024-08-09", "probability": 0.465}, {"date": "2024-08-10", "probability": 0.315}, {"date": "2024-08-11", "probability": 0.345}, {"date": "2024-08-12", "probability": 0.295}, {"date": "2024-08-13", "probability": 0.33}, {"date": "2024-08-14", "probability": 0.325}, {"date": "2024-08-15", "probability": 0.215}, {"date": "2024-08-16", "probability": 0.125}, {"date": "2024-08-17", "probability": 0.145}, {"date": "2024-08-18", "probability": 0.14}, {"date": "2024-08-19", "probability": 0.145}, {"date": "2024-08-20", "probability": 0.15}, {"date": "2024-08-21", "probability": 0.165}, {"date": "2024-08-22", "probability": 0.225}, {"date": "2024-08-23", "probability": 0.17}, {"date": "2024-08-24", "probability": 0.225}, {"date": "2024-08-25", "probability": 0.205}, {"date": "2024-08-26", "probability": 0.215}, {"date": "2024-08-27", "probability": 0.225}, {"date": "2024-08-28", "probability": 0.245}, {"date": "2024-08-29", "probability": 0.245}, {"date": "2024-08-30", "probability": 0.225}, {"date": "2024-08-31", "probability": 0.22}, {"date": "2024-09-01", "probability": 0.215}, {"date": "2024-09-02", "probability": 0.205}, {"date": "2024-09-03", "probability": 0.205}, {"date": "2024-09-04", "probability": 0.225}, {"date": "2024-09-05", "probability": 0.365}, {"date": "2024-09-06", "probability": 0.325}, {"date": "2024-09-07", "probability": 0.245}, {"date": "2024-09-08", "probability": 0.265}, {"date": "2024-09-09", "probability": 0.255}, {"date": "2024-09-10", "probability": 0.225}, {"date": "2024-09-11", "probability": 0.235}, {"date": "2024-09-12", "probability": 0.075}, {"date": "2024-09-13", "probability": 0.265}, {"date": "2024-09-14", "probability": 0.345}, {"date": "2024-09-15", "probability": 0.345}, {"date": "2024-09-16", "probability": 0.425}, {"date": "2024-09-17", "probability": 0.585}, {"date": "2024-09-18", "probability": 0.542}],{},0.4583,false);
+              drawSparkline(el,[{"date": "2024-07-26", "probability": 0.065}, {"date": "2024-07-27", "probability": 0.075}, {"date": "2024-07-28", "probability": 0.115}, {"date": "2024-07-29", "probability": 0.115}, {"date": "2024-07-30", "probability": 0.11}, {"date": "2024-07-31", "probability": 0.125}, {"date": "2024-08-01", "probability": 0.085}, {"date": "2024-08-02", "probability": 0.175}, {"date": "2024-08-03", "probability": 0.545}, {"date": "2024-08-04", "probability": 0.445}, {"date": "2024-08-05", "probability": 0.52}, {"date": "2024-08-06", "probability": 0.59}, {"date": "2024-08-07", "probability": 0.515}, {"date": "2024-08-08", "probability": 0.54}, {"date": "2024-08-09", "probability": 0.465}, {"date": "2024-08-10", "probability": 0.315}, {"date": "2024-08-11", "probability": 0.345}, {"date": "2024-08-12", "probability": 0.295}, {"date": "2024-08-13", "probability": 0.33}, {"date": "2024-08-14", "probability": 0.325}, {"date": "2024-08-15", "probability": 0.215}, {"date": "2024-08-16", "probability": 0.125}, {"date": "2024-08-17", "probability": 0.145}, {"date": "2024-08-18", "probability": 0.14}, {"date": "2024-08-19", "probability": 0.145}, {"date": "2024-08-20", "probability": 0.15}, {"date": "2024-08-21", "probability": 0.165}, {"date": "2024-08-22", "probability": 0.225}, {"date": "2024-08-23", "probability": 0.17}, {"date": "2024-08-24", "probability": 0.225}, {"date": "2024-08-25", "probability": 0.205}, {"date": "2024-08-26", "probability": 0.215}, {"date": "2024-08-27", "probability": 0.225}, {"date": "2024-08-28", "probability": 0.245}, {"date": "2024-08-29", "probability": 0.245}, {"date": "2024-08-30", "probability": 0.225}, {"date": "2024-08-31", "probability": 0.22}, {"date": "2024-09-01", "probability": 0.215}, {"date": "2024-09-02", "probability": 0.205}, {"date": "2024-09-03", "probability": 0.205}, {"date": "2024-09-04", "probability": 0.225}, {"date": "2024-09-05", "probability": 0.365}, {"date": "2024-09-06", "probability": 0.325}, {"date": "2024-09-07", "probability": 0.245}, {"date": "2024-09-08", "probability": 0.265}, {"date": "2024-09-09", "probability": 0.255}, {"date": "2024-09-10", "probability": 0.225}, {"date": "2024-09-11", "probability": 0.235}, {"date": "2024-09-12", "probability": 0.075}, {"date": "2024-09-13", "probability": 0.265}, {"date": "2024-09-14", "probability": 0.345}, {"date": "2024-09-15", "probability": 0.345}, {"date": "2024-09-16", "probability": 0.425}, {"date": "2024-09-17", "probability": 0.585}, {"date": "2024-09-18", "probability": 0.542}],{},0.514,false);
             })();
           </script>
         </div>
@@ -641,9 +641,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             
             <div class="prob-block">
               <div class="prob-label">TruthMachine (7 art.)</div>
-              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:74%"></div></div>
-              <span class="prob-val">74%</span>
-              <span class="brier-val"> Brier: 0.065</span>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:82%"></div></div>
+              <span class="prob-val">82%</span>
+              <span class="brier-val"> Brier: 0.0314</span>
             </div>
             
             <div class="prob-block">
@@ -659,7 +659,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-E10');
-              drawSparkline(el,[{"date": "2023-01-31", "probability": 0.42}, {"date": "2023-02-01", "probability": 0.25}, {"date": "2023-02-02", "probability": 0.25}, {"date": "2023-02-03", "probability": 0.4}, {"date": "2023-02-04", "probability": 0.31}, {"date": "2023-02-05", "probability": 0.31}, {"date": "2023-02-07", "probability": 0.31}, {"date": "2023-02-09", "probability": 0.31}, {"date": "2023-02-12", "probability": 0.63}, {"date": "2023-02-13", "probability": 0.51}, {"date": "2023-02-14", "probability": 0.3}, {"date": "2023-02-15", "probability": 0.3}, {"date": "2023-02-16", "probability": 0.34}, {"date": "2023-02-17", "probability": 0.36}, {"date": "2023-02-18", "probability": 0.37}, {"date": "2023-02-19", "probability": 0.37}, {"date": "2023-02-21", "probability": 0.41}, {"date": "2023-02-22", "probability": 0.41}, {"date": "2023-02-23", "probability": 0.4}, {"date": "2023-02-24", "probability": 0.4}, {"date": "2023-02-25", "probability": 0.4}, {"date": "2023-02-26", "probability": 0.34}, {"date": "2023-02-27", "probability": 0.32}, {"date": "2023-02-28", "probability": 0.3}, {"date": "2023-03-01", "probability": 0.28}, {"date": "2023-03-02", "probability": 0.28}, {"date": "2023-03-03", "probability": 0.28}, {"date": "2023-03-04", "probability": 0.28}, {"date": "2023-03-05", "probability": 0.28}, {"date": "2023-03-06", "probability": 0.28}, {"date": "2023-03-07", "probability": 0.29}, {"date": "2023-03-08", "probability": 0.29}, {"date": "2023-03-09", "probability": 0.29}, {"date": "2023-03-10", "probability": 0.28}, {"date": "2023-03-11", "probability": 0.29}, {"date": "2023-03-12", "probability": 0.3}, {"date": "2023-03-14", "probability": 0.29}, {"date": "2023-03-15", "probability": 0.28}, {"date": "2023-03-16", "probability": 0.65}, {"date": "2023-03-17", "probability": 0.63}, {"date": "2023-03-18", "probability": 0.71}, {"date": "2023-03-19", "probability": 0.72}, {"date": "2023-03-20", "probability": 0.72}, {"date": "2023-03-21", "probability": 0.75}, {"date": "2023-03-23", "probability": 0.73}, {"date": "2023-03-24", "probability": 0.72}, {"date": "2023-03-25", "probability": 0.91}, {"date": "2023-03-26", "probability": 0.93}, {"date": "2023-03-27", "probability": 0.93}, {"date": "2023-03-28", "probability": 0.95}, {"date": "2023-03-29", "probability": 0.96}, {"date": "2023-03-30", "probability": 0.99}, {"date": "2023-03-31", "probability": 1.0}, {"date": "2023-04-01", "probability": 0.83}, {"date": "2023-04-02", "probability": 0.83}, {"date": "2023-04-03", "probability": 0.9}, {"date": "2023-04-04", "probability": 1.0}],{},0.745,false);
+              drawSparkline(el,[{"date": "2023-01-31", "probability": 0.42}, {"date": "2023-02-01", "probability": 0.25}, {"date": "2023-02-02", "probability": 0.25}, {"date": "2023-02-03", "probability": 0.4}, {"date": "2023-02-04", "probability": 0.31}, {"date": "2023-02-05", "probability": 0.31}, {"date": "2023-02-07", "probability": 0.31}, {"date": "2023-02-09", "probability": 0.31}, {"date": "2023-02-12", "probability": 0.63}, {"date": "2023-02-13", "probability": 0.51}, {"date": "2023-02-14", "probability": 0.3}, {"date": "2023-02-15", "probability": 0.3}, {"date": "2023-02-16", "probability": 0.34}, {"date": "2023-02-17", "probability": 0.36}, {"date": "2023-02-18", "probability": 0.37}, {"date": "2023-02-19", "probability": 0.37}, {"date": "2023-02-21", "probability": 0.41}, {"date": "2023-02-22", "probability": 0.41}, {"date": "2023-02-23", "probability": 0.4}, {"date": "2023-02-24", "probability": 0.4}, {"date": "2023-02-25", "probability": 0.4}, {"date": "2023-02-26", "probability": 0.34}, {"date": "2023-02-27", "probability": 0.32}, {"date": "2023-02-28", "probability": 0.3}, {"date": "2023-03-01", "probability": 0.28}, {"date": "2023-03-02", "probability": 0.28}, {"date": "2023-03-03", "probability": 0.28}, {"date": "2023-03-04", "probability": 0.28}, {"date": "2023-03-05", "probability": 0.28}, {"date": "2023-03-06", "probability": 0.28}, {"date": "2023-03-07", "probability": 0.29}, {"date": "2023-03-08", "probability": 0.29}, {"date": "2023-03-09", "probability": 0.29}, {"date": "2023-03-10", "probability": 0.28}, {"date": "2023-03-11", "probability": 0.29}, {"date": "2023-03-12", "probability": 0.3}, {"date": "2023-03-14", "probability": 0.29}, {"date": "2023-03-15", "probability": 0.28}, {"date": "2023-03-16", "probability": 0.65}, {"date": "2023-03-17", "probability": 0.63}, {"date": "2023-03-18", "probability": 0.71}, {"date": "2023-03-19", "probability": 0.72}, {"date": "2023-03-20", "probability": 0.72}, {"date": "2023-03-21", "probability": 0.75}, {"date": "2023-03-23", "probability": 0.73}, {"date": "2023-03-24", "probability": 0.72}, {"date": "2023-03-25", "probability": 0.91}, {"date": "2023-03-26", "probability": 0.93}, {"date": "2023-03-27", "probability": 0.93}, {"date": "2023-03-28", "probability": 0.95}, {"date": "2023-03-29", "probability": 0.96}, {"date": "2023-03-30", "probability": 0.99}, {"date": "2023-03-31", "probability": 1.0}, {"date": "2023-04-01", "probability": 0.83}, {"date": "2023-04-02", "probability": 0.83}, {"date": "2023-04-03", "probability": 0.9}, {"date": "2023-04-04", "probability": 1.0}],{},0.8227,false);
             })();
           </script>
         </div>
@@ -698,17 +698,23 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           </div>
         </div>
 
-        <div class="event-card ">
+        <div class="event-card tm-wins">
           <div class="event-header">
             <div>
               <div class="event-name">G07 — GPT-4 released publicly</div>
               <div class="event-meta">2023-03-14 · outcome: <span class="outcome-yes">YES</span> · ['AI & Tech']</div>
               <div class="event-pm-q">PM: <a href="https://polymarket.com/event/will-openai-release-gpt-4-by-may-31" target="_blank" rel="noopener" style="color:#f97316;text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Will OpenAI release GPT-4 by May 31?</a></div>
             </div>
-            
+            <span class="badge badge-tm">TM wins</span>
           </div>
           <div class="event-body">
-            <div class="prob-block"><div class="prob-label">TruthMachine</div><div class="no-data">insufficient data</div></div>
+            
+            <div class="prob-block">
+              <div class="prob-label">TruthMachine (1 art.)</div>
+              <div class="prob-bar-wrap"><div class="prob-bar tm" style="width:71%"></div></div>
+              <span class="prob-val">71%</span>
+              <span class="brier-val"> Brier: 0.0841</span>
+            </div>
             
             <div class="prob-block">
               <div class="prob-label">Polymarket (T-7d)</div>
@@ -723,7 +729,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <script>
             (function(){
               var el=document.getElementById('spark-G07');
-              drawSparkline(el,[{"date": "2023-02-17", "probability": 0.48}, {"date": "2023-02-18", "probability": 0.52}, {"date": "2023-02-19", "probability": 0.52}, {"date": "2023-02-21", "probability": 0.44}, {"date": "2023-02-22", "probability": 0.39}, {"date": "2023-02-23", "probability": 0.4}, {"date": "2023-02-24", "probability": 0.36}, {"date": "2023-02-25", "probability": 0.32}, {"date": "2023-02-26", "probability": 0.33}, {"date": "2023-02-27", "probability": 0.35}, {"date": "2023-02-28", "probability": 0.35}, {"date": "2023-03-01", "probability": 0.35}, {"date": "2023-03-02", "probability": 0.35}, {"date": "2023-03-03", "probability": 0.35}, {"date": "2023-03-04", "probability": 0.35}, {"date": "2023-03-05", "probability": 0.35}, {"date": "2023-03-06", "probability": 0.35}, {"date": "2023-03-07", "probability": 0.35}, {"date": "2023-03-08", "probability": 0.35}, {"date": "2023-03-09", "probability": 0.35}, {"date": "2023-03-10", "probability": 0.65}, {"date": "2023-03-11", "probability": 0.75}, {"date": "2023-03-12", "probability": 0.8}, {"date": "2023-03-14", "probability": 0.78}],{},null,false);
+              drawSparkline(el,[{"date": "2023-02-17", "probability": 0.48}, {"date": "2023-02-18", "probability": 0.52}, {"date": "2023-02-19", "probability": 0.52}, {"date": "2023-02-21", "probability": 0.44}, {"date": "2023-02-22", "probability": 0.39}, {"date": "2023-02-23", "probability": 0.4}, {"date": "2023-02-24", "probability": 0.36}, {"date": "2023-02-25", "probability": 0.32}, {"date": "2023-02-26", "probability": 0.33}, {"date": "2023-02-27", "probability": 0.35}, {"date": "2023-02-28", "probability": 0.35}, {"date": "2023-03-01", "probability": 0.35}, {"date": "2023-03-02", "probability": 0.35}, {"date": "2023-03-03", "probability": 0.35}, {"date": "2023-03-04", "probability": 0.35}, {"date": "2023-03-05", "probability": 0.35}, {"date": "2023-03-06", "probability": 0.35}, {"date": "2023-03-07", "probability": 0.35}, {"date": "2023-03-08", "probability": 0.35}, {"date": "2023-03-09", "probability": 0.35}, {"date": "2023-03-10", "probability": 0.65}, {"date": "2023-03-11", "probability": 0.75}, {"date": "2023-03-12", "probability": 0.8}, {"date": "2023-03-14", "probability": 0.78}],{},0.71,false);
             })();
           </script>
         </div>
@@ -742,20 +748,20 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
         <div class="bar-row">
           <div class="bar-label">A19</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:68px"></span></div>
+            <div><span class="bar-seg tm" style="width:55px"></span></div>
             <div><span class="bar-seg pm" style="width:300px"></span></div>
           </div>
-          <div class="bar-num">0.2252</div>
+          <div class="bar-num">0.1825</div>
           <div class="bar-num">0.991</div>
         </div>
 
         <div class="bar-row">
           <div class="bar-label">C07</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:26px"></span></div>
+            <div><span class="bar-seg tm" style="width:33px"></span></div>
             <div><span class="bar-seg pm" style="width:253px"></span></div>
           </div>
-          <div class="bar-num">0.0861</div>
+          <div class="bar-num">0.1117</div>
           <div class="bar-num">0.8372</div>
         </div>
 
@@ -765,98 +771,108 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
             <div><span class="bar-seg tm" style="width:29px"></span></div>
             <div><span class="bar-seg pm" style="width:196px"></span></div>
           </div>
-          <div class="bar-num">0.0977</div>
+          <div class="bar-num">0.0983</div>
           <div class="bar-num">0.648</div>
         </div>
 
         <div class="bar-row">
           <div class="bar-label">C09</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:34px"></span></div>
+            <div><span class="bar-seg tm" style="width:58px"></span></div>
             <div><span class="bar-seg pm" style="width:197px"></span></div>
           </div>
-          <div class="bar-num">0.1156</div>
+          <div class="bar-num">0.1924</div>
           <div class="bar-num">0.6512</div>
         </div>
 
         <div class="bar-row">
           <div class="bar-label">E08</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:88px"></span></div>
+            <div><span class="bar-seg tm" style="width:71px"></span></div>
             <div><span class="bar-seg pm" style="width:177px"></span></div>
           </div>
-          <div class="bar-num">0.2934</div>
+          <div class="bar-num">0.2362</div>
           <div class="bar-num">0.5852</div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-label">G07</div>
+          <div class="bar-pair">
+            <div><span class="bar-seg tm" style="width:25px"></span></div>
+            <div><span class="bar-seg pm" style="width:127px"></span></div>
+          </div>
+          <div class="bar-num">0.0841</div>
+          <div class="bar-num">0.4225</div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-label">C08</div>
+          <div class="bar-pair">
+            <div><span class="bar-seg tm" style="width:54px"></span></div>
+            <div><span class="bar-seg pm" style="width:107px"></span></div>
+          </div>
+          <div class="bar-num">0.1815</div>
+          <div class="bar-num">0.354</div>
         </div>
 
         <div class="bar-row">
           <div class="bar-label">B09</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:16px"></span></div>
+            <div><span class="bar-seg tm" style="width:29px"></span></div>
             <div><span class="bar-seg pm" style="width:75px"></span></div>
           </div>
-          <div class="bar-num">0.0561</div>
+          <div class="bar-num">0.0966</div>
           <div class="bar-num">0.2505</div>
         </div>
 
         <div class="bar-row">
           <div class="bar-label">B04</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:29px"></span></div>
+            <div><span class="bar-seg tm" style="width:26px"></span></div>
             <div><span class="bar-seg pm" style="width:2px"></span></div>
           </div>
-          <div class="bar-num">0.096</div>
+          <div class="bar-num">0.0873</div>
           <div class="bar-num">0.0</div>
-        </div>
-
-        <div class="bar-row">
-          <div class="bar-label">C08</div>
-          <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:78px"></span></div>
-            <div><span class="bar-seg pm" style="width:107px"></span></div>
-          </div>
-          <div class="bar-num">0.2588</div>
-          <div class="bar-num">0.354</div>
-        </div>
-
-        <div class="bar-row">
-          <div class="bar-label">E10</div>
-          <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:19px"></span></div>
-            <div><span class="bar-seg pm" style="width:2px"></span></div>
-          </div>
-          <div class="bar-num">0.065</div>
-          <div class="bar-num">0.0025</div>
         </div>
 
         <div class="bar-row">
           <div class="bar-label">B05</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:31px"></span></div>
+            <div><span class="bar-seg tm" style="width:32px"></span></div>
             <div><span class="bar-seg pm" style="width:15px"></span></div>
           </div>
-          <div class="bar-num">0.1034</div>
+          <div class="bar-num">0.1062</div>
           <div class="bar-num">0.0506</div>
         </div>
 
         <div class="bar-row">
           <div class="bar-label">B08</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:14px"></span></div>
+            <div><span class="bar-seg tm" style="width:13px"></span></div>
             <div><span class="bar-seg pm" style="width:2px"></span></div>
           </div>
-          <div class="bar-num">0.0467</div>
+          <div class="bar-num">0.0454</div>
           <div class="bar-num">0.0003</div>
         </div>
 
         <div class="bar-row">
           <div class="bar-label">E07</div>
           <div class="bar-pair">
-            <div><span class="bar-seg tm" style="width:39px"></span></div>
+            <div><span class="bar-seg tm" style="width:45px"></span></div>
             <div><span class="bar-seg pm" style="width:33px"></span></div>
           </div>
-          <div class="bar-num">0.1312</div>
+          <div class="bar-num">0.1496</div>
           <div class="bar-num">0.1119</div>
+        </div>
+
+        <div class="bar-row">
+          <div class="bar-label">E10</div>
+          <div class="bar-pair">
+            <div><span class="bar-seg tm" style="width:9px"></span></div>
+            <div><span class="bar-seg pm" style="width:2px"></span></div>
+          </div>
+          <div class="bar-num">0.0314</div>
+          <div class="bar-num">0.0025</div>
         </div>
   </div>
 </div>
@@ -885,9 +901,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/icc-issues-an-arrest-warrant-for-netanyahu' target='_blank' rel='noopener' style='color:#f97316'>ICC issues an arrest warrant for Netanya</a></td>
           <td>0%</td>
-          <td>52% <span style="font-size:0.7rem;color:#475569">(9art)</span></td>
+          <td>57% <span style="font-size:0.7rem;color:#475569">(10art)</span></td>
           <td><span class="worse">0.991</span></td>
-          <td><span class="better">0.2252</span></td>
+          <td><span class="better">0.1825</span></td>
           <td>TM ✓</td>
         </tr>
 
@@ -897,9 +913,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/any-hostage-deal-brokered-with-hamas-by-nov-1' target='_blank' rel='noopener' style='color:#f97316'>Any hostage deal brokered with Hamas by </a></td>
           <td>99%</td>
-          <td>69% <span style="font-size:0.7rem;color:#475569">(17art)</span></td>
+          <td>70% <span style="font-size:0.7rem;color:#475569">(17art)</span></td>
           <td><span class="better">0.0</span></td>
-          <td><span class="worse">0.096</span></td>
+          <td><span class="worse">0.0873</span></td>
           <td>PM ✓</td>
         </tr>
 
@@ -911,7 +927,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>77%</td>
           <td>67% <span style="font-size:0.7rem;color:#475569">(19art)</span></td>
           <td><span class="better">0.0506</span></td>
-          <td><span class="worse">0.1034</span></td>
+          <td><span class="worse">0.1062</span></td>
           <td>PM ✓</td>
         </tr>
 
@@ -923,7 +939,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td>98%</td>
           <td>78% <span style="font-size:0.7rem;color:#475569">(10art)</span></td>
           <td><span class="better">0.0003</span></td>
-          <td><span class="worse">0.0467</span></td>
+          <td><span class="worse">0.0454</span></td>
           <td>PM ✓</td>
         </tr>
 
@@ -933,9 +949,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/haniyeh-still-in-hamas-leadership-through-march-1' target='_blank' rel='noopener' style='color:#f97316'>Haniyeh still in Hamas leadership throug</a> ↻</td>
           <td>49%</td>
-          <td>76% <span style="font-size:0.7rem;color:#475569">(9art)</span></td>
+          <td>68% <span style="font-size:0.7rem;color:#475569">(9art)</span></td>
           <td><span class="worse">0.2505</span></td>
-          <td><span class="better">0.0561</span></td>
+          <td><span class="better">0.0966</span></td>
           <td>TM ✓</td>
         </tr>
 
@@ -945,9 +961,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/yahya-sinwar-still-hamas-leader-through-november' target='_blank' rel='noopener' style='color:#f97316'>Yahya Sinwar still Hamas leader by Octob</a> ↻</td>
           <td>19%</td>
-          <td>68% <span style="font-size:0.7rem;color:#475569">(18art)</span></td>
+          <td>68% <span style="font-size:0.7rem;color:#475569">(20art)</span></td>
           <td><span class="worse">0.648</span></td>
-          <td><span class="better">0.0977</span></td>
+          <td><span class="better">0.0983</span></td>
           <td>TM ✓</td>
         </tr>
 
@@ -957,9 +973,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/nasrallah-remains-leader-of-hezbollah-through-october-31' target='_blank' rel='noopener' style='color:#f97316'>Nasrallah remains Hezbollah leader throu</a> ↻</td>
           <td>8%</td>
-          <td>70% <span style="font-size:0.7rem;color:#475569">(5art)</span></td>
+          <td>66% <span style="font-size:0.7rem;color:#475569">(9art)</span></td>
           <td><span class="worse">0.8372</span></td>
-          <td><span class="better">0.0861</span></td>
+          <td><span class="better">0.1117</span></td>
           <td>TM ✓</td>
         </tr>
 
@@ -969,9 +985,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/israel-x-hezbollah-ceasefire-in-2024' target='_blank' rel='noopener' style='color:#f97316'>Israel x Hezbollah Ceasefire in 2024?</a></td>
           <td>40%</td>
-          <td>49% <span style="font-size:0.7rem;color:#475569">(13art)</span></td>
+          <td>57% <span style="font-size:0.7rem;color:#475569">(13art)</span></td>
           <td><span class="worse">0.354</span></td>
-          <td><span class="better">0.2588</span></td>
+          <td><span class="better">0.1815</span></td>
           <td>TM ✓</td>
         </tr>
 
@@ -981,9 +997,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/will-assad-remain-president-of-syria-through-2024' target='_blank' rel='noopener' style='color:#f97316'>Will Assad remain President of Syria thr</a> ↻</td>
           <td>19%</td>
-          <td>66% <span style="font-size:0.7rem;color:#475569">(1art)</span></td>
+          <td>56% <span style="font-size:0.7rem;color:#475569">(2art)</span></td>
           <td><span class="worse">0.6512</span></td>
-          <td><span class="better">0.1156</span></td>
+          <td><span class="better">0.1924</span></td>
           <td>TM ✓</td>
         </tr>
 
@@ -993,9 +1009,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/presidential-election-winner-2024/will-donald-trump-win-the-2024-us-presidential-election' target='_blank' rel='noopener' style='color:#f97316'>Will Donald Trump win the 2024 US Presid</a></td>
           <td>66%</td>
-          <td>63% <span style="font-size:0.7rem;color:#475569">(5art)</span></td>
+          <td>61% <span style="font-size:0.7rem;color:#475569">(4art)</span></td>
           <td><span class="better">0.1119</span></td>
-          <td><span class="worse">0.1312</span></td>
+          <td><span class="worse">0.1496</span></td>
           <td>PM ✓</td>
         </tr>
 
@@ -1005,9 +1021,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/fed-interest-rates-september-2024' target='_blank' rel='noopener' style='color:#f97316'>Fed decreases interest rates by 50+ bps </a></td>
           <td>23%</td>
-          <td>45% <span style="font-size:0.7rem;color:#475569">(3art)</span></td>
+          <td>51% <span style="font-size:0.7rem;color:#475569">(5art)</span></td>
           <td><span class="worse">0.5852</span></td>
-          <td><span class="better">0.2934</span></td>
+          <td><span class="better">0.2362</span></td>
           <td>TM ✓</td>
         </tr>
 
@@ -1017,9 +1033,9 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/will-nato-expand-by/will-nato-expand-by-june-30' target='_blank' rel='noopener' style='color:#f97316'>Will NATO expand by June 30?</a></td>
           <td>95%</td>
-          <td>74% <span style="font-size:0.7rem;color:#475569">(7art)</span></td>
+          <td>82% <span style="font-size:0.7rem;color:#475569">(7art)</span></td>
           <td><span class="better">0.0025</span></td>
-          <td><span class="worse">0.065</span></td>
+          <td><span class="worse">0.0314</span></td>
           <td>PM ✓</td>
         </tr>
 
@@ -1041,10 +1057,10 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
           <td class="outcome-yes">YES</td>
           <td><a href='https://polymarket.com/event/will-openai-release-gpt-4-by-may-31' target='_blank' rel='noopener' style='color:#f97316'>Will OpenAI release GPT-4 by May 31?</a></td>
           <td>35%</td>
-          <td><span class="no-data">—</span> <span style="font-size:0.7rem;color:#475569">(0art)</span></td>
-          <td>0.4225</td>
-          <td><span class="no-data">—</span></td>
-          <td>—</td>
+          <td>71% <span style="font-size:0.7rem;color:#475569">(1art)</span></td>
+          <td><span class="worse">0.4225</span></td>
+          <td><span class="better">0.0841</span></td>
+          <td>TM ✓</td>
         </tr>
   </tbody>
 </table>
@@ -1053,7 +1069,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
 
 <!-- Coverage table -->
 <h2 style="margin-top:3rem">Dataset coverage
-  <span style="font-size:0.75rem;color:#475569">(70 events · <span class="cov-both">12 both</span> · <span class="cov-pm">2 PM only</span> · <span class="cov-none">56 neither</span>)</span>
+  <span style="font-size:0.75rem;color:#475569">(70 events · <span class="cov-both">13 both</span> · <span class="cov-pm">1 PM only</span> · <span class="cov-none">56 neither</span>)</span>
 </h2>
 <p style="font-size:0.82rem;color:#64748b;margin-bottom:1rem">
   ● = data present · ○ = not yet fetched · only "both" rows enter the Brier comparison above
@@ -1135,14 +1151,14 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
 <tr class="cov-none"><td>G04</td><td>Elon Musk completes acquisition of Twitter (X)</td><td>['AI & Tech']</td><td>2022-10-27</td><td class="cov-dot">○</td><td class="cov-dot">○</td></tr>
 <tr class="cov-none"><td>G05</td><td>DeepSeek R1 release shocks AI market</td><td>['AI & Tech']</td><td>2025-01-20</td><td class="cov-dot">○</td><td class="cov-dot">○</td></tr>
 <tr class="cov-none"><td>G06</td><td>EU AI Act formally adopted</td><td>['AI & Tech']</td><td>2024-03-13</td><td class="cov-dot">○</td><td class="cov-dot">○</td></tr>
-<tr class="cov-pm"><td>G07</td><td>GPT-4 released publicly</td><td>['AI & Tech']</td><td>2023-03-14</td><td class="cov-dot">●</td><td class="cov-dot">○</td></tr>
+<tr class="cov-both"><td>G07</td><td>GPT-4 released publicly</td><td>['AI & Tech']</td><td>2023-03-14</td><td class="cov-dot">●</td><td class="cov-dot">●</td></tr>
 <tr class="cov-none"><td>G08</td><td>Google Gemini Ultra surpasses GPT-4 on benchmarks</td><td>['AI & Tech']</td><td>2024-02-08</td><td class="cov-dot">○</td><td class="cov-dot">○</td></tr>
   </tbody>
 </table>
 </div>
 
 <footer>
-  Generated 2026-05-06 16:20 UTC ·
+  Generated 2026-05-06 19:22 UTC ·
   TruthMachine data: Oracle API (oracle.daatan.com) ·
   Polymarket data: CLOB API (gamma-api.polymarket.com) ·
   T = 7 days before outcome_date
@@ -1151,7 +1167,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
 <script>
 // Scatter plot
 (function() {
-  var data = [{"x": 0.0045, "y": 0.5255, "label": "A19"}, {"x": 0.9995, "y": 0.6902, "label": "B04"}, {"x": 0.775, "y": 0.6784, "label": "B05"}, {"x": 0.982, "y": 0.7838, "label": "B08"}, {"x": 0.4995, "y": 0.7631, "label": "B09"}, {"x": 0.195, "y": 0.6875, "label": "B10"}, {"x": 0.085, "y": 0.7065, "label": "C07"}, {"x": 0.405, "y": 0.4913, "label": "C08"}, {"x": 0.193, "y": 0.66, "label": "C09"}, {"x": 0.6655, "y": 0.6378, "label": "E07"}, {"x": 0.235, "y": 0.4583, "label": "E08"}, {"x": 0.95, "y": 0.745, "label": "E10"}];
+  var data = [{"x": 0.0045, "y": 0.5728, "label": "A19"}, {"x": 0.9995, "y": 0.7046, "label": "B04"}, {"x": 0.775, "y": 0.6741, "label": "B05"}, {"x": 0.982, "y": 0.7869, "label": "B08"}, {"x": 0.4995, "y": 0.6892, "label": "B09"}, {"x": 0.195, "y": 0.6865, "label": "B10"}, {"x": 0.085, "y": 0.6658, "label": "C07"}, {"x": 0.405, "y": 0.574, "label": "C08"}, {"x": 0.193, "y": 0.5614, "label": "C09"}, {"x": 0.6655, "y": 0.6132, "label": "E07"}, {"x": 0.235, "y": 0.514, "label": "E08"}, {"x": 0.95, "y": 0.8227, "label": "E10"}, {"x": 0.35, "y": 0.71, "label": "G07"}];
   var canvas = document.getElementById('scatter-canvas');
   if (!canvas || !data.length) return;
   var ctx = canvas.getContext('2d');
