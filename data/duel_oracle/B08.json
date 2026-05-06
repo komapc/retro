@@ -1,7 +1,7 @@
 {
   "event_id": "B08",
-  "probability": 0.7838,
-  "mean_stance": 0.5677,
+  "probability": 0.7869,
+  "mean_stance": 0.5738,
   "articles_used": 10,
   "question": "Did the IDF begin a ground operation in Rafah, Gaza?",
   "cutoff_date": "2024-04-30",

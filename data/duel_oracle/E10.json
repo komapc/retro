@@ -1,7 +1,7 @@
 {
   "event_id": "E10",
-  "probability": 0.745,
-  "mean_stance": 0.49,
+  "probability": 0.8227,
+  "mean_stance": 0.6454,
   "articles_used": 7,
   "question": "Did Finland join NATO?",
   "cutoff_date": "2023-03-28",

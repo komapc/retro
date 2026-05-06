@@ -1,8 +1,8 @@
 {
   "event_id": "E07",
-  "probability": 0.6378,
-  "mean_stance": 0.2756,
-  "articles_used": 5,
+  "probability": 0.6132,
+  "mean_stance": 0.2264,
+  "articles_used": 4,
   "question": "Did Donald Trump win the 2024 US presidential election?",
   "cutoff_date": "2024-10-30",
   "t_days": 7,

@@ -185,8 +185,8 @@
     "B04:haaretz": {
       "event_id": "B04",
       "source_id": "haaretz",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "B04:reuters": {
@@ -584,8 +584,8 @@
     "A19:toi": {
       "event_id": "A19",
       "source_id": "toi",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 10,
       "error": null
     },
     "A19:ynet": {
@@ -815,8 +815,8 @@
     "B08:jpost": {
       "event_id": "B08",
       "source_id": "jpost",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B09:jpost": {
@@ -1326,8 +1326,8 @@
     "E07:walla": {
       "event_id": "E07",
       "source_id": "walla",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 6,
       "error": null
     },
     "E08:israel_hayom": {
@@ -5057,8 +5057,8 @@
     "E10:walla": {
       "event_id": "E10",
       "source_id": "walla",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E10:ynet": {
@@ -5968,7 +5968,7 @@
       "event_id": "A19",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 16,
+      "prediction_count": 20,
       "error": null
     },
     "B04:gdelt": {
@@ -5982,7 +5982,7 @@
       "event_id": "B04",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 20,
+      "prediction_count": 30,
       "error": null
     },
     "B05:gdelt": {
@@ -5996,7 +5996,7 @@
       "event_id": "B05",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 30,
+      "prediction_count": 31,
       "error": null
     },
     "B08:gdelt": {
@@ -6010,7 +6010,7 @@
       "event_id": "B08",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 50,
+      "prediction_count": 33,
       "error": null
     },
     "B09:gdelt": {
@@ -6024,7 +6024,7 @@
       "event_id": "B09",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 33,
+      "prediction_count": 29,
       "error": null
     },
     "B10:gdelt": {
@@ -6038,7 +6038,7 @@
       "event_id": "B10",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 25,
+      "prediction_count": 29,
       "error": null
     },
     "C07:gdelt": {
@@ -6052,7 +6052,7 @@
       "event_id": "C07",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 19,
+      "prediction_count": 23,
       "error": null
     },
     "C08:gdelt": {
@@ -6066,7 +6066,7 @@
       "event_id": "C08",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 15,
+      "prediction_count": 16,
       "error": null
     },
     "C09:gdelt": {
@@ -6080,7 +6080,7 @@
       "event_id": "C09",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 35,
+      "prediction_count": 37,
       "error": null
     },
     "E07:gdelt": {
@@ -6094,7 +6094,7 @@
       "event_id": "E07",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 11,
+      "prediction_count": 15,
       "error": null
     },
     "E08:gdelt": {
@@ -6108,7 +6108,7 @@
       "event_id": "E08",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 11,
+      "prediction_count": 28,
       "error": null
     },
     "A01:gdelt": {
@@ -6184,8 +6184,8 @@
     "E10:web_search": {
       "event_id": "E10",
       "source_id": "web_search",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 17,
       "error": null
     },
     "C04:web_search": {
@@ -6301,5 +6301,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-06T16:02:17.369084"
+  "last_updated": "2026-05-06T21:16:03.368800"
 }
