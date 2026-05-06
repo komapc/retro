@@ -22,5 +22,6 @@
     "url": "https://polymarket.com/event/will-netanyahu-be-the-next-prime-minister-of-israel",
     "question": "Will Netanyahu be the next Prime Minister of Israel?",
     "match_quality": "close"
-  }
+  },
+  "oracle_question": "Did Benjamin Netanyahu form a new Israeli government after the November 2022 election?"
 }

@@ -23,5 +23,6 @@
     "question": "Will Liz Truss remain Prime Minister of the United Kingdom through 2022?",
     "match_quality": "exact"
   },
-  "scope": "global"
+  "scope": "global",
+  "oracle_question": "Did UK Prime Minister Liz Truss resign from office?"
 }

@@ -1,0 +1,9 @@
+{
+  "event_id": "E06",
+  "condition_id": "0xc348fa585ddc5af5f3bb4aa725fc46ab96387eb7ea45f3b817d14595926aa0fa",
+  "clob_token_yes": "4515586566578768774373399406167621862953934765567471802686308442830176247104",
+  "question": "Will Donald Trump be federally charged by June 1st? ",
+  "market_url": "https://polymarket.com/event/will-donald-trump-be-federally-charged-by-june-1st-1",
+  "invert": false,
+  "prices": []
+}

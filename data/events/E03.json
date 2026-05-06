@@ -22,5 +22,6 @@
     "url": "https://polymarket.com/event/balance-of-power-2022-us-midterms",
     "question": "Balance of Power: 2022 US Midterms",
     "match_quality": "close"
-  }
+  },
+  "oracle_question": "Did Democrats retain control of the US Senate in the 2022 midterm elections?"
 }

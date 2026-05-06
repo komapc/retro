@@ -23,5 +23,6 @@
     "url": "https://polymarket.com/event/will-ftx-become-insolvent-by-eoy",
     "question": "Will FTX become insolvent by EOY?",
     "match_quality": "exact"
-  }
+  },
+  "oracle_question": "Did FTX collapse and was SBF arrested in 2022?"
 }

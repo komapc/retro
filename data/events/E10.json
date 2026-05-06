@@ -23,5 +23,6 @@
     "url": "https://polymarket.com/event/will-nato-expand-by/will-nato-expand-by-june-30",
     "question": "Will NATO expand by June 30?",
     "match_quality": "indirect"
-  }
+  },
+  "oracle_question": "Did Finland join NATO?"
 }

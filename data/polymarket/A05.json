@@ -1,0 +1,9 @@
+{
+  "event_id": "A05",
+  "condition_id": "0xf8eaf29627d7c290a963904d697724f0c53ffe5e1e2efe8a393cd02bafbe5d69",
+  "clob_token_yes": "28530544208345897015481532824663875772271270866180118994652329641558776576168",
+  "question": "Will Netanyahu be the next Prime Minister of Israel?",
+  "market_url": "https://polymarket.com/event/will-netanyahu-be-the-next-prime-minister-of-israel",
+  "invert": false,
+  "prices": []
+}

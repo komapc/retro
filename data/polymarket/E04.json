@@ -1,0 +1,9 @@
+{
+  "event_id": "E04",
+  "condition_id": "0x550f1c88f9dee7fb414ca30d1a5f6923a7d8a56703bb97dba58ca7e551eaf1f7",
+  "clob_token_yes": "2907379097486049240947628465288754818273018199890865009975994465109196540372",
+  "question": "Will FTX become insolvent by EOY?",
+  "market_url": "https://polymarket.com/event/will-ftx-become-insolvent-by-eoy",
+  "invert": false,
+  "prices": []
+}

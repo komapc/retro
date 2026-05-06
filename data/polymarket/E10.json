@@ -1,0 +1,238 @@
+{
+  "event_id": "E10",
+  "condition_id": "0xdeeed8e593b23c853cd1bc1c85259b9535f32734d2a73f4f7d5e487faaa4eed1",
+  "clob_token_yes": "41909194383884489857051533149267887932706513238474711698327450766299364965897",
+  "question": "Will NATO expand by June 30?",
+  "market_url": "https://polymarket.com/event/will-nato-expand-by/will-nato-expand-by-june-30",
+  "invert": false,
+  "prices": [
+    {
+      "date": "2023-01-31",
+      "probability": 0.42
+    },
+    {
+      "date": "2023-02-01",
+      "probability": 0.25
+    },
+    {
+      "date": "2023-02-02",
+      "probability": 0.25
+    },
+    {
+      "date": "2023-02-03",
+      "probability": 0.4
+    },
+    {
+      "date": "2023-02-04",
+      "probability": 0.31
+    },
+    {
+      "date": "2023-02-05",
+      "probability": 0.31
+    },
+    {
+      "date": "2023-02-07",
+      "probability": 0.31
+    },
+    {
+      "date": "2023-02-09",
+      "probability": 0.31
+    },
+    {
+      "date": "2023-02-12",
+      "probability": 0.63
+    },
+    {
+      "date": "2023-02-13",
+      "probability": 0.51
+    },
+    {
+      "date": "2023-02-14",
+      "probability": 0.3
+    },
+    {
+      "date": "2023-02-15",
+      "probability": 0.3
+    },
+    {
+      "date": "2023-02-16",
+      "probability": 0.34
+    },
+    {
+      "date": "2023-02-17",
+      "probability": 0.36
+    },
+    {
+      "date": "2023-02-18",
+      "probability": 0.37
+    },
+    {
+      "date": "2023-02-19",
+      "probability": 0.37
+    },
+    {
+      "date": "2023-02-21",
+      "probability": 0.41
+    },
+    {
+      "date": "2023-02-22",
+      "probability": 0.41
+    },
+    {
+      "date": "2023-02-23",
+      "probability": 0.4
+    },
+    {
+      "date": "2023-02-24",
+      "probability": 0.4
+    },
+    {
+      "date": "2023-02-25",
+      "probability": 0.4
+    },
+    {
+      "date": "2023-02-26",
+      "probability": 0.34
+    },
+    {
+      "date": "2023-02-27",
+      "probability": 0.32
+    },
+    {
+      "date": "2023-02-28",
+      "probability": 0.3
+    },
+    {
+      "date": "2023-03-01",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-03-02",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-03-03",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-03-04",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-03-05",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-03-06",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-03-07",
+      "probability": 0.29
+    },
+    {
+      "date": "2023-03-08",
+      "probability": 0.29
+    },
+    {
+      "date": "2023-03-09",
+      "probability": 0.29
+    },
+    {
+      "date": "2023-03-10",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-03-11",
+      "probability": 0.29
+    },
+    {
+      "date": "2023-03-12",
+      "probability": 0.3
+    },
+    {
+      "date": "2023-03-14",
+      "probability": 0.29
+    },
+    {
+      "date": "2023-03-15",
+      "probability": 0.28
+    },
+    {
+      "date": "2023-03-16",
+      "probability": 0.65
+    },
+    {
+      "date": "2023-03-17",
+      "probability": 0.63
+    },
+    {
+      "date": "2023-03-18",
+      "probability": 0.71
+    },
+    {
+      "date": "2023-03-19",
+      "probability": 0.72
+    },
+    {
+      "date": "2023-03-20",
+      "probability": 0.72
+    },
+    {
+      "date": "2023-03-21",
+      "probability": 0.75
+    },
+    {
+      "date": "2023-03-23",
+      "probability": 0.73
+    },
+    {
+      "date": "2023-03-24",
+      "probability": 0.72
+    },
+    {
+      "date": "2023-03-25",
+      "probability": 0.91
+    },
+    {
+      "date": "2023-03-26",
+      "probability": 0.93
+    },
+    {
+      "date": "2023-03-27",
+      "probability": 0.93
+    },
+    {
+      "date": "2023-03-28",
+      "probability": 0.95
+    },
+    {
+      "date": "2023-03-29",
+      "probability": 0.96
+    },
+    {
+      "date": "2023-03-30",
+      "probability": 0.99
+    },
+    {
+      "date": "2023-03-31",
+      "probability": 1.0
+    },
+    {
+      "date": "2023-04-01",
+      "probability": 0.83
+    },
+    {
+      "date": "2023-04-02",
+      "probability": 0.83
+    },
+    {
+      "date": "2023-04-03",
+      "probability": 0.9
+    },
+    {
+      "date": "2023-04-04",
+      "probability": 1.0
+    }
+  ]
+}

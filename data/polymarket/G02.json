@@ -1,0 +1,26 @@
+{
+  "event_id": "G02",
+  "condition_id": "0xb68eee96a81c2eb8194cd699834c09ee683fafde43719eb39bc29191c1dbb46b",
+  "clob_token_yes": "12993071016401126915876292523426702103743772733396813233438149922570578047491",
+  "question": "Sam back as CEO of OpenAI?",
+  "market_url": "https://polymarket.com/event/sam-back-as-ceo-of-openai",
+  "invert": false,
+  "prices": [
+    {
+      "date": "2023-11-19",
+      "probability": 0.2365
+    },
+    {
+      "date": "2023-11-20",
+      "probability": 0.75
+    },
+    {
+      "date": "2023-11-21",
+      "probability": 0.591
+    },
+    {
+      "date": "2023-11-22",
+      "probability": 0.7765
+    }
+  ]
+}
