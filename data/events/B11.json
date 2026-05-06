@@ -7,7 +7,7 @@
     "צו בית הדין בהאג רפיח",
     "ICJ Rafah order"
   ],
-  "llm_referee_criteria": "Must focus on the May 24 ruling.",
+  "llm_referee_criteria": "Must discuss whether the ICJ will order Israel to halt military operations in Rafah or issue expanded provisional measures in the genocide case.",
   "predictive_window_days": 30,
   "category": [
     "Gaza War",

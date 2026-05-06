@@ -23,5 +23,6 @@
     "question": "Will OpenAI release GPT-4 by May 31?",
     "match_quality": "close"
   },
-  "scope": "global"
+  "scope": "global",
+  "oracle_question": "Was GPT-4 released publicly by OpenAI?"
 }

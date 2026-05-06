@@ -22,5 +22,6 @@
     "url": "https://polymarket.com/event/sam-back-as-ceo-of-openai",
     "question": "Sam back as CEO of OpenAI?",
     "match_quality": "exact"
-  }
+  },
+  "oracle_question": "Was OpenAI CEO Sam Altman fired and then reinstated within days?"
 }

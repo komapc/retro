@@ -23,5 +23,6 @@
     "question": "Will Nvidia be the largest company in the world by market cap on December 31?",
     "match_quality": "indirect"
   },
-  "scope": "global"
+  "scope": "global",
+  "oracle_question": "Did Nvidia exceed a $1 trillion market capitalisation?"
 }
