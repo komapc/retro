@@ -322,6 +322,19 @@ def build_rows(events: list[dict], tm_probs: dict, t_days: int) -> list[dict]:
 
         pm_meta = ev.get("polymarket") or {}
         tm_placeholder = bool(tm_info.get("placeholder")) if tm_info else False
+
+        # Compute actual days-before-event that PM's snapshot price came from
+        pm_price_days: Optional[int] = None
+        outcome_dt_d = datetime.strptime(ev["outcome_date"], "%Y-%m-%d").date()
+        prices = ev["_pm"].get("prices", [])
+        cutoff_d = outcome_dt_d - timedelta(days=t_days)
+        candidates = [p for p in prices if datetime.strptime(p["date"], "%Y-%m-%d").date() <= cutoff_d]
+        if not candidates:
+            candidates = prices[:1]
+        if candidates:
+            pm_actual_dt = datetime.strptime(candidates[-1]["date"], "%Y-%m-%d").date()
+            pm_price_days = (outcome_dt_d - pm_actual_dt).days
+
         rows.append({
             "id": eid,
             "name": ev.get("name", ""),
@@ -332,6 +345,7 @@ def build_rows(events: list[dict], tm_probs: dict, t_days: int) -> list[dict]:
             "pm_url": pm_meta.get("url", ""),
             "pm_invert": pm_meta.get("invert", False),
             "pm_p": pm_p,
+            "pm_price_days": pm_price_days,
             "tm_p": tm_p,
             "tm_placeholder": tm_placeholder,
             "tm_articles_used": tm_info["articles_used"] if tm_info else 0,
@@ -624,23 +638,29 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
         pm_q_html = f'<div class="event-pm-q">PM: {pm_q_text}{inv_note}</div>'
 
         # Probability bars
-        def _prob_block(label, val, css_class, brier_val, n_art=None, placeholder=False):
+        def _prob_block(label, val, css_class, brier_val, n_art=None, placeholder=False, pm_days=None):
             if val is None:
                 msg = "insufficient data" if placeholder else "no data"
                 return f'<div class="prob-block"><div class="prob-label">{label}</div><div class="no-data">{msg}</div></div>'
             pct = int(val * 100)
             w = int(val * 100)
-            art_note = f" ({n_art} art.)" if n_art is not None else ""
+            if n_art is not None:
+                sub = f'<span style="font-size:0.7rem;color:#475569">n={n_art} articles</span>'
+            elif pm_days is not None:
+                sub = f'<span style="font-size:0.7rem;color:#475569">−{pm_days}d before event</span>'
+            else:
+                sub = ""
             return f"""
             <div class="prob-block">
-              <div class="prob-label">{label}{art_note}</div>
+              <div class="prob-label">{label}</div>
               <div class="prob-bar-wrap"><div class="prob-bar {css_class}" style="width:{w}%"></div></div>
               <span class="prob-val">{pct}%</span>
               <span class="brier-val"> Brier: {brier_val if brier_val is not None else '—'}</span>
+              {sub}
             </div>"""
 
         tm_block = _prob_block("TruthMachine", r["tm_p"], "tm", r["tm_brier"], r["tm_articles_used"], r["tm_placeholder"])
-        pm_block = _prob_block(f"Polymarket (T-{t_days}d)", r["pm_p"], "pm", r["pm_brier"])
+        pm_block = _prob_block(f"Polymarket (T-{t_days}d)", r["pm_p"], "pm", r["pm_brier"], pm_days=r.get("pm_price_days"))
 
         # Sparkline
         prices_json = json.dumps(r["pm_prices"])
@@ -705,6 +725,8 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
     for r in rows:
         tm_p_str = f"{int(r['tm_p']*100)}%" if r["tm_p"] is not None else '<span class="no-data">—</span>'
         pm_p_str = f"{int((r['pm_p'] or 0)*100)}%" if r["pm_p"] is not None else '<span class="no-data">—</span>'
+        pm_days_str = f'<span style="color:#64748b">−{r["pm_price_days"]}d</span>' if r["pm_price_days"] is not None else '<span class="no-data">—</span>'
+        n_str = f'<span style="color:#94a3b8">{r["tm_articles_used"]}</span>' if r["tm_p"] is not None else '<span class="no-data">—</span>'
         inv_mark = " ↻" if r["pm_invert"] else ""
         tm_b = r["tm_brier"]
         pm_b = r["pm_brier"]
@@ -722,7 +744,9 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
           <td class="outcome-yes">YES</td>
           <td>{"<a href='" + html.escape(r['pm_url']) + "' target='_blank' rel='noopener' style='color:#f97316'>" + html.escape(r['pm_question'][:40]) + "</a>" if r.get("pm_url") else html.escape(r['pm_question'][:40])}{inv_mark}</td>
           <td>{pm_p_str}</td>
-          <td>{tm_p_str} <span style="font-size:0.7rem;color:#475569">({r['tm_articles_used']}art)</span></td>
+          <td>{pm_days_str}</td>
+          <td>{tm_p_str}</td>
+          <td>{n_str}</td>
           <td>{pm_b_str}</td>
           <td>{tm_b_str}</td>
           <td>{winner_str}</td>
@@ -825,7 +849,9 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
   <thead>
     <tr>
       <th>ID</th><th>TM Event</th><th>Out</th><th>PM Question</th>
-      <th>PM@T-{t_days}d</th><th>TM prob</th><th>PM Brier</th><th>TM Brier</th><th>Winner</th>
+      <th>PM@T-{t_days}d</th><th title="days before event that PM price was recorded">T_PM</th>
+      <th>TM prob</th><th title="Oracle articles used">n</th>
+      <th>PM Brier</th><th>TM Brier</th><th>Winner</th>
     </tr>
   </thead>
   <tbody>
