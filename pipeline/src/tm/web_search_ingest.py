@@ -181,6 +181,7 @@ async def ingest_event(
     raw_ingest_dir: Path,
     limit: int,
     force: bool,
+    t_days: int = 0,
 ) -> int:
     eid = event["id"]
     cell_dir = raw_ingest_dir / "web_search" / eid
@@ -189,14 +190,19 @@ async def ingest_event(
         return len(existing)
 
     outcome_dt = datetime.strptime(event["outcome_date"], "%Y-%m-%d")
+    # When t_days > 0, search ends at outcome_date - t_days (not the outcome itself)
+    end_dt = outcome_dt - timedelta(days=t_days) if t_days > 0 else outcome_dt
     window = int(event.get("predictive_window_days", 30))
-    start_dt = outcome_dt - timedelta(days=window)
+    start_dt = end_dt - timedelta(days=window)
 
     keywords = event.get("duel_keywords") or event.get("search_keywords", [])
     ascii_kws = [k for k in keywords if _is_ascii(k)]
     if not ascii_kws:
         console.print(f"  [dim yellow]{eid}: no ASCII keywords, skipping[/dim yellow]")
         return 0
+
+    if t_days > 0:
+        console.print(f"  [dim]{eid}: T-{t_days} window [{start_dt.date()} → {end_dt.date()}][/dim]")
 
     # Collect unique URLs across up to 3 keyword queries
     seen_urls: set[str] = set()
@@ -205,7 +211,7 @@ async def ingest_event(
     for kw in ascii_kws[:3]:
         try:
             results = await asyncio.to_thread(
-                _ws.search_articles, kw, limit, start_dt, outcome_dt
+                _ws.search_articles, kw, limit, start_dt, end_dt
             )
             for r in results:
                 if r.url and r.url not in seen_urls:
@@ -248,8 +254,8 @@ async def ingest_event(
         if not pub_date:
             skipped_no_date += 1
             continue
-        if pub_date > outcome_dt.strftime("%Y-%m-%d"):
-            # Article published after the event resolved — drop, can't be predictive.
+        if pub_date > end_dt.strftime("%Y-%m-%d"):
+            # Article published after the cutoff — drop, can't be predictive.
             continue
 
         article = {
@@ -279,6 +285,7 @@ async def run_batch(
     event_ids: List[str],
     limit: int,
     force: bool,
+    t_days: int = 0,
 ):
     events_dir = data_dir / "events"
     raw_ingest_dir = data_dir / "raw_ingest"
@@ -291,9 +298,10 @@ async def run_batch(
         else:
             console.print(f"[yellow]Event {eid} not found, skipping[/yellow]")
 
+    t_label = f" · T-{t_days}" if t_days else ""
     console.print(
         f"\n[bold]Web Search Ingest[/bold]  "
-        f"{len(events)} events · up to {limit} articles each\n"
+        f"{len(events)} events · up to {limit} articles each{t_label}\n"
     )
 
     # Show which provider is active
@@ -320,7 +328,7 @@ async def run_batch(
 
         for eid, event in events.items():
             progress.update(task, description=f"[cyan]{eid}[/cyan] — {event['name'][:40]}")
-            count = await ingest_event(event, raw_ingest_dir, limit, force)
+            count = await ingest_event(event, raw_ingest_dir, limit, force, t_days)
             results[eid] = count
             label = f"[green]{count} saved[/green]" if count else "[dim]0[/dim]"
             console.print(f"  {eid}: {label}")
@@ -351,10 +359,12 @@ def main():
     p.add_argument("--events", nargs="+", default=DUEL_EVENTS, metavar="EID")
     p.add_argument("--limit", type=int, default=10, help="Max articles per event (default 10)")
     p.add_argument("--force", action="store_true", help="Re-fetch already populated cells")
+    p.add_argument("--t-days", type=int, default=0, metavar="N",
+                   help="Search window ends at outcome_date - N days (default 0 = full window)")
     args = p.parse_args()
 
     data_dir = Path(os.environ.get("DATA_DIR", "/app/data"))
-    asyncio.run(run_batch(data_dir, args.events, args.limit, args.force))
+    asyncio.run(run_batch(data_dir, args.events, args.limit, args.force, args.t_days))
 
 
 if __name__ == "__main__":

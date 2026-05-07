@@ -1,8 +1,8 @@
 {
   "event_id": "C07",
-  "probability": 0.5856,
-  "mean_stance": 0.1712,
-  "articles_used": 6,
+  "probability": 0.6388,
+  "mean_stance": 0.2776,
+  "articles_used": 7,
   "question": "Was Hezbollah leader Hassan Nasrallah assassinated?",
   "cutoff_date": "2024-09-13",
   "t_days": 14,
