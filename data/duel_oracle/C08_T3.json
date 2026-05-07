@@ -1,10 +1,10 @@
 {
   "event_id": "C08",
-  "probability": 0.574,
-  "mean_stance": 0.148,
-  "articles_used": 13,
+  "probability": 0.6018,
+  "mean_stance": 0.2036,
+  "articles_used": 17,
   "question": "Was a ceasefire agreement reached between Israel and Hezbollah in Lebanon?",
-  "cutoff_date": "2024-11-20",
-  "t_days": 7,
+  "cutoff_date": "2024-11-24",
+  "t_days": 3,
   "placeholder": false
 }

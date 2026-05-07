@@ -1,0 +1,10 @@
+{
+  "event_id": "B05",
+  "probability": 0.7498,
+  "mean_stance": 0.4996,
+  "articles_used": 22,
+  "question": "Were the first phase hostage releases completed between Israel and Hamas?",
+  "cutoff_date": "2023-11-27",
+  "t_days": 3,
+  "placeholder": false
+}

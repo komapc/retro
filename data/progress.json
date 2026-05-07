@@ -5968,7 +5968,7 @@
       "event_id": "A19",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 20,
+      "prediction_count": 31,
       "error": null
     },
     "B04:gdelt": {
@@ -6010,7 +6010,7 @@
       "event_id": "B08",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 33,
+      "prediction_count": 38,
       "error": null
     },
     "B09:gdelt": {
@@ -6052,7 +6052,7 @@
       "event_id": "C07",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 23,
+      "prediction_count": 28,
       "error": null
     },
     "C08:gdelt": {
@@ -6066,7 +6066,7 @@
       "event_id": "C08",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 16,
+      "prediction_count": 18,
       "error": null
     },
     "C09:gdelt": {
@@ -6080,7 +6080,7 @@
       "event_id": "C09",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 37,
+      "prediction_count": 56,
       "error": null
     },
     "E07:gdelt": {
@@ -6108,7 +6108,7 @@
       "event_id": "E08",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 28,
+      "prediction_count": 31,
       "error": null
     },
     "A01:gdelt": {
@@ -6185,7 +6185,7 @@
       "event_id": "E10",
       "source_id": "web_search",
       "status": "done",
-      "prediction_count": 17,
+      "prediction_count": 20,
       "error": null
     },
     "C04:web_search": {
@@ -6301,5 +6301,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-06T21:16:03.368800"
+  "last_updated": "2026-05-07T20:38:23.665251"
 }

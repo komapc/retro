@@ -1,10 +1,10 @@
 {
   "event_id": "E08",
-  "probability": 0.514,
-  "mean_stance": 0.0279,
-  "articles_used": 5,
+  "probability": 0.3758,
+  "mean_stance": -0.2485,
+  "articles_used": 4,
   "question": "Did the US Federal Reserve begin cutting interest rates in 2024?",
-  "cutoff_date": "2024-09-11",
-  "t_days": 7,
+  "cutoff_date": "2024-08-19",
+  "t_days": 30,
   "placeholder": false
 }

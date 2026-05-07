@@ -1,0 +1,10 @@
+{
+  "event_id": "C09",
+  "probability": null,
+  "mean_stance": null,
+  "articles_used": 0,
+  "question": "Did the Assad regime fall in Syria?",
+  "cutoff_date": "2024-11-08",
+  "t_days": 30,
+  "placeholder": true
+}
