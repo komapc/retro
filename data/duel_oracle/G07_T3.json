@@ -1,0 +1,10 @@
+{
+  "event_id": "G07",
+  "probability": 0.72,
+  "mean_stance": 0.44,
+  "articles_used": 1,
+  "question": "Was GPT-4 released publicly by OpenAI?",
+  "cutoff_date": "2023-03-11",
+  "t_days": 3,
+  "placeholder": false
+}

@@ -1124,6 +1124,117 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
 </div>
 
 
+<h2>Prediction horizon sweep
+  <span style="font-size:0.75rem;color:#475569"> — how Brier changes as the information cutoff moves further from the event</span>
+</h2>
+<p style="font-size:0.82rem;color:#64748b;margin-bottom:1rem">
+  Both sides measured at the <em>same</em> T: PM uses its last CLOB price ≤ T, TM uses vault2 articles published ≤ T.
+  Smaller T = more recent info (easier). Larger T = further ahead (harder). Averages restricted to events with TM data at every T value (n shown per point).
+</p>
+<div style="background:#1e2130;border-radius:10px;padding:1.25rem;margin-bottom:1.5rem">
+  <canvas id="horizon-canvas" width="680" height="280" style="max-width:100%;display:block;margin:0 auto"></canvas>
+</div>
+<script>
+(function(){
+  var d={"t_values": [3, 7, 14, 30], "tm": [0.1124, 0.1233, 0.1085, 0.1222], "pm": [0.3522, 0.3773, 0.4044, 0.4433], "n": [13, 13, 13, 13]};
+  var canvas=document.getElementById('horizon-canvas');
+  if(!canvas||!d.t_values.length)return;
+  var ctx=canvas.getContext('2d');
+  var W=canvas.width,H=canvas.height;
+  var pl=60,pr=20,pt=30,pb=50;
+  var cw=W-pl-pr,ch=H-pt-pb;
+  var n=d.t_values.length;
+  var maxBrier=0.5;
+  function xFor(i){return pl+(i/(n-1))*cw;}
+  function yFor(v){return pt+ch-(v/maxBrier)*ch;}
+
+  ctx.fillStyle='#1e2130';ctx.fillRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle='#2d3748';ctx.lineWidth=0.5;
+  [0,0.1,0.2,0.3,0.4,0.5].forEach(function(g){
+    var y=yFor(g);
+    ctx.beginPath();ctx.moveTo(pl,y);ctx.lineTo(pl+cw,y);ctx.stroke();
+    ctx.fillStyle='#475569';ctx.font='11px sans-serif';ctx.textAlign='right';
+    ctx.fillText(g.toFixed(1),pl-6,y+4);
+  });
+
+  // Axes
+  ctx.strokeStyle='#475569';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pl,pt);ctx.lineTo(pl,pt+ch);ctx.lineTo(pl+cw,pt+ch);ctx.stroke();
+
+  // X labels + n annotation
+  d.t_values.forEach(function(t,i){
+    var x=xFor(i);
+    ctx.fillStyle='#94a3b8';ctx.font='12px sans-serif';ctx.textAlign='center';
+    ctx.fillText('T−'+t+'d',x,pt+ch+18);
+    if(d.n[i]!==null){
+      ctx.fillStyle='#475569';ctx.font='10px sans-serif';
+      ctx.fillText('n='+d.n[i],x,pt+ch+32);
+    }
+  });
+
+  // Y label
+  ctx.save();ctx.translate(13,pt+ch/2);ctx.rotate(-Math.PI/2);
+  ctx.fillStyle='#64748b';ctx.font='11px sans-serif';ctx.textAlign='center';
+  ctx.fillText('Avg Brier (lower = better)',0,0);ctx.restore();
+
+  function drawLine(vals,color){
+    ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=2.5;
+    var started=false;
+    vals.forEach(function(v,i){
+      if(v===null){started=false;return;}
+      var y=yFor(v);
+      if(!started){ctx.moveTo(xFor(i),y);started=true;}
+      else ctx.lineTo(xFor(i),y);
+    });
+    ctx.stroke();
+    vals.forEach(function(v,i){
+      if(v===null)return;
+      var x=xFor(i),y=yFor(v);
+      ctx.beginPath();ctx.arc(x,y,5,0,2*Math.PI);
+      ctx.fillStyle=color;ctx.fill();
+      ctx.fillStyle=color;ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+      ctx.fillText(v.toFixed(3),x,y-10);
+    });
+  }
+  drawLine(d.pm,'#f97316');
+  drawLine(d.tm,'#3b82f6');
+
+  // Legend
+  [['TruthMachine','#3b82f6'],['Polymarket','#f97316']].forEach(function(item,i){
+    var lx=pl+10+i*140,ly=pt+14;
+    ctx.fillStyle=item[1];ctx.fillRect(lx,ly-7,18,3);
+    ctx.fillStyle='#e2e8f0';ctx.font='12px sans-serif';ctx.textAlign='left';
+    ctx.fillText(item[0],lx+22,ly);
+  });
+})();
+</script>
+
+<div style="overflow-x:auto;margin-bottom:2rem">
+<table>
+  <thead>
+    <tr>
+      <th>Horizon</th><th>n (common)</th>
+      <th style="color:#60a5fa">TM avg Brier</th>
+      <th style="color:#fb923c">PM avg Brier</th>
+      <th style="color:#60a5fa">TM wins</th>
+      <th style="color:#fb923c">PM wins</th>
+    </tr>
+  </thead>
+  <tbody><tr><td style="color:#94a3b8">T−3d</td><td>13</td><td style="color:#60a5fa"><span style="color:#4ade80;font-weight:600">0.1124</span></td><td style="color:#fb923c"><span style="color:#f87171">0.3522</span></td><td style="color:#60a5fa">9</td><td style="color:#fb923c">4</td></tr><tr><td style="color:#94a3b8">T−7d</td><td>13</td><td style="color:#60a5fa"><span style="color:#4ade80;font-weight:600">0.1233</span></td><td style="color:#fb923c"><span style="color:#f87171">0.3773</span></td><td style="color:#60a5fa">8</td><td style="color:#fb923c">5</td></tr><tr><td style="color:#94a3b8">T−14d</td><td>13</td><td style="color:#60a5fa"><span style="color:#4ade80;font-weight:600">0.1085</span></td><td style="color:#fb923c"><span style="color:#f87171">0.4044</span></td><td style="color:#60a5fa">10</td><td style="color:#fb923c">3</td></tr><tr><td style="color:#94a3b8">T−30d</td><td>13</td><td style="color:#60a5fa"><span style="color:#4ade80;font-weight:600">0.1222</span></td><td style="color:#fb923c"><span style="color:#f87171">0.4433</span></td><td style="color:#60a5fa">9</td><td style="color:#fb923c">4</td></tr></tbody>
+</table>
+</div>
+
+<h3 style="font-size:1rem;font-weight:600;margin:1.5rem 0 0.75rem;color:#cbd5e1">Per-event winner at each horizon</h3>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>ID</th><th>Event</th><th>T−3d</th><th>T−7d</th><th>T−14d</th><th>T−30d</th></tr></thead>
+  <tbody><tr><td style="font-size:0.78rem;color:#94a3b8">A19</td><td style="font-size:0.78rem">ICC issues arrest warrant for Netan</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">B04</td><td style="font-size:0.78rem">First hostage deal reached (pause i</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">B05</td><td style="font-size:0.78rem">First phase hostage releases comple</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">B08</td><td style="font-size:0.78rem">IDF begins Rafah ground operation</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#fb923c;font-weight:600">PM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">B09</td><td style="font-size:0.78rem">Haniyeh assassinated in Tehran</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">B10</td><td style="font-size:0.78rem">Sinwar killed in Gaza</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">C07</td><td style="font-size:0.78rem">Nasrallah assassinated</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">C08</td><td style="font-size:0.78rem">Lebanon ceasefire agreement reached</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">C09</td><td style="font-size:0.78rem">Assad regime falls in Syria</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">E07</td><td style="font-size:0.78rem">Trump wins 2024 US presidential ele</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#fb923c;font-weight:600">PM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">E08</td><td style="font-size:0.78rem">US Federal Reserve begins rate cut </td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">E10</td><td style="font-size:0.78rem">Finland joins NATO</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr><tr><td style="font-size:0.78rem;color:#94a3b8">G07</td><td style="font-size:0.78rem">GPT-4 released publicly</td><td style="color:#fb923c;font-weight:600">PM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td><td style="color:#60a5fa;font-weight:600">TM</td></tr></tbody>
+</table>
+</div>
+
+
 <!-- Coverage table -->
 <h2 style="margin-top:3rem">Dataset coverage
   <span style="font-size:0.75rem;color:#475569">(70 events · <span class="cov-both">13 both</span> · <span class="cov-pm">1 PM only</span> · <span class="cov-none">56 neither</span>)</span>
@@ -1215,7 +1326,7 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
 </div>
 
 <footer>
-  Generated 2026-05-07 10:55 UTC ·
+  Generated 2026-05-07 11:37 UTC ·
   TruthMachine data: Oracle API (oracle.daatan.com) ·
   Polymarket data: CLOB API (gamma-api.polymarket.com) ·
   T = 7 days before outcome_date

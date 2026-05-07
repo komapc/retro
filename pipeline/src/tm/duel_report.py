@@ -211,7 +211,14 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
         cutoff_str = cutoff.strftime("%Y-%m-%d")
 
         # Serve from cache when cutoff and t_days match
-        cache_path = cache_dir / f"{eid}.json"
+        cache_path = cache_dir / f"{eid}_T{t_days}.json"
+        if not cache_path.exists():
+            # backward-compat: old single-file cache used {eid}.json
+            old_cache = cache_dir / f"{eid}.json"
+            if old_cache.exists():
+                old_content = json.loads(old_cache.read_text())
+                if old_content.get("t_days") == t_days:
+                    cache_path = old_cache
         if cache_path.exists():
             cached = json.loads(cache_path.read_text())
             cache_valid = (
@@ -295,7 +302,8 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
             "t_days": t_days,
             "placeholder": is_placeholder,
         }
-        cache_path.write_text(json.dumps(entry, indent=2))
+        write_path = cache_dir / f"{eid}_T{t_days}.json"
+        write_path.write_text(json.dumps(entry, indent=2))
         result[eid] = entry
         console.print(f"  [green]{eid}: p={probability} (n={articles_used} Oracle articles)[/green]")
 
@@ -380,6 +388,69 @@ def bootstrap_ci(
     n = len(vals)
     boot_means = sorted(sum(rng.choices(vals, k=n)) / n for _ in range(n_boot))
     return round(boot_means[int(0.025 * n_boot)], 4), round(boot_means[int(0.975 * n_boot)], 4)
+
+
+# ── Horizon sweep ──────────────────────────────────────────────────────────────
+
+def run_sweep(
+    data_dir: Path,
+    events: list[dict],
+    t_values: list[int],
+    html_only: bool,
+) -> dict[int, dict]:
+    """Run the duel at multiple T-values; averages restricted to the common event set."""
+    sweep: dict[int, dict] = {}
+    for t in sorted(t_values):
+        console.print(f"\n[bold cyan]── Sweep T={t}d ──[/bold cyan]")
+        if html_only:
+            cache_dir = data_dir / "duel_oracle"
+            tm_probs: dict[str, dict] = {}
+            for ev in events:
+                eid = ev["id"]
+                cp = cache_dir / f"{eid}_T{t}.json"
+                if not cp.exists() and t == 7:
+                    cp = cache_dir / f"{eid}.json"  # backward compat
+                if cp.exists():
+                    cached = json.loads(cp.read_text())
+                    if cached.get("t_days") == t and (
+                        cached.get("probability") is not None or cached.get("placeholder")
+                    ):
+                        tm_probs[eid] = cached
+            console.print(f"  Loaded {len(tm_probs)} events from cache (--html-only)")
+        else:
+            tm_probs = fetch_tm_probabilities_oracle(data_dir, events, t)
+
+        rows = build_rows(events, tm_probs, t)
+        compared = [r for r in rows if r["pm_p"] is not None and r["tm_p"] is not None]
+        sweep[t] = {
+            "rows": rows,
+            "compared": compared,
+            "eids": {r["id"] for r in compared},
+        }
+
+    # Restrict summary averages to events present at every T
+    common_eids: set[str] = set()
+    for s in sweep.values():
+        if not common_eids:
+            common_eids = s["eids"].copy()
+        else:
+            common_eids &= s["eids"]
+    console.print(f"\n[dim]Common events across all T values: {sorted(common_eids)}[/dim]")
+
+    for t, s in sweep.items():
+        common = [r for r in s["compared"] if r["id"] in common_eids]
+        s["common"] = common
+        s["tm_avg"] = avg_brier(common, "tm_brier")
+        s["pm_avg"] = avg_brier(common, "pm_brier")
+        s["tm_wins"] = sum(1 for r in common if r["winner"] == "tm")
+        s["pm_wins"] = sum(1 for r in common if r["winner"] == "pm")
+        s["n_common"] = len(common)
+        console.print(
+            f"  T={t}: n_common={len(common)}, TM={s['tm_avg']}, PM={s['pm_avg']}, "
+            f"TM wins {s['tm_wins']}/{len(common)}"
+        )
+
+    return sweep
 
 
 # ── HTML rendering ─────────────────────────────────────────────────────────────
@@ -592,7 +663,182 @@ def _render_coverage_table(coverage_rows: list[dict] | None) -> str:
 </div>"""
 
 
-def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: list[dict] | None = None) -> None:
+def _render_horizon_sweep(sweep: dict[int, dict]) -> str:
+    t_values = sorted(sweep.keys())
+
+    # Summary table — common-event averages
+    table_rows_html = []
+    for t in t_values:
+        s = sweep[t]
+        tm_avg, pm_avg = s["tm_avg"], s["pm_avg"]
+        tm_is_better = tm_avg is not None and pm_avg is not None and tm_avg < pm_avg
+        tm_style = "color:#4ade80;font-weight:600" if tm_is_better else "color:#f87171"
+        pm_style = "color:#f87171" if tm_is_better else "color:#4ade80;font-weight:600"
+        tm_str = f'<span style="{tm_style}">{tm_avg}</span>' if tm_avg is not None else "—"
+        pm_str = f'<span style="{pm_style}">{pm_avg}</span>' if pm_avg is not None else "—"
+        table_rows_html.append(
+            f"<tr>"
+            f'<td style="color:#94a3b8">T−{t}d</td>'
+            f'<td>{s["n_common"]}</td>'
+            f'<td style="color:#60a5fa">{tm_str}</td>'
+            f'<td style="color:#fb923c">{pm_str}</td>'
+            f'<td style="color:#60a5fa">{s["tm_wins"]}</td>'
+            f'<td style="color:#fb923c">{s["pm_wins"]}</td>'
+            f"</tr>"
+        )
+
+    # Per-event winner matrix
+    all_eids: dict[str, str] = {}
+    for s in sweep.values():
+        for r in s["compared"]:
+            all_eids[r["id"]] = r["name"]
+
+    matrix_rows_html = []
+    for eid in sorted(all_eids):
+        cells = [
+            f'<td style="font-size:0.78rem;color:#94a3b8">{eid}</td>',
+            f'<td style="font-size:0.78rem">{html.escape(all_eids[eid][:35])}</td>',
+        ]
+        for t in t_values:
+            by_id = {r["id"]: r for r in sweep[t]["compared"]}
+            if eid not in by_id:
+                cells.append('<td class="no-data">—</td>')
+            elif by_id[eid]["winner"] == "tm":
+                cells.append('<td style="color:#60a5fa;font-weight:600">TM</td>')
+            elif by_id[eid]["winner"] == "pm":
+                cells.append('<td style="color:#fb923c;font-weight:600">PM</td>')
+            else:
+                cells.append('<td style="color:#64748b">tie</td>')
+        matrix_rows_html.append(f'<tr>{"".join(cells)}</tr>')
+
+    t_headers = "".join(f"<th>T−{t}d</th>" for t in t_values)
+
+    chart_data = json.dumps({
+        "t_values": t_values,
+        "tm": [sweep[t]["tm_avg"] for t in t_values],
+        "pm": [sweep[t]["pm_avg"] for t in t_values],
+        "n": [sweep[t]["n_common"] for t in t_values],
+    })
+
+    return f"""
+<h2>Prediction horizon sweep
+  <span style="font-size:0.75rem;color:#475569"> — how Brier changes as the information cutoff moves further from the event</span>
+</h2>
+<p style="font-size:0.82rem;color:#64748b;margin-bottom:1rem">
+  Both sides measured at the <em>same</em> T: PM uses its last CLOB price ≤ T, TM uses vault2 articles published ≤ T.
+  Smaller T = more recent info (easier). Larger T = further ahead (harder). Averages restricted to events with TM data at every T value (n shown per point).
+</p>
+<div style="background:#1e2130;border-radius:10px;padding:1.25rem;margin-bottom:1.5rem">
+  <canvas id="horizon-canvas" width="680" height="280" style="max-width:100%;display:block;margin:0 auto"></canvas>
+</div>
+<script>
+(function(){{
+  var d={chart_data};
+  var canvas=document.getElementById('horizon-canvas');
+  if(!canvas||!d.t_values.length)return;
+  var ctx=canvas.getContext('2d');
+  var W=canvas.width,H=canvas.height;
+  var pl=60,pr=20,pt=30,pb=50;
+  var cw=W-pl-pr,ch=H-pt-pb;
+  var n=d.t_values.length;
+  var maxBrier=0.5;
+  function xFor(i){{return pl+(i/(n-1))*cw;}}
+  function yFor(v){{return pt+ch-(v/maxBrier)*ch;}}
+
+  ctx.fillStyle='#1e2130';ctx.fillRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle='#2d3748';ctx.lineWidth=0.5;
+  [0,0.1,0.2,0.3,0.4,0.5].forEach(function(g){{
+    var y=yFor(g);
+    ctx.beginPath();ctx.moveTo(pl,y);ctx.lineTo(pl+cw,y);ctx.stroke();
+    ctx.fillStyle='#475569';ctx.font='11px sans-serif';ctx.textAlign='right';
+    ctx.fillText(g.toFixed(1),pl-6,y+4);
+  }});
+
+  // Axes
+  ctx.strokeStyle='#475569';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pl,pt);ctx.lineTo(pl,pt+ch);ctx.lineTo(pl+cw,pt+ch);ctx.stroke();
+
+  // X labels + n annotation
+  d.t_values.forEach(function(t,i){{
+    var x=xFor(i);
+    ctx.fillStyle='#94a3b8';ctx.font='12px sans-serif';ctx.textAlign='center';
+    ctx.fillText('T−'+t+'d',x,pt+ch+18);
+    if(d.n[i]!==null){{
+      ctx.fillStyle='#475569';ctx.font='10px sans-serif';
+      ctx.fillText('n='+d.n[i],x,pt+ch+32);
+    }}
+  }});
+
+  // Y label
+  ctx.save();ctx.translate(13,pt+ch/2);ctx.rotate(-Math.PI/2);
+  ctx.fillStyle='#64748b';ctx.font='11px sans-serif';ctx.textAlign='center';
+  ctx.fillText('Avg Brier (lower = better)',0,0);ctx.restore();
+
+  function drawLine(vals,color){{
+    ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=2.5;
+    var started=false;
+    vals.forEach(function(v,i){{
+      if(v===null){{started=false;return;}}
+      var y=yFor(v);
+      if(!started){{ctx.moveTo(xFor(i),y);started=true;}}
+      else ctx.lineTo(xFor(i),y);
+    }});
+    ctx.stroke();
+    vals.forEach(function(v,i){{
+      if(v===null)return;
+      var x=xFor(i),y=yFor(v);
+      ctx.beginPath();ctx.arc(x,y,5,0,2*Math.PI);
+      ctx.fillStyle=color;ctx.fill();
+      ctx.fillStyle=color;ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+      ctx.fillText(v.toFixed(3),x,y-10);
+    }});
+  }}
+  drawLine(d.pm,'#f97316');
+  drawLine(d.tm,'#3b82f6');
+
+  // Legend
+  [['TruthMachine','#3b82f6'],['Polymarket','#f97316']].forEach(function(item,i){{
+    var lx=pl+10+i*140,ly=pt+14;
+    ctx.fillStyle=item[1];ctx.fillRect(lx,ly-7,18,3);
+    ctx.fillStyle='#e2e8f0';ctx.font='12px sans-serif';ctx.textAlign='left';
+    ctx.fillText(item[0],lx+22,ly);
+  }});
+}})();
+</script>
+
+<div style="overflow-x:auto;margin-bottom:2rem">
+<table>
+  <thead>
+    <tr>
+      <th>Horizon</th><th>n (common)</th>
+      <th style="color:#60a5fa">TM avg Brier</th>
+      <th style="color:#fb923c">PM avg Brier</th>
+      <th style="color:#60a5fa">TM wins</th>
+      <th style="color:#fb923c">PM wins</th>
+    </tr>
+  </thead>
+  <tbody>{"".join(table_rows_html)}</tbody>
+</table>
+</div>
+
+<h3 style="font-size:1rem;font-weight:600;margin:1.5rem 0 0.75rem;color:#cbd5e1">Per-event winner at each horizon</h3>
+<div style="overflow-x:auto">
+<table>
+  <thead><tr><th>ID</th><th>Event</th>{t_headers}</tr></thead>
+  <tbody>{"".join(matrix_rows_html)}</tbody>
+</table>
+</div>"""
+
+
+def render_html(
+    rows: list[dict],
+    t_days: int,
+    out_path: Path,
+    coverage_rows: list[dict] | None = None,
+    horizon_data: dict | None = None,
+) -> None:
     compared = [r for r in rows if r["pm_p"] is not None and r["tm_p"] is not None]
     tm_avg = avg_brier(compared, "tm_brier")
     pm_avg = avg_brier(compared, "pm_brier")
@@ -860,6 +1106,8 @@ def render_html(rows: list[dict], t_days: int, out_path: Path, coverage_rows: li
 </table>
 </div>
 
+{_render_horizon_sweep(horizon_data) if horizon_data else ""}
+
 {_render_coverage_table(coverage_rows)}
 
 <footer>
@@ -955,6 +1203,16 @@ def main():
         action="store_true",
         help="Delete all duel_oracle/*.json cache files before fetching",
     )
+    ap.add_argument(
+        "--t-sweep",
+        action="store_true",
+        help="Run at multiple T values and add a prediction-horizon sweep section to the output",
+    )
+    ap.add_argument(
+        "--sweep-values",
+        default="3,7,14,30",
+        help="Comma-separated T values for the sweep (default: 3,7,14,30)",
+    )
     args = ap.parse_args()
 
     data_dir = Path(args.data_dir)
@@ -974,10 +1232,12 @@ def main():
         # Load from cache only — no API calls
         cache_dir = data_dir / "duel_oracle"
         tm_probs: dict[str, dict] = {}
-        outcome_dt_map = {ev["id"]: ev["outcome_date"] for ev in events}
         for ev in events:
             eid = ev["id"]
-            cache_path = cache_dir / f"{eid}.json"
+            # Try new per-T naming, fall back to old single-file cache
+            cache_path = cache_dir / f"{eid}_T{args.t_days}.json"
+            if not cache_path.exists():
+                cache_path = cache_dir / f"{eid}.json"
             if cache_path.exists():
                 cached = json.loads(cache_path.read_text())
                 if cached.get("probability") is not None or cached.get("placeholder"):
@@ -999,6 +1259,12 @@ def main():
         w = r["winner"] or "—"
         console.print(f"  {r['id']}: {tm_str} {pm_str} → {w}")
 
+    horizon_data = None
+    if args.t_sweep:
+        sweep_t_values = [int(v.strip()) for v in args.sweep_values.split(",")]
+        console.print(f"\nRunning horizon sweep at T={sweep_t_values}...")
+        horizon_data = run_sweep(data_dir, events, sweep_t_values, args.html_only)
+
     all_events = load_all_events(data_dir)
     coverage_rows = [
         {
@@ -1012,7 +1278,7 @@ def main():
         for ev in all_events
     ]
 
-    render_html(rows, args.t_days, out_path, coverage_rows)
+    render_html(rows, args.t_days, out_path, coverage_rows, horizon_data=horizon_data)
 
 
 if __name__ == "__main__":
