@@ -18,11 +18,13 @@ from typing import Optional
 from urllib.parse import urlparse
 
 import httpx
+import litellm
 import trafilatura
 
 from tm.gatekeeper import check_is_prediction, PROMPT as GATEKEEPER_PROMPT
 from tm.extractor import extract_predictions, PROMPT as EXTRACTOR_PROMPT
 from tm.web_search import search_articles, SearchResult, get_last_search_provider, get_last_search_provider_chain
+from tm.config import settings as _pipeline_settings
 
 from .cache import forecast_cache, search_cache
 from .leaderboard import get_credibility_weight
@@ -132,6 +134,41 @@ def _looks_like_paywall(text: str) -> bool:
     """
     low = text.lower()
     return any(marker in low for marker in _PAYWALL_MARKERS)
+
+
+async def _distill_query(question: str) -> str:
+    """Convert a long resolution-criterion question into 4-6 search keywords.
+
+    Called only when verbatim search returns 0 results — adds ~200ms latency
+    and a cheap Nova Micro call to unlock niche/Polymarket-style questions.
+    Returns the original question on any error (preserves existing behaviour).
+    """
+    prompt = (
+        "Extract 4-6 concise search keywords from this forecasting question. "
+        "Output ONLY the keywords as a single line, space-separated. "
+        "No explanations, no punctuation, no quotes.\n\n"
+        f"Question: {question}"
+    )
+    try:
+        kwargs: dict = dict(
+            model=_pipeline_settings.gatekeeper_model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=40,
+            timeout=20,
+        )
+        if _pipeline_settings.model_api_base:
+            kwargs["api_base"] = _pipeline_settings.model_api_base
+            kwargs["api_key"] = _pipeline_settings.model_api_key
+        if _pipeline_settings.aws_region:
+            kwargs["aws_region_name"] = _pipeline_settings.aws_region
+        resp = await litellm.acompletion(**kwargs)
+        keywords = resp.choices[0].message.content.strip()
+        if keywords:
+            logger.info("query_distilled original=%r distilled=%r", question[:60], keywords)
+            return keywords
+    except Exception as exc:
+        logger.warning("query distillation failed: %s", exc)
+    return question
 
 
 def _fetch_article_text(url: str, fallback: str) -> str:
@@ -412,6 +449,7 @@ async def _run_forecast_inner(
     search_start = time.perf_counter()
     search_provider: str
     provider_chain: list[str]
+    search_query = req.question  # updated to distilled keywords if verbatim finds nothing
     if req.articles:
         search_results: list[SearchResult] = [
             SearchResult(
@@ -451,11 +489,23 @@ async def _run_forecast_inner(
         else:
             try:
                 search_results = await asyncio.to_thread(
-                    search_articles, req.question, limit
+                    search_articles, search_query, limit
                 )
             except Exception as exc:
                 logger.error("Search failed: %s", exc)
                 search_results = []
+            # If verbatim question found nothing, try distilled keywords.
+            if not search_results:
+                distilled = await _distill_query(req.question)
+                if distilled != req.question:
+                    search_query = distilled
+                    try:
+                        search_results = await asyncio.to_thread(
+                            search_articles, search_query, limit
+                        )
+                    except Exception as exc:
+                        logger.error("Search (distilled) failed: %s", exc)
+                        search_results = []
             search_provider = get_last_search_provider()
             provider_chain = get_last_search_provider_chain()
             _log_phase(
@@ -464,6 +514,7 @@ async def _run_forecast_inner(
                 question=req.question,
                 results=len(search_results),
                 provider=search_provider,
+                distilled=search_query != req.question,
             )
             search_cache.set(search_key, search_results)
 
@@ -479,7 +530,7 @@ async def _run_forecast_inner(
         resp = _empty_response(req.question)
         if req.debug:
             resp.debug = DebugInfo(
-                search_query=req.question,
+                search_query=search_query,
                 search_provider=search_provider,
                 search_provider_chain=provider_chain,
                 gatekeeper_model=settings.gatekeeper_model,
@@ -609,7 +660,7 @@ async def _run_forecast_inner(
             for d in article_debugs
         )
         debug_info = DebugInfo(
-            search_query=req.question,
+            search_query=search_query,
             search_provider=search_provider,
             search_provider_chain=provider_chain,
             gatekeeper_model=settings.gatekeeper_model,
