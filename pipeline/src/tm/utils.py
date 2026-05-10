@@ -15,4 +15,6 @@ KNOWN_SOURCE_IDS: list[str] = [
     "ynet", "haaretz", "haaretz_he", "toi", "globes", "reuters", "jpost",
     "israel_hayom", "walla", "n12", "maariv", "ch13", "kan11",
     "web_search", "gdelt",
+    "bloomberg", "bbc",
+    "aljazeera", "nyt", "ft", "guardian", "wapost", "axios",
 ]

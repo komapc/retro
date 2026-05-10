@@ -5701,7 +5701,7 @@
     "G06:maariv": {
       "event_id": "G06",
       "source_id": "maariv",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -6299,7 +6299,4977 @@
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
+    },
+    "A02:gdelt": {
+      "event_id": "A02",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:kan11": {
+      "event_id": "A02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:web_search": {
+      "event_id": "A02",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:gdelt": {
+      "event_id": "A03",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:kan11": {
+      "event_id": "A03",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:web_search": {
+      "event_id": "A03",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:gdelt": {
+      "event_id": "A04",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:kan11": {
+      "event_id": "A04",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:web_search": {
+      "event_id": "A04",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:gdelt": {
+      "event_id": "A05",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:kan11": {
+      "event_id": "A05",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:web_search": {
+      "event_id": "A05",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:gdelt": {
+      "event_id": "A06",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:kan11": {
+      "event_id": "A06",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:web_search": {
+      "event_id": "A06",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:gdelt": {
+      "event_id": "A07",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:kan11": {
+      "event_id": "A07",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:web_search": {
+      "event_id": "A07",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:gdelt": {
+      "event_id": "A08",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:kan11": {
+      "event_id": "A08",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:web_search": {
+      "event_id": "A08",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:gdelt": {
+      "event_id": "A09",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:kan11": {
+      "event_id": "A09",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:web_search": {
+      "event_id": "A09",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:gdelt": {
+      "event_id": "A10",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:kan11": {
+      "event_id": "A10",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:web_search": {
+      "event_id": "A10",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:gdelt": {
+      "event_id": "A11",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:kan11": {
+      "event_id": "A11",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:web_search": {
+      "event_id": "A11",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:gdelt": {
+      "event_id": "A12",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:kan11": {
+      "event_id": "A12",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:web_search": {
+      "event_id": "A12",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:gdelt": {
+      "event_id": "A13",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:kan11": {
+      "event_id": "A13",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:web_search": {
+      "event_id": "A13",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:gdelt": {
+      "event_id": "A14",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:kan11": {
+      "event_id": "A14",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:web_search": {
+      "event_id": "A14",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:gdelt": {
+      "event_id": "A15",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:kan11": {
+      "event_id": "A15",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:web_search": {
+      "event_id": "A15",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:gdelt": {
+      "event_id": "A16",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:kan11": {
+      "event_id": "A16",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:web_search": {
+      "event_id": "A16",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:gdelt": {
+      "event_id": "A17",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:kan11": {
+      "event_id": "A17",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:web_search": {
+      "event_id": "A17",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:gdelt": {
+      "event_id": "A18",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:kan11": {
+      "event_id": "A18",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:web_search": {
+      "event_id": "A18",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:gdelt": {
+      "event_id": "B01",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:kan11": {
+      "event_id": "B01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:web_search": {
+      "event_id": "B01",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:gdelt": {
+      "event_id": "B02",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:kan11": {
+      "event_id": "B02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:web_search": {
+      "event_id": "B02",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:gdelt": {
+      "event_id": "B03",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:kan11": {
+      "event_id": "B03",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:web_search": {
+      "event_id": "B03",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:gdelt": {
+      "event_id": "B06",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:kan11": {
+      "event_id": "B06",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:web_search": {
+      "event_id": "B06",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:gdelt": {
+      "event_id": "B07",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:kan11": {
+      "event_id": "B07",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:web_search": {
+      "event_id": "B07",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:gdelt": {
+      "event_id": "B11",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:kan11": {
+      "event_id": "B11",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:web_search": {
+      "event_id": "B11",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:gdelt": {
+      "event_id": "B12",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:kan11": {
+      "event_id": "B12",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:web_search": {
+      "event_id": "B12",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:gdelt": {
+      "event_id": "B13",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:kan11": {
+      "event_id": "B13",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:web_search": {
+      "event_id": "B13",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:gdelt": {
+      "event_id": "C01",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:kan11": {
+      "event_id": "C01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:web_search": {
+      "event_id": "C01",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:gdelt": {
+      "event_id": "C02",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:kan11": {
+      "event_id": "C02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:web_search": {
+      "event_id": "C02",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:gdelt": {
+      "event_id": "C05",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:kan11": {
+      "event_id": "C05",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:web_search": {
+      "event_id": "C05",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:gdelt": {
+      "event_id": "C06",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:kan11": {
+      "event_id": "C06",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:web_search": {
+      "event_id": "C06",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:gdelt": {
+      "event_id": "D01",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:kan11": {
+      "event_id": "D01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:web_search": {
+      "event_id": "D01",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:gdelt": {
+      "event_id": "D02",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:kan11": {
+      "event_id": "D02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:web_search": {
+      "event_id": "D02",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:gdelt": {
+      "event_id": "D03",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:kan11": {
+      "event_id": "D03",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:web_search": {
+      "event_id": "D03",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:gdelt": {
+      "event_id": "D04",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:kan11": {
+      "event_id": "D04",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:web_search": {
+      "event_id": "D04",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:gdelt": {
+      "event_id": "D05",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:kan11": {
+      "event_id": "D05",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:web_search": {
+      "event_id": "D05",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:gdelt": {
+      "event_id": "D06",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:kan11": {
+      "event_id": "D06",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:web_search": {
+      "event_id": "D06",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:gdelt": {
+      "event_id": "E01",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:kan11": {
+      "event_id": "E01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:web_search": {
+      "event_id": "E01",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:gdelt": {
+      "event_id": "E02",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:kan11": {
+      "event_id": "E02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:web_search": {
+      "event_id": "E02",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:gdelt": {
+      "event_id": "E03",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:kan11": {
+      "event_id": "E03",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:web_search": {
+      "event_id": "E03",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:gdelt": {
+      "event_id": "E04",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:kan11": {
+      "event_id": "E04",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:web_search": {
+      "event_id": "E04",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:gdelt": {
+      "event_id": "E06",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:kan11": {
+      "event_id": "E06",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:web_search": {
+      "event_id": "E06",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:gdelt": {
+      "event_id": "F01",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:kan11": {
+      "event_id": "F01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:web_search": {
+      "event_id": "F01",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:gdelt": {
+      "event_id": "F02",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:kan11": {
+      "event_id": "F02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:web_search": {
+      "event_id": "F02",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:gdelt": {
+      "event_id": "F03",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:kan11": {
+      "event_id": "F03",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:web_search": {
+      "event_id": "F03",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:gdelt": {
+      "event_id": "F04",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:kan11": {
+      "event_id": "F04",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:web_search": {
+      "event_id": "F04",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:gdelt": {
+      "event_id": "F05",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:kan11": {
+      "event_id": "F05",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:web_search": {
+      "event_id": "F05",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:gdelt": {
+      "event_id": "G01",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:kan11": {
+      "event_id": "G01",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:web_search": {
+      "event_id": "G01",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:gdelt": {
+      "event_id": "G02",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:kan11": {
+      "event_id": "G02",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:web_search": {
+      "event_id": "G02",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:gdelt": {
+      "event_id": "G04",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:kan11": {
+      "event_id": "G04",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:web_search": {
+      "event_id": "G04",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:gdelt": {
+      "event_id": "G05",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:kan11": {
+      "event_id": "G05",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:web_search": {
+      "event_id": "G05",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:gdelt": {
+      "event_id": "G06",
+      "source_id": "gdelt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:kan11": {
+      "event_id": "G06",
+      "source_id": "kan11",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:web_search": {
+      "event_id": "G06",
+      "source_id": "web_search",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A01:aljazeera": {
+      "event_id": "A01",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A01:axios": {
+      "event_id": "A01",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A01:bbc": {
+      "event_id": "A01",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A01:bloomberg": {
+      "event_id": "A01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A01:ft": {
+      "event_id": "A01",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A01:guardian": {
+      "event_id": "A01",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 8,
+      "error": null
+    },
+    "A01:nyt": {
+      "event_id": "A01",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A01:wapost": {
+      "event_id": "A01",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:aljazeera": {
+      "event_id": "A02",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:axios": {
+      "event_id": "A02",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:bbc": {
+      "event_id": "A02",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:bloomberg": {
+      "event_id": "A02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:ft": {
+      "event_id": "A02",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:guardian": {
+      "event_id": "A02",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:nyt": {
+      "event_id": "A02",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A02:wapost": {
+      "event_id": "A02",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:aljazeera": {
+      "event_id": "A03",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:axios": {
+      "event_id": "A03",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:bbc": {
+      "event_id": "A03",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:bloomberg": {
+      "event_id": "A03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:ft": {
+      "event_id": "A03",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:guardian": {
+      "event_id": "A03",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:nyt": {
+      "event_id": "A03",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:wapost": {
+      "event_id": "A03",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:aljazeera": {
+      "event_id": "A04",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:axios": {
+      "event_id": "A04",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:bbc": {
+      "event_id": "A04",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:bloomberg": {
+      "event_id": "A04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:ft": {
+      "event_id": "A04",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:guardian": {
+      "event_id": "A04",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:nyt": {
+      "event_id": "A04",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:wapost": {
+      "event_id": "A04",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:aljazeera": {
+      "event_id": "A05",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:axios": {
+      "event_id": "A05",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:bbc": {
+      "event_id": "A05",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:bloomberg": {
+      "event_id": "A05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:ft": {
+      "event_id": "A05",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:guardian": {
+      "event_id": "A05",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:nyt": {
+      "event_id": "A05",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:wapost": {
+      "event_id": "A05",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:aljazeera": {
+      "event_id": "A06",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:axios": {
+      "event_id": "A06",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:bbc": {
+      "event_id": "A06",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:bloomberg": {
+      "event_id": "A06",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:ft": {
+      "event_id": "A06",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:guardian": {
+      "event_id": "A06",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:nyt": {
+      "event_id": "A06",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A06:wapost": {
+      "event_id": "A06",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:aljazeera": {
+      "event_id": "A07",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:axios": {
+      "event_id": "A07",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:bbc": {
+      "event_id": "A07",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:bloomberg": {
+      "event_id": "A07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:ft": {
+      "event_id": "A07",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:guardian": {
+      "event_id": "A07",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:nyt": {
+      "event_id": "A07",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:wapost": {
+      "event_id": "A07",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:aljazeera": {
+      "event_id": "A08",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:axios": {
+      "event_id": "A08",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:bbc": {
+      "event_id": "A08",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:bloomberg": {
+      "event_id": "A08",
+      "source_id": "bloomberg",
+      "status": "done",
+      "prediction_count": 2,
+      "error": null
+    },
+    "A08:ft": {
+      "event_id": "A08",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:guardian": {
+      "event_id": "A08",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:nyt": {
+      "event_id": "A08",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A08:wapost": {
+      "event_id": "A08",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:aljazeera": {
+      "event_id": "A09",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:axios": {
+      "event_id": "A09",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:bbc": {
+      "event_id": "A09",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:bloomberg": {
+      "event_id": "A09",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:ft": {
+      "event_id": "A09",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:guardian": {
+      "event_id": "A09",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:nyt": {
+      "event_id": "A09",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:wapost": {
+      "event_id": "A09",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:aljazeera": {
+      "event_id": "A10",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:axios": {
+      "event_id": "A10",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:bbc": {
+      "event_id": "A10",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:bloomberg": {
+      "event_id": "A10",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:ft": {
+      "event_id": "A10",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:guardian": {
+      "event_id": "A10",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:nyt": {
+      "event_id": "A10",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A10:wapost": {
+      "event_id": "A10",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:aljazeera": {
+      "event_id": "A11",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:axios": {
+      "event_id": "A11",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:bbc": {
+      "event_id": "A11",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:bloomberg": {
+      "event_id": "A11",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:ft": {
+      "event_id": "A11",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:guardian": {
+      "event_id": "A11",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:nyt": {
+      "event_id": "A11",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A11:wapost": {
+      "event_id": "A11",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:aljazeera": {
+      "event_id": "A12",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:axios": {
+      "event_id": "A12",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:bbc": {
+      "event_id": "A12",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:bloomberg": {
+      "event_id": "A12",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:ft": {
+      "event_id": "A12",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:guardian": {
+      "event_id": "A12",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:nyt": {
+      "event_id": "A12",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:wapost": {
+      "event_id": "A12",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:aljazeera": {
+      "event_id": "A13",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:axios": {
+      "event_id": "A13",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:bbc": {
+      "event_id": "A13",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:bloomberg": {
+      "event_id": "A13",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:ft": {
+      "event_id": "A13",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:guardian": {
+      "event_id": "A13",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:nyt": {
+      "event_id": "A13",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:wapost": {
+      "event_id": "A13",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:aljazeera": {
+      "event_id": "A14",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:axios": {
+      "event_id": "A14",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:bbc": {
+      "event_id": "A14",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:bloomberg": {
+      "event_id": "A14",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:ft": {
+      "event_id": "A14",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:guardian": {
+      "event_id": "A14",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:nyt": {
+      "event_id": "A14",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A14:wapost": {
+      "event_id": "A14",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:aljazeera": {
+      "event_id": "A15",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:axios": {
+      "event_id": "A15",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:bbc": {
+      "event_id": "A15",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:bloomberg": {
+      "event_id": "A15",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:ft": {
+      "event_id": "A15",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:guardian": {
+      "event_id": "A15",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:nyt": {
+      "event_id": "A15",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:wapost": {
+      "event_id": "A15",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:aljazeera": {
+      "event_id": "A16",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:axios": {
+      "event_id": "A16",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:bbc": {
+      "event_id": "A16",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:bloomberg": {
+      "event_id": "A16",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:ft": {
+      "event_id": "A16",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:guardian": {
+      "event_id": "A16",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:nyt": {
+      "event_id": "A16",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:wapost": {
+      "event_id": "A16",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:aljazeera": {
+      "event_id": "A17",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:axios": {
+      "event_id": "A17",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:bbc": {
+      "event_id": "A17",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:bloomberg": {
+      "event_id": "A17",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:ft": {
+      "event_id": "A17",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:guardian": {
+      "event_id": "A17",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:nyt": {
+      "event_id": "A17",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A17:wapost": {
+      "event_id": "A17",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:aljazeera": {
+      "event_id": "A18",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:axios": {
+      "event_id": "A18",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:bbc": {
+      "event_id": "A18",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:bloomberg": {
+      "event_id": "A18",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:ft": {
+      "event_id": "A18",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:guardian": {
+      "event_id": "A18",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:nyt": {
+      "event_id": "A18",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A18:wapost": {
+      "event_id": "A18",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A19:aljazeera": {
+      "event_id": "A19",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A19:axios": {
+      "event_id": "A19",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A19:bbc": {
+      "event_id": "A19",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A19:bloomberg": {
+      "event_id": "A19",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A19:ft": {
+      "event_id": "A19",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A19:guardian": {
+      "event_id": "A19",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 5,
+      "error": null
+    },
+    "A19:nyt": {
+      "event_id": "A19",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A19:wapost": {
+      "event_id": "A19",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:aljazeera": {
+      "event_id": "B01",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:axios": {
+      "event_id": "B01",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:bbc": {
+      "event_id": "B01",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:bloomberg": {
+      "event_id": "B01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:ft": {
+      "event_id": "B01",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:guardian": {
+      "event_id": "B01",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:nyt": {
+      "event_id": "B01",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:wapost": {
+      "event_id": "B01",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:aljazeera": {
+      "event_id": "B02",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:axios": {
+      "event_id": "B02",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:bbc": {
+      "event_id": "B02",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:bloomberg": {
+      "event_id": "B02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:ft": {
+      "event_id": "B02",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:guardian": {
+      "event_id": "B02",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:nyt": {
+      "event_id": "B02",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:wapost": {
+      "event_id": "B02",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:aljazeera": {
+      "event_id": "B03",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:axios": {
+      "event_id": "B03",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:bbc": {
+      "event_id": "B03",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:bloomberg": {
+      "event_id": "B03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:ft": {
+      "event_id": "B03",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:guardian": {
+      "event_id": "B03",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:nyt": {
+      "event_id": "B03",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:wapost": {
+      "event_id": "B03",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:aljazeera": {
+      "event_id": "B04",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:axios": {
+      "event_id": "B04",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:bbc": {
+      "event_id": "B04",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:bloomberg": {
+      "event_id": "B04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:ft": {
+      "event_id": "B04",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:guardian": {
+      "event_id": "B04",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:nyt": {
+      "event_id": "B04",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:wapost": {
+      "event_id": "B04",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B05:aljazeera": {
+      "event_id": "B05",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B05:axios": {
+      "event_id": "B05",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B05:bbc": {
+      "event_id": "B05",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B05:bloomberg": {
+      "event_id": "B05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B05:ft": {
+      "event_id": "B05",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B05:guardian": {
+      "event_id": "B05",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 4,
+      "error": null
+    },
+    "B05:nyt": {
+      "event_id": "B05",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B05:wapost": {
+      "event_id": "B05",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:aljazeera": {
+      "event_id": "B06",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:axios": {
+      "event_id": "B06",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:bbc": {
+      "event_id": "B06",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:bloomberg": {
+      "event_id": "B06",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:ft": {
+      "event_id": "B06",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:guardian": {
+      "event_id": "B06",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:nyt": {
+      "event_id": "B06",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B06:wapost": {
+      "event_id": "B06",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:aljazeera": {
+      "event_id": "B07",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:axios": {
+      "event_id": "B07",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:bbc": {
+      "event_id": "B07",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:bloomberg": {
+      "event_id": "B07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:ft": {
+      "event_id": "B07",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:guardian": {
+      "event_id": "B07",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:nyt": {
+      "event_id": "B07",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B07:wapost": {
+      "event_id": "B07",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:aljazeera": {
+      "event_id": "B08",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:axios": {
+      "event_id": "B08",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:bbc": {
+      "event_id": "B08",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:bloomberg": {
+      "event_id": "B08",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:ft": {
+      "event_id": "B08",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:guardian": {
+      "event_id": "B08",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 2,
+      "error": null
+    },
+    "B08:nyt": {
+      "event_id": "B08",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:wapost": {
+      "event_id": "B08",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:aljazeera": {
+      "event_id": "B09",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:axios": {
+      "event_id": "B09",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:bbc": {
+      "event_id": "B09",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:bloomberg": {
+      "event_id": "B09",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:ft": {
+      "event_id": "B09",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:guardian": {
+      "event_id": "B09",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 4,
+      "error": null
+    },
+    "B09:nyt": {
+      "event_id": "B09",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:wapost": {
+      "event_id": "B09",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:aljazeera": {
+      "event_id": "B10",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:axios": {
+      "event_id": "B10",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:bbc": {
+      "event_id": "B10",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:bloomberg": {
+      "event_id": "B10",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:ft": {
+      "event_id": "B10",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:guardian": {
+      "event_id": "B10",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 6,
+      "error": null
+    },
+    "B10:nyt": {
+      "event_id": "B10",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:wapost": {
+      "event_id": "B10",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:aljazeera": {
+      "event_id": "B11",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:axios": {
+      "event_id": "B11",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:bbc": {
+      "event_id": "B11",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:bloomberg": {
+      "event_id": "B11",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:ft": {
+      "event_id": "B11",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:guardian": {
+      "event_id": "B11",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:nyt": {
+      "event_id": "B11",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:wapost": {
+      "event_id": "B11",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:aljazeera": {
+      "event_id": "B12",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:axios": {
+      "event_id": "B12",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:bbc": {
+      "event_id": "B12",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:bloomberg": {
+      "event_id": "B12",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:ft": {
+      "event_id": "B12",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:guardian": {
+      "event_id": "B12",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:nyt": {
+      "event_id": "B12",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:wapost": {
+      "event_id": "B12",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:aljazeera": {
+      "event_id": "B13",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:axios": {
+      "event_id": "B13",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:bbc": {
+      "event_id": "B13",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:bloomberg": {
+      "event_id": "B13",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:ft": {
+      "event_id": "B13",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:guardian": {
+      "event_id": "B13",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:nyt": {
+      "event_id": "B13",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B13:wapost": {
+      "event_id": "B13",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:aljazeera": {
+      "event_id": "C01",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:axios": {
+      "event_id": "C01",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:bbc": {
+      "event_id": "C01",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:bloomberg": {
+      "event_id": "C01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:ft": {
+      "event_id": "C01",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:guardian": {
+      "event_id": "C01",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:nyt": {
+      "event_id": "C01",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:wapost": {
+      "event_id": "C01",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:aljazeera": {
+      "event_id": "C02",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:axios": {
+      "event_id": "C02",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:bbc": {
+      "event_id": "C02",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:bloomberg": {
+      "event_id": "C02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:ft": {
+      "event_id": "C02",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:guardian": {
+      "event_id": "C02",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:nyt": {
+      "event_id": "C02",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C02:wapost": {
+      "event_id": "C02",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C03:aljazeera": {
+      "event_id": "C03",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C03:axios": {
+      "event_id": "C03",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C03:bbc": {
+      "event_id": "C03",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C03:bloomberg": {
+      "event_id": "C03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C03:ft": {
+      "event_id": "C03",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C03:guardian": {
+      "event_id": "C03",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 3,
+      "error": null
+    },
+    "C03:nyt": {
+      "event_id": "C03",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C03:wapost": {
+      "event_id": "C03",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C04:aljazeera": {
+      "event_id": "C04",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C04:axios": {
+      "event_id": "C04",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C04:bbc": {
+      "event_id": "C04",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C04:bloomberg": {
+      "event_id": "C04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C04:ft": {
+      "event_id": "C04",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C04:guardian": {
+      "event_id": "C04",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 1,
+      "error": null
+    },
+    "C04:nyt": {
+      "event_id": "C04",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C04:wapost": {
+      "event_id": "C04",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:aljazeera": {
+      "event_id": "C05",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:axios": {
+      "event_id": "C05",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:bbc": {
+      "event_id": "C05",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:bloomberg": {
+      "event_id": "C05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:ft": {
+      "event_id": "C05",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:guardian": {
+      "event_id": "C05",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:nyt": {
+      "event_id": "C05",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:wapost": {
+      "event_id": "C05",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:aljazeera": {
+      "event_id": "C06",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:axios": {
+      "event_id": "C06",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:bbc": {
+      "event_id": "C06",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:bloomberg": {
+      "event_id": "C06",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:ft": {
+      "event_id": "C06",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:guardian": {
+      "event_id": "C06",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:nyt": {
+      "event_id": "C06",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:wapost": {
+      "event_id": "C06",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:aljazeera": {
+      "event_id": "C07",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:axios": {
+      "event_id": "C07",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:bbc": {
+      "event_id": "C07",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:bloomberg": {
+      "event_id": "C07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:ft": {
+      "event_id": "C07",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:guardian": {
+      "event_id": "C07",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 17,
+      "error": null
+    },
+    "C07:nyt": {
+      "event_id": "C07",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:wapost": {
+      "event_id": "C07",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C08:aljazeera": {
+      "event_id": "C08",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C08:axios": {
+      "event_id": "C08",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C08:bbc": {
+      "event_id": "C08",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C08:bloomberg": {
+      "event_id": "C08",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C08:ft": {
+      "event_id": "C08",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C08:guardian": {
+      "event_id": "C08",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 1,
+      "error": null
+    },
+    "C08:nyt": {
+      "event_id": "C08",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C08:wapost": {
+      "event_id": "C08",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:aljazeera": {
+      "event_id": "C09",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:axios": {
+      "event_id": "C09",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:bbc": {
+      "event_id": "C09",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:bloomberg": {
+      "event_id": "C09",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:ft": {
+      "event_id": "C09",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:guardian": {
+      "event_id": "C09",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 1,
+      "error": null
+    },
+    "C09:nyt": {
+      "event_id": "C09",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:wapost": {
+      "event_id": "C09",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:aljazeera": {
+      "event_id": "D01",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:axios": {
+      "event_id": "D01",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:bbc": {
+      "event_id": "D01",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:bloomberg": {
+      "event_id": "D01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:ft": {
+      "event_id": "D01",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:guardian": {
+      "event_id": "D01",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:nyt": {
+      "event_id": "D01",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:wapost": {
+      "event_id": "D01",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:aljazeera": {
+      "event_id": "D02",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:axios": {
+      "event_id": "D02",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:bbc": {
+      "event_id": "D02",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:bloomberg": {
+      "event_id": "D02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:ft": {
+      "event_id": "D02",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:guardian": {
+      "event_id": "D02",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:nyt": {
+      "event_id": "D02",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:wapost": {
+      "event_id": "D02",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:aljazeera": {
+      "event_id": "D03",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:axios": {
+      "event_id": "D03",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:bbc": {
+      "event_id": "D03",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:bloomberg": {
+      "event_id": "D03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:ft": {
+      "event_id": "D03",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:guardian": {
+      "event_id": "D03",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:nyt": {
+      "event_id": "D03",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:wapost": {
+      "event_id": "D03",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:aljazeera": {
+      "event_id": "D04",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:axios": {
+      "event_id": "D04",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:bbc": {
+      "event_id": "D04",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:bloomberg": {
+      "event_id": "D04",
+      "source_id": "bloomberg",
+      "status": "done",
+      "prediction_count": 2,
+      "error": null
+    },
+    "D04:ft": {
+      "event_id": "D04",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:guardian": {
+      "event_id": "D04",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:nyt": {
+      "event_id": "D04",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D04:wapost": {
+      "event_id": "D04",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:aljazeera": {
+      "event_id": "D05",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:axios": {
+      "event_id": "D05",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:bbc": {
+      "event_id": "D05",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:bloomberg": {
+      "event_id": "D05",
+      "source_id": "bloomberg",
+      "status": "done",
+      "prediction_count": 3,
+      "error": null
+    },
+    "D05:ft": {
+      "event_id": "D05",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:guardian": {
+      "event_id": "D05",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:nyt": {
+      "event_id": "D05",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D05:wapost": {
+      "event_id": "D05",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:aljazeera": {
+      "event_id": "D06",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:axios": {
+      "event_id": "D06",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:bbc": {
+      "event_id": "D06",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:bloomberg": {
+      "event_id": "D06",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:ft": {
+      "event_id": "D06",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:guardian": {
+      "event_id": "D06",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:nyt": {
+      "event_id": "D06",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D06:wapost": {
+      "event_id": "D06",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:aljazeera": {
+      "event_id": "E01",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:axios": {
+      "event_id": "E01",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:bbc": {
+      "event_id": "E01",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:bloomberg": {
+      "event_id": "E01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:ft": {
+      "event_id": "E01",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:guardian": {
+      "event_id": "E01",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:nyt": {
+      "event_id": "E01",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E01:wapost": {
+      "event_id": "E01",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:aljazeera": {
+      "event_id": "E02",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:axios": {
+      "event_id": "E02",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:bbc": {
+      "event_id": "E02",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:bloomberg": {
+      "event_id": "E02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:ft": {
+      "event_id": "E02",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:guardian": {
+      "event_id": "E02",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:nyt": {
+      "event_id": "E02",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:wapost": {
+      "event_id": "E02",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:aljazeera": {
+      "event_id": "E03",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:axios": {
+      "event_id": "E03",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:bbc": {
+      "event_id": "E03",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:bloomberg": {
+      "event_id": "E03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:ft": {
+      "event_id": "E03",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:guardian": {
+      "event_id": "E03",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:nyt": {
+      "event_id": "E03",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:wapost": {
+      "event_id": "E03",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:aljazeera": {
+      "event_id": "E04",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:axios": {
+      "event_id": "E04",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:bbc": {
+      "event_id": "E04",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:bloomberg": {
+      "event_id": "E04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:ft": {
+      "event_id": "E04",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:guardian": {
+      "event_id": "E04",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:nyt": {
+      "event_id": "E04",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E04:wapost": {
+      "event_id": "E04",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E05:aljazeera": {
+      "event_id": "E05",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E05:axios": {
+      "event_id": "E05",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E05:bbc": {
+      "event_id": "E05",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E05:bloomberg": {
+      "event_id": "E05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E05:ft": {
+      "event_id": "E05",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E05:guardian": {
+      "event_id": "E05",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 1,
+      "error": null
+    },
+    "E05:nyt": {
+      "event_id": "E05",
+      "source_id": "nyt",
+      "status": "done",
+      "prediction_count": 1,
+      "error": null
+    },
+    "E05:wapost": {
+      "event_id": "E05",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:aljazeera": {
+      "event_id": "E06",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:axios": {
+      "event_id": "E06",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:bbc": {
+      "event_id": "E06",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:bloomberg": {
+      "event_id": "E06",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:ft": {
+      "event_id": "E06",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:guardian": {
+      "event_id": "E06",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:nyt": {
+      "event_id": "E06",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:wapost": {
+      "event_id": "E06",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:aljazeera": {
+      "event_id": "E07",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:axios": {
+      "event_id": "E07",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:bbc": {
+      "event_id": "E07",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:bloomberg": {
+      "event_id": "E07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:ft": {
+      "event_id": "E07",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:guardian": {
+      "event_id": "E07",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:nyt": {
+      "event_id": "E07",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:wapost": {
+      "event_id": "E07",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E08:aljazeera": {
+      "event_id": "E08",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E08:axios": {
+      "event_id": "E08",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E08:bbc": {
+      "event_id": "E08",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E08:bloomberg": {
+      "event_id": "E08",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E08:ft": {
+      "event_id": "E08",
+      "source_id": "ft",
+      "status": "done",
+      "prediction_count": 2,
+      "error": null
+    },
+    "E08:guardian": {
+      "event_id": "E08",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 12,
+      "error": null
+    },
+    "E08:nyt": {
+      "event_id": "E08",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E08:wapost": {
+      "event_id": "E08",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E09:aljazeera": {
+      "event_id": "E09",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E09:axios": {
+      "event_id": "E09",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E09:bbc": {
+      "event_id": "E09",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E09:bloomberg": {
+      "event_id": "E09",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E09:ft": {
+      "event_id": "E09",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E09:guardian": {
+      "event_id": "E09",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 8,
+      "error": null
+    },
+    "E09:nyt": {
+      "event_id": "E09",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E09:wapost": {
+      "event_id": "E09",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E10:aljazeera": {
+      "event_id": "E10",
+      "source_id": "aljazeera",
+      "status": "done",
+      "prediction_count": 1,
+      "error": null
+    },
+    "E10:axios": {
+      "event_id": "E10",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E10:bbc": {
+      "event_id": "E10",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E10:bloomberg": {
+      "event_id": "E10",
+      "source_id": "bloomberg",
+      "status": "done",
+      "prediction_count": 6,
+      "error": null
+    },
+    "E10:ft": {
+      "event_id": "E10",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E10:guardian": {
+      "event_id": "E10",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 8,
+      "error": null
+    },
+    "E10:nyt": {
+      "event_id": "E10",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E10:wapost": {
+      "event_id": "E10",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:aljazeera": {
+      "event_id": "F01",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:axios": {
+      "event_id": "F01",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:bbc": {
+      "event_id": "F01",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:bloomberg": {
+      "event_id": "F01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:ft": {
+      "event_id": "F01",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:guardian": {
+      "event_id": "F01",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:nyt": {
+      "event_id": "F01",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F01:wapost": {
+      "event_id": "F01",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:aljazeera": {
+      "event_id": "F02",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:axios": {
+      "event_id": "F02",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:bbc": {
+      "event_id": "F02",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:bloomberg": {
+      "event_id": "F02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:ft": {
+      "event_id": "F02",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:guardian": {
+      "event_id": "F02",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:nyt": {
+      "event_id": "F02",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F02:wapost": {
+      "event_id": "F02",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:aljazeera": {
+      "event_id": "F03",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:axios": {
+      "event_id": "F03",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:bbc": {
+      "event_id": "F03",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:bloomberg": {
+      "event_id": "F03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:ft": {
+      "event_id": "F03",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:guardian": {
+      "event_id": "F03",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:nyt": {
+      "event_id": "F03",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F03:wapost": {
+      "event_id": "F03",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:aljazeera": {
+      "event_id": "F04",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:axios": {
+      "event_id": "F04",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:bbc": {
+      "event_id": "F04",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:bloomberg": {
+      "event_id": "F04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:ft": {
+      "event_id": "F04",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:guardian": {
+      "event_id": "F04",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:nyt": {
+      "event_id": "F04",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F04:wapost": {
+      "event_id": "F04",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:aljazeera": {
+      "event_id": "F05",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:axios": {
+      "event_id": "F05",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:bbc": {
+      "event_id": "F05",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:bloomberg": {
+      "event_id": "F05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:ft": {
+      "event_id": "F05",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:guardian": {
+      "event_id": "F05",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:nyt": {
+      "event_id": "F05",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:wapost": {
+      "event_id": "F05",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:aljazeera": {
+      "event_id": "G01",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:axios": {
+      "event_id": "G01",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:bbc": {
+      "event_id": "G01",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:bloomberg": {
+      "event_id": "G01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:ft": {
+      "event_id": "G01",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:guardian": {
+      "event_id": "G01",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:nyt": {
+      "event_id": "G01",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G01:wapost": {
+      "event_id": "G01",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:aljazeera": {
+      "event_id": "G02",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:axios": {
+      "event_id": "G02",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:bbc": {
+      "event_id": "G02",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:bloomberg": {
+      "event_id": "G02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:ft": {
+      "event_id": "G02",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:guardian": {
+      "event_id": "G02",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:nyt": {
+      "event_id": "G02",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:wapost": {
+      "event_id": "G02",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G03:aljazeera": {
+      "event_id": "G03",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G03:axios": {
+      "event_id": "G03",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G03:bbc": {
+      "event_id": "G03",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G03:bloomberg": {
+      "event_id": "G03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G03:ft": {
+      "event_id": "G03",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G03:guardian": {
+      "event_id": "G03",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 1,
+      "error": null
+    },
+    "G03:nyt": {
+      "event_id": "G03",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G03:wapost": {
+      "event_id": "G03",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:aljazeera": {
+      "event_id": "G04",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:axios": {
+      "event_id": "G04",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:bbc": {
+      "event_id": "G04",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:bloomberg": {
+      "event_id": "G04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:ft": {
+      "event_id": "G04",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:guardian": {
+      "event_id": "G04",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:nyt": {
+      "event_id": "G04",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:wapost": {
+      "event_id": "G04",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:aljazeera": {
+      "event_id": "G05",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:axios": {
+      "event_id": "G05",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:bbc": {
+      "event_id": "G05",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:bloomberg": {
+      "event_id": "G05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:ft": {
+      "event_id": "G05",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:guardian": {
+      "event_id": "G05",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:nyt": {
+      "event_id": "G05",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:wapost": {
+      "event_id": "G05",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:aljazeera": {
+      "event_id": "G06",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:axios": {
+      "event_id": "G06",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:bbc": {
+      "event_id": "G06",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:bloomberg": {
+      "event_id": "G06",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:ft": {
+      "event_id": "G06",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:guardian": {
+      "event_id": "G06",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:nyt": {
+      "event_id": "G06",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G06:wapost": {
+      "event_id": "G06",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G07:aljazeera": {
+      "event_id": "G07",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G07:axios": {
+      "event_id": "G07",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G07:bbc": {
+      "event_id": "G07",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G07:bloomberg": {
+      "event_id": "G07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G07:ft": {
+      "event_id": "G07",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G07:guardian": {
+      "event_id": "G07",
+      "source_id": "guardian",
+      "status": "done",
+      "prediction_count": 12,
+      "error": null
+    },
+    "G07:nyt": {
+      "event_id": "G07",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G07:wapost": {
+      "event_id": "G07",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G08:aljazeera": {
+      "event_id": "G08",
+      "source_id": "aljazeera",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G08:axios": {
+      "event_id": "G08",
+      "source_id": "axios",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G08:bbc": {
+      "event_id": "G08",
+      "source_id": "bbc",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G08:bloomberg": {
+      "event_id": "G08",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G08:ft": {
+      "event_id": "G08",
+      "source_id": "ft",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G08:guardian": {
+      "event_id": "G08",
+      "source_id": "guardian",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G08:nyt": {
+      "event_id": "G08",
+      "source_id": "nyt",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G08:wapost": {
+      "event_id": "G08",
+      "source_id": "wapost",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
     }
   },
-  "last_updated": "2026-05-07T20:38:23.665251"
+  "last_updated": "2026-05-10T13:58:16.125376"
 }
