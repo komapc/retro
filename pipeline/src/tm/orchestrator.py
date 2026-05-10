@@ -15,6 +15,7 @@ from .runner import run_article, ArticleInput, PipelineResult
 from .progress import update_cell, load_state
 from .ingestor import BraveIngestor, GDELTIngestor, DDGIngestor
 from .utils import KNOWN_SOURCE_IDS
+from .gnews_ingest import _is_stub_page
 import httpx
 from bs4 import BeautifulSoup
 
@@ -202,6 +203,10 @@ class Orchestrator:
                 # Skip very short articles (paywalled stubs)
                 if len(text) < 500:
                     console.print(f"    [dim]Skipping stub ({len(text)} chars): {art.get('headline','')[:50]}[/dim]")
+                    continue
+                # Skip known paywall redirect pages (e.g. Bloomberg Mercury)
+                if _is_stub_page(text):
+                    console.print(f"    [dim]Skipping known stub page: {art.get('headline','')[:50]}[/dim]")
                     continue
                 articles.append(art)
         return articles
