@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 class SearchRequest(BaseModel):
     query: str = Field(..., min_length=3, max_length=500, description="Search query string")
-    limit: int = Field(default=5, ge=1, le=20, description="Max results to return")
+    limit: int = Field(default=5, ge=1, le=30, description="Max results to return")
     date_from: Optional[str] = Field(default=None, description="ISO date lower bound YYYY-MM-DD")
     date_to: Optional[str] = Field(default=None, description="ISO date upper bound YYYY-MM-DD")
 
@@ -55,7 +55,7 @@ class ArticleInput(BaseModel):
 
 class ForecastRequest(BaseModel):
     question: str = Field(..., min_length=5, max_length=500, description="Binary question to forecast")
-    max_articles: Optional[int] = Field(default=None, ge=1, le=20)
+    max_articles: Optional[int] = Field(default=None, ge=1, le=30)
     articles: Optional[list[ArticleInput]] = Field(
         default=None,
         description=(
