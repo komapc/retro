@@ -83,6 +83,7 @@ BRAVE_API_KEY: Optional[str] = _secret("BRAVE_API_KEY", "openclaw/brave-api-key"
 BRIGHTDATA_API_KEY: Optional[str] = _secret("BRIGHTDATA_API_KEY", "openclaw/brightdata-api-key")
 NIMBLEWAY_API_KEY: Optional[str] = _secret("NIMBLEWAY_API_KEY", "openclaw/nimbleway-api-key")
 SCRAPINGBEE_API_KEY: Optional[str] = _secret("SCRAPINGBEE_API_KEY", "openclaw/scrapingbee-api-key")
+NEWSDATA_API_KEY: Optional[str] = _secret("NEWSDATA_API_KEY", "openclaw/newsdata-api-key")
 
 _KEY_LOADED_AT: float = time.time()
 _KEY_MAX_AGE_SECONDS: float = 86400.0  # 24h
@@ -96,7 +97,7 @@ def _refresh_keys_if_stale() -> None:
     function is called at the top of search_articles() to catch that case.
     """
     global DATAFORSEO_API_KEY, SERPAPI_API_KEY, SERPER_API_KEY, BRAVE_API_KEY
-    global BRIGHTDATA_API_KEY, NIMBLEWAY_API_KEY, SCRAPINGBEE_API_KEY
+    global BRIGHTDATA_API_KEY, NIMBLEWAY_API_KEY, SCRAPINGBEE_API_KEY, NEWSDATA_API_KEY
     global _KEY_LOADED_AT
     if time.time() - _KEY_LOADED_AT < _KEY_MAX_AGE_SECONDS:
         return
@@ -108,6 +109,7 @@ def _refresh_keys_if_stale() -> None:
     BRIGHTDATA_API_KEY = _secret("BRIGHTDATA_API_KEY", "openclaw/brightdata-api-key")
     NIMBLEWAY_API_KEY = _secret("NIMBLEWAY_API_KEY", "openclaw/nimbleway-api-key")
     SCRAPINGBEE_API_KEY = _secret("SCRAPINGBEE_API_KEY", "openclaw/scrapingbee-api-key")
+    NEWSDATA_API_KEY = _secret("NEWSDATA_API_KEY", "openclaw/newsdata-api-key")
     _KEY_LOADED_AT = time.time()
 
 
@@ -141,6 +143,7 @@ _SERPER_QUOTA_EXHAUSTED: bool = False
 _BRIGHTDATA_QUOTA_EXHAUSTED: bool = False
 _NIMBLEWAY_QUOTA_EXHAUSTED: bool = False
 _SCRAPINGBEE_QUOTA_EXHAUSTED: bool = False
+_NEWSDATA_QUOTA_EXHAUSTED: bool = False
 
 
 @dataclass
@@ -659,6 +662,58 @@ def _search_ddg_news(
 
 
 # ──────────────────────────────────────────────
+# Provider: Newsdata.io
+# ──────────────────────────────────────────────
+
+def _search_newsdata_io(
+    query: str,
+    limit: int,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+) -> List[SearchResult]:
+    global _NEWSDATA_QUOTA_EXHAUSTED
+    if not NEWSDATA_API_KEY:
+        raise RuntimeError("NEWSDATA_API_KEY not set")
+
+    params: dict = {
+        "apikey": NEWSDATA_API_KEY,
+        "q": query,
+        "language": "en",
+        "size": min(limit, 50),
+    }
+    if date_from:
+        params["from_date"] = date_from.strftime("%Y-%m-%d")
+    if date_to:
+        params["to_date"] = date_to.strftime("%Y-%m-%d")
+
+    r = httpx.get("https://newsdata.io/api/1/latest", params=params, timeout=10)
+    if r.status_code == 429:
+        _NEWSDATA_QUOTA_EXHAUSTED = True
+        raise RuntimeError("Newsdata.io quota exhausted (rate limit)")
+    r.raise_for_status()
+    data = r.json()
+    if data.get("status") != "success":
+        code = (data.get("results") or {}).get("code", "")
+        if code in ("AccessDenied", "RateLimitExceeded"):
+            _NEWSDATA_QUOTA_EXHAUSTED = True
+        raise RuntimeError(f"Newsdata.io error: {data}")
+
+    items = data.get("results") or []
+    results = [
+        SearchResult(
+            title=item.get("title") or "",
+            url=item.get("link") or "",
+            snippet=item.get("description") or "",
+            source=item.get("source_id") or _extract_domain(item.get("link") or ""),
+            published_date=(item.get("pubDate") or "")[:10],
+        )
+        for item in items[:limit]
+        if item.get("link")
+    ]
+    return _filter_by_date(results, date_from, date_to)
+
+
+# ──────────────────────────────────────────────
 # Public API — tries providers in order
 # ──────────────────────────────────────────────
 
@@ -673,7 +728,7 @@ def search_articles(
 
     Tries providers in order, skipping any without a configured key or with
     an exhausted quota flag set for this process lifetime:
-      DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → GDELT → DDG
+      DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → Newsdata.io → GDELT → DDG
 
     DDG is skipped on EC2 (AWS IPs are blocked by DDG/Yahoo).
 
@@ -774,7 +829,19 @@ def search_articles(
         except Exception as e:
             logger.warning("ScrapingBee failed: %s", e)
 
-    # 8. GDELT (free, no key) — news-only, reliable historical dates, no snippets
+    # 8. Newsdata.io
+    if NEWSDATA_API_KEY and not _NEWSDATA_QUOTA_EXHAUSTED:
+        _provider_local.chain.append("newsdata")
+        try:
+            results = _search_newsdata_io(query, limit, date_from, date_to)
+            if results:
+                _provider_local.name = "newsdata"
+                return results
+            logger.warning("Newsdata.io returned 0 results for: %s", query[:60])
+        except Exception as e:
+            logger.warning("Newsdata.io failed: %s", e)
+
+    # 9. GDELT (free, no key) — news-only, reliable historical dates, no snippets
     _provider_local.chain.append("gdelt")
     try:
         results = _search_gdelt(query, limit, date_from, date_to)
@@ -785,7 +852,7 @@ def search_articles(
     except Exception as e:
         logger.warning("GDELT failed: %s", e)
 
-    # 9. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
+    # 10. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
     if not _running_on_ec2():
         _provider_local.chain.append("ddg")
         try:

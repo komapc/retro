@@ -140,6 +140,10 @@ async def _check_scrapingbee() -> ProviderStatus:
         return ProviderStatus(configured=True, exhausted=False, status="error", error=str(e))
 
 
+async def _check_newsdata() -> ProviderStatus:
+    return _check_simple(_ws.NEWSDATA_API_KEY, _ws._NEWSDATA_QUOTA_EXHAUSTED)
+
+
 async def _check_gdelt() -> ProviderStatus:
     try:
         async with httpx.AsyncClient(timeout=10) as c:
@@ -166,6 +170,7 @@ async def run_search_health() -> SearchHealthResponse:
         ("brightdata", _check_simple(_ws.BRIGHTDATA_API_KEY, _ws._BRIGHTDATA_QUOTA_EXHAUSTED)),
         ("nimbleway",  _check_simple(_ws.NIMBLEWAY_API_KEY, _ws._NIMBLEWAY_QUOTA_EXHAUSTED)),
         ("scrapingbee", _check_scrapingbee()),
+        ("newsdata",   _check_newsdata()),
         ("gdelt",      _check_gdelt()),
     ]
     names, coros = zip(*provider_checks)
