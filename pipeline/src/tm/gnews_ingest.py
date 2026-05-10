@@ -120,6 +120,19 @@ SERPAPI_KEY:    Optional[str] = os.environ.get("SERPAPI_KEY") \
                               or os.environ.get("SERPER_API_KEY")   # serpapi.com (backwards-compat)
 SERPERDEV_KEY:  Optional[str] = os.environ.get("SERPERDEV_KEY")   # serper.dev
 
+# Known paywall/redirect page title fragments — Wayback often returns these
+# instead of real article content. Checked case-insensitively against the
+# scraped page title (first 120 chars of text).
+_STUB_TITLE_FRAGMENTS = (
+    "bloomberg mercury",
+    "bloomberg data",
+    "watch russia invades ukraine",
+    "this week in crypto",
+    "bloomberg podcasts",
+    "bloomberg quicktake",
+    "bloomberg live",
+)
+
 # Circuit breakers — set to True after quota/persistent errors to skip for rest of session
 _BRAVE_QUOTA_EXHAUSTED: bool = False
 _SERPER_QUOTA_EXHAUSTED: bool = False
@@ -132,6 +145,12 @@ def _is_ascii(s: str) -> bool:
         return True
     except UnicodeEncodeError:
         return False
+
+
+def _is_stub_page(text: str) -> bool:
+    """Return True if scraped text matches a known paywall/redirect stub."""
+    preview = text[:120].lower()
+    return any(frag in preview for frag in _STUB_TITLE_FRAGMENTS)
 
 
 def _clean_title(title: str) -> str:
@@ -671,6 +690,9 @@ async def fetch_article_text(url: str) -> str:
             if r.status_code in (401, 403, 429):
                 console.print(f"    [dim]HTTP {r.status_code}, trying Wayback...[/dim]")
                 wb_text = await _fetch_wayback(url, client)
+                if _is_stub_page(wb_text):
+                    console.print(f"    [dim]Wayback returned known stub page, skipping[/dim]")
+                    return ""
                 if len(wb_text) >= PAYWALL_THRESHOLD:
                     console.print(f"    [dim green]Wayback: {len(wb_text)} chars[/dim green]")
                 return wb_text
