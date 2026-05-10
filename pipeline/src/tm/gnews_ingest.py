@@ -67,6 +67,8 @@ SOURCES_CONFIG: Dict[str, Dict] = {
     "ynet":         {"domain": "ynetnews.com",       "lang": "en"},
     "israel_hayom": {"domain": "israelhayom.com",    "lang": "en"},
     "aljazeera":    {"domain": "aljazeera.com",      "lang": "en"},
+    "bloomberg":    {"domain": "bloomberg.com",       "lang": "en"},
+    "bbc":          {"domain": "bbc.com",             "lang": "en"},
     "nyt":          {"domain": "nytimes.com",         "lang": "en"},
     "ft":           {"domain": "ft.com",              "lang": "en"},
     "guardian":     {"domain": "theguardian.com",     "lang": "en"},
@@ -245,6 +247,9 @@ def _construct_url(title: str, domain: str, expected_date: Optional[datetime] = 
     if domain == "israelhayom.com" and expected_date:
         date_path = expected_date.strftime("%Y/%m/%d")
         return f"https://www.israelhayom.com/{date_path}/{slug}/"
+    if domain == "bloomberg.com" and expected_date:
+        date_str = expected_date.strftime("%Y-%m-%d")
+        return f"https://www.bloomberg.com/news/articles/{date_str}/{slug}"
     return None
 
 
