@@ -7371,13 +7371,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "A01:bloomberg": {
-      "event_id": "A01",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "A01:ft": {
       "event_id": "A01",
       "source_id": "ft",
@@ -7483,13 +7476,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "A03:bloomberg": {
-      "event_id": "A03",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "A03:ft": {
       "event_id": "A03",
       "source_id": "ft",
@@ -7539,13 +7525,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "A04:bloomberg": {
-      "event_id": "A04",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "A04:ft": {
       "event_id": "A04",
       "source_id": "ft",
@@ -7591,13 +7570,6 @@
     "A05:bbc": {
       "event_id": "A05",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "A05:bloomberg": {
-      "event_id": "A05",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -7707,13 +7679,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "A07:bloomberg": {
-      "event_id": "A07",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "A07:ft": {
       "event_id": "A07",
       "source_id": "ft",
@@ -7819,13 +7784,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "A09:bloomberg": {
-      "event_id": "A09",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "A09:ft": {
       "event_id": "A09",
       "source_id": "ft",
@@ -7878,8 +7836,8 @@
     "A10:bloomberg": {
       "event_id": "A10",
       "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A10:ft": {
@@ -7987,13 +7945,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "A12:bloomberg": {
-      "event_id": "A12",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "A12:ft": {
       "event_id": "A12",
       "source_id": "ft",
@@ -8039,13 +7990,6 @@
     "A13:bbc": {
       "event_id": "A13",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "A13:bloomberg": {
-      "event_id": "A13",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -8155,13 +8099,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "A15:bloomberg": {
-      "event_id": "A15",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "A15:ft": {
       "event_id": "A15",
       "source_id": "ft",
@@ -8207,13 +8144,6 @@
     "A16:bbc": {
       "event_id": "A16",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "A16:bloomberg": {
-      "event_id": "A16",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -8326,8 +8256,8 @@
     "A18:bloomberg": {
       "event_id": "A18",
       "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A18:ft": {
@@ -8435,13 +8365,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "B01:bloomberg": {
-      "event_id": "B01",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "B01:ft": {
       "event_id": "B01",
       "source_id": "ft",
@@ -8487,13 +8410,6 @@
     "B02:bbc": {
       "event_id": "B02",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "B02:bloomberg": {
-      "event_id": "B02",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -8547,13 +8463,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "B03:bloomberg": {
-      "event_id": "B03",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "B03:ft": {
       "event_id": "B03",
       "source_id": "ft",
@@ -8599,13 +8508,6 @@
     "B04:bbc": {
       "event_id": "B04",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "B04:bloomberg": {
-      "event_id": "B04",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -8827,13 +8729,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "B08:bloomberg": {
-      "event_id": "B08",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "B08:ft": {
       "event_id": "B08",
       "source_id": "ft",
@@ -8879,13 +8774,6 @@
     "B09:bbc": {
       "event_id": "B09",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "B09:bloomberg": {
-      "event_id": "B09",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -8939,13 +8827,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "B10:bloomberg": {
-      "event_id": "B10",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "B10:ft": {
       "event_id": "B10",
       "source_id": "ft",
@@ -8995,13 +8876,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "B11:bloomberg": {
-      "event_id": "B11",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "B11:ft": {
       "event_id": "B11",
       "source_id": "ft",
@@ -9047,13 +8921,6 @@
     "B12:bbc": {
       "event_id": "B12",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "B12:bloomberg": {
-      "event_id": "B12",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -9163,13 +9030,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "C01:bloomberg": {
-      "event_id": "C01",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "C01:ft": {
       "event_id": "C01",
       "source_id": "ft",
@@ -9222,8 +9082,8 @@
     "C02:bloomberg": {
       "event_id": "C02",
       "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "C02:ft": {
@@ -9387,13 +9247,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "C05:bloomberg": {
-      "event_id": "C05",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "C05:ft": {
       "event_id": "C05",
       "source_id": "ft",
@@ -9443,13 +9296,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "C06:bloomberg": {
-      "event_id": "C06",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "C06:ft": {
       "event_id": "C06",
       "source_id": "ft",
@@ -9495,13 +9341,6 @@
     "C07:bbc": {
       "event_id": "C07",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "C07:bloomberg": {
-      "event_id": "C07",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -9611,13 +9450,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "C09:bloomberg": {
-      "event_id": "C09",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "C09:ft": {
       "event_id": "C09",
       "source_id": "ft",
@@ -9663,13 +9495,6 @@
     "D01:bbc": {
       "event_id": "D01",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "D01:bloomberg": {
-      "event_id": "D01",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -9723,13 +9548,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "D02:bloomberg": {
-      "event_id": "D02",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "D02:ft": {
       "event_id": "D02",
       "source_id": "ft",
@@ -9775,13 +9593,6 @@
     "D03:bbc": {
       "event_id": "D03",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "D03:bloomberg": {
-      "event_id": "D03",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -10059,13 +9870,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "E02:bloomberg": {
-      "event_id": "E02",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "E02:ft": {
       "event_id": "E02",
       "source_id": "ft",
@@ -10111,13 +9915,6 @@
     "E03:bbc": {
       "event_id": "E03",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "E03:bloomberg": {
-      "event_id": "E03",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -10227,13 +10024,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "E05:bloomberg": {
-      "event_id": "E05",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "E05:ft": {
       "event_id": "E05",
       "source_id": "ft",
@@ -10279,13 +10069,6 @@
     "E06:bbc": {
       "event_id": "E06",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "E06:bloomberg": {
-      "event_id": "E06",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -10339,13 +10122,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "E07:bloomberg": {
-      "event_id": "E07",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "E07:ft": {
       "event_id": "E07",
       "source_id": "ft",
@@ -10391,13 +10167,6 @@
     "E08:bbc": {
       "event_id": "E08",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "E08:bloomberg": {
-      "event_id": "E08",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -10787,13 +10556,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "F05:bloomberg": {
-      "event_id": "F05",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "F05:ft": {
       "event_id": "F05",
       "source_id": "ft",
@@ -10899,13 +10661,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "G02:bloomberg": {
-      "event_id": "G02",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "G02:ft": {
       "event_id": "G02",
       "source_id": "ft",
@@ -10958,8 +10713,8 @@
     "G03:bloomberg": {
       "event_id": "G03",
       "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "G03:ft": {
@@ -11011,13 +10766,6 @@
       "prediction_count": 0,
       "error": null
     },
-    "G04:bloomberg": {
-      "event_id": "G04",
-      "source_id": "bloomberg",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
     "G04:ft": {
       "event_id": "G04",
       "source_id": "ft",
@@ -11063,13 +10811,6 @@
     "G05:bbc": {
       "event_id": "G05",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "G05:bloomberg": {
-      "event_id": "G05",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -11126,7 +10867,7 @@
     "G06:bloomberg": {
       "event_id": "G06",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "failed",
       "prediction_count": 0,
       "error": null
     },
@@ -11175,13 +10916,6 @@
     "G07:bbc": {
       "event_id": "G07",
       "source_id": "bbc",
-      "status": "no_predictions",
-      "prediction_count": 0,
-      "error": null
-    },
-    "G07:bloomberg": {
-      "event_id": "G07",
-      "source_id": "bloomberg",
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
@@ -11269,7 +11003,273 @@
       "status": "no_predictions",
       "prediction_count": 0,
       "error": null
+    },
+    "A01:bloomberg": {
+      "event_id": "A01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A03:bloomberg": {
+      "event_id": "A03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A04:bloomberg": {
+      "event_id": "A04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A05:bloomberg": {
+      "event_id": "A05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A07:bloomberg": {
+      "event_id": "A07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A09:bloomberg": {
+      "event_id": "A09",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A12:bloomberg": {
+      "event_id": "A12",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A13:bloomberg": {
+      "event_id": "A13",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A15:bloomberg": {
+      "event_id": "A15",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "A16:bloomberg": {
+      "event_id": "A16",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B01:bloomberg": {
+      "event_id": "B01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B02:bloomberg": {
+      "event_id": "B02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B03:bloomberg": {
+      "event_id": "B03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B04:bloomberg": {
+      "event_id": "B04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B08:bloomberg": {
+      "event_id": "B08",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B09:bloomberg": {
+      "event_id": "B09",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B10:bloomberg": {
+      "event_id": "B10",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B11:bloomberg": {
+      "event_id": "B11",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "B12:bloomberg": {
+      "event_id": "B12",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C01:bloomberg": {
+      "event_id": "C01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C05:bloomberg": {
+      "event_id": "C05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C06:bloomberg": {
+      "event_id": "C06",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C07:bloomberg": {
+      "event_id": "C07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "C09:bloomberg": {
+      "event_id": "C09",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D01:bloomberg": {
+      "event_id": "D01",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D02:bloomberg": {
+      "event_id": "D02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "D03:bloomberg": {
+      "event_id": "D03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E02:bloomberg": {
+      "event_id": "E02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E03:bloomberg": {
+      "event_id": "E03",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E05:bloomberg": {
+      "event_id": "E05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E06:bloomberg": {
+      "event_id": "E06",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E07:bloomberg": {
+      "event_id": "E07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "E08:bloomberg": {
+      "event_id": "E08",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "F05:bloomberg": {
+      "event_id": "F05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G02:bloomberg": {
+      "event_id": "G02",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G04:bloomberg": {
+      "event_id": "G04",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G05:bloomberg": {
+      "event_id": "G05",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
+    },
+    "G07:bloomberg": {
+      "event_id": "G07",
+      "source_id": "bloomberg",
+      "status": "no_predictions",
+      "prediction_count": 0,
+      "error": null
     }
   },
-  "last_updated": "2026-05-10T13:58:16.125376"
+  "last_updated": "2026-05-10T14:38:10.232240"
 }

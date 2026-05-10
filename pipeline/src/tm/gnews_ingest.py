@@ -371,6 +371,10 @@ def resolve_url(
             if r.status_code == 200 and len(r.text) > 500:
                 console.print(f"    [dim green]URL via slug[/dim green]")
                 return str(r.url)
+            elif r.status_code in (401, 403, 429):
+                # Paywalled/blocked — return URL so fetch_article_text can try Wayback.
+                console.print(f"    [dim]Slug → HTTP {r.status_code}, will try Wayback[/dim]")
+                return direct
             else:
                 console.print(f"    [dim]Slug → HTTP {r.status_code}[/dim]")
         except Exception as e:
@@ -656,13 +660,20 @@ async def fetch_article_text(url: str) -> str:
     """
     Scrape full article text from URL.
     1. trafilatura (primary) + BeautifulSoup fallback
-    2. If result < PAYWALL_THRESHOLD chars → try Wayback Machine cached copy
+    2. If result < PAYWALL_THRESHOLD chars, or status was 403/401/429
+       (paywall/block) → try Wayback Machine cached copy
     """
     try:
         async with httpx.AsyncClient(
             headers=HEADERS, timeout=25, follow_redirects=True
         ) as client:
             r = await client.get(url)
+            if r.status_code in (401, 403, 429):
+                console.print(f"    [dim]HTTP {r.status_code}, trying Wayback...[/dim]")
+                wb_text = await _fetch_wayback(url, client)
+                if len(wb_text) >= PAYWALL_THRESHOLD:
+                    console.print(f"    [dim green]Wayback: {len(wb_text)} chars[/dim green]")
+                return wb_text
             if r.status_code != 200:
                 return ""
             text = await _scrape_html(r.text)
