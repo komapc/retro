@@ -33,7 +33,7 @@ async def run_search(req: SearchRequest) -> SearchResponse:
             SearchResultItem(
                 title=r.title,
                 url=r.url,
-                snippet=r.snippet,
+                snippet=r.snippet or "",
                 source=r.source,
                 published_date=r.published_date,
             )

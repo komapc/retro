@@ -544,6 +544,9 @@ def _search_scrapingbee(
     if r.status_code == 402:
         _SCRAPINGBEE_QUOTA_EXHAUSTED = True
         raise RuntimeError("ScrapingBee quota exhausted (402)")
+    if r.status_code == 401:
+        _SCRAPINGBEE_QUOTA_EXHAUSTED = True
+        raise RuntimeError("ScrapingBee unauthorized (401) — invalid key, disabling for session")
     r.raise_for_status()
 
     data = r.json()
