@@ -14,7 +14,7 @@ class SearchRequest(BaseModel):
 class SearchResultItem(BaseModel):
     title: str
     url: str
-    snippet: str
+    snippet: str = ""
     source: str = ""
     published_date: str = ""
 
