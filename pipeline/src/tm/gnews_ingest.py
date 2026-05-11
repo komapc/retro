@@ -14,9 +14,12 @@ Step 2: Resolve each title to a real URL via a chain of search backends
 Step 3: Scrape full article text via trafilatura (primary) with
         BeautifulSoup fallback, and save to data/raw_ingest/.
         If text < 500 chars (paywall), tries Wayback Machine cached copy.
-Step 4: GDELT fallback — if GNews+URL-resolution yields 0 articles,
+Step 4: Newsdata.io /archive fallback — if web search yields 0 articles,
+        query the paid Newsdata.io archive API with domainurl= filter.
+        Returns full_description for paywalled sources on qualifying plans.
+Step 5: GDELT fallback — if Newsdata.io yields 0 articles,
         query the free GDELT DOC API (English sources only) for direct URLs.
-Step 5: CDX fallback — enumerate Wayback CDX archives (disabled on EC2;
+Step 6: CDX fallback — enumerate Wayback CDX archives (disabled on EC2;
         set ENABLE_CDX=1 to re-enable).
 
 Sources: toi, jpost, haaretz, reuters, globes, ynet, israel_hayom,
@@ -119,6 +122,7 @@ BRAVE_API_KEY:  Optional[str] = os.environ.get("BRAVE_API_KEY")   # api.search.b
 SERPAPI_KEY:    Optional[str] = os.environ.get("SERPAPI_KEY") \
                               or os.environ.get("SERPER_API_KEY")   # serpapi.com (backwards-compat)
 SERPERDEV_KEY:  Optional[str] = os.environ.get("SERPERDEV_KEY")   # serper.dev
+NEWSDATA_API_KEY: Optional[str] = os.environ.get("NEWSDATA_API_KEY")  # newsdata.io
 
 # Known paywall/redirect page title fragments — Wayback often returns these
 # instead of real article content. Checked case-insensitively against the
@@ -137,6 +141,7 @@ _STUB_TITLE_FRAGMENTS = (
 _BRAVE_QUOTA_EXHAUSTED: bool = False
 _SERPER_QUOTA_EXHAUSTED: bool = False
 _GDELT_BLOCKED: bool = False
+_NEWSDATA_QUOTA_EXHAUSTED: bool = False
 
 
 def _is_ascii(s: str) -> bool:
@@ -460,6 +465,94 @@ async def _fetch_wayback(url: str, client: httpx.AsyncClient) -> str:
     except Exception as e:
         console.print(f"    [dim]Wayback failed: {e}[/dim]")
         return ""
+
+
+NEWSDATA_ARCHIVE_API = "https://newsdata.io/api/1/archive"
+PAYWALL_SOURCES = frozenset({"bloomberg.com", "ft.com", "nytimes.com", "washingtonpost.com"})
+
+
+async def search_newsdata(
+    domain: str,
+    keywords: List[str],
+    start_date: datetime,
+    end_date: datetime,
+    max_results: int = 5,
+) -> List[Dict]:
+    """
+    Query Newsdata.io /archive for articles from *domain* in the date window.
+    Returns list of {url, published_at, headline, text}.
+    Uses full_description (paid field) when available to bypass paywalls.
+    """
+    global _NEWSDATA_QUOTA_EXHAUSTED
+    if not NEWSDATA_API_KEY or _NEWSDATA_QUOTA_EXHAUSTED:
+        return []
+
+    ascii_kws = [k.strip('"') for k in keywords if _is_ascii(k) and k.strip('"')]
+    if not ascii_kws:
+        return []
+
+    # Strip leading www./news./en. so newsdata domainurl matching works
+    bare_domain = re.sub(r"^(?:www|news|en)\.", "", domain)
+
+    params: dict = {
+        "apikey": NEWSDATA_API_KEY,
+        "q": ascii_kws[0],
+        "domainurl": bare_domain,
+        "language": "en",
+        "from_date": start_date.strftime("%Y-%m-%d"),
+        "to_date": end_date.strftime("%Y-%m-%d"),
+        "size": min(max_results * 3, 50),
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            r = await client.get(NEWSDATA_ARCHIVE_API, params=params)
+        if r.status_code == 429:
+            _NEWSDATA_QUOTA_EXHAUSTED = True
+            console.print(f"    [yellow]Newsdata.io: quota exhausted[/yellow]")
+            return []
+        if r.status_code != 200:
+            console.print(f"    [dim red]Newsdata.io: HTTP {r.status_code}[/dim red]")
+            return []
+        data = r.json()
+        if data.get("status") != "success":
+            code = (data.get("results") or {}).get("code", "")
+            if code in ("AccessDenied", "RateLimitExceeded"):
+                _NEWSDATA_QUOTA_EXHAUSTED = True
+            console.print(f"    [dim red]Newsdata.io error: {code or data.get('status')}[/dim red]")
+            return []
+    except Exception as e:
+        console.print(f"    [dim red]Newsdata.io error: {e}[/dim red]")
+        return []
+
+    items = data.get("results") or []
+    console.print(f"    [dim]Newsdata.io: {len(items)} candidates[/dim]")
+
+    results: List[Dict] = []
+    for item in items:
+        url = item.get("link") or ""
+        if not url:
+            continue
+        pub_date = (item.get("pubDate") or "")[:10]
+        headline = item.get("title") or ""
+        # full_description is a paid-plan field with the full article text
+        text = item.get("full_description") or item.get("description") or ""
+        if len(text) < 250 and domain not in PAYWALL_SOURCES:
+            fetched = await fetch_article_text(url)
+            if fetched:
+                text = fetched
+        if len(text) < 250:
+            continue
+        results.append({
+            "url": url,
+            "published_at": pub_date or start_date.strftime("%Y-%m-%d"),
+            "headline": headline,
+            "text": text,
+        })
+        if len(results) >= max_results:
+            break
+
+    return results
 
 
 GDELT_API = "https://api.gdeltproject.org/api/v2/doc/doc"
@@ -808,6 +901,24 @@ async def ingest_cell(
                 out = cell_dir / f"article_{saved+1:02d}.json"
                 out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
                 saved += 1
+
+    if saved == 0:
+        # ── Newsdata.io /archive fallback: paid, domain-filtered, historical ──
+        # Preferred over GDELT for paywalled sources (bloomberg, ft, nyt, wapost)
+        # because newsdata may carry full_description bypassing the paywall.
+        console.print(f"    [dim]Newsdata.io fallback for {source_id}/{event['id']}[/dim]")
+        nd_arts = await search_newsdata(domain, keywords, start_dt, outcome_dt)
+        for art in nd_arts:
+            article = {
+                "headline": art["headline"],
+                "text":     art["text"],
+                "published_at": art["published_at"],
+                "author":   "Unknown",
+                "url":      art["url"],
+            }
+            out = cell_dir / f"article_{saved+1:02d}.json"
+            out.write_text(json.dumps(article, indent=2, ensure_ascii=False))
+            saved += 1
 
     if saved == 0:
         # ── GDELT fallback: free DOC API, returns real article URLs directly ──
