@@ -36,6 +36,49 @@ def time_decay_weight(article_date: str, outcome_date: str, half_life_days: floa
         return 1.0
 
 
+def brier_decomposition(
+    pairs: list[tuple[float, float]], n_bins: int = 5
+) -> Optional[dict]:
+    """Murphy (1973) Brier decomposition: BS = REL − RES + UNC.
+
+    pairs: (predicted_prob, outcome) with outcome ∈ {0.0, 1.0}.
+    Returns None when fewer than 5 data points.
+    Note: when all outcomes are the same (all YES/NO), RES and UNC collapse to 0
+    and the decomposition gives BS = REL trivially.
+    """
+    if len(pairs) < 5:
+        return None
+
+    bins: list[list[tuple[float, float]]] = [[] for _ in range(n_bins)]
+    for p, o in pairs:
+        idx = min(int(p * n_bins), n_bins - 1)
+        bins[idx].append((p, o))
+
+    n = len(pairs)
+    o_bar = sum(o for _, o in pairs) / n
+
+    rel = res = 0.0
+    for b in bins:
+        if not b:
+            continue
+        n_k = len(b)
+        p_bar_k = sum(p for p, _ in b) / n_k
+        o_bar_k = sum(o for _, o in b) / n_k
+        rel += (n_k / n) * (p_bar_k - o_bar_k) ** 2
+        res += (n_k / n) * (o_bar_k - o_bar) ** 2
+
+    unc = o_bar * (1 - o_bar)
+
+    return {
+        "brier": round(rel - res + unc, 4),
+        "rel":   round(rel, 4),
+        "res":   round(res, 4),
+        "unc":   round(unc, 4),
+        "n":     n,
+        "o_bar": round(o_bar, 4),
+    }
+
+
 def compute_calibration_bins(
     pairs: list[tuple[float, float]], n_bins: int = 10
 ) -> Optional[dict]:

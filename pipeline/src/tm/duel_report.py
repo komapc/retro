@@ -35,7 +35,7 @@ from typing import Optional
 import httpx
 from rich.console import Console
 
-from .scorer import brier_score, stance_to_prob
+from .scorer import brier_decomposition, brier_score, stance_to_prob
 
 console = Console()
 
@@ -548,17 +548,20 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #2d3748;
 """
 
 _SPARKLINE_JS = """
-function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
+function drawSparkline(canvas, prices, outcomeDate, tmPoints, invertedPm) {
   if (!canvas || !prices || prices.length === 0) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   ctx.clearRect(0, 0, W, H);
 
-  const vals = prices.map(p => invertedPm ? 1 - p.probability : p.probability);
-  const minV = 0, maxV = 1;
+  const parseDate = s => new Date(s + 'T00:00:00Z');
+  const priceMs = prices.map(p => parseDate(p.date).getTime());
+  const minMs = priceMs[0];
+  const maxMs = outcomeDate ? parseDate(outcomeDate).getTime() : priceMs[priceMs.length - 1];
+  const rangeMs = (maxMs - minMs) || 1;
 
-  function xFor(i) { return (i / (prices.length - 1)) * (W - 20) + 10; }
-  function yFor(v) { return H - 8 - (v - minV) / (maxV - minV) * (H - 16); }
+  function xForMs(ms) { return 10 + (ms - minMs) / rangeMs * (W - 20); }
+  function yFor(v) { return H - 8 - v * (H - 16); }
 
   // Grid lines
   ctx.strokeStyle = '#2d3748';
@@ -571,39 +574,83 @@ function drawSparkline(canvas, prices, outcomeDate, tmP, invertedPm) {
   });
 
   // PM price line
+  const vals = prices.map(p => invertedPm ? 1 - p.probability : p.probability);
   ctx.beginPath();
   ctx.strokeStyle = '#f97316';
   ctx.lineWidth = 1.5;
-  vals.forEach((v, i) => {
-    if (i === 0) ctx.moveTo(xFor(i), yFor(v));
-    else ctx.lineTo(xFor(i), yFor(v));
+  prices.forEach((p, i) => {
+    const x = xForMs(priceMs[i]);
+    if (i === 0) ctx.moveTo(x, yFor(vals[i]));
+    else ctx.lineTo(x, yFor(vals[i]));
   });
   ctx.stroke();
 
-  // TM horizontal line (if available)
-  if (tmP !== null) {
-    ctx.beginPath();
-    ctx.strokeStyle = '#3b82f6';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([4, 3]);
-    ctx.moveTo(10, yFor(tmP));
-    ctx.lineTo(W - 10, yFor(tmP));
-    ctx.stroke();
-    ctx.setLineDash([]);
+  // TM points: [{t: days_before_outcome, p: prob}]
+  if (tmPoints && tmPoints.length > 0) {
+    const tms = tmPoints
+      .map(pt => ({ x: xForMs(maxMs - pt.t * 86400000), y: yFor(pt.p) }))
+      .filter(pt => pt.x >= 8 && pt.x <= W - 8);
+
+    if (tms.length > 0) {
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 1.5;
+
+      if (tms.length === 1) {
+        // Single measurement: dashed horizontal line
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(10, tms[0].y);
+        ctx.lineTo(W - 10, tms[0].y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else {
+        // Multi-horizon: connected line through dated points
+        ctx.beginPath();
+        tms.forEach((pt, i) => {
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+        });
+        ctx.stroke();
+        ctx.fillStyle = '#3b82f6';
+        tms.forEach(pt => {
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 2.5, 0, 2 * Math.PI);
+          ctx.fill();
+        });
+      }
+    }
   }
 
-  // T-7 vertical marker
-  const tIdx = prices.length - 1; // approximation: last point before outcome
+  // Outcome date marker (right edge)
+  const xEnd = xForMs(maxMs);
   ctx.beginPath();
   ctx.strokeStyle = '#475569';
   ctx.lineWidth = 1;
   ctx.setLineDash([2, 2]);
-  ctx.moveTo(xFor(tIdx), 0);
-  ctx.lineTo(xFor(tIdx), H);
+  ctx.moveTo(xEnd, 0);
+  ctx.lineTo(xEnd, H);
   ctx.stroke();
   ctx.setLineDash([]);
 }
 """
+
+
+def _event_tm_points(r: dict, t_days: int, horizon_data: Optional[dict]) -> list:
+    """Build [{t, p}] TM horizon points for a single event row.
+
+    Uses sweep data when available; falls back to the single-T measurement.
+    Points are sorted by t descending so the JS draws left→right in time.
+    """
+    if horizon_data:
+        pts = []
+        for t, s in horizon_data.items():
+            by_id = {row["id"]: row for row in s["rows"]}
+            if r["id"] in by_id and by_id[r["id"]]["tm_p"] is not None:
+                pts.append({"t": t, "p": by_id[r["id"]]["tm_p"]})
+        return sorted(pts, key=lambda x: x["t"], reverse=True)
+    if r["tm_p"] is not None:
+        return [{"t": t_days, "p": r["tm_p"]}]
+    return []
 
 
 def _bar_width(brier_val: Optional[float], max_brier: float = 0.5) -> int:
@@ -857,6 +904,12 @@ def render_html(
         overall_winner = "—"
         winner_css = ""
 
+    # Brier decomposition (Murphy 1973)
+    pairs_tm = [(r["tm_p"], 1.0 if r["outcome"] else 0.0) for r in compared if r["tm_p"] is not None]
+    pairs_pm = [(r["pm_p"], 1.0 if r["outcome"] else 0.0) for r in compared if r["pm_p"] is not None]
+    decomp_tm = brier_decomposition(pairs_tm)
+    decomp_pm = brier_decomposition(pairs_pm)
+
     # Scatter data
     scatter_data = json.dumps([
         {"x": r["pm_p"], "y": r["tm_p"], "label": r["id"]}
@@ -908,17 +961,20 @@ def render_html(
 
         # Sparkline
         prices_json = json.dumps(r["pm_prices"])
-        tm_p_js = "null" if r["tm_p"] is None else str(r["tm_p"])
+        tm_pts = _event_tm_points(r, t_days, horizon_data)
+        tm_pts_js = json.dumps(tm_pts) if tm_pts else "null"
+        outcome_date_js = f'"{r["outcome_date"]}"'
         invert_js = "true" if r["pm_invert"] else "false"
         canvas_id = f"spark-{r['id']}"
+        multi_label = " (multi-horizon)" if len(tm_pts) > 1 else ""
         sparkline = f"""
         <div class="sparkline-wrap">
-          <div class="prob-label">PM price history  <span style="color:#f97316">━</span> PM  <span style="color:#3b82f6">╌</span> TM</div>
+          <div class="prob-label">PM price history  <span style="color:#f97316">━</span> PM  <span style="color:#3b82f6">●━</span> TM{multi_label}</div>
           <canvas id="{canvas_id}" width="260" height="60" style="width:100%;max-width:260px;height:60px"></canvas>
           <script>
             (function(){{
               var el=document.getElementById('{canvas_id}');
-              drawSparkline(el,{prices_json},{{}},{tm_p_js},{invert_js});
+              drawSparkline(el,{prices_json},{outcome_date_js},{tm_pts_js},{invert_js});
             }})();
           </script>
         </div>"""
@@ -1003,6 +1059,35 @@ def render_html(
     pm_wins = sum(1 for r in compared if r["winner"] == "pm")
     ties = sum(1 for r in compared if r["winner"] == "tie")
 
+    # Brier decomposition block
+    if decomp_tm and decomp_pm:
+        all_yes_note = (
+            '<div style="font-size:0.72rem;color:#475569;margin-top:0.75rem">'
+            '⚠ All outcomes are YES — RES and UNC trivially = 0; decomposition is indicative only (n is small).'
+            '</div>'
+        ) if decomp_tm["o_bar"] >= 0.99 else ""
+        decomp_block = f"""
+<div style="background:#1e2130;border-radius:10px;padding:1rem 1.5rem;max-width:560px;margin:0 auto 1.5rem">
+  <h3 style="font-size:0.78rem;color:#64748b;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em">Brier decomposition · BS = REL − RES + UNC</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:0.8rem">
+    <div>
+      <div style="color:#60a5fa;font-weight:600;margin-bottom:0.4rem">TruthMachine</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px"><span>REL <span style="color:#475569;font-size:0.7rem">(↓ better)</span></span><span style="color:#60a5fa">{decomp_tm['rel']}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px"><span>RES <span style="color:#475569;font-size:0.7rem">(↑ better)</span></span><span style="color:#60a5fa">{decomp_tm['res']}</span></div>
+      <div style="display:flex;justify-content:space-between"><span>UNC</span><span style="color:#94a3b8">{decomp_tm['unc']}</span></div>
+    </div>
+    <div>
+      <div style="color:#fb923c;font-weight:600;margin-bottom:0.4rem">Polymarket</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px"><span>REL</span><span style="color:#fb923c">{decomp_pm['rel']}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px"><span>RES</span><span style="color:#fb923c">{decomp_pm['res']}</span></div>
+      <div style="display:flex;justify-content:space-between"><span>UNC</span><span style="color:#94a3b8">{decomp_pm['unc']}</span></div>
+    </div>
+  </div>
+  {all_yes_note}
+</div>"""
+    else:
+        decomp_block = ""
+
     html_doc = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1044,7 +1129,7 @@ def render_html(
     <div class="label" style="margin-top:0.5rem">wins: {pm_wins} / {n_compared}</div>
   </div>
 </div>
-<div style="text-align:center;margin-bottom:2rem">
+<div style="text-align:center;margin-bottom:1.5rem">
   <span class="winner-badge {winner_css}">
     {"🏆 " if overall_winner not in ("Tie","—") else ""}{overall_winner} wins
   </span>
@@ -1053,6 +1138,8 @@ def render_html(
     (ties: {ties} · ⚠ n={n_compared} is small — results are indicative, not conclusive)
   </span>
 </div>
+
+{decomp_block}
 
 <!-- Sparkline helper -->
 <script>{_SPARKLINE_JS}</script>
