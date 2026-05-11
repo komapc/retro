@@ -35,6 +35,8 @@ from typing import Optional
 import httpx
 from rich.console import Console
 
+from .scorer import brier_score, stance_to_prob
+
 console = Console()
 
 T_DAYS_DEFAULT = 7
@@ -290,7 +292,7 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
 
         mean = forecast.get("mean", 0.0) if not is_placeholder else None
         articles_used = forecast.get("articles_used", 0)
-        probability = round((mean + 1) / 2, 4) if mean is not None else None
+        probability = round(stance_to_prob(mean), 4) if mean is not None else None
 
         entry = {
             "event_id": eid,
@@ -310,10 +312,6 @@ def fetch_tm_probabilities_oracle(data_dir: Path, events: list[dict], t_days: in
     return result
 
 
-def brier(predicted: float, outcome: bool) -> float:
-    return round((predicted - (1 if outcome else 0)) ** 2, 4)
-
-
 # ── Build comparison rows ──────────────────────────────────────────────────────
 
 def build_rows(events: list[dict], tm_probs: dict, t_days: int) -> list[dict]:
@@ -325,8 +323,8 @@ def build_rows(events: list[dict], tm_probs: dict, t_days: int) -> list[dict]:
         tm_p = tm_info["probability"] if tm_info else None
         outcome = bool(ev.get("outcome", False))
 
-        pm_brier = brier(pm_p, outcome) if pm_p is not None else None
-        tm_brier = brier(tm_p, outcome) if tm_p is not None else None
+        pm_brier = round(brier_score(pm_p, outcome), 4) if pm_p is not None else None
+        tm_brier = round(brier_score(tm_p, outcome), 4) if tm_p is not None else None
 
         pm_meta = ev.get("polymarket") or {}
         tm_placeholder = bool(tm_info.get("placeholder")) if tm_info else False

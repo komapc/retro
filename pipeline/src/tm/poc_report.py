@@ -24,6 +24,8 @@ from pathlib import Path
 
 from rich.console import Console
 
+from .scorer import brier_score, compute_calibration_bins, stance_to_prob
+
 console = Console()
 
 
@@ -74,7 +76,7 @@ def load_tm_predictions(data_dir: Path) -> dict[str, float]:
             continue
 
     return {
-        eid: round((sum(stances) / len(stances) + 1) / 2, 3)
+        eid: round(stance_to_prob(sum(stances) / len(stances)), 3)
         for eid, stances in event_stances.items()
         if stances
     }
@@ -95,26 +97,12 @@ def get_final_price(event: dict, days_before: int = 1) -> float | None:
 
 def compute_calibration(events: list[dict], days_before: int = 7, n_bins: int = 10) -> dict | None:
     """Bin PM final probabilities vs actual outcome rate."""
-    bins = [[] for _ in range(n_bins)]
+    pairs = []
     for ev in events:
         p = get_final_price(ev, days_before)
-        if p is None:
-            continue
-        idx = min(int(p * n_bins), n_bins - 1)
-        bins[idx].append(1 if ev["outcome"] else 0)
-
-    if sum(len(b) for b in bins) < 10:
-        return None
-
-    labels, predicted, actual, counts = [], [], [], []
-    for i, b in enumerate(bins):
-        lo, hi = i / n_bins, (i + 1) / n_bins
-        labels.append(f"{int(lo*100)}–{int(hi*100)}%")
-        predicted.append(round((lo + hi) / 2, 3))
-        actual.append(round(sum(b) / len(b), 3) if b else 0)
-        counts.append(len(b))
-
-    return {"labels": labels, "predicted": predicted, "actual": actual, "counts": counts}
+        if p is not None:
+            pairs.append((p, 1.0 if ev["outcome"] else 0.0))
+    return compute_calibration_bins(pairs, n_bins)
 
 
 def category_breakdown(events: list[dict]) -> dict:
@@ -184,8 +172,8 @@ def compute_brier_pairs(events: list[dict], tm_preds: dict[str, float]) -> list[
             "outcome": outcome_val,
             "tm_p": tm_p,
             "pm_p": round(pm_p, 3),
-            "tm_brier": round((tm_p - outcome_val) ** 2, 4),
-            "pm_brier": round((pm_p - outcome_val) ** 2, 4),
+            "tm_brier": round(brier_score(tm_p, bool(outcome_val)), 4),
+            "pm_brier": round(brier_score(pm_p, bool(outcome_val)), 4),
         })
     return pairs
 

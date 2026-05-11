@@ -8,6 +8,16 @@ from typing import Dict, List, Optional
 import trueskill
 
 
+def stance_to_prob(stance: float) -> float:
+    """Convert stance [-1, 1] to probability [0, 1]."""
+    return (stance + 1) / 2
+
+
+def brier_score(prob: float, outcome: bool) -> float:
+    """Brier score for a probability forecast."""
+    return (prob - (1.0 if outcome else 0.0)) ** 2
+
+
 def time_decay_weight(article_date: str, outcome_date: str, half_life_days: float = 30.0) -> float:
     """Weight predictions closer to the event more heavily.
 
@@ -26,7 +36,7 @@ def time_decay_weight(article_date: str, outcome_date: str, half_life_days: floa
         return 1.0
 
 
-def _compute_calibration_bins(
+def compute_calibration_bins(
     pairs: list[tuple[float, float]], n_bins: int = 10
 ) -> Optional[dict]:
     """Bin (implied_p, outcome) pairs and compute actual outcome rate per bin.
@@ -67,9 +77,7 @@ class Scorer:
 
     def calculate_brier(self, stance: float, outcome: bool) -> float:
         """Brier score for a single prediction."""
-        prob = (stance + 1) / 2          # stance [-1,1] → prob [0,1]
-        actual = 1.0 if outcome else 0.0
-        return (prob - actual) ** 2
+        return brier_score(stance_to_prob(stance), outcome)
 
     def confidence_weight(self, certainty: float) -> float:
         """
@@ -269,7 +277,7 @@ class Scorer:
         print(f"Scoring complete. {len(leaderboard)} sources scored → {self.scores_path}")
 
         # ── Calibration curve ──────────────────────────────────────────────────
-        calibration = _compute_calibration_bins(calib_pairs)
+        calibration = compute_calibration_bins(calib_pairs)
         self.calibration_path.write_text(
             json.dumps(
                 {"n_predictions": len(calib_pairs), "calibration": calibration},
