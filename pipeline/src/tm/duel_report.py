@@ -632,6 +632,64 @@ function drawSparkline(canvas, prices, outcomeDate, tmPoints, invertedPm) {
   ctx.stroke();
   ctx.setLineDash([]);
 }
+
+function _getSparkTooltip() {
+  let tip = document.getElementById('_spark-tip');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = '_spark-tip';
+    tip.style.cssText = 'position:fixed;background:#1e2130;border:1px solid #475569;border-radius:6px;padding:4px 10px;font-size:11px;color:#e2e8f0;pointer-events:none;display:none;z-index:1000;white-space:nowrap;line-height:1.6;';
+    document.body.appendChild(tip);
+  }
+  return tip;
+}
+
+function setupSparklineHover(canvas, prices, outcomeDate, tmPoints, invertedPm) {
+  if (!canvas || !prices || prices.length === 0) return;
+  const W = canvas.width;
+  const parseDate = s => new Date(s + 'T00:00:00Z');
+  const priceMs = prices.map(p => parseDate(p.date).getTime());
+  const minMs = priceMs[0];
+  const maxMs = outcomeDate ? parseDate(outcomeDate).getTime() : priceMs[priceMs.length - 1];
+  const rangeMs = (maxMs - minMs) || 1;
+  const xForMs = ms => 10 + (ms - minMs) / rangeMs * (W - 20);
+
+  const pts = prices.map((p, i) => ({
+    date: p.date,
+    val: invertedPm ? 1 - p.probability : p.probability,
+    x: xForMs(priceMs[i]),
+    type: 'pm',
+  }));
+  if (tmPoints && tmPoints.length > 0) {
+    tmPoints.forEach(pt => {
+      const ms = maxMs - pt.t * 86400000;
+      pts.push({ date: new Date(ms).toISOString().slice(0, 10), val: pt.p, x: xForMs(ms), type: 'tm' });
+    });
+  }
+
+  const tip = _getSparkTooltip();
+
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+    let nearest = null, minDist = Infinity;
+    pts.forEach(pt => {
+      const d = Math.abs(pt.x - mx);
+      if (d < minDist) { minDist = d; nearest = pt; }
+    });
+    if (nearest && minDist < 20) {
+      const color = nearest.type === 'tm' ? '#60a5fa' : '#fb923c';
+      const label = nearest.type === 'tm' ? 'TM' : 'PM';
+      tip.innerHTML = '<span style="color:' + color + '">' + label + '</span> · ' + nearest.date + ' · <strong>' + Math.round(nearest.val * 100) + '%</strong>';
+      tip.style.display = 'block';
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top = (e.clientY - 38) + 'px';
+    } else {
+      tip.style.display = 'none';
+    }
+  });
+  canvas.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+}
 """
 
 
@@ -975,6 +1033,7 @@ def render_html(
             (function(){{
               var el=document.getElementById('{canvas_id}');
               drawSparkline(el,{prices_json},{outcome_date_js},{tm_pts_js},{invert_js});
+              setupSparklineHover(el,{prices_json},{outcome_date_js},{tm_pts_js},{invert_js});
             }})();
           </script>
         </div>"""
