@@ -11,7 +11,7 @@ Fallback order:
   6. Nimbleway SERP API             NIMBLEWAY_API_KEY
   7. ScrapingBee Google Search      SCRAPINGBEE_API_KEY
   8. GDELT Doc API                  (free, no key — news-only, reliable dates)
-  9. DuckDuckGo Lite                (free, no key — skipped on EC2)
+  9. DuckDuckGo Lite                (free, no key)
 
 All keys are loaded from the environment first, then from AWS Secrets Manager
 (openclaw/* namespace) as a fallback. See _secret().
@@ -113,23 +113,6 @@ def _refresh_keys_if_stale() -> None:
     _KEY_LOADED_AT = time.time()
 
 
-def _running_on_ec2() -> bool:
-    """Detect AWS EC2 via IMDS (supports both IMDSv1 and IMDSv2)."""
-    try:
-        import httpx as _httpx
-        # IMDSv2: PUT to get a token — works even when IMDSv1 is disabled.
-        r = _httpx.put(
-            "http://169.254.169.254/latest/api/token",
-            headers={"X-aws-ec2-metadata-token-ttl-seconds": "21600"},
-            timeout=0.3,
-        )
-        if r.status_code == 200:
-            return True
-        # Fallback for IMDSv1-only configurations.
-        r = _httpx.get("http://169.254.169.254/latest/meta-data/", timeout=0.3)
-        return r.status_code == 200
-    except Exception:
-        return False
 
 _DDG_LAST_CALL: float = 0.0
 DDG_MIN_INTERVAL = 2.0
@@ -581,9 +564,6 @@ def _search_gdelt(
     date_to: Optional[datetime] = None,
 ) -> List[SearchResult]:
     global _GDELT_LAST_CALL
-    elapsed = time.time() - _GDELT_LAST_CALL
-    if elapsed < GDELT_MIN_INTERVAL:
-        time.sleep(GDELT_MIN_INTERVAL - elapsed)
 
     # Translate Google-style site: operator to GDELT domain: filter
     gdelt_query = re.sub(r"site:(\S+)", r"domain:\1", query)
@@ -600,35 +580,53 @@ def _search_gdelt(
     if date_to:
         params["enddatetime"] = date_to.strftime("%Y%m%d235959")
 
-    try:
-        r = httpx.get(
-            "https://api.gdeltproject.org/api/v2/doc/doc",
-            params=params,
-            timeout=20,
-        )
-    finally:
-        _GDELT_LAST_CALL = time.time()
-
-    if r.status_code != 200:
-        raise RuntimeError(f"GDELT returned HTTP {r.status_code}")
-
-    articles = r.json().get("articles") or []
-    results = []
-    for art in articles:
-        pub = art.get("seendate", "")
+    last_err: Exception = RuntimeError("GDELT: no attempts made")
+    for attempt in range(3):
+        if attempt:
+            time.sleep(5 * attempt)  # 5 s, 10 s between retries
+        elapsed = time.time() - _GDELT_LAST_CALL
+        if elapsed < GDELT_MIN_INTERVAL:
+            time.sleep(GDELT_MIN_INTERVAL - elapsed)
         try:
-            pub_str = datetime.strptime(pub[:8], "%Y%m%d").strftime("%Y-%m-%d")
-        except ValueError:
-            pub_str = ""
-        results.append(SearchResult(
-            title=art.get("title", ""),
-            url=art.get("url", ""),
-            snippet="",  # GDELT artlist mode returns no body text
-            source=art.get("domain", _extract_domain(art.get("url", ""))),
-            published_date=pub_str,
-        ))
-    # GDELT occasionally leaks ±1 day past enddatetime; post-filter to be strict.
-    return _filter_by_date(results[:limit], date_from, date_to)
+            r = httpx.get(
+                "https://api.gdeltproject.org/api/v2/doc/doc",
+                params=params,
+                timeout=20,
+            )
+        finally:
+            _GDELT_LAST_CALL = time.time()
+
+        if r.status_code != 200:
+            last_err = RuntimeError(f"GDELT returned HTTP {r.status_code}")
+            continue
+        if not r.text.strip():
+            last_err = RuntimeError("GDELT returned empty body")
+            continue
+        try:
+            data = r.json()
+        except Exception as e:
+            last_err = RuntimeError(f"GDELT returned non-JSON body: {e}")
+            continue
+
+        articles = data.get("articles") or []
+        results = []
+        for art in articles:
+            pub = art.get("seendate", "")
+            try:
+                pub_str = datetime.strptime(pub[:8], "%Y%m%d").strftime("%Y-%m-%d")
+            except ValueError:
+                pub_str = ""
+            results.append(SearchResult(
+                title=art.get("title", ""),
+                url=art.get("url", ""),
+                snippet="",  # GDELT artlist mode returns no body text
+                source=art.get("domain", _extract_domain(art.get("url", ""))),
+                published_date=pub_str,
+            ))
+        # GDELT occasionally leaks ±1 day past enddatetime; post-filter to be strict.
+        return _filter_by_date(results[:limit], date_from, date_to)
+
+    raise last_err
 
 
 # ──────────────────────────────────────────────
@@ -733,7 +731,7 @@ def search_articles(
     an exhausted quota flag set for this process lifetime:
       DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → Newsdata.io → GDELT → DDG
 
-    DDG is skipped on EC2 (AWS IPs are blocked by DDG/Yahoo).
+    DDG is tried last; if AWS IPs are blocked by DDG/Yahoo it fails and is logged.
 
     Args:
         query:     Search string. Include `site:domain.com` to restrict to a source.
@@ -855,18 +853,16 @@ def search_articles(
     except Exception as e:
         logger.warning("GDELT failed: %s", e)
 
-    # 10. DuckDuckGo (free, no key) — skip on EC2: AWS IPs are blocked by DDG/Yahoo
-    if not _running_on_ec2():
-        _provider_local.chain.append("ddg")
-        try:
-            results = _search_ddg_news(query, limit, date_from, date_to)
-            if results:
-                _provider_local.name = "ddg"
+    # 10. DuckDuckGo (free, no key)
+    _provider_local.chain.append("ddg")
+    try:
+        results = _search_ddg_news(query, limit, date_from, date_to)
+        if results:
+            _provider_local.name = "ddg"
             return results
-        except Exception as e:
-            logger.warning("DDG failed: %s", e)
-    else:
-        logger.info("Skipping DDG (running on EC2)")
+        logger.warning("DDG returned 0 results for: %s", query[:60])
+    except Exception as e:
+        logger.warning("DDG failed: %s", e)
 
     logger.error("All search providers exhausted — no articles found for: %s", query[:60])
     return []
