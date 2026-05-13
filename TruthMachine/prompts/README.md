@@ -52,14 +52,12 @@ Page generation (run once per event, after all predictions scored):
 
 | Metric | Range | Description |
 |---|---|---|
-| `stance` | -1.0 to 1.0 | Directional outlook |
-| `sentiment` | 0.0 to 1.0 | Emotional tone |
-| `certainty` | 0.0 to 1.0 | Linguistic sureness |
-| `specificity` | 0.0 to 1.0 | How concrete/falsifiable |
-| `hedge_ratio` | 0.0 to 1.0 | Density of hedging language |
-| `conditionality` | 0.0 to 1.0 | Is prediction conditional? |
-| `magnitude` | 0.0 to 1.0 | How extreme the predicted outcome |
-| `time_horizon_days` | int / null | Days until predicted outcome |
-| `source_authority` | 0.0 to 1.0 | Primary sources vs. personal opinion |
-| `prediction_type` | enum | binary / continuous / range / trend |
-| `contrarianism` | -1.0 to 1.0 | Deviation from consensus (Stage 5) |
+| `stance` | -1.0 to 1.0 | How strongly the prediction implies the event will occur |
+| `certainty` | 0.0 to 1.0 | Linguistic confidence: 0 = heavily hedged, 1 = absolute |
+| `claim` | string | One-sentence English summary |
+| `quote` | string | Exact sentence(s) from article (original language) |
+
+> **Note (PR #102):** Nine additional metrics (`sentiment`, `specificity`, `hedge_ratio`,
+> `conditionality`, `magnitude`, `time_horizon`, `time_horizon_days`, `prediction_type`,
+> `source_authority`) were dropped from the extractor prompt to cut latency (~5× reduction in
+> generation budget). They remain as Optional fields in older atlas entries.

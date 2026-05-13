@@ -41,7 +41,7 @@ retro/
 │   │   │
 │   │   ├── # --- Extraction ---
 │   │   ├── gatekeeper.py        # LLM stage 1: topic-relevance filter (is article on-topic for event?)
-│   │   ├── extractor.py         # LLM stage 2: extract up to 10 structured predictions per article
+│   │   ├── extractor.py         # LLM stage 2: extract up to 5 structured predictions per article
 │   │   ├── runner.py            # Orchestrates gatekeeper → extractor → article-aggregator per article
 │   │   ├── aggregator.py        # Stage 2b (LLM, article-level): collapse high-spread predictions
 │   │   │                        # within one article. Stage 3 (no LLM, cell-level): collapse all
@@ -170,7 +170,8 @@ Used to compute per-category source accuracy scores for the forecasting model.
 ```
 
 ### Prediction (extracted by LLM)
-Each prediction has: `quote`, `claim`, `stance` (−1 to +1, event probability), `certainty`, `sentiment`, `specificity`, `hedge_ratio`, `conditionality`, `magnitude`, `time_horizon`, `prediction_type`, `source_authority`.
+Each prediction has: `quote`, `claim`, `stance` (−1 to +1, event probability), `certainty`.
+Older atlas entries also carry: `sentiment`, `specificity`, `hedge_ratio`, `conditionality`, `magnitude`, `time_horizon`, `prediction_type`, `source_authority` (these fields were dropped from the extractor prompt in PR #102 to reduce latency; retained as Optional for backward compatibility).
 
 **stance** = how strongly the prediction implies the related event WILL occur.
 - `+1.0` = author is certain the event will happen
@@ -193,7 +194,7 @@ Ingest (choose one):
 orchestrator.py  (local_file mode)
   │  For each (event, source) cell not yet done:
   │    runner.py → gatekeeper.py (LLM: topic-relevant for event?)
-  │                extractor.py  (LLM: extract up to 10 structured predictions)
+  │                extractor.py  (LLM: extract up to 5 structured predictions)
   │                aggregator.aggregate_article_predictions
   │                              (LLM: collapse to one signal if stance spread > 0.4)
   │    aggregator.aggregate_predictions → cell_signal.json (no LLM, weighted mean)
@@ -218,7 +219,7 @@ git push → GitHub Actions → GitHub Pages
 | Role | Model | Notes |
 |---|---|---|
 | Gatekeeper | `bedrock/amazon.nova-micro-v1:0` | Topic-relevance filter: is this article on-topic for the event? (Was a stricter "is_prediction" filter; softened in PR #47.) |
-| Extractor | `bedrock/amazon.nova-lite-v1:0` | Structured extraction of up to 10 predictions per article |
+| Extractor | `bedrock/amazon.nova-lite-v1:0` | Structured extraction of up to 5 predictions per article (4 fields: quote, claim, stance, certainty) |
 | Article Aggregator | `bedrock/amazon.nova-lite-v1:0` | Collapses high-spread (>0.4) predictions within a single article into one editorial signal |
 | Keywords | `google/gemini-2.0-flash-001` | One-time: generate search keywords per event (via OpenRouter) |
 

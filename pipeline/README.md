@@ -159,7 +159,7 @@ Progress: 3/250 (1.2%) | done: 2 | no_pred: 1 | failed: 0
 | Stage | File | Model | Purpose |
 |---|---|---|---|
 | 1 | `gatekeeper.py` | `bedrock/amazon.nova-micro-v1:0` | filter — is this article a prediction? |
-| 2 | `extractor.py` | `bedrock/amazon.nova-lite-v1:0` | extract 11 forensic metrics per prediction |
+| 2 | `extractor.py` | `bedrock/amazon.nova-lite-v1:0` | extract up to 5 predictions per article (4 fields: quote, claim, stance, certainty) |
 | 3 | `runner.py` | — | orchestrate stages 1+2 per article |
 | 4 | `aggregator.py` | — | collapse article predictions → CellSignal |
 | 5 | `orchestrator.py` | — | batch across all events × sources |
