@@ -22,17 +22,18 @@ class PredictionType(str, Enum):
 class PredictionExtraction(BaseModel):
     quote: str = Field(description="Exact sentence(s) from the article containing the prediction")
     claim: str = Field(description="One-sentence neutral summary in English")
-    stance: float = Field(ge=-1.0, le=1.0, description="Directional outlook: -1=bearish, +1=bullish")
-    sentiment: float = Field(ge=0.0, le=1.0, description="Emotional tone: 0=cold, 1=highly charged")
+    stance: float = Field(ge=-1.0, le=1.0, description="Directional outlook: -1=event won't happen, +1=event will happen")
     certainty: float = Field(ge=0.0, le=1.0, description="Linguistic confidence: 0=very hedged, 1=absolute")
-    specificity: float = Field(ge=0.0, le=1.0, description="Concreteness and falsifiability: 0=vague, 1=precise")
-    hedge_ratio: float = Field(ge=0.0, le=1.0, description="Density of hedging language (might/could/possibly)")
-    conditionality: float = Field(ge=0.0, le=1.0, description="0=unconditional, 1=fully conditional (only if X then Y)")
-    magnitude: float = Field(ge=0.0, le=1.0, description="Extremity of predicted outcome: 0=minor, 1=historic")
-    time_horizon: str = Field(description="days/weeks/months/years/unspecified")
-    time_horizon_days: Optional[int] = Field(default=None, description="Best estimate in days, null if unspecified")
-    prediction_type: PredictionType
-    source_authority: float = Field(ge=0.0, le=1.0, description="0=personal opinion, 1=named insider sources")
+    # Not requested from LLM; kept Optional for backward compat with existing atlas entries
+    sentiment: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    specificity: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    hedge_ratio: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    conditionality: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    magnitude: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    time_horizon: Optional[str] = Field(default=None)
+    time_horizon_days: Optional[int] = Field(default=None)
+    prediction_type: Optional[PredictionType] = Field(default=None)
+    source_authority: Optional[float] = Field(default=None, ge=0.0, le=1.0)
 
 
 class ExtractionOutput(BaseModel):
@@ -81,21 +82,22 @@ class CellSignal(BaseModel):
     """
     Aggregated signal for one (event, source) cell.
     Computed from all predictions across all articles for the cell.
-    Continuous metrics are weighted mean (weight = certainty × specificity).
+    Continuous metrics are weighted mean (weight = certainty × specificity when available).
     Categorical fields use majority vote. Median for time_horizon_days.
+    Optional fields are None when all contributing predictions lacked that field.
     """
     claim_count:      int
     stance:           float
-    sentiment:        float
     certainty:        float
-    specificity:      float
-    hedge_ratio:      float
-    conditionality:   float
-    magnitude:        float
-    source_authority: float
-    time_horizon:     str
+    sentiment:        Optional[float]
+    specificity:      Optional[float]
+    hedge_ratio:      Optional[float]
+    conditionality:   Optional[float]
+    magnitude:        Optional[float]
+    source_authority: Optional[float]
+    time_horizon:     Optional[str]
     time_horizon_days: Optional[int]
-    prediction_type:  str
+    prediction_type:  Optional[str]
     quotes:           list[str]
     claims:           list[str]
 

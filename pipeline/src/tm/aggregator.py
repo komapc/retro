@@ -161,26 +161,38 @@ def aggregate_predictions(predictions: list[PredictionExtraction]) -> CellSignal
     if not predictions:
         raise ValueError("Cannot aggregate empty prediction list")
 
-    weights = [p.certainty * p.specificity for p in predictions]
+    weights = [p.certainty * (p.specificity if p.specificity is not None else 1.0)
+               for p in predictions]
 
     def wmean(attr: str) -> float:
         return _weighted_mean([getattr(p, attr) for p in predictions], weights)
 
+    def optional_wmean(attr: str) -> Optional[float]:
+        pairs = [(getattr(p, attr), w) for p, w in zip(predictions, weights)
+                 if getattr(p, attr) is not None]
+        if not pairs:
+            return None
+        vals, wts = zip(*pairs)
+        return _weighted_mean(list(vals), list(wts))
+
+    th_vals = [p.time_horizon for p in predictions if p.time_horizon is not None]
+    pt_vals = [p.prediction_type for p in predictions if p.prediction_type is not None]
+
     return CellSignal(
         claim_count=len(predictions),
         stance=wmean("stance"),
-        sentiment=wmean("sentiment"),
         certainty=wmean("certainty"),
-        specificity=wmean("specificity"),
-        hedge_ratio=wmean("hedge_ratio"),
-        conditionality=wmean("conditionality"),
-        magnitude=wmean("magnitude"),
-        source_authority=wmean("source_authority"),
-        time_horizon=_majority([p.time_horizon for p in predictions]),
+        sentiment=optional_wmean("sentiment"),
+        specificity=optional_wmean("specificity"),
+        hedge_ratio=optional_wmean("hedge_ratio"),
+        conditionality=optional_wmean("conditionality"),
+        magnitude=optional_wmean("magnitude"),
+        source_authority=optional_wmean("source_authority"),
+        time_horizon=_majority(th_vals) if th_vals else None,
         time_horizon_days=_weighted_median(
             [p.time_horizon_days for p in predictions], weights
         ),
-        prediction_type=_majority([p.prediction_type for p in predictions]),
+        prediction_type=_majority(pt_vals) if pt_vals else None,
         quotes=[p.quote for p in predictions],
         claims=[p.claim for p in predictions],
     )
