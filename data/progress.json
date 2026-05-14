@@ -11098,8 +11098,8 @@
     "D05:axios": {
       "event_id": "D05",
       "source_id": "axios",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 10,
       "error": null
     },
     "D05:wapost": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T12:57:30.996277"
+  "last_updated": "2026-05-14T12:57:49.246671"
 }
