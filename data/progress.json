@@ -1438,7 +1438,7 @@
     "B01:toi": {
       "event_id": "B01",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2698,7 +2698,7 @@
     "A11:toi": {
       "event_id": "A11",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2733,7 +2733,7 @@
     "A12:maariv": {
       "event_id": "A12",
       "source_id": "maariv",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2894,7 +2894,7 @@
     "A16:toi": {
       "event_id": "A16",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -2978,7 +2978,7 @@
     "A17:toi": {
       "event_id": "A17",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -7815,7 +7815,7 @@
     "A11:axios": {
       "event_id": "A11",
       "source_id": "axios",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -7962,14 +7962,14 @@
     "A14:bloomberg": {
       "event_id": "A14",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
     "A14:ft": {
       "event_id": "A14",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -8053,7 +8053,7 @@
     "A16:ft": {
       "event_id": "A16",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -8200,7 +8200,7 @@
     "A19:ft": {
       "event_id": "A19",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -8242,7 +8242,7 @@
     "B01:ft": {
       "event_id": "B01",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-10T17:57:52.388801"
+  "last_updated": "2026-05-14T07:50:08.768423"
 }
