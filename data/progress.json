@@ -724,7 +724,7 @@
     "E08:toi": {
       "event_id": "E08",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -4595,7 +4595,7 @@
     "E04:ch13": {
       "event_id": "E04",
       "source_id": "ch13",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -4658,7 +4658,7 @@
     "E04:toi": {
       "event_id": "E04",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -4812,7 +4812,7 @@
     "E06:n12": {
       "event_id": "E06",
       "source_id": "n12",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -4826,8 +4826,8 @@
     "E06:toi": {
       "event_id": "E06",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 9,
       "error": null
     },
     "E06:walla": {
@@ -9614,15 +9614,15 @@
     "E04:bloomberg": {
       "event_id": "E04",
       "source_id": "bloomberg",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "E04:ft": {
       "event_id": "E04",
       "source_id": "ft",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E04:guardian": {
@@ -10741,7 +10741,7 @@
     "E08:bloomberg": {
       "event_id": "E08",
       "source_id": "bloomberg",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T09:19:51.775230"
+  "last_updated": "2026-05-14T09:23:24.111666"
 }
