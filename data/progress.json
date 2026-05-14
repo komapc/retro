@@ -5302,7 +5302,7 @@
     "F03:toi": {
       "event_id": "F03",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T12:57:49.246671"
+  "last_updated": "2026-05-14T13:10:11.888841"
 }
