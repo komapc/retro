@@ -162,10 +162,10 @@ async def pm_markets(
     if len(ids) > 50:
         return JSONResponse({"detail": "max 50 ids per request"}, status_code=422)
 
-    # Build URL directly — httpx would percent-encode commas in params=,
-    # but gamma-api requires literal commas: ?id=111,222,333
-    url = f"{_GAMMA_BASE}/markets?id={id}&limit={len(ids)}"
+    # Gamma requires repeated params: ?id=111&id=222 (not comma-separated)
+    params = [("id", i) for i in ids] + [("limit", str(len(ids)))]
+    url = f"{_GAMMA_BASE}/markets"
     async with httpx.AsyncClient(timeout=10.0) as client:
-        resp = await client.get(url, headers=_GAMMA_HEADERS)
+        resp = await client.get(url, params=params, headers=_GAMMA_HEADERS)
         resp.raise_for_status()
     return JSONResponse(resp.json())
