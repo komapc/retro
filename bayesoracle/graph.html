@@ -10,33 +10,38 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; height: 100vh; display: flex; flex-direction: column; }
 
-  header { padding: 12px 20px; background: #16213e; border-bottom: 1px solid #0f3460; display: flex; align-items: center; gap: 16px; }
-  header h1 { font-size: 18px; font-weight: 600; color: #e2b96f; }
-  header p  { font-size: 13px; color: #aaa; }
+  header { padding: 10px 20px; background: #16213e; border-bottom: 1px solid #0f3460; display: flex; align-items: center; gap: 16px; }
+  header h1 { font-size: 17px; font-weight: 600; color: #e2b96f; }
+  header p  { font-size: 12px; color: #888; }
 
   #main { display: flex; flex: 1; overflow: hidden; }
   #cy   { flex: 1; }
 
   #legend {
-    width: 220px; background: #16213e; border-left: 1px solid #0f3460;
-    padding: 16px; overflow-y: auto; font-size: 12px;
+    width: 215px; background: #16213e; border-left: 1px solid #0f3460;
+    padding: 14px; overflow-y: auto; font-size: 12px; flex-shrink: 0;
   }
-  #legend h2 { font-size: 13px; font-weight: 600; color: #e2b96f; margin-bottom: 10px; }
-  .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
-  .swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+  #legend h2 { font-size: 12px; font-weight: 600; color: #e2b96f; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
 
   #panel {
-    position: absolute; bottom: 20px; left: 20px;
-    background: #16213e; border: 1px solid #0f3460; border-radius: 8px;
-    padding: 14px 16px; font-size: 12px; max-width: 320px;
-    display: none; z-index: 10;
+    position: absolute; bottom: 16px; left: 16px;
+    background: #0f1a30; border: 1px solid #2a4070; border-radius: 8px;
+    padding: 12px 15px; font-size: 12px; min-width: 260px; max-width: 340px;
+    display: none; z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   }
-  #panel h3 { font-size: 14px; margin-bottom: 6px; color: #e2b96f; }
-  #panel .row { display: flex; justify-content: space-between; margin-top: 4px; }
-  #panel .label { color: #aaa; }
-  #panel .val   { color: #fff; font-weight: 600; }
+  #panel h3 { font-size: 13px; margin-bottom: 8px; color: #e2b96f; line-height: 1.3; }
+  #panel .row { display: flex; justify-content: space-between; margin-top: 5px; gap: 8px; }
+  #panel .lbl { color: #778; flex-shrink: 0; }
+  #panel .val { color: #dde; font-weight: 600; text-align: right; }
+  #panel .divider { border: none; border-top: 1px solid #1e3050; margin: 8px 0; }
+  #panel .cond-title { color: #e2b96f; font-size: 11px; margin-top: 6px; margin-bottom: 2px; }
+  #panel .cond-row { display: flex; justify-content: space-between; font-size: 11px; margin-top: 3px; }
+  #panel .cond-lbl { color: #667; }
+  #panel .cond-val { color: #acd; }
 
-  .hint { position: absolute; bottom: 20px; right: 240px; font-size: 11px; color: #555; }
+  .hint { position: absolute; bottom: 16px; right: 230px; font-size: 10px; color: #444; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -44,7 +49,7 @@
 <header>
   <div>
     <h1>BayesOracle — Israeli Politics DAG</h1>
-    <p>Example event graph · click any node to inspect · drag to pan · scroll to zoom</p>
+    <p>Click a node · scroll to zoom · drag to pan</p>
   </div>
 </header>
 
@@ -52,7 +57,7 @@
   <div id="cy"></div>
 
   <div id="legend">
-    <h2>Layer</h2>
+    <h2>Layers</h2>
     <div class="legend-row"><div class="swatch" style="background:#5b9bd5"></div><span>Exogenous (roots)</span></div>
     <div class="legend-row"><div class="swatch" style="background:#f4a460"></div><span>Near-term domestic</span></div>
     <div class="legend-row"><div class="swatch" style="background:#e06080"></div><span>Key event (A)</span></div>
@@ -60,32 +65,41 @@
     <div class="legend-row"><div class="swatch" style="background:#5aaa72"></div><span>Government</span></div>
     <div class="legend-row"><div class="swatch" style="background:#7a8a9a"></div><span>Downstream outcomes</span></div>
 
-    <h2 style="margin-top:16px">Correlations (ρ)</h2>
-    <table style="width:100%;border-collapse:collapse;font-size:11px">
-      <tr style="color:#aaa"><th style="text-align:left;padding:2px 0">Pair</th><th style="text-align:right">ρ</th></tr>
-      <tr><td>Convicted ↔ Collapse</td><td style="text-align:right;color:#f4a460">+0.7</td></tr>
-      <tr><td>Sick ↔ Dead</td>         <td style="text-align:right;color:#f4a460">+0.6</td></tr>
-      <tr><td>Gaza ends ↔ Approval</td><td style="text-align:right;color:#f4a460">+0.5</td></tr>
-      <tr><td>Gantz unified ↔ A</td>   <td style="text-align:right;color:#5b9bd5">−0.6</td></tr>
-      <tr><td>Iran nuc ↔ War</td>      <td style="text-align:right;color:#e06080">+0.8</td></tr>
-      <tr><td>Trump ↔ War</td>         <td style="text-align:right;color:#f4a460">+0.5</td></tr>
-    </table>
+    <h2 style="margin-top:14px">Edge labels</h2>
+    <div style="font-size:11px;color:#888;line-height:1.5">
+      <b style="color:#9ab">if ✓: XX%</b> — P(child | parent happens)<br>
+      <b style="color:#a98">if ✗: XX%</b> — P(child | parent does NOT happen)
+    </div>
 
-    <h2 style="margin-top:16px">P(event) — mock</h2>
-    <div style="font-size:11px;color:#aaa">Click a node to see details below.</div>
+    <h2 style="margin-top:14px">Correlations (ρ)</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <tr style="color:#667"><th style="text-align:left;padding-bottom:3px">Pair</th><th style="text-align:right">ρ</th></tr>
+      <tr><td style="padding:2px 0">Convicted ↔ Collapse</td><td style="text-align:right;color:#f4a460">+0.70</td></tr>
+      <tr><td style="padding:2px 0">Sick ↔ Dead</td>         <td style="text-align:right;color:#f4a460">+0.60</td></tr>
+      <tr><td style="padding:2px 0">Gaza ends ↔ Approval</td><td style="text-align:right;color:#f4a460">+0.50</td></tr>
+      <tr><td style="padding:2px 0">Opp unified ↔ A</td>     <td style="text-align:right;color:#5b9bd5">−0.60</td></tr>
+      <tr><td style="padding:2px 0">Iran nuc ↔ War</td>      <td style="text-align:right;color:#e06080">+0.80</td></tr>
+      <tr><td style="padding:2px 0">Trump ↔ War</td>         <td style="text-align:right;color:#f4a460">+0.50</td></tr>
+    </table>
   </div>
 </div>
 
 <div id="panel">
   <h3 id="pname"></h3>
-  <div class="row"><span class="label">Layer</span><span class="val" id="player"></span></div>
-  <div class="row"><span class="label">P(event)</span><span class="val" id="pprob"></span></div>
-  <div class="row"><span class="label">95% CI</span><span class="val" id="pci"></span></div>
-  <div class="row"><span class="label">Parents</span><span class="val" id="pparents"></span></div>
-  <div class="row"><span class="label">Children</span><span class="val" id="pchildren"></span></div>
+  <div class="row"><span class="lbl">Layer</span><span class="val" id="player"></span></div>
+  <div class="row"><span class="lbl">P(event)</span><span class="val" id="pprob"></span></div>
+  <div class="row"><span class="lbl">95% CI</span><span class="val" id="pci"></span></div>
+  <hr class="divider">
+  <div id="pcond-block">
+    <div class="cond-title">Conditional on parents</div>
+    <div id="pcond-rows"></div>
+  </div>
+  <hr class="divider" id="pcond-divider">
+  <div class="row"><span class="lbl">Parents</span> <span class="val" id="pparents"></span></div>
+  <div class="row"><span class="lbl">Children</span><span class="val" id="pchildren"></span></div>
 </div>
 
-<div class="hint">BayesOracle brainstorm · 2026-05-14</div>
+<div class="hint">BayesOracle · mock probabilities for illustration</div>
 
 <script>
 cytoscape.use(cytoscapeDagre);
@@ -101,79 +115,98 @@ const LAYER_COLORS = {
 
 const LAYER_NAMES = ['Exogenous', 'Near-term', 'Key event', 'Coalition', 'Government', 'Outcome'];
 
+// Each node: id, short label (line1), sublabel (line2 = description), layer, p, ci
+// label shown on graph = line1 + "\n" + pct + "\n" + line2
 const nodes = [
   // Layer 0 — Exogenous
-  { id: 'GAZA',     label: '🔫 Gaza war ends\n/ ceasefire',        layer: 0, p: 0.55, ci: [0.40, 0.70] },
-  { id: 'IRAN_NUC', label: '☢️ Iran nuclear\nthreshold',           layer: 0, p: 0.35, ci: [0.20, 0.52] },
-  { id: 'TRUMP',    label: '🇺🇸 Trump is US\npresident',           layer: 0, p: 0.96, ci: [0.90, 0.99] },
-  { id: 'VERDICT',  label: '⚖️ Conviction\nverdict delivered',     layer: 0, p: 0.70, ci: [0.55, 0.82] },
-  { id: 'OPP',      label: '🗳️ Gantz / Lapid\nrun unified',        layer: 0, p: 0.45, ci: [0.30, 0.60] },
+  { id: 'GAZA',     line1: '🔫 Gaza ceasefire',       line2: 'holds by end of year',  layer: 0, p: 0.55, ci: [0.40, 0.70] },
+  { id: 'IRAN_NUC', line1: '☢️ Iran: nuclear',         line2: 'threshold reached',     layer: 0, p: 0.35, ci: [0.20, 0.52] },
+  { id: 'TRUMP',    line1: '🇺🇸 Trump in office',      line2: 'through 2027',          layer: 0, p: 0.96, ci: [0.91, 0.99] },
+  { id: 'VERDICT',  line1: '⚖️ Verdict delivered',    line2: 'in Bibi\'s trial',      layer: 0, p: 0.70, ci: [0.55, 0.82] },
+  { id: 'OPP',      line1: '🗳️ Opposition unified',   line2: 'Gantz + Lapid bloc',    layer: 0, p: 0.45, ci: [0.30, 0.60] },
 
   // Layer 1 — Near-term domestic
-  { id: 'APPROVAL',  label: '📊 Bibi approval\nshifts upward',     layer: 1, p: 0.40, ci: [0.28, 0.54] },
-  { id: 'SICK',      label: '🏥 Bibi is sick',                     layer: 1, p: 0.25, ci: [0.15, 0.38] },
-  { id: 'DEAD',      label: '💀 Bibi is dead',                     layer: 1, p: 0.08, ci: [0.03, 0.16] },
-  { id: 'CONVICTED', label: '🔒 Bibi convicted',                   layer: 1, p: 0.62, ci: [0.48, 0.75] },
-  { id: 'COLLAPSE',  label: '🏛️ Coalition\ncollapses',             layer: 1, p: 0.58, ci: [0.44, 0.71] },
-  { id: 'ELECTIONS', label: '📅 Early elections\nheld',            layer: 1, p: 0.55, ci: [0.40, 0.68] },
+  { id: 'APPROVAL',  line1: '📊 Bibi approval',        line2: 'improves',              layer: 1, p: 0.40, ci: [0.28, 0.54] },
+  { id: 'SICK',      line1: '🏥 Bibi is sick',         line2: 'health crisis',         layer: 1, p: 0.25, ci: [0.15, 0.38] },
+  { id: 'DEAD',      line1: '💀 Bibi dies',            line2: 'in office',             layer: 1, p: 0.08, ci: [0.03, 0.16] },
+  { id: 'CONVICTED', line1: '🔒 Bibi convicted',       line2: 'guilty verdict',        layer: 1, p: 0.62, ci: [0.48, 0.75] },
+  { id: 'COLLAPSE',  line1: '🏛️ Coalition collapses',  line2: 'current government',    layer: 1, p: 0.58, ci: [0.44, 0.71] },
+  { id: 'ELECTIONS', line1: '📅 Early elections',      line2: 'called & held',         layer: 1, p: 0.55, ci: [0.40, 0.68] },
 
   // Layer 2 — Key
-  { id: 'A', label: '⭐ A: Likud wins\nmost seats',                layer: 2, p: 0.48, ci: [0.36, 0.61] },
+  { id: 'A', line1: '⭐ Likud wins most', line2: 'seats in elections', layer: 2, p: 0.48, ci: [0.36, 0.61] },
 
   // Layer 3 — Coalition
-  { id: 'TRIES',    label: '🤝 Bibi tries to\nform coalition',     layer: 3, p: 0.44, ci: [0.32, 0.57] },
-  { id: 'HAREDI',   label: '🕍 Haredi parties\njoin coalition',    layer: 3, p: 0.72, ci: [0.58, 0.83] },
-  { id: 'FARRIGHT', label: '🦅 Ben Gvir /\nSmotrich join',        layer: 3, p: 0.55, ci: [0.40, 0.69] },
-  { id: 'COAL_OK',  label: '✅ Coalition\nnegotiations\nsucceed',  layer: 3, p: 0.38, ci: [0.26, 0.51] },
+  { id: 'TRIES',    line1: '🤝 Bibi tries',           line2: 'to form coalition',     layer: 3, p: 0.44, ci: [0.32, 0.57] },
+  { id: 'HAREDI',   line1: '🕍 Haredi parties',       line2: 'join coalition',        layer: 3, p: 0.72, ci: [0.58, 0.83] },
+  { id: 'FARRIGHT', line1: '🦅 Ben Gvir / Smotrich',  line2: 'join coalition',        layer: 3, p: 0.55, ci: [0.40, 0.69] },
+  { id: 'COAL_OK',  line1: '✅ Coalition formed',     line2: 'negotiations succeed',  layer: 3, p: 0.38, ci: [0.26, 0.51] },
 
   // Layer 4 — Government
-  { id: 'PM', label: '👑 Bibi is PM\nby year end',                 layer: 4, p: 0.36, ci: [0.24, 0.49] },
+  { id: 'PM', line1: '👑 Bibi is PM', line2: 'by end of year', layer: 4, p: 0.36, ci: [0.24, 0.49] },
 
   // Layer 5 — Downstream
-  { id: 'WAR_IRAN', label: '💥 War with\nIran 2027',              layer: 5, p: 0.22, ci: [0.12, 0.34] },
-  { id: 'JUDICIAL', label: '⚖️ Judicial\noverhaul resumes',       layer: 5, p: 0.30, ci: [0.19, 0.43] },
-  { id: 'SAUDI',    label: '🤝 Saudi–Israel\nnormalization',      layer: 5, p: 0.28, ci: [0.16, 0.42] },
-  { id: 'DRAFT',    label: '📋 Haredi draft\nlaw resolved',       layer: 5, p: 0.25, ci: [0.14, 0.38] },
+  { id: 'WAR_IRAN', line1: '💥 War with Iran',        line2: 'breaks out 2027',       layer: 5, p: 0.22, ci: [0.12, 0.34] },
+  { id: 'JUDICIAL', line1: '⚖️ Judicial overhaul',   line2: 'resumes',               layer: 5, p: 0.30, ci: [0.19, 0.43] },
+  { id: 'SAUDI',    line1: '🤝 Saudi normalization',  line2: 'deal signed',           layer: 5, p: 0.28, ci: [0.16, 0.42] },
+  { id: 'DRAFT',    line1: '📋 Haredi draft',         line2: 'law resolved',          layer: 5, p: 0.25, ci: [0.14, 0.38] },
 ];
 
+// Edges with conditional probabilities: [source, target, P(target|source=true), P(target|source=false)]
 const edges = [
-  ['GAZA',      'APPROVAL'],
-  ['VERDICT',   'CONVICTED'],
-  ['VERDICT',   'COLLAPSE'],
-  ['SICK',      'DEAD'],
-  ['APPROVAL',  'A'],
-  ['DEAD',      'A'],
-  ['CONVICTED', 'A'],
-  ['COLLAPSE',  'ELECTIONS'],
-  ['ELECTIONS', 'A'],
-  ['TRUMP',     'A'],
-  ['OPP',       'A'],
-  ['A',         'TRIES'],
-  ['A',         'HAREDI'],
-  ['A',         'FARRIGHT'],
-  ['TRIES',     'COAL_OK'],
-  ['HAREDI',    'COAL_OK'],
-  ['FARRIGHT',  'COAL_OK'],
-  ['COAL_OK',   'PM'],
-  ['PM',        'WAR_IRAN'],
-  ['PM',        'JUDICIAL'],
-  ['PM',        'SAUDI'],
-  ['PM',        'DRAFT'],
-  ['IRAN_NUC',  'WAR_IRAN'],
-  ['TRUMP',     'WAR_IRAN'],
-  ['TRUMP',     'SAUDI'],
+  ['GAZA',      'APPROVAL',  0.65, 0.22],
+  ['VERDICT',   'CONVICTED', 0.75, 0.05],
+  ['VERDICT',   'COLLAPSE',  0.60, 0.42],
+  ['SICK',      'DEAD',      0.30, 0.04],
+  ['APPROVAL',  'A',         0.62, 0.36],
+  ['DEAD',      'A',         0.28, 0.50],
+  ['CONVICTED', 'A',         0.38, 0.58],
+  ['COLLAPSE',  'ELECTIONS', 0.90, 0.18],
+  ['ELECTIONS', 'A',         0.48, 0.30],
+  ['TRUMP',     'A',         0.54, 0.30],
+  ['OPP',       'A',         0.34, 0.58],
+  ['A',         'TRIES',     0.95, 0.08],
+  ['A',         'HAREDI',    0.78, 0.50],
+  ['A',         'FARRIGHT',  0.62, 0.35],
+  ['TRIES',     'COAL_OK',   0.52, 0.10],
+  ['HAREDI',    'COAL_OK',   0.62, 0.25],
+  ['FARRIGHT',  'COAL_OK',   0.58, 0.22],
+  ['COAL_OK',   'PM',        0.92, 0.05],
+  ['PM',        'WAR_IRAN',  0.32, 0.14],
+  ['PM',        'JUDICIAL',  0.78, 0.08],
+  ['PM',        'SAUDI',     0.42, 0.16],
+  ['PM',        'DRAFT',     0.48, 0.10],
+  ['IRAN_NUC',  'WAR_IRAN',  0.52, 0.10],
+  ['TRUMP',     'WAR_IRAN',  0.38, 0.12],
+  ['TRUMP',     'SAUDI',     0.52, 0.14],
 ];
+
+// Build lookup: target → [ {source, pYes, pNo} ]
+const condByTarget = {};
+edges.forEach(([s, t, pY, pN]) => {
+  if (!condByTarget[t]) condByTarget[t] = [];
+  condByTarget[t].push({ source: s, pYes: pY, pNo: pN });
+});
 
 const cyNodes = nodes.map(n => {
   const c = LAYER_COLORS[n.layer];
+  const pct = (n.p * 100).toFixed(0) + '%';
+  const label = `${n.line1}\n${pct}  ·  ${n.line2}`;
   return {
-    data: { id: n.id, label: n.label, layer: n.layer, p: n.p, ci: n.ci,
-            bgColor: c.bg, borderColor: c.border, textColor: c.text }
+    data: {
+      id: n.id, label, line1: n.line1, line2: n.line2,
+      layer: n.layer, p: n.p, ci: n.ci,
+      bgColor: c.bg, borderColor: c.border, textColor: c.text
+    }
   };
 });
 
-const cyEdges = edges.map(([s, t], i) => ({
-  data: { id: `e${i}`, source: s, target: t }
+const cyEdges = edges.map(([s, t, pY, pN], i) => ({
+  data: {
+    id: `e${i}`, source: s, target: t,
+    pYes: pY, pNo: pN,
+    label: `✓ ${(pY*100).toFixed(0)}%  ✗ ${(pN*100).toFixed(0)}%`,
+  }
 }));
 
 const cy = cytoscape({
@@ -184,60 +217,73 @@ const cy = cytoscape({
       selector: 'node',
       style: {
         'shape': 'round-rectangle',
-        'width': 130,
-        'height': 60,
+        'width': 155,
+        'height': 58,
         'background-color': 'data(bgColor)',
         'border-color': 'data(borderColor)',
         'border-width': 2,
         'color': 'data(textColor)',
-        'font-size': 11,
+        'font-size': 10.5,
         'text-valign': 'center',
         'text-halign': 'center',
         'label': 'data(label)',
         'text-wrap': 'wrap',
-        'text-max-width': 120,
-        'padding': 6,
+        'text-max-width': 148,
+        'line-height': 1.35,
+        'padding': 5,
       }
     },
     {
       selector: 'node#A',
       style: {
-        'width': 150,
-        'height': 70,
+        'width': 165, 'height': 66,
         'border-width': 3,
-        'font-size': 12,
+        'font-size': 11.5,
         'font-weight': 'bold',
       }
     },
     {
       selector: 'node#PM',
-      style: { 'border-width': 3, 'font-weight': 'bold' }
+      style: { 'border-width': 3, 'font-size': 11, 'font-weight': 'bold' }
     },
     {
       selector: 'node:selected',
-      style: { 'border-width': 4, 'border-color': '#fff' }
+      style: { 'border-width': 4, 'border-color': '#ffffff', 'border-opacity': 0.9 }
     },
     {
       selector: 'edge',
       style: {
         'width': 1.5,
-        'line-color': '#334466',
-        'target-arrow-color': '#4a6080',
+        'line-color': '#2a3d55',
+        'target-arrow-color': '#3a5070',
         'target-arrow-shape': 'triangle',
         'curve-style': 'bezier',
-        'arrow-scale': 1.2,
+        'arrow-scale': 1.1,
+        'label': 'data(label)',
+        'font-size': 9,
+        'color': '#556677',
+        'text-background-color': '#1a1a2e',
+        'text-background-opacity': 0.85,
+        'text-background-padding': '2px',
+        'text-rotation': 'autorotate',
+        'text-margin-y': -8,
       }
     },
     {
       selector: 'edge.highlighted',
-      style: { 'line-color': '#7090c0', 'target-arrow-color': '#7090c0', 'width': 2.5 }
+      style: {
+        'line-color': '#5080b0',
+        'target-arrow-color': '#6090c0',
+        'width': 2.5,
+        'color': '#99bbdd',
+      }
     },
   ],
   layout: {
     name: 'dagre',
     rankDir: 'TB',
-    nodeSep: 40,
-    rankSep: 80,
+    nodeSep: 50,
+    rankSep: 90,
     padding: 30,
     animate: false,
   }
@@ -247,21 +293,42 @@ const cy = cytoscape({
 cy.on('tap', 'node', function(evt) {
   const n = evt.target;
   const d = n.data();
-  const layerName = LAYER_NAMES[d.layer];
 
-  // highlight connected edges
   cy.edges().removeClass('highlighted');
   n.connectedEdges().addClass('highlighted');
 
   const parents  = n.incomers('node').map(x => x.data('id')).join(', ') || '—';
   const children = n.outgoers('node').map(x => x.data('id')).join(', ') || '—';
 
-  document.getElementById('pname').textContent     = d.label.replace(/\n/g, ' ');
-  document.getElementById('player').textContent    = `${d.layer} — ${layerName}`;
-  document.getElementById('pprob').textContent     = (d.p * 100).toFixed(0) + '%';
-  document.getElementById('pci').textContent       = `[${(d.ci[0]*100).toFixed(0)}%, ${(d.ci[1]*100).toFixed(0)}%]`;
+  document.getElementById('pname').textContent  = d.line1 + (d.line2 ? ' — ' + d.line2 : '');
+  document.getElementById('player').textContent = `${d.layer} — ${LAYER_NAMES[d.layer]}`;
+  document.getElementById('pprob').textContent  = (d.p * 100).toFixed(0) + '%';
+  document.getElementById('pci').textContent    = `[${(d.ci[0]*100).toFixed(0)}%, ${(d.ci[1]*100).toFixed(0)}%]`;
   document.getElementById('pparents').textContent  = parents;
   document.getElementById('pchildren').textContent = children;
+
+  // Conditional rows
+  const condBlock = document.getElementById('pcond-block');
+  const condDivider = document.getElementById('pcond-divider');
+  const rows = condByTarget[d.id];
+  if (rows && rows.length) {
+    const container = document.getElementById('pcond-rows');
+    container.innerHTML = rows.map(r =>
+      `<div class="cond-row">
+        <span class="cond-lbl">if ${r.source} ✓</span>
+        <span class="cond-val">${(r.pYes*100).toFixed(0)}%</span>
+      </div>
+      <div class="cond-row">
+        <span class="cond-lbl">if ${r.source} ✗</span>
+        <span class="cond-val">${(r.pNo*100).toFixed(0)}%</span>
+      </div>`
+    ).join('<div style="height:4px"></div>');
+    condBlock.style.display = 'block';
+    condDivider.style.display = 'block';
+  } else {
+    condBlock.style.display = 'none';
+    condDivider.style.display = 'none';
+  }
 
   document.getElementById('panel').style.display = 'block';
 });
@@ -273,8 +340,12 @@ cy.on('tap', function(evt) {
   }
 });
 
-// Fit on load
-cy.ready(() => cy.fit(undefined, 30));
+// Fit then zoom in slightly
+cy.ready(() => {
+  cy.fit(undefined, 40);
+  cy.zoom(cy.zoom() * 1.35);
+  cy.center();
+});
 </script>
 </body>
 </html>
