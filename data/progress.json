@@ -409,8 +409,8 @@
     "A04:toi": {
       "event_id": "A04",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "A04:ynet": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T11:53:45.512326"
+  "last_updated": "2026-05-14T11:58:13.171072"
 }
