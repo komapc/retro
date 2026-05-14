@@ -7374,8 +7374,8 @@
     "A01:ft": {
       "event_id": "A01",
       "source_id": "ft",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "A01:guardian": {
@@ -7409,8 +7409,8 @@
     "A02:bbc": {
       "event_id": "A02",
       "source_id": "bbc",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A02:bloomberg": {
@@ -10524,7 +10524,7 @@
     "A03:bloomberg": {
       "event_id": "A03",
       "source_id": "bloomberg",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -10538,8 +10538,8 @@
     "A05:bloomberg": {
       "event_id": "A05",
       "source_id": "bloomberg",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A07:bloomberg": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T09:59:53.261318"
+  "last_updated": "2026-05-14T10:02:25.344630"
 }
