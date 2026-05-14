@@ -5302,8 +5302,8 @@
     "F03:toi": {
       "event_id": "F03",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "F03:walla": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T13:10:11.888841"
+  "last_updated": "2026-05-14T13:13:18.682274"
 }
