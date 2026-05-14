@@ -1830,8 +1830,8 @@
     "F04:toi": {
       "event_id": "F04",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 9,
       "error": null
     },
     "F04:walla": {
@@ -10125,7 +10125,7 @@
     "F05:ft": {
       "event_id": "F05",
       "source_id": "ft",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -10223,7 +10223,7 @@
     "G02:ft": {
       "event_id": "G02",
       "source_id": "ft",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T09:36:06.996945"
+  "last_updated": "2026-05-14T09:43:35.901008"
 }
