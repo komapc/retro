@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <title>BayesOracle — Israeli Politics 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: system-ui, sans-serif; background: #12131f; color: #eee; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -161,8 +159,6 @@ header p  { font-size: 11px; color: #778; margin-top: 2px; }
 <div class="hint">BayesOracle · Israeli elections 2026 · probabilistic cascade</div>
 
 <script>
-cytoscape.use(cytoscapeDagre);
-
 const LC = {
   0: { bg:[28,56,90],  border:'#5b9bd5', text:'#9ccbf0' },
   1: { bg:[60,40,12],  border:'#f4a460', text:'#f4c890' },
@@ -367,13 +363,45 @@ function refreshPanel(id) {
   document.getElementById('p-children').textContent = cy.getElementById(id).outgoers('node').map(x=>x.data('id')).join(', ')||'—';
 }
 
+// Hand-placed positions — one column per layer, nodes ordered to minimise edge crossings
+const POSITIONS = {
+  // Layer 0 — Exogenous (y 70)
+  ELECTIONS:   { x: 85,  y: 70  },
+  TRUMP:       { x: 275, y: 70  },
+  LIKUD_UNITY: { x: 465, y: 70  },
+  BEYACHAD:    { x: 665, y: 70  },
+  IRAN_REB:    { x: 870, y: 70  },
+  // Layer 1 — Pre-election (y 200)
+  CONVICTED:   { x: 130, y: 200 },
+  BIBI_LEAD:   { x: 380, y: 200 },
+  SICK:        { x: 590, y: 200 },
+  DEAD:        { x: 775, y: 200 },
+  // Layer 2 — The election (y 335)
+  A:           { x: 420, y: 335 },
+  // Layer 3 — Coalition inputs (y 460) + result (y 560)
+  MANDATE:     { x: 185, y: 460 },
+  HAREDI_J:    { x: 370, y: 460 },
+  FARRIGHT_J:  { x: 560, y: 460 },
+  COAL_61:     { x: 378, y: 558 },
+  // Layer 4 — Government (y 650)
+  PM5:         { x: 295, y: 650 },
+  OPP_PM:      { x: 648, y: 650 },
+  // Layer 5 — Outcomes (y 775)
+  PARDON:      { x: 100, y: 775 },
+  JUDICIAL:    { x: 278, y: 775 },
+  HAREDI_LAW:  { x: 460, y: 775 },
+  SAUDI:       { x: 648, y: 775 },
+  IRAN2:       { x: 850, y: 775 },
+};
+
 const cyNodes = NODES.map(n => ({
   data: {
     id:n.id, label:nodeLabel(n.id), l1:n.l1, l2:n.l2, layer:n.layer,
     bgColor: blendBg(LC[n.layer].bg, 0),
     borderColor: LC[n.layer].border,
     textColor: LC[n.layer].text,
-  }
+  },
+  position: POSITIONS[n.id],
 }));
 
 const cyEdges = EDGES.map(([s,t,pY,pN],i) => ({
@@ -406,7 +434,7 @@ const cy = cytoscape({
     }},
     { selector:'edge.hi', style:{ 'line-color':'#4a7aaa', 'target-arrow-color':'#5a8abb', width:2.5, color:'#8aaccc' }},
   ],
-  layout:{ name:'dagre', rankDir:'TB', nodeSep:46, rankSep:88, padding:28, animate:false },
+  layout:{ name:'preset', animate:false },
 });
 
 cy.on('tap','node', evt => {
@@ -454,7 +482,7 @@ document.getElementById('reset-all').addEventListener('click', () => {
   if (selectedId) refreshPanel(selectedId);
 });
 
-cy.ready(() => { cy.fit(undefined,38); cy.zoom(cy.zoom()*1.35); cy.center(); });
+cy.ready(() => { cy.fit(undefined, 28); });
 </script>
 </body>
 </html>
