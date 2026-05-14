@@ -2362,8 +2362,8 @@
     "A07:toi": {
       "event_id": "A07",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A07:walla": {
@@ -10552,7 +10552,7 @@
     "A09:bloomberg": {
       "event_id": "A09",
       "source_id": "bloomberg",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T10:02:25.344630"
+  "last_updated": "2026-05-14T10:02:42.806607"
 }
