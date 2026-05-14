@@ -304,7 +304,7 @@
     "B10:toi": {
       "event_id": "B10",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -8410,7 +8410,7 @@
     "B05:bloomberg": {
       "event_id": "B05",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -8431,7 +8431,7 @@
     "B05:nyt": {
       "event_id": "B05",
       "source_id": "nyt",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -8508,7 +8508,7 @@
     "B07:bloomberg": {
       "event_id": "B07",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -8550,7 +8550,7 @@
     "B08:ft": {
       "event_id": "B08",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -10594,7 +10594,7 @@
     "B02:bloomberg": {
       "event_id": "B02",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -10629,7 +10629,7 @@
     "B10:bloomberg": {
       "event_id": "B10",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T07:55:37.490314"
+  "last_updated": "2026-05-14T08:09:49.980059"
 }
