@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BayesOracle — Example Event DAG</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; height: 100vh; display: flex; flex-direction: column; }
+
+  header { padding: 12px 20px; background: #16213e; border-bottom: 1px solid #0f3460; display: flex; align-items: center; gap: 16px; }
+  header h1 { font-size: 18px; font-weight: 600; color: #e2b96f; }
+  header p  { font-size: 13px; color: #aaa; }
+
+  #main { display: flex; flex: 1; overflow: hidden; }
+  #cy   { flex: 1; }
+
+  #legend {
+    width: 220px; background: #16213e; border-left: 1px solid #0f3460;
+    padding: 16px; overflow-y: auto; font-size: 12px;
+  }
+  #legend h2 { font-size: 13px; font-weight: 600; color: #e2b96f; margin-bottom: 10px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+  #panel {
+    position: absolute; bottom: 20px; left: 20px;
+    background: #16213e; border: 1px solid #0f3460; border-radius: 8px;
+    padding: 14px 16px; font-size: 12px; max-width: 320px;
+    display: none; z-index: 10;
+  }
+  #panel h3 { font-size: 14px; margin-bottom: 6px; color: #e2b96f; }
+  #panel .row { display: flex; justify-content: space-between; margin-top: 4px; }
+  #panel .label { color: #aaa; }
+  #panel .val   { color: #fff; font-weight: 600; }
+
+  .hint { position: absolute; bottom: 20px; right: 240px; font-size: 11px; color: #555; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>BayesOracle — Israeli Politics DAG</h1>
+    <p>Example event graph · click any node to inspect · drag to pan · scroll to zoom</p>
+  </div>
+</header>
+
+<div id="main">
+  <div id="cy"></div>
+
+  <div id="legend">
+    <h2>Layer</h2>
+    <div class="legend-row"><div class="swatch" style="background:#5b9bd5"></div><span>Exogenous (roots)</span></div>
+    <div class="legend-row"><div class="swatch" style="background:#f4a460"></div><span>Near-term domestic</span></div>
+    <div class="legend-row"><div class="swatch" style="background:#e06080"></div><span>Key event (A)</span></div>
+    <div class="legend-row"><div class="swatch" style="background:#a78bc0"></div><span>Coalition formation</span></div>
+    <div class="legend-row"><div class="swatch" style="background:#5aaa72"></div><span>Government</span></div>
+    <div class="legend-row"><div class="swatch" style="background:#7a8a9a"></div><span>Downstream outcomes</span></div>
+
+    <h2 style="margin-top:16px">Correlations (ρ)</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <tr style="color:#aaa"><th style="text-align:left;padding:2px 0">Pair</th><th style="text-align:right">ρ</th></tr>
+      <tr><td>Convicted ↔ Collapse</td><td style="text-align:right;color:#f4a460">+0.7</td></tr>
+      <tr><td>Sick ↔ Dead</td>         <td style="text-align:right;color:#f4a460">+0.6</td></tr>
+      <tr><td>Gaza ends ↔ Approval</td><td style="text-align:right;color:#f4a460">+0.5</td></tr>
+      <tr><td>Gantz unified ↔ A</td>   <td style="text-align:right;color:#5b9bd5">−0.6</td></tr>
+      <tr><td>Iran nuc ↔ War</td>      <td style="text-align:right;color:#e06080">+0.8</td></tr>
+      <tr><td>Trump ↔ War</td>         <td style="text-align:right;color:#f4a460">+0.5</td></tr>
+    </table>
+
+    <h2 style="margin-top:16px">P(event) — mock</h2>
+    <div style="font-size:11px;color:#aaa">Click a node to see details below.</div>
+  </div>
+</div>
+
+<div id="panel">
+  <h3 id="pname"></h3>
+  <div class="row"><span class="label">Layer</span><span class="val" id="player"></span></div>
+  <div class="row"><span class="label">P(event)</span><span class="val" id="pprob"></span></div>
+  <div class="row"><span class="label">95% CI</span><span class="val" id="pci"></span></div>
+  <div class="row"><span class="label">Parents</span><span class="val" id="pparents"></span></div>
+  <div class="row"><span class="label">Children</span><span class="val" id="pchildren"></span></div>
+</div>
+
+<div class="hint">BayesOracle brainstorm · 2026-05-14</div>
+
+<script>
+cytoscape.use(cytoscapeDagre);
+
+const LAYER_COLORS = {
+  0: { bg: '#1e3a5f', border: '#5b9bd5', text: '#9ccbf0' },
+  1: { bg: '#3d2a0f', border: '#f4a460', text: '#f4c890' },
+  2: { bg: '#4a1020', border: '#e06080', text: '#f08090' },
+  3: { bg: '#2d1a40', border: '#a78bc0', text: '#c8b0e0' },
+  4: { bg: '#0f2d1a', border: '#5aaa72', text: '#90d0a0' },
+  5: { bg: '#252525', border: '#7a8a9a', text: '#aabbc0' },
+};
+
+const LAYER_NAMES = ['Exogenous', 'Near-term', 'Key event', 'Coalition', 'Government', 'Outcome'];
+
+const nodes = [
+  // Layer 0 — Exogenous
+  { id: 'GAZA',     label: '🔫 Gaza war ends\n/ ceasefire',        layer: 0, p: 0.55, ci: [0.40, 0.70] },
+  { id: 'IRAN_NUC', label: '☢️ Iran nuclear\nthreshold',           layer: 0, p: 0.35, ci: [0.20, 0.52] },
+  { id: 'TRUMP',    label: '🇺🇸 Trump is US\npresident',           layer: 0, p: 0.96, ci: [0.90, 0.99] },
+  { id: 'VERDICT',  label: '⚖️ Conviction\nverdict delivered',     layer: 0, p: 0.70, ci: [0.55, 0.82] },
+  { id: 'OPP',      label: '🗳️ Gantz / Lapid\nrun unified',        layer: 0, p: 0.45, ci: [0.30, 0.60] },
+
+  // Layer 1 — Near-term domestic
+  { id: 'APPROVAL',  label: '📊 Bibi approval\nshifts upward',     layer: 1, p: 0.40, ci: [0.28, 0.54] },
+  { id: 'SICK',      label: '🏥 Bibi is sick',                     layer: 1, p: 0.25, ci: [0.15, 0.38] },
+  { id: 'DEAD',      label: '💀 Bibi is dead',                     layer: 1, p: 0.08, ci: [0.03, 0.16] },
+  { id: 'CONVICTED', label: '🔒 Bibi convicted',                   layer: 1, p: 0.62, ci: [0.48, 0.75] },
+  { id: 'COLLAPSE',  label: '🏛️ Coalition\ncollapses',             layer: 1, p: 0.58, ci: [0.44, 0.71] },
+  { id: 'ELECTIONS', label: '📅 Early elections\nheld',            layer: 1, p: 0.55, ci: [0.40, 0.68] },
+
+  // Layer 2 — Key
+  { id: 'A', label: '⭐ A: Likud wins\nmost seats',                layer: 2, p: 0.48, ci: [0.36, 0.61] },
+
+  // Layer 3 — Coalition
+  { id: 'TRIES',    label: '🤝 Bibi tries to\nform coalition',     layer: 3, p: 0.44, ci: [0.32, 0.57] },
+  { id: 'HAREDI',   label: '🕍 Haredi parties\njoin coalition',    layer: 3, p: 0.72, ci: [0.58, 0.83] },
+  { id: 'FARRIGHT', label: '🦅 Ben Gvir /\nSmotrich join',        layer: 3, p: 0.55, ci: [0.40, 0.69] },
+  { id: 'COAL_OK',  label: '✅ Coalition\nnegotiations\nsucceed',  layer: 3, p: 0.38, ci: [0.26, 0.51] },
+
+  // Layer 4 — Government
+  { id: 'PM', label: '👑 Bibi is PM\nby year end',                 layer: 4, p: 0.36, ci: [0.24, 0.49] },
+
+  // Layer 5 — Downstream
+  { id: 'WAR_IRAN', label: '💥 War with\nIran 2027',              layer: 5, p: 0.22, ci: [0.12, 0.34] },
+  { id: 'JUDICIAL', label: '⚖️ Judicial\noverhaul resumes',       layer: 5, p: 0.30, ci: [0.19, 0.43] },
+  { id: 'SAUDI',    label: '🤝 Saudi–Israel\nnormalization',      layer: 5, p: 0.28, ci: [0.16, 0.42] },
+  { id: 'DRAFT',    label: '📋 Haredi draft\nlaw resolved',       layer: 5, p: 0.25, ci: [0.14, 0.38] },
+];
+
+const edges = [
+  ['GAZA',      'APPROVAL'],
+  ['VERDICT',   'CONVICTED'],
+  ['VERDICT',   'COLLAPSE'],
+  ['SICK',      'DEAD'],
+  ['APPROVAL',  'A'],
+  ['DEAD',      'A'],
+  ['CONVICTED', 'A'],
+  ['COLLAPSE',  'ELECTIONS'],
+  ['ELECTIONS', 'A'],
+  ['TRUMP',     'A'],
+  ['OPP',       'A'],
+  ['A',         'TRIES'],
+  ['A',         'HAREDI'],
+  ['A',         'FARRIGHT'],
+  ['TRIES',     'COAL_OK'],
+  ['HAREDI',    'COAL_OK'],
+  ['FARRIGHT',  'COAL_OK'],
+  ['COAL_OK',   'PM'],
+  ['PM',        'WAR_IRAN'],
+  ['PM',        'JUDICIAL'],
+  ['PM',        'SAUDI'],
+  ['PM',        'DRAFT'],
+  ['IRAN_NUC',  'WAR_IRAN'],
+  ['TRUMP',     'WAR_IRAN'],
+  ['TRUMP',     'SAUDI'],
+];
+
+const cyNodes = nodes.map(n => {
+  const c = LAYER_COLORS[n.layer];
+  return {
+    data: { id: n.id, label: n.label, layer: n.layer, p: n.p, ci: n.ci,
+            bgColor: c.bg, borderColor: c.border, textColor: c.text }
+  };
+});
+
+const cyEdges = edges.map(([s, t], i) => ({
+  data: { id: `e${i}`, source: s, target: t }
+}));
+
+const cy = cytoscape({
+  container: document.getElementById('cy'),
+  elements: { nodes: cyNodes, edges: cyEdges },
+  style: [
+    {
+      selector: 'node',
+      style: {
+        'shape': 'round-rectangle',
+        'width': 130,
+        'height': 60,
+        'background-color': 'data(bgColor)',
+        'border-color': 'data(borderColor)',
+        'border-width': 2,
+        'color': 'data(textColor)',
+        'font-size': 11,
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'label': 'data(label)',
+        'text-wrap': 'wrap',
+        'text-max-width': 120,
+        'padding': 6,
+      }
+    },
+    {
+      selector: 'node#A',
+      style: {
+        'width': 150,
+        'height': 70,
+        'border-width': 3,
+        'font-size': 12,
+        'font-weight': 'bold',
+      }
+    },
+    {
+      selector: 'node#PM',
+      style: { 'border-width': 3, 'font-weight': 'bold' }
+    },
+    {
+      selector: 'node:selected',
+      style: { 'border-width': 4, 'border-color': '#fff' }
+    },
+    {
+      selector: 'edge',
+      style: {
+        'width': 1.5,
+        'line-color': '#334466',
+        'target-arrow-color': '#4a6080',
+        'target-arrow-shape': 'triangle',
+        'curve-style': 'bezier',
+        'arrow-scale': 1.2,
+      }
+    },
+    {
+      selector: 'edge.highlighted',
+      style: { 'line-color': '#7090c0', 'target-arrow-color': '#7090c0', 'width': 2.5 }
+    },
+  ],
+  layout: {
+    name: 'dagre',
+    rankDir: 'TB',
+    nodeSep: 40,
+    rankSep: 80,
+    padding: 30,
+    animate: false,
+  }
+});
+
+// Node click → show panel
+cy.on('tap', 'node', function(evt) {
+  const n = evt.target;
+  const d = n.data();
+  const layerName = LAYER_NAMES[d.layer];
+
+  // highlight connected edges
+  cy.edges().removeClass('highlighted');
+  n.connectedEdges().addClass('highlighted');
+
+  const parents  = n.incomers('node').map(x => x.data('id')).join(', ') || '—';
+  const children = n.outgoers('node').map(x => x.data('id')).join(', ') || '—';
+
+  document.getElementById('pname').textContent     = d.label.replace(/\n/g, ' ');
+  document.getElementById('player').textContent    = `${d.layer} — ${layerName}`;
+  document.getElementById('pprob').textContent     = (d.p * 100).toFixed(0) + '%';
+  document.getElementById('pci').textContent       = `[${(d.ci[0]*100).toFixed(0)}%, ${(d.ci[1]*100).toFixed(0)}%]`;
+  document.getElementById('pparents').textContent  = parents;
+  document.getElementById('pchildren').textContent = children;
+
+  document.getElementById('panel').style.display = 'block';
+});
+
+cy.on('tap', function(evt) {
+  if (evt.target === cy) {
+    document.getElementById('panel').style.display = 'none';
+    cy.edges().removeClass('highlighted');
+  }
+});
+
+// Fit on load
+cy.ready(() => cy.fit(undefined, 30));
+</script>
+</body>
+</html>
