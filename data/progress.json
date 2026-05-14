@@ -8676,7 +8676,7 @@
     "B11:ft": {
       "event_id": "B11",
       "source_id": "ft",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -10615,8 +10615,8 @@
     "B08:bloomberg": {
       "event_id": "B08",
       "source_id": "bloomberg",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B09:bloomberg": {
@@ -10958,8 +10958,8 @@
     "B08:axios": {
       "event_id": "B08",
       "source_id": "axios",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "B08:wapost": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T10:38:06.925416"
+  "last_updated": "2026-05-14T10:38:40.940344"
 }
