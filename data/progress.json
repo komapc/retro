@@ -997,7 +997,7 @@
     "G06:toi": {
       "event_id": "G06",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -10769,7 +10769,7 @@
     "G05:bloomberg": {
       "event_id": "G05",
       "source_id": "bloomberg",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T09:43:35.901008"
+  "last_updated": "2026-05-14T09:44:01.101500"
 }
