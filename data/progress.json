@@ -549,8 +549,8 @@
     "A15:toi": {
       "event_id": "A15",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "A15:ynet": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T13:49:16.417059"
+  "last_updated": "2026-05-14T13:56:52.878853"
 }
