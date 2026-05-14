@@ -74,7 +74,10 @@ run_pipeline() {
   # ── 1. Pull latest event/source definitions ───────────────────────────────
   log "Pulling latest from main..."
   git fetch origin main
-  git merge --ff-only origin/main || log "Already up to date"
+  git merge --ff-only origin/main || {
+    log "WARNING: fast-forward failed — force-syncing to origin/main"
+    git reset --hard origin/main
+  }
 
   # ── 2. Ingest: fetch articles in batches of 10 events per cycle ─────────
   log "Ingest starting — $(cell_stats)"
