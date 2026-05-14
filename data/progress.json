@@ -4952,8 +4952,8 @@
     "E09:n12": {
       "event_id": "E09",
       "source_id": "n12",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "E09:reuters": {
@@ -11196,8 +11196,8 @@
     "F03:axios": {
       "event_id": "F03",
       "source_id": "axios",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 16,
       "error": null
     },
     "F03:wapost": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T14:53:39.026714"
+  "last_updated": "2026-05-14T14:56:09.502472"
 }
