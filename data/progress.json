@@ -10580,8 +10580,8 @@
     "A16:bloomberg": {
       "event_id": "A16",
       "source_id": "bloomberg",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B01:bloomberg": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T13:56:52.878853"
+  "last_updated": "2026-05-14T13:57:10.960692"
 }
