@@ -1,8 +1,10 @@
 import asyncio
 import logging
+import re
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, Request
+import httpx
+from fastapi import Depends, FastAPI, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from slowapi.errors import RateLimitExceeded
@@ -40,12 +42,13 @@ async def lifespan(app: FastAPI):
 
 
 _CORS_ORIGIN = "https://komapc.github.io"
+_CORS_ORIGINS = {_CORS_ORIGIN, "https://bayes.daatan.com"}
 
 
 def _rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
     origin = request.headers.get("origin", "")
     headers = {}
-    if origin == _CORS_ORIGIN or origin.startswith("http://localhost") or origin.startswith("http://127.0.0.1"):
+    if origin in _CORS_ORIGINS or origin.startswith("http://localhost") or origin.startswith("http://127.0.0.1"):
         headers["Access-Control-Allow-Origin"] = origin
         headers["Access-Control-Allow-Headers"] = "Content-Type, x-api-key"
         headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
@@ -67,6 +70,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://komapc.github.io",
+        "https://bayes.daatan.com",
         "http://localhost:*",
         "http://127.0.0.1:*",
     ],
@@ -134,3 +138,33 @@ async def search_health(_: None = Depends(verify_api_key)):
     count where the provider exposes a credit API (Serper, SerpAPI, ScrapingBee).
     """
     return await run_search_health()
+
+
+_GAMMA_BASE = "https://gamma-api.polymarket.com"
+_GAMMA_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; TruthMachine/1.0)"}
+_ID_RE = re.compile(r"^\d+(,\d+)*$")
+
+
+@app.get("/pm/markets", tags=["Polymarket"])
+@limiter.limit("30/minute")
+async def pm_markets(
+    request: Request,
+    id: str = Query(..., description="Comma-separated Gamma market IDs"),
+):
+    """
+    Proxy for Polymarket Gamma API — returns live market data with CORS headers.
+    Gamma API does not send Access-Control-Allow-Origin, so browser fetches from
+    GitHub Pages are blocked; this endpoint forwards the request server-side.
+    """
+    if not _ID_RE.match(id):
+        return JSONResponse({"detail": "id must be comma-separated integers"}, status_code=422)
+    ids = id.split(",")
+    if len(ids) > 50:
+        return JSONResponse({"detail": "max 50 ids per request"}, status_code=422)
+
+    url = f"{_GAMMA_BASE}/markets"
+    params = {"id": id, "limit": len(ids)}
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        resp = await client.get(url, params=params, headers=_GAMMA_HEADERS)
+        resp.raise_for_status()
+    return JSONResponse(resp.json())

@@ -615,7 +615,7 @@
     statusEl.textContent = 'Fetching…';
 
     const ids = NODES.map(n => n.pmId).join(',');
-    const url = `https://gamma-api.polymarket.com/markets?id=${ids}&limit=50`;
+    const url = `https://bayes.daatan.com/pm/markets?id=${ids}`;
 
     try {
       const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -635,11 +635,10 @@
       statusEl.textContent = `Updated ${updated}/${NODES.length} at ${new Date().toLocaleTimeString()}`;
     } catch (err) {
       statusEl.className = 'error';
-      // TypeError = network/CORS failure (no Access-Control-Allow-Origin from gamma-api.polymarket.com)
-      if (err instanceof TypeError || err.message.includes('CORS')) {
-        statusEl.textContent = 'Live poll unavailable (CORS). Prices from May 14, 2026.';
+      if (err instanceof TypeError) {
+        statusEl.textContent = 'Network error — is bayes.daatan.com reachable?';
       } else {
-        statusEl.textContent = `Error: ${err.message}. Prices from May 14, 2026.`;
+        statusEl.textContent = `Error: ${err.message}`;
       }
     } finally {
       btn.disabled = false;
