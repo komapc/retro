@@ -94,8 +94,8 @@
     "C07:toi": {
       "event_id": "C07",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "C07:ynet": {
@@ -8956,7 +8956,7 @@
     "C04:ft": {
       "event_id": "C04",
       "source_id": "ft",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T10:55:38.605318"
+  "last_updated": "2026-05-14T10:56:00.917036"
 }
