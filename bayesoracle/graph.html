@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BayesOracle — Interactive Event DAG</title>
+<title>BayesOracle — Israeli Politics 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
@@ -19,23 +19,19 @@ header p  { font-size: 11px; color: #778; margin-top: 2px; }
 #main { display: flex; flex: 1; overflow: hidden; }
 #cy   { flex: 1; }
 
-/* ── Sidebar ── */
 #sidebar {
-  width: 220px; background: #16213e; border-left: 1px solid #0f3460;
+  width: 222px; background: #16213e; border-left: 1px solid #0f3460;
   display: flex; flex-direction: column; font-size: 11.5px; flex-shrink: 0;
 }
 #sidebar-inner { padding: 13px; overflow-y: auto; flex: 1; }
 .s-head { font-size: 11px; font-weight: 600; color: #e2b96f; margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.06em; }
 .legend-row { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; color: #aaa; }
 .swatch { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
-
 .s-sep { border: none; border-top: 1px solid #1e3050; margin: 11px 0; }
-
 .corr-table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
 .corr-table td { padding: 2px 0; color: #889; }
 .corr-table td:last-child { text-align: right; font-weight: 600; }
 
-/* ── Click panel ── */
 #panel {
   position: absolute; bottom: 16px; left: 16px;
   background: #0d1628; border: 1px solid #2a4070; border-radius: 9px;
@@ -50,7 +46,6 @@ header p  { font-size: 11px; color: #778; margin-top: 2px; }
 .p-val.down { color: #d87070; }
 .p-divider  { border: none; border-top: 1px solid #1e3050; margin: 9px 0; }
 
-/* slider */
 #slider-row { margin-top: 10px; }
 #slider-row label { font-size: 11px; color: #9ab; display: block; margin-bottom: 5px; }
 #pslider {
@@ -65,43 +60,40 @@ header p  { font-size: 11px; color: #778; margin-top: 2px; }
 
 .btn-row { display: flex; gap: 8px; margin-top: 10px; }
 .btn { flex: 1; padding: 5px 0; border-radius: 5px; font-size: 11px; cursor: pointer; border: 1px solid; }
-#btn-lock   { background: #1a2e50; border-color: #3a5090; color: #9ab; }
+#btn-lock  { background: #1a2e50; border-color: #3a5090; color: #9ab; }
 #btn-lock.active { background: #2a3a10; border-color: #6a9030; color: #ade060; }
-#btn-reset  { background: #1a2010; border-color: #3a4020; color: #8a9070; }
+#btn-reset { background: #1a2010; border-color: #3a4020; color: #8a9070; }
 #btn-reset:hover { background: #252f18; }
 
-/* cond block */
 #cond-block { display: none; }
 #cond-block .cond-head { font-size: 10px; color: #e2b96f; margin-bottom: 4px; margin-top: 2px; }
-.cond-row   { display: flex; justify-content: space-between; font-size: 10.5px; padding: 1px 0; }
-.cond-lbl   { color: #667; }
-.cond-val   { color: #8abbe0; font-weight: 600; }
+.cond-row { display: flex; justify-content: space-between; font-size: 10.5px; padding: 1px 0; }
+.cond-lbl { color: #667; }
+.cond-val { color: #8abbe0; font-weight: 600; }
 
-/* hint */
-.hint { position: absolute; bottom: 14px; right: 230px; font-size: 10px; color: #333; pointer-events: none; }
+.hint { position: absolute; bottom: 14px; right: 232px; font-size: 10px; color: #333; pointer-events: none; }
 </style>
 </head>
 <body>
 
 <header>
   <div>
-    <h1>BayesOracle — Israeli Politics DAG</h1>
-    <p>Click any node → adjust its probability → see the cascade · scroll to zoom · drag to pan</p>
+    <h1>BayesOracle — Israeli Politics 2026</h1>
+    <p>Click any node → drag slider to adjust probability → cascade updates live · May 2026</p>
   </div>
   <button id="reset-all">↺ Reset all</button>
 </header>
 
 <div id="main">
   <div id="cy"></div>
-
   <div id="sidebar">
     <div id="sidebar-inner">
       <div class="s-head">Layers</div>
       <div class="legend-row"><div class="swatch" style="background:#5b9bd5"></div>Exogenous (roots)</div>
-      <div class="legend-row"><div class="swatch" style="background:#f4a460"></div>Near-term domestic</div>
-      <div class="legend-row"><div class="swatch" style="background:#e06080"></div>Key event (A)</div>
+      <div class="legend-row"><div class="swatch" style="background:#f4a460"></div>Pre-election dynamics</div>
+      <div class="legend-row"><div class="swatch" style="background:#e06080"></div>The election (A)</div>
       <div class="legend-row"><div class="swatch" style="background:#a78bc0"></div>Coalition formation</div>
-      <div class="legend-row"><div class="swatch" style="background:#5aaa72"></div>Government</div>
+      <div class="legend-row"><div class="swatch" style="background:#5aaa72"></div>Government (Layer 4)</div>
       <div class="legend-row"><div class="swatch" style="background:#7a8a9a"></div>Downstream outcomes</div>
 
       <hr class="s-sep">
@@ -112,219 +104,207 @@ header p  { font-size: 11px; color: #778; margin-top: 2px; }
       </div>
 
       <hr class="s-sep">
-      <div class="s-head">Correlations (ρ)</div>
+      <div class="s-head">Key correlations (ρ)</div>
       <table class="corr-table">
-        <tr><td>Convicted ↔ Collapse</td><td style="color:#f4a460">+0.70</td></tr>
-        <tr><td>Sick ↔ Dead</td>         <td style="color:#f4a460">+0.60</td></tr>
-        <tr><td>Gaza ↔ Approval</td>     <td style="color:#f4a460">+0.50</td></tr>
-        <tr><td>Opp unified ↔ A</td>     <td style="color:#5b9bd5">−0.60</td></tr>
-        <tr><td>Iran nuc ↔ War</td>      <td style="color:#e06080">+0.80</td></tr>
-        <tr><td>Trump ↔ War</td>         <td style="color:#f4a460">+0.50</td></tr>
+        <tr><td>Bibi lead ↔ Likud unity</td>   <td style="color:#f4a460">+0.65</td></tr>
+        <tr><td>Convicted ↔ Likud unity</td>   <td style="color:#5b9bd5">−0.50</td></tr>
+        <tr><td>Beyachad ↔ Opp governs</td>    <td style="color:#f4a460">+0.55</td></tr>
+        <tr><td>Iran rebuilds ↔ 2nd strike</td><td style="color:#e06080">+0.75</td></tr>
+        <tr><td>Bibi PM ↔ Opp governs</td>     <td style="color:#5b9bd5">−0.95</td></tr>
       </table>
 
       <hr class="s-sep">
+      <div class="s-head">Context — May 2026</div>
+      <div style="color:#667;line-height:1.7;font-size:10.5px">
+        🔫 <b style="color:#889">Iran war done</b> Feb 28 — "Op. Roaring Lion", Khamenei killed<br>
+        🏛️ <b style="color:#889">Dissolution bill</b> filed May 13 by Bibi coalition<br>
+        🤝 <b style="color:#889">Beyachad</b> = Bennett + Lapid (formed Apr 26)<br>
+        📊 <b style="color:#889">Polls</b>: Likud 28 vs Beyachad 25; blocs: 50 vs 60<br>
+        ⚖️ <b style="color:#889">Trial verdict</b> expected 2027; pardon rejected by MoJ<br>
+        🕊️ <b style="color:#889">Gaza ceasefire</b> Oct 2025 — all hostages recovered, stalled
+      </div>
+
+      <hr class="s-sep">
       <div class="s-head">How it works</div>
-      <div style="color:#667;line-height:1.6;font-size:10.5px">
-        Probabilities propagate via the <b style="color:#889">law of total probability</b>.
-        Dragging a slider re-calculates all descendants in real time using a log-odds model.
-        🔒 locks a node so its children still update from it, but it won't be overwritten by its own parents.
+      <div style="color:#556;line-height:1.6;font-size:10.5px">
+        Changes propagate via <b style="color:#778">law of total probability</b> using a log-odds model.
+        🔒 pins a node; ↺ resets to prior.
       </div>
     </div>
   </div>
 </div>
 
-<!-- Click / edit panel -->
 <div id="panel">
   <div id="panel-title"></div>
-
-  <div class="p-row">
-    <span class="p-lbl">Current P</span>
-    <span class="p-val" id="p-cur"></span>
-  </div>
-  <div class="p-row">
-    <span class="p-lbl">Prior P</span>
-    <span class="p-val" id="p-prior"></span>
-  </div>
-  <div class="p-row">
-    <span class="p-lbl">Change</span>
-    <span class="p-val" id="p-delta"></span>
-  </div>
-
+  <div class="p-row"><span class="p-lbl">Current P</span><span class="p-val" id="p-cur"></span></div>
+  <div class="p-row"><span class="p-lbl">Prior P</span>   <span class="p-val" id="p-prior"></span></div>
+  <div class="p-row"><span class="p-lbl">Change</span>    <span class="p-val" id="p-delta"></span></div>
   <div id="slider-row">
-    <label>Drag to override probability:</label>
+    <label>Drag to override:</label>
     <input type="range" id="pslider" min="1" max="99" step="1">
     <div id="pslider-pct"></div>
   </div>
-
   <div class="btn-row">
     <button class="btn" id="btn-lock">🔒 Lock</button>
     <button class="btn" id="btn-reset">↺ Reset node</button>
   </div>
-
   <hr class="p-divider">
-
   <div id="cond-block">
     <div class="cond-head">Conditional on parents</div>
     <div id="cond-rows"></div>
     <hr class="p-divider">
   </div>
-
-  <div class="p-row"><span class="p-lbl">Parents</span> <span class="p-val" id="p-parents" style="font-size:10px;text-align:right"></span></div>
+  <div class="p-row"><span class="p-lbl">Parents</span> <span class="p-val" id="p-parents"  style="font-size:10px;text-align:right"></span></div>
   <div class="p-row"><span class="p-lbl">Children</span><span class="p-val" id="p-children" style="font-size:10px;text-align:right"></span></div>
 </div>
 
-<div class="hint">BayesOracle · probabilistic cascade demo</div>
+<div class="hint">BayesOracle · Israeli elections 2026 · probabilistic cascade</div>
 
 <script>
 cytoscape.use(cytoscapeDagre);
 
-/* ─── Layer colour palette ─────────────────────────────────────── */
 const LC = {
-  0: { bg:[30,58,95],  border:'#5b9bd5', text:'#9ccbf0' },
-  1: { bg:[61,42,15],  border:'#f4a460', text:'#f4c890' },
+  0: { bg:[28,56,90],  border:'#5b9bd5', text:'#9ccbf0' },
+  1: { bg:[60,40,12],  border:'#f4a460', text:'#f4c890' },
   2: { bg:[74,16,32],  border:'#e06080', text:'#f08090' },
-  3: { bg:[45,26,64],  border:'#a78bc0', text:'#c8b0e0' },
-  4: { bg:[15,45,26],  border:'#5aaa72', text:'#90d0a0' },
-  5: { bg:[37,37,37],  border:'#7a8a9a', text:'#aabbc0' },
+  3: { bg:[44,25,62],  border:'#a78bc0', text:'#c8b0e0' },
+  4: { bg:[14,44,24],  border:'#5aaa72', text:'#90d0a0' },
+  5: { bg:[36,36,36],  border:'#7a8a9a', text:'#aabbc0' },
 };
-const LAYER_NAMES = ['Exogenous','Near-term','Key event','Coalition','Government','Outcome'];
+const LAYER_NAMES = ['Exogenous','Pre-election','The election','Coalition','Government','Outcome'];
 
 function rgbHex(r,g,b){ return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''); }
 function blendBg(base, delta) {
-  // delta > 0 → green tint; < 0 → red tint
   const t = Math.min(1, Math.abs(delta) * 4);
-  const target = delta > 0 ? [10,50,22] : [60,12,12];
-  return rgbHex(base[0]*(1-t)+target[0]*t, base[1]*(1-t)+target[1]*t, base[2]*(1-t)+target[2]*t);
+  const tgt = delta > 0 ? [10,48,20] : [58,12,12];
+  return rgbHex(base[0]*(1-t)+tgt[0]*t, base[1]*(1-t)+tgt[1]*t, base[2]*(1-t)+tgt[2]*t);
 }
 
-/* ─── Node definitions ─────────────────────────────────────────── */
 const NODES = [
-  // id, line1 (emoji+name), line2 (detail), layer, realistic P, 95% CI
-  { id:'GAZA',     l1:'🔫 Gaza ceasefire',      l2:'holds by year-end',      layer:0, p:0.52, ci:[0.38,0.66] },
-  { id:'IRAN_NUC', l1:'☢️ Iran: nuclear',        l2:'threshold reached 2027', layer:0, p:0.32, ci:[0.18,0.48] },
-  { id:'TRUMP',    l1:'🇺🇸 Trump in office',     l2:'through end of 2027',    layer:0, p:0.96, ci:[0.91,0.99] },
-  { id:'VERDICT',  l1:'⚖️ Trial verdict',        l2:'delivered in Bibi case', layer:0, p:0.68, ci:[0.54,0.80] },
-  { id:'OPP',      l1:'🗳️ Opposition unified',  l2:'Gantz + Lapid bloc',     layer:0, p:0.42, ci:[0.28,0.57] },
+  // Layer 0 — Exogenous
+  { id:'ELECTIONS',   l1:'🏛️ Oct 2026 elections',    l2:'dissolution bill filed May 13',  layer:0, p:0.93, ci:[0.85,0.98] },
+  { id:'TRUMP',       l1:'🇺🇸 Trump backs Bibi',      l2:'active support & pardon push',   layer:0, p:0.85, ci:[0.76,0.92] },
+  { id:'BEYACHAD',    l1:'🤝 Beyachad stays unified', l2:'Bennett + Lapid bloc holds',     layer:0, p:0.68, ci:[0.54,0.80] },
+  { id:'IRAN_REB',    l1:'☢️ Iran rebuilds nukes',    l2:'post-Feb 2026 strike',            layer:0, p:0.44, ci:[0.30,0.59] },
+  { id:'LIKUD_UNITY', l1:'🫂 Likud stays unified',    l2:'no major defections',             layer:0, p:0.68, ci:[0.54,0.80] },
 
-  { id:'APPROVAL', l1:'📊 Bibi approval',        l2:'improves significantly', layer:1, p:0.38, ci:[0.26,0.52] },
-  { id:'SICK',     l1:'🏥 Bibi sick',            l2:'serious health crisis',  layer:1, p:0.22, ci:[0.13,0.34] },
-  { id:'DEAD',     l1:'💀 Bibi dies',            l2:'in office before 2027',  layer:1, p:0.07, ci:[0.03,0.14] },
-  { id:'CONVICTED',l1:'🔒 Bibi convicted',       l2:'guilty verdict',         layer:1, p:0.60, ci:[0.46,0.73] },
-  { id:'COLLAPSE', l1:'🏛️ Coalition collapses',  l2:'current government',     layer:1, p:0.56, ci:[0.42,0.70] },
-  { id:'ELECTIONS',l1:'📅 Early elections',      l2:'called and held',        layer:1, p:0.52, ci:[0.38,0.66] },
+  // Layer 1 — Pre-election
+  { id:'BIBI_LEAD',  l1:'📊 Likud leads polls',      l2:'on election day',                 layer:1, p:0.44, ci:[0.32,0.57] },
+  { id:'CONVICTED',  l1:'🔒 Bibi convicted',          l2:'before Oct 2026 elections',       layer:1, p:0.08, ci:[0.03,0.16] },
+  { id:'SICK',       l1:'🏥 Bibi health crisis',      l2:'serious illness',                 layer:1, p:0.13, ci:[0.07,0.22] },
+  { id:'DEAD',       l1:'💀 Bibi dies',               l2:'before elections',                layer:1, p:0.04, ci:[0.01,0.09] },
 
-  { id:'A',        l1:'⭐ Likud wins most',      l2:'seats in elections',     layer:2, p:0.46, ci:[0.34,0.59] },
+  // Layer 2 — Key event
+  { id:'A', l1:'⭐ Likud wins most seats', l2:'largest party in Knesset', layer:2, p:0.46, ci:[0.34,0.58] },
 
-  { id:'TRIES',    l1:'🤝 Bibi tries',           l2:'to form coalition',      layer:3, p:0.43, ci:[0.31,0.56] },
-  { id:'HAREDI',   l1:'🕍 Haredi parties',       l2:'join coalition',         layer:3, p:0.71, ci:[0.57,0.83] },
-  { id:'FARRIGHT', l1:'🦅 Ben Gvir / Smotrich',  l2:'join coalition',         layer:3, p:0.54, ci:[0.39,0.68] },
-  { id:'COAL_OK',  l1:'✅ Coalition formed',     l2:'negotiations succeed',   layer:3, p:0.36, ci:[0.24,0.50] },
+  // Layer 3 — Coalition
+  { id:'MANDATE',    l1:'📜 Bibi gets mandate',       l2:'to form coalition',               layer:3, p:0.44, ci:[0.32,0.56] },
+  { id:'HAREDI_J',   l1:'🕍 Haredi parties join',     l2:'UTJ + Shas in coalition',         layer:3, p:0.74, ci:[0.60,0.85] },
+  { id:'FARRIGHT_J', l1:'🦅 Ben Gvir / Smotrich',     l2:'join coalition',                  layer:3, p:0.60, ci:[0.45,0.73] },
+  { id:'COAL_61',    l1:'✅ Coalition hits 61',        l2:'seats — majority secured',        layer:3, p:0.34, ci:[0.22,0.47] },
 
-  { id:'PM',       l1:'👑 Bibi is PM',           l2:'by end of year',         layer:4, p:0.34, ci:[0.22,0.47] },
+  // Layer 4 — Government
+  { id:'PM5',    l1:'👑 Bibi: 5th term PM',        l2:'Netanyahu governs again',         layer:4, p:0.32, ci:[0.21,0.44] },
+  { id:'OPP_PM', l1:'🔄 Bennett / Lapid PM',       l2:'opposition forms government',     layer:4, p:0.38, ci:[0.26,0.50] },
 
-  { id:'WAR_IRAN', l1:'💥 War with Iran',        l2:'breaks out 2027',        layer:5, p:0.19, ci:[0.10,0.31] },
-  { id:'JUDICIAL', l1:'⚖️ Judicial overhaul',   l2:'resumes',                layer:5, p:0.27, ci:[0.16,0.40] },
-  { id:'SAUDI',    l1:'🤝 Saudi normalization',  l2:'deal signed',            layer:5, p:0.24, ci:[0.13,0.37] },
-  { id:'DRAFT',    l1:'📋 Haredi draft law',     l2:'resolved',               layer:5, p:0.22, ci:[0.12,0.34] },
+  // Layer 5 — Outcomes
+  { id:'PARDON',     l1:'📄 Pardon granted',          l2:'presidential pardon for Bibi',    layer:5, p:0.14, ci:[0.07,0.24] },
+  { id:'JUDICIAL',   l1:'⚖️ Judicial overhaul',       l2:'resumes under new govt',          layer:5, p:0.25, ci:[0.14,0.37] },
+  { id:'HAREDI_LAW', l1:'📋 Haredi draft exemption',  l2:'law passed',                      layer:5, p:0.28, ci:[0.17,0.41] },
+  { id:'SAUDI',      l1:'🌙 Saudi normalization',     l2:'deal signed 2026–27',             layer:5, p:0.17, ci:[0.08,0.28] },
+  { id:'IRAN2',      l1:'💥 2nd Iran operation',      l2:'strikes resume 2027',             layer:5, p:0.19, ci:[0.10,0.31] },
 ];
 
-/* ─── Edge definitions: [source, target, P(target|src=1), P(target|src=0)] ─ */
 const EDGES = [
-  ['GAZA',      'APPROVAL',   0.65, 0.22],
-  ['VERDICT',   'CONVICTED',  0.78, 0.04],
-  ['VERDICT',   'COLLAPSE',   0.62, 0.42],
-  ['SICK',      'DEAD',       0.28, 0.03],
-  ['APPROVAL',  'A',          0.62, 0.36],
-  ['DEAD',      'A',          0.24, 0.48],
-  ['CONVICTED', 'A',          0.36, 0.56],
-  ['COLLAPSE',  'ELECTIONS',  0.90, 0.16],
-  ['ELECTIONS', 'A',          0.46, 0.28],
-  ['TRUMP',     'A',          0.52, 0.28],
-  ['OPP',       'A',          0.32, 0.58],
-  ['A',         'TRIES',      0.95, 0.07],
-  ['A',         'HAREDI',     0.76, 0.52],
-  ['A',         'FARRIGHT',   0.64, 0.34],
-  ['TRIES',     'COAL_OK',    0.54, 0.08],
-  ['HAREDI',    'COAL_OK',    0.60, 0.22],
-  ['FARRIGHT',  'COAL_OK',    0.56, 0.20],
-  ['COAL_OK',   'PM',         0.93, 0.04],
-  ['PM',        'WAR_IRAN',   0.34, 0.11],
-  ['PM',        'JUDICIAL',   0.76, 0.07],
-  ['PM',        'SAUDI',      0.44, 0.14],
-  ['PM',        'DRAFT',      0.50, 0.09],
-  ['IRAN_NUC',  'WAR_IRAN',   0.54, 0.09],
-  ['TRUMP',     'WAR_IRAN',   0.36, 0.10],
-  ['TRUMP',     'SAUDI',      0.54, 0.12],
+  // Pre-election dynamics
+  ['TRUMP',       'BIBI_LEAD',   0.56, 0.30],
+  ['BEYACHAD',    'BIBI_LEAD',   0.36, 0.58],
+  ['LIKUD_UNITY', 'BIBI_LEAD',   0.54, 0.28],
+  ['SICK',        'DEAD',        0.28, 0.03],
+
+  // Into A
+  ['ELECTIONS',   'A',           0.46, 0.01],
+  ['TRUMP',       'A',           0.54, 0.32],
+  ['BEYACHAD',    'A',           0.34, 0.62],
+  ['BIBI_LEAD',   'A',           0.78, 0.20],
+  ['CONVICTED',   'A',           0.16, 0.50],
+  ['LIKUD_UNITY', 'A',           0.54, 0.28],
+  ['SICK',        'A',           0.30, 0.48],
+  ['DEAD',        'A',           0.05, 0.48],
+
+  // Coalition
+  ['A',           'MANDATE',     0.96, 0.05],
+  ['A',           'HAREDI_J',    0.78, 0.56],
+  ['A',           'FARRIGHT_J',  0.64, 0.38],
+  ['A',           'OPP_PM',      0.06, 0.58],
+  ['MANDATE',     'COAL_61',     0.54, 0.07],
+  ['HAREDI_J',    'COAL_61',     0.62, 0.22],
+  ['FARRIGHT_J',  'COAL_61',     0.56, 0.19],
+  ['BEYACHAD',    'OPP_PM',      0.48, 0.22],
+
+  // Government
+  ['COAL_61',     'PM5',         0.93, 0.04],
+  ['PM5',         'OPP_PM',      0.02, 0.56],
+
+  // Outcomes
+  ['PM5',         'PARDON',      0.38, 0.04],
+  ['TRUMP',       'PARDON',      0.22, 0.07],
+  ['PM5',         'JUDICIAL',    0.80, 0.04],
+  ['PM5',         'HAREDI_LAW',  0.58, 0.11],
+  ['HAREDI_J',    'HAREDI_LAW',  0.46, 0.14],
+  ['PM5',         'SAUDI',       0.04, 0.24],
+  ['OPP_PM',      'SAUDI',       0.36, 0.05],
+  ['TRUMP',       'SAUDI',       0.24, 0.08],
+  ['PM5',         'IRAN2',       0.36, 0.09],
+  ['IRAN_REB',    'IRAN2',       0.52, 0.05],
+  ['TRUMP',       'IRAN2',       0.32, 0.09],
 ];
 
-/* ─── Probability state ─────────────────────────────────────────── */
-const priorP   = Object.fromEntries(NODES.map(n => [n.id, n.p]));
+const priorP  = Object.fromEntries(NODES.map(n => [n.id, n.p]));
 const currentP = { ...priorP };
 const locked   = new Set();
 
-// Indexes
-const parentIdx = {};   // target → [{source, pYes, pNo}]
-const childIdx  = {};   // source → [target]
-const condByTarget = {};
-
-EDGES.forEach(([s, t, pY, pN]) => {
-  (parentIdx[t] = parentIdx[t]||[]).push({ source:s, pYes:pY, pNo:pN });
-  (childIdx[s]  = childIdx[s] ||[]).push(t);
-  (condByTarget[t] = condByTarget[t]||[]).push({ source:s, pYes:pY, pNo:pN });
+const parentIdx = {}, childIdx = {}, condByTgt = {};
+EDGES.forEach(([s,t,pY,pN]) => {
+  (parentIdx[t]  = parentIdx[t]  ||[]).push({ source:s, pYes:pY, pNo:pN });
+  (childIdx[s]   = childIdx[s]   ||[]).push(t);
+  (condByTgt[t]  = condByTgt[t]  ||[]).push({ source:s, pYes:pY, pNo:pN });
 });
 
-// Topological order (by layer, then stable)
 const TOPO = [...NODES].sort((a,b) => a.layer - b.layer).map(n => n.id);
 
-/* ─── Math helpers ──────────────────────────────────────────────── */
 function logit(p) { p = Math.max(0.001, Math.min(0.999, p)); return Math.log(p/(1-p)); }
 function sigmoid(x) { return 1/(1+Math.exp(-x)); }
 
-// Recompute P(nodeId) from current parents using log-odds model
 function computeP(id) {
   const parents = parentIdx[id];
   if (!parents || locked.has(id)) return currentP[id];
   let lo = logit(priorP[id]);
-  for (const { source, pYes, pNo } of parents) {
-    const beta = logit(pYes) - logit(pNo);
-    lo += beta * (currentP[source] - priorP[source]);
-  }
+  for (const { source, pYes, pNo } of parents)
+    lo += (logit(pYes) - logit(pNo)) * (currentP[source] - priorP[source]);
   return Math.max(0.01, Math.min(0.99, sigmoid(lo)));
 }
 
-// Propagate from changedId downward through all descendants
-function propagate(changedId) {
-  // BFS over descendants in topological order
-  const affected = [];
-  const seen = new Set([changedId]);
-  const q = [changedId];
+function propagate(startId) {
+  const seen = new Set([startId]), q = [startId], order = [];
   while (q.length) {
     const id = q.shift();
-    for (const child of (childIdx[id]||[])) {
-      if (!seen.has(child)) { seen.add(child); q.push(child); affected.push(child); }
-    }
+    for (const c of (childIdx[id]||[]))
+      if (!seen.has(c)) { seen.add(c); q.push(c); order.push(c); }
   }
-  // Sort by topo order to ensure parents computed before children
-  affected.sort((a,b) => TOPO.indexOf(a) - TOPO.indexOf(b));
-  for (const id of affected) {
-    currentP[id] = computeP(id);
-  }
-  // Refresh visuals for everything touched
-  for (const id of [changedId, ...affected]) refreshNode(id);
+  order.sort((a,b) => TOPO.indexOf(a) - TOPO.indexOf(b));
+  for (const id of order) currentP[id] = computeP(id);
+  for (const id of [startId, ...order]) refreshNode(id);
   if (selectedId) refreshPanel(selectedId);
 }
 
-/* ─── Visual refresh ────────────────────────────────────────────── */
 function nodeLabel(id) {
   const n = NODES.find(x => x.id === id);
-  const p = currentP[id], pr = priorP[id];
-  const delta = p - pr;
+  const p = currentP[id], delta = p - priorP[id];
   let dStr = '';
-  if (Math.abs(delta) >= 0.005) {
+  if (Math.abs(delta) >= 0.005)
     dStr = (delta > 0 ? ' ▲' : ' ▼') + Math.abs(delta*100).toFixed(0) + '%';
-  }
-  const lock = locked.has(id) ? ' 🔒' : '';
-  return `${n.l1}\n${(p*100).toFixed(0)}%${dStr}${lock}\n${n.l2}`;
+  return `${n.l1}\n${(p*100).toFixed(0)}%${dStr}${locked.has(id)?' 🔒':''}\n${n.l2}`;
 }
 
 function refreshNode(id) {
@@ -333,141 +313,107 @@ function refreshNode(id) {
   const n = NODES.find(x => x.id === id);
   const delta = currentP[id] - priorP[id];
   const isLocked = locked.has(id);
-  const layer = n.layer;
-
   el.data('label', nodeLabel(id));
-  el.data('bgColor', blendBg(LC[layer].bg, delta));
+  el.data('bgColor', blendBg(LC[n.layer].bg, delta));
   el.data('borderColor',
     isLocked ? '#e2c040' :
     delta >  0.04 ? '#5aaa72' :
     delta < -0.04 ? '#d06060' :
-    LC[layer].border
-  );
-
-  const bw = isLocked ? 3.5 : (id==='A'||id==='PM' ? 3 : 2);
+    LC[n.layer].border);
   el.style({
-    'border-width': bw,
+    'border-width': isLocked ? 3.5 : (['A','PM5','OPP_PM'].includes(id) ? 3 : 2),
     'border-style': isLocked ? 'double' : 'solid',
   });
 }
 
 function refreshAll() { NODES.forEach(n => refreshNode(n.id)); }
 
-/* ─── Panel ─────────────────────────────────────────────────────── */
 let selectedId = null;
 
 function refreshPanel(id) {
   if (!id) return;
-  const n    = NODES.find(x => x.id === id);
-  const p    = currentP[id];
-  const pr   = priorP[id];
-  const delta = p - pr;
+  const n = NODES.find(x => x.id === id);
+  const p = currentP[id], pr = priorP[id], delta = p - pr;
 
   document.getElementById('panel-title').textContent = n.l1 + ' — ' + n.l2;
   document.getElementById('p-cur').textContent   = (p*100).toFixed(1) + '%';
   document.getElementById('p-prior').textContent = (pr*100).toFixed(1) + '%';
 
   const dEl = document.getElementById('p-delta');
-  if (Math.abs(delta) < 0.002) {
-    dEl.textContent = '—'; dEl.className = 'p-val';
-  } else {
-    dEl.textContent = (delta > 0 ? '▲ +' : '▼ ') + (delta*100).toFixed(1) + '%';
-    dEl.className   = 'p-val ' + (delta > 0 ? 'up' : 'down');
-  }
+  if (Math.abs(delta) < 0.002) { dEl.textContent = '—'; dEl.className = 'p-val'; }
+  else { dEl.textContent = (delta>0?'▲ +':'▼ ')+(delta*100).toFixed(1)+'%'; dEl.className='p-val '+(delta>0?'up':'down'); }
 
   document.getElementById('pslider').value = Math.round(p*100);
-  document.getElementById('pslider-pct').textContent = Math.round(p*100) + '%';
+  document.getElementById('pslider-pct').textContent = Math.round(p*100)+'%';
 
-  // Lock button state
-  const btnLock = document.getElementById('btn-lock');
-  if (locked.has(id)) { btnLock.textContent='🔓 Unlock'; btnLock.classList.add('active'); }
-  else                { btnLock.textContent='🔒 Lock';   btnLock.classList.remove('active'); }
+  const bl = document.getElementById('btn-lock');
+  if (locked.has(id)) { bl.textContent='🔓 Unlock'; bl.classList.add('active'); }
+  else                { bl.textContent='🔒 Lock';   bl.classList.remove('active'); }
 
-  // Conditional rows
-  const parents = condByTarget[id] || [];
-  const condBlock = document.getElementById('cond-block');
-  if (parents.length) {
-    document.getElementById('cond-rows').innerHTML = parents.map(r => {
-      const srcName = NODES.find(x=>x.id===r.source)?.l1 || r.source;
-      const nowP = currentP[r.source];
-      const implied = r.pYes * nowP + r.pNo * (1 - nowP);
-      return `<div class="cond-row"><span class="cond-lbl">${srcName.replace(/^\S+\s/,'')} ✓</span><span class="cond-val">${(r.pYes*100).toFixed(0)}%</span></div>
-              <div class="cond-row"><span class="cond-lbl">${srcName.replace(/^\S+\s/,'')} ✗</span><span class="cond-val">${(r.pNo*100).toFixed(0)}%</span></div>
-              <div class="cond-row" style="margin-bottom:4px"><span class="cond-lbl" style="color:#446">→ LToTP implied</span><span class="cond-val" style="color:#7aad9a">${(implied*100).toFixed(0)}%</span></div>`;
+  const conds = condByTgt[id]||[];
+  const cb = document.getElementById('cond-block');
+  if (conds.length) {
+    document.getElementById('cond-rows').innerHTML = conds.map(r => {
+      const sName = NODES.find(x=>x.id===r.source)?.l1.replace(/^\S+\s/,'') || r.source;
+      const implied = r.pYes*currentP[r.source] + r.pNo*(1-currentP[r.source]);
+      return `<div class="cond-row"><span class="cond-lbl">${sName} ✓</span><span class="cond-val">${(r.pYes*100).toFixed(0)}%</span></div>
+              <div class="cond-row"><span class="cond-lbl">${sName} ✗</span><span class="cond-val">${(r.pNo*100).toFixed(0)}%</span></div>
+              <div class="cond-row" style="margin-bottom:5px"><span class="cond-lbl" style="color:#446">→ LToTP now</span><span class="cond-val" style="color:#7aad9a">${(implied*100).toFixed(0)}%</span></div>`;
     }).join('');
-    condBlock.style.display = 'block';
-  } else {
-    condBlock.style.display = 'none';
-  }
+    cb.style.display = 'block';
+  } else cb.style.display = 'none';
 
-  const parents2  = cy.getElementById(id).incomers('node').map(x=>x.data('id')).join(', ') || '—';
-  const children2 = cy.getElementById(id).outgoers('node').map(x=>x.data('id')).join(', ') || '—';
-  document.getElementById('p-parents').textContent  = parents2;
-  document.getElementById('p-children').textContent = children2;
+  document.getElementById('p-parents').textContent  = cy.getElementById(id).incomers('node').map(x=>x.data('id')).join(', ')||'—';
+  document.getElementById('p-children').textContent = cy.getElementById(id).outgoers('node').map(x=>x.data('id')).join(', ')||'—';
 }
 
-/* ─── Build Cytoscape ───────────────────────────────────────────── */
 const cyNodes = NODES.map(n => ({
   data: {
-    id: n.id, label: nodeLabel(n.id),
-    l1: n.l1, l2: n.l2, layer: n.layer,
-    bgColor: blendBg(LC[n.layer].bg, 0), borderColor: LC[n.layer].border, textColor: LC[n.layer].text,
+    id:n.id, label:nodeLabel(n.id), l1:n.l1, l2:n.l2, layer:n.layer,
+    bgColor: blendBg(LC[n.layer].bg, 0),
+    borderColor: LC[n.layer].border,
+    textColor: LC[n.layer].text,
   }
 }));
 
 const cyEdges = EDGES.map(([s,t,pY,pN],i) => ({
-  data: {
-    id:`e${i}`, source:s, target:t, pYes:pY, pNo:pN,
-    label: `✓${(pY*100).toFixed(0)}%  ✗${(pN*100).toFixed(0)}%`,
-  }
+  data:{ id:`e${i}`, source:s, target:t, pYes:pY, pNo:pN,
+         label:`✓${(pY*100).toFixed(0)}%  ✗${(pN*100).toFixed(0)}%` }
 }));
 
 const cy = cytoscape({
   container: document.getElementById('cy'),
   elements: { nodes: cyNodes, edges: cyEdges },
   style: [
-    {
-      selector: 'node',
-      style: {
-        shape: 'round-rectangle', width: 158, height: 62,
-        'background-color': 'data(bgColor)',
-        'border-color': 'data(borderColor)',
-        'border-width': 2,
-        color: 'data(textColor)',
-        'font-size': 10.5,
-        'text-valign': 'center', 'text-halign': 'center',
-        label: 'data(label)',
-        'text-wrap': 'wrap', 'text-max-width': 148,
-        'line-height': 1.35, padding: 5,
-      }
-    },
-    { selector: 'node#A',  style: { width:170, height:68, 'border-width':3, 'font-size':11, 'font-weight':'bold' } },
-    { selector: 'node#PM', style: { 'border-width':3, 'font-size':11, 'font-weight':'bold' } },
-    { selector: 'node:selected', style: { 'border-width':4, 'border-color':'#fff', 'border-style':'solid' } },
-    {
-      selector: 'edge',
-      style: {
-        width: 1.5, 'line-color':'#2a3d55', 'target-arrow-color':'#3a5070',
+    { selector:'node', style:{
+        shape:'round-rectangle', width:162, height:62,
+        'background-color':'data(bgColor)', 'border-color':'data(borderColor)', 'border-width':2,
+        color:'data(textColor)', 'font-size':10.5,
+        'text-valign':'center', 'text-halign':'center',
+        label:'data(label)', 'text-wrap':'wrap', 'text-max-width':152,
+        'line-height':1.35, padding:5,
+    }},
+    { selector:'node#A',      style:{ width:172, height:68, 'border-width':3, 'font-size':11.5, 'font-weight':'bold' }},
+    { selector:'node#PM5',    style:{ 'border-width':3, 'font-weight':'bold' }},
+    { selector:'node#OPP_PM', style:{ 'border-width':3, 'font-weight':'bold' }},
+    { selector:'node:selected', style:{ 'border-width':4, 'border-color':'#fff', 'border-style':'solid' }},
+    { selector:'edge', style:{
+        width:1.5, 'line-color':'#2a3d55', 'target-arrow-color':'#3a5070',
         'target-arrow-shape':'triangle', 'curve-style':'bezier', 'arrow-scale':1.1,
         label:'data(label)', 'font-size':9, color:'#4a6070',
         'text-background-color':'#12131f', 'text-background-opacity':0.9, 'text-background-padding':'2px',
         'text-rotation':'autorotate', 'text-margin-y':-7,
-      }
-    },
-    { selector: 'edge.hi', style: { 'line-color':'#4a7aaa', 'target-arrow-color':'#5a8abb', width:2.5, color:'#8aaccc' } },
+    }},
+    { selector:'edge.hi', style:{ 'line-color':'#4a7aaa', 'target-arrow-color':'#5a8abb', width:2.5, color:'#8aaccc' }},
   ],
-  layout: { name:'dagre', rankDir:'TB', nodeSep:50, rankSep:90, padding:30, animate:false },
+  layout:{ name:'dagre', rankDir:'TB', nodeSep:46, rankSep:88, padding:28, animate:false },
 });
 
-/* ─── Interactions ──────────────────────────────────────────────── */
-cy.on('tap', 'node', evt => {
-  const id = evt.target.data('id');
-  selectedId = id;
-
+cy.on('tap','node', evt => {
+  selectedId = evt.target.data('id');
   cy.edges().removeClass('hi');
   evt.target.connectedEdges().addClass('hi');
-
-  refreshPanel(id);
+  refreshPanel(selectedId);
   document.getElementById('panel').style.display = 'block';
 });
 
@@ -481,16 +427,14 @@ cy.on('tap', evt => {
 
 document.getElementById('pslider').addEventListener('input', function() {
   if (!selectedId) return;
-  const val = parseInt(this.value) / 100;
-  document.getElementById('pslider-pct').textContent = this.value + '%';
-  currentP[selectedId] = val;
+  currentP[selectedId] = parseInt(this.value)/100;
+  document.getElementById('pslider-pct').textContent = this.value+'%';
   propagate(selectedId);
 });
 
 document.getElementById('btn-lock').addEventListener('click', () => {
   if (!selectedId) return;
-  if (locked.has(selectedId)) locked.delete(selectedId);
-  else locked.add(selectedId);
+  locked.has(selectedId) ? locked.delete(selectedId) : locked.add(selectedId);
   refreshNode(selectedId);
   refreshPanel(selectedId);
 });
@@ -510,8 +454,7 @@ document.getElementById('reset-all').addEventListener('click', () => {
   if (selectedId) refreshPanel(selectedId);
 });
 
-// Initial fit + zoom
-cy.ready(() => { cy.fit(undefined, 40); cy.zoom(cy.zoom() * 1.35); cy.center(); });
+cy.ready(() => { cy.fit(undefined,38); cy.zoom(cy.zoom()*1.35); cy.center(); });
 </script>
 </body>
 </html>
