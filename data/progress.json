@@ -2698,8 +2698,8 @@
     "A11:toi": {
       "event_id": "A11",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 9,
       "error": null
     },
     "A11:walla": {
@@ -2733,8 +2733,8 @@
     "A12:maariv": {
       "event_id": "A12",
       "source_id": "maariv",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 3,
       "error": null
     },
     "A12:n12": {
@@ -7815,8 +7815,8 @@
     "A11:axios": {
       "event_id": "A11",
       "source_id": "axios",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "A11:bbc": {
@@ -7962,15 +7962,15 @@
     "A14:bloomberg": {
       "event_id": "A14",
       "source_id": "bloomberg",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
     "A14:ft": {
       "event_id": "A14",
       "source_id": "ft",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A14:guardian": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T07:50:08.768423"
+  "last_updated": "2026-05-14T07:54:46.765458"
 }
