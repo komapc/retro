@@ -7598,7 +7598,7 @@
     "A06:bloomberg": {
       "event_id": "A06",
       "source_id": "bloomberg",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T11:58:13.171072"
+  "last_updated": "2026-05-14T11:58:28.006405"
 }
