@@ -10559,7 +10559,7 @@
     "A12:bloomberg": {
       "event_id": "A12",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T11:58:28.006405"
+  "last_updated": "2026-05-14T12:00:51.517808"
 }
