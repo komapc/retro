@@ -2971,7 +2971,7 @@
     "A17:reuters": {
       "event_id": "A17",
       "source_id": "reuters",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T21:12:40.535687"
+  "last_updated": "2026-05-14T21:46:49.130412"
 }
