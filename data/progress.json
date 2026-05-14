@@ -549,7 +549,7 @@
     "A15:toi": {
       "event_id": "A15",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -10580,7 +10580,7 @@
     "A16:bloomberg": {
       "event_id": "A16",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T13:41:29.628390"
+  "last_updated": "2026-05-14T13:49:16.417059"
 }
