@@ -2971,8 +2971,8 @@
     "A17:reuters": {
       "event_id": "A17",
       "source_id": "reuters",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "A17:toi": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T21:46:49.130412"
+  "last_updated": "2026-05-14T21:52:01.596313"
 }
