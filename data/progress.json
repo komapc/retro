@@ -4007,14 +4007,14 @@
     "D01:reuters": {
       "event_id": "D01",
       "source_id": "reuters",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
     "D01:toi": {
       "event_id": "D01",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4154,7 +4154,7 @@
     "D04:toi": {
       "event_id": "D04",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4238,7 +4238,7 @@
     "D05:toi": {
       "event_id": "D05",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4469,7 +4469,7 @@
     "E02:maariv": {
       "event_id": "E02",
       "source_id": "maariv",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -4574,7 +4574,7 @@
     "E03:toi": {
       "event_id": "E03",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -9173,7 +9173,7 @@
     "C09:ft": {
       "event_id": "C09",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -9208,7 +9208,7 @@
     "D01:bbc": {
       "event_id": "D01",
       "source_id": "bbc",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -9257,7 +9257,7 @@
     "D02:ft": {
       "event_id": "D02",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -9348,7 +9348,7 @@
     "D04:ft": {
       "event_id": "D04",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -10685,7 +10685,7 @@
     "D01:bloomberg": {
       "event_id": "D01",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -10706,7 +10706,7 @@
     "E02:bloomberg": {
       "event_id": "E02",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T08:35:55.383802"
+  "last_updated": "2026-05-14T08:55:20.480227"
 }
