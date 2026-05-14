@@ -1718,8 +1718,8 @@
     "B07:toi": {
       "event_id": "B07",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 7,
       "error": null
     },
     "B07:walla": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T18:53:39.792308"
+  "last_updated": "2026-05-14T19:00:47.908749"
 }
