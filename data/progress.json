@@ -1662,8 +1662,8 @@
     "B06:toi": {
       "event_id": "B06",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B06:walla": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T10:35:43.914049"
+  "last_updated": "2026-05-14T10:38:06.925416"
 }
