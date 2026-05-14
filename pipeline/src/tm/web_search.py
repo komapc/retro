@@ -591,8 +591,13 @@ def _search_gdelt(
             r = httpx.get(
                 "https://api.gdeltproject.org/api/v2/doc/doc",
                 params=params,
-                timeout=20,
+                # Explicit sub-timeouts: 5 s connect caps SSL handshake (was 20 s
+                # scalar which allowed 80+ s hangs and consumed gunicorn budget).
+                timeout=httpx.Timeout(connect=5.0, read=10.0, write=5.0, pool=5.0),
             )
+        except Exception as e:
+            last_err = e
+            continue
         finally:
             _GDELT_LAST_CALL = time.time()
 
