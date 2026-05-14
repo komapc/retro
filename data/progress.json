@@ -5218,8 +5218,8 @@
     "F02:toi": {
       "event_id": "F02",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "F02:walla": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T11:20:13.689713"
+  "last_updated": "2026-05-14T11:26:36.403757"
 }
