@@ -955,8 +955,8 @@
     "G05:toi": {
       "event_id": "G05",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 9,
       "error": null
     },
     "G05:ynet": {
@@ -5862,7 +5862,7 @@
     "G08:toi": {
       "event_id": "G08",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T15:06:27.571795"
+  "last_updated": "2026-05-14T15:11:11.294880"
 }
