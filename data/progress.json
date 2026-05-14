@@ -4952,7 +4952,7 @@
     "E09:n12": {
       "event_id": "E09",
       "source_id": "n12",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11196,7 +11196,7 @@
     "F03:axios": {
       "event_id": "F03",
       "source_id": "axios",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T14:42:44.399825"
+  "last_updated": "2026-05-14T14:53:39.026714"
 }
