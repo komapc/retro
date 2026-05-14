@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Israel Politics — PM × BayesOracle</title>
+  <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+    }
+    body { display: flex; flex-direction: column; }
+    #topbar {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    #topbar h1 { font-size: 14px; font-weight: 600; color: #f0f6fc; white-space: nowrap; }
+    .legend { display: flex; gap: 12px; font-size: 11px; flex-wrap: wrap; }
+    .leg-item { display: flex; align-items: center; gap: 4px; }
+    .leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    #main {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+    #cy-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    #cy { flex: 1; min-height: 0; }
+    #footer {
+      flex-shrink: 0;
+      padding: 4px 14px;
+      background: #0d1117;
+      border-top: 1px solid #21262d;
+      font-size: 10px;
+      color: #6e7681;
+    }
+    #sidebar {
+      width: 310px;
+      flex-shrink: 0;
+      background: #161b22;
+      border-left: 1px solid #30363d;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .sb-section {
+      padding: 11px 14px;
+      border-bottom: 1px solid #21262d;
+      flex-shrink: 0;
+    }
+    .sb-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #58a6ff;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    /* Detail panel */
+    #detail-empty { font-size: 12px; color: #6e7681; font-style: italic; }
+    #detail-content { display: none; }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 2px 0;
+    }
+    .detail-row .lbl { color: #8b949e; }
+    .detail-row .val { font-family: monospace; font-weight: 600; }
+    .val.hi { color: #f85149; }
+    .val.mid { color: #f0883e; }
+    .val.ok { color: #3fb950; }
+    .cond-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 11px;
+    }
+    .cond-table th {
+      color: #6e7681;
+      text-align: left;
+      padding: 2px 3px;
+      font-weight: normal;
+      border-bottom: 1px solid #21262d;
+    }
+    .cond-table td { padding: 2px 3px; font-family: monospace; color: #c9d1d9; }
+    .cond-table .primary-row td:first-child::after { content: ' ●'; color: #58a6ff; }
+    .bayes-note {
+      margin-top: 8px;
+      font-size: 10px;
+      color: #6e7681;
+      line-height: 1.4;
+    }
+
+    /* Divergence ranking */
+    .div-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 1px 0;
+    }
+    .div-item:hover { background: rgba(88,166,255,0.07); }
+    .div-bar-wrap {
+      width: 52px;
+      height: 5px;
+      background: #21262d;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .div-bar { height: 5px; border-radius: 3px; }
+    .div-label { font-size: 11px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .div-dir { font-size: 9px; color: #6e7681; white-space: nowrap; }
+    .div-num { font-family: monospace; font-size: 11px; width: 38px; text-align: right; flex-shrink: 0; }
+
+    /* PM sum */
+    .sum-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 2px 0;
+    }
+    .sum-row .name { color: #8b949e; }
+    .sum-row .pct { font-family: monospace; }
+    .sum-divider { border-top: 1px solid #21262d; margin: 5px 0; }
+    .sum-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 0;
+    }
+    .sum-note { font-size: 10px; color: #6e7681; margin-top: 3px; }
+
+    /* Poll section */
+    #poll-btn {
+      width: 100%;
+      padding: 7px;
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #58a6ff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    #poll-btn:hover:not(:disabled) { background: #2d333b; border-color: #58a6ff; }
+    #poll-btn:disabled { opacity: 0.5; cursor: default; }
+    #poll-status {
+      font-size: 11px;
+      color: #6e7681;
+      text-align: center;
+      min-height: 14px;
+      line-height: 1.5;
+    }
+    #poll-status.error { color: #f85149; }
+    #poll-status.ok { color: #3fb950; }
+  </style>
+</head>
+<body>
+  <div id="topbar">
+    <h1>🇮🇱 Israel Politics — Polymarket × BayesOracle</h1>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#546e7a"></div> Root</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#388e3c"></div> Low div (&lt;2pp)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#f57c00"></div> Med (2–5pp)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#d32f2f"></div> High (5–8pp)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#7b1fa2"></div> Extreme (&gt;8pp)</div>
+      <div class="leg-item" style="color:#8b949e; font-size:11px;">Solid edge = primary · Dashed = secondary</div>
+    </div>
+  </div>
+  <div id="main">
+    <div id="cy-wrap">
+      <div id="cy"></div>
+      <div id="footer">
+        Prices: Polymarket Gamma API, May 14 2026 &nbsp;·&nbsp;
+        Conditionals: LLM-estimated, May 2026 &nbsp;·&nbsp;
+        Node label: <em>Name · PM% / Bayes%</em> &nbsp;·&nbsp;
+        Click any node for detail
+      </div>
+    </div>
+    <div id="sidebar">
+      <div class="sb-section">
+        <div class="sb-title">Node Detail</div>
+        <div id="detail-empty">Click a node to inspect</div>
+        <div id="detail-content">
+          <div class="detail-row"><span class="lbl">Market</span><span id="d-name" class="val">—</span></div>
+          <div class="detail-row"><span class="lbl">PM price</span><span id="d-pm" class="val">—</span></div>
+          <div class="detail-row"><span class="lbl">BayesOracle</span><span id="d-bayes" class="val">—</span></div>
+          <div class="detail-row"><span class="lbl">Divergence</span><span id="d-div" class="val">—</span></div>
+          <div class="detail-row"><span class="lbl">Primary parent</span><span id="d-parent" class="val">—</span></div>
+          <table class="cond-table" id="d-cond-table">
+            <thead><tr><th>Parent</th><th>P(A|B=1)</th><th>P(A|B=0)</th></tr></thead>
+            <tbody id="d-cond-body"></tbody>
+          </table>
+          <div class="bayes-note" id="d-bayes-note"></div>
+        </div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-title">Most Surprising Markets</div>
+        <div id="div-ranking"></div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-title">PM Candidate Sum</div>
+        <div id="pm-sum-content"></div>
+      </div>
+      <div class="sb-section">
+        <button id="poll-btn">🔄 Poll PM Live Prices</button>
+        <div id="poll-status">Prices from May 14, 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ─── Market data ─────────────────────────────────────────────────────────────
+  // layer 0 = exogenous roots (no parents); layers 1–4 = dependent nodes.
+  // primary = id of the most influential parent (used for LToTP BayesOracle).
+  // pY = P(this | parent=1),  pN = P(this | parent=0).
+
+  const NODES = [
+    // Layer 0 — Exogenous roots
+    { id:'IRAN_DEAL',     label:'Iran Deal',          pmId:'665325',  pm:0.560, layer:0 },
+    { id:'CEASEFIRE_X',   label:'Ceasefire Breaks',   pmId:'1090489', pm:0.160, layer:0 },
+    { id:'TRUMP_IL',      label:'Trump Backs IL',      pmId:'665260',  pm:0.470, layer:0 },
+    { id:'US_WAR_IRAN',   label:'US-Iran War',         pmId:'665374',  pm:0.270, layer:0 },
+    { id:'IRAN_REGIME',   label:'Iran Regime Falls',   pmId:'663583',  pm:0.180, layer:0 },
+    { id:'IRAN_NUKE',     label:'Iran Nuclear Thresh', pmId:'665521',  pm:0.090, layer:0 },
+
+    // Layer 1 — Near-term political
+    // ELECTIONS primary parent: CEASEFIRE_X (ceasefire collapse most destabilizing)
+    { id:'ELECTIONS', label:'Early Elections',   pmId:'1280208', pm:0.590, layer:1,
+      primary:'CEASEFIRE_X', pY:0.72, pN:0.52 },
+    // BIBI_OUT primary parent: ELECTIONS (elections are the main removal mechanism)
+    { id:'BIBI_OUT',  label:'Bibi Not PM 2027', pmId:'567688',  pm:0.420, layer:1,
+      primary:'ELECTIONS', pY:0.54, pN:0.28 },
+
+    // Layer 2 — PM race (all share primary parent BIBI_OUT)
+    { id:'BIBI_PM',      label:'Bibi PM',      pmId:'682705', pm:0.410,  layer:2, primary:'BIBI_OUT', pY:0.05, pN:0.65 },
+    { id:'BENNETT_PM',   label:'Bennett PM',   pmId:'682706', pm:0.340,  layer:2, primary:'BIBI_OUT', pY:0.45, pN:0.25 },
+    { id:'EIZENKOT_PM',  label:'Eizenkot PM',  pmId:'682708', pm:0.133,  layer:2, primary:'BIBI_OUT', pY:0.20, pN:0.08 },
+    { id:'LIEBERMAN_PM', label:'Lieberman PM', pmId:'682710', pm:0.065,  layer:2, primary:'BIBI_OUT', pY:0.10, pN:0.04 },
+    { id:'LAPID_PM',     label:'Lapid PM',     pmId:'682707', pm:0.009,  layer:2, primary:'BIBI_OUT', pY:0.015, pN:0.005 },
+
+    // Layer 3 — Policy outcomes (primary parent: BIBI_PM)
+    { id:'ANNEX_WB',     label:'W.Bank Annex',   pmId:'665515', pm:0.110, layer:3, primary:'BIBI_PM', pY:0.22, pN:0.04 },
+    { id:'ANNEX_GAZA',   label:'Gaza Annex',     pmId:'636921', pm:0.044, layer:3, primary:'BIBI_PM', pY:0.12, pN:0.01 },
+    { id:'US_GAZA',      label:'US Gaza Admin',  pmId:'665485', pm:0.150, layer:3, primary:'BIBI_PM', pY:0.30, pN:0.08 },
+    { id:'TURKEY_CLASH', label:'IL-Turkey Clash',pmId:'665484', pm:0.180, layer:3, primary:'BIBI_PM', pY:0.35, pN:0.10 },
+
+    // Layer 4 — Downstream outcomes
+    { id:'SAUDI_NORM',    label:'Saudi Norm.',     pmId:'665218',  pm:0.170, layer:4, primary:'BIBI_PM',     pY:0.30, pN:0.08 },
+    { id:'SAUDI_ACCORDS', label:'Saudi Accords',   pmId:'665474',  pm:0.120, layer:4, primary:'BIBI_PM',     pY:0.22, pN:0.05 },
+    { id:'LEBANON_NORM',  label:'Lebanon Norm.',   pmId:'665414',  pm:0.220, layer:4, primary:'BIBI_PM',     pY:0.36, pN:0.11 },
+    { id:'SYRIA_NORM',    label:'Syria Norm.',     pmId:'677273',  pm:0.120, layer:4, primary:'BIBI_PM',     pY:0.12, pN:0.12 },
+    { id:'STRIKE_5',      label:'Strike on Iran',  pmId:'678748',  pm:0.375, layer:4, primary:'IRAN_NUKE',   pY:0.80, pN:0.28 },
+    { id:'PAHLAVI',       label:'Pahlavi Returns', pmId:'1115288', pm:0.070, layer:4, primary:'IRAN_REGIME', pY:0.50, pN:0.03 },
+    { id:'US_DECLARE',    label:'US Declares War', pmId:'1170144', pm:0.080, layer:4, primary:'US_WAR_IRAN', pY:0.65, pN:0.02 },
+  ];
+
+  // Secondary edges (displayed as dashed; not used for BayesOracle computation)
+  const EXTRA_EDGES = [
+    { source:'IRAN_DEAL',   target:'ELECTIONS',  pY:0.45, pN:0.67 },
+    { source:'TRUMP_IL',    target:'ELECTIONS',  pY:0.50, pN:0.67 },
+    { source:'CEASEFIRE_X', target:'BIBI_OUT',   pY:0.56, pN:0.35 },
+    { source:'TRUMP_IL',    target:'BIBI_OUT',   pY:0.28, pN:0.52 },
+    { source:'TRUMP_IL',    target:'BIBI_PM',    pY:0.52, pN:0.32 },
+    { source:'TRUMP_IL',    target:'STRIKE_5',   pY:0.50, pN:0.28 },
+    { source:'IRAN_DEAL',   target:'STRIKE_5',   pY:0.15, pN:0.50 },
+    { source:'BIBI_PM',     target:'STRIKE_5',   pY:0.45, pN:0.30 },
+    { source:'US_WAR_IRAN', target:'PAHLAVI',    pY:0.20, pN:0.04 },
+    { source:'TRUMP_IL',    target:'US_DECLARE', pY:0.15, pN:0.05 },
+  ];
+
+  // ─── Preset layout positions ──────────────────────────────────────────────────
+  // Nodes arranged by layer (y-axis) and connectivity (x-axis).
+  // Iran-related roots (US_WAR_IRAN, IRAN_REGIME, IRAN_NUKE) placed right
+  // to minimise crossing of edges to Layer 4 STRIKE_5 / PAHLAVI / US_DECLARE.
+
+  const POSITIONS = {
+    // Layer 0 (y = 70)
+    IRAN_DEAL:     { x:  85, y:  70 },
+    CEASEFIRE_X:   { x: 265, y:  70 },
+    TRUMP_IL:      { x: 450, y:  70 },
+    US_WAR_IRAN:   { x: 660, y:  70 },
+    IRAN_REGIME:   { x: 845, y:  70 },
+    IRAN_NUKE:     { x:1020, y:  70 },
+
+    // Layer 1 (y = 225)
+    ELECTIONS:     { x: 305, y: 225 },
+    BIBI_OUT:      { x: 540, y: 225 },
+
+    // Layer 2 (y = 385)
+    BIBI_PM:       { x: 110, y: 385 },
+    BENNETT_PM:    { x: 295, y: 385 },
+    EIZENKOT_PM:   { x: 478, y: 385 },
+    LIEBERMAN_PM:  { x: 648, y: 385 },
+    LAPID_PM:      { x: 818, y: 385 },
+
+    // Layer 3 (y = 530)
+    ANNEX_WB:      { x:  88, y: 530 },
+    ANNEX_GAZA:    { x: 242, y: 530 },
+    US_GAZA:       { x: 395, y: 530 },
+    TURKEY_CLASH:  { x: 550, y: 530 },
+
+    // Layer 4 (y = 680)
+    SAUDI_NORM:    { x:  80, y: 680 },
+    SAUDI_ACCORDS: { x: 222, y: 680 },
+    LEBANON_NORM:  { x: 365, y: 680 },
+    SYRIA_NORM:    { x: 498, y: 680 },
+    STRIKE_5:      { x: 700, y: 680 },
+    PAHLAVI:       { x: 858, y: 680 },
+    US_DECLARE:    { x:1010, y: 680 },
+  };
+
+  // ─── BayesOracle: Law of Total Probability (single primary parent) ────────────
+
+  const nodeMap = Object.fromEntries(NODES.map(n => [n.id, n]));
+
+  function computeBayes(n) {
+    if (!n.primary) return null;
+    const pParent = nodeMap[n.primary].pm;
+    return n.pY * pParent + n.pN * (1 - pParent);
+  }
+
+  function recompute() {
+    NODES.forEach(n => {
+      n.bayes = computeBayes(n);
+      n.div = (n.bayes !== null) ? Math.abs(n.pm - n.bayes) : null;
+    });
+  }
+  recompute();
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+  function pct(v) { return (v * 100).toFixed(1) + '%'; }
+
+  function divColor(d) {
+    if (d === null) return '#546e7a'; // root
+    if (d < 0.02)   return '#388e3c'; // green
+    if (d < 0.05)   return '#f57c00'; // orange
+    if (d < 0.08)   return '#d32f2f'; // red
+    return '#7b1fa2';                  // purple
+  }
+
+  function nodeLabel(n) {
+    const base = n.label;
+    const prices = n.bayes !== null
+      ? pct(n.pm) + ' / ' + pct(n.bayes)
+      : pct(n.pm);
+    return base + '\n' + prices;
+  }
+
+  // ─── Cytoscape ────────────────────────────────────────────────────────────────
+
+  const cyNodes = NODES.map(n => ({
+    data: { id: n.id, label: nodeLabel(n), color: divColor(n.div) },
+    position: POSITIONS[n.id],
+  }));
+
+  const cyEdges = [];
+
+  // Primary edges (solid blue)
+  NODES.forEach(n => {
+    if (n.primary) {
+      cyEdges.push({ data: {
+        id: 'ep_' + n.primary + '_' + n.id,
+        source: n.primary,
+        target: n.id,
+        primary: 1,
+      }});
+    }
+  });
+
+  // Secondary edges (dashed gray)
+  EXTRA_EDGES.forEach((e, i) => {
+    cyEdges.push({ data: {
+      id: 'es_' + i,
+      source: e.source,
+      target: e.target,
+      primary: 0,
+    }});
+  });
+
+  const cy = cytoscape({
+    container: document.getElementById('cy'),
+    elements: [...cyNodes, ...cyEdges],
+    layout: { name: 'preset', animate: false },
+    style: [
+      {
+        selector: 'node',
+        style: {
+          'background-color': 'data(color)',
+          'label': 'data(label)',
+          'text-valign': 'center',
+          'text-halign': 'center',
+          'text-wrap': 'wrap',
+          'text-max-width': '90px',
+          'font-size': '8.5px',
+          'color': '#fff',
+          'width': 84,
+          'height': 48,
+          'shape': 'round-rectangle',
+          'border-width': 1,
+          'border-color': 'rgba(255,255,255,0.12)',
+        }
+      },
+      {
+        selector: 'node:selected',
+        style: {
+          'border-width': 2,
+          'border-color': '#58a6ff',
+          'border-style': 'solid',
+        }
+      },
+      {
+        selector: 'edge[primary = 1]',
+        style: {
+          'width': 1.5,
+          'line-color': '#58a6ff',
+          'target-arrow-color': '#58a6ff',
+          'target-arrow-shape': 'triangle',
+          'curve-style': 'bezier',
+          'arrow-scale': 0.7,
+          'opacity': 0.65,
+        }
+      },
+      {
+        selector: 'edge[primary = 0]',
+        style: {
+          'width': 1,
+          'line-color': '#4a5568',
+          'target-arrow-color': '#4a5568',
+          'target-arrow-shape': 'triangle',
+          'curve-style': 'bezier',
+          'line-style': 'dashed',
+          'line-dash-pattern': [5, 4],
+          'arrow-scale': 0.6,
+          'opacity': 0.45,
+        }
+      },
+      {
+        selector: ':selected',
+        style: { 'opacity': 1 }
+      }
+    ],
+  });
+
+  cy.ready(() => { cy.fit(undefined, 28); });
+
+  // ─── Divergence ranking panel ─────────────────────────────────────────────────
+
+  function buildRanking() {
+    const divEl = document.getElementById('div-ranking');
+    divEl.innerHTML = '';
+    const ranked = NODES
+      .filter(n => n.div !== null)
+      .sort((a, b) => b.div - a.div);
+    const maxDiv = ranked[0]?.div || 0.01;
+
+    ranked.forEach(n => {
+      const bayesAbove = n.bayes > n.pm;
+      const dir = bayesAbove ? '▲ Bayes↑' : '▼ Bayes↓';
+      const barW = Math.max(2, Math.round(n.div / maxDiv * 50));
+      const row = document.createElement('div');
+      row.className = 'div-item';
+      row.innerHTML =
+        `<div class="div-bar-wrap"><div class="div-bar" style="width:${barW}px;background:${divColor(n.div)}"></div></div>` +
+        `<span class="div-label">${n.label}</span>` +
+        `<span class="div-dir">${dir}</span>` +
+        `<span class="div-num" style="color:${divColor(n.div)}">${(n.div*100).toFixed(1)}pp</span>`;
+      row.addEventListener('click', () => {
+        cy.$(':selected').unselect();
+        cy.$('#' + n.id).select();
+        showDetail(n.id);
+      });
+      divEl.appendChild(row);
+    });
+  }
+  buildRanking();
+
+  // ─── PM candidate sum panel ───────────────────────────────────────────────────
+
+  const CANDIDATES = ['BIBI_PM','BENNETT_PM','EIZENKOT_PM','LIEBERMAN_PM','LAPID_PM'];
+
+  function buildSumPanel() {
+    const el = document.getElementById('pm-sum-content');
+    el.innerHTML = '';
+    let total = 0;
+    CANDIDATES.forEach(id => {
+      const n = nodeMap[id];
+      total += n.pm;
+      const row = document.createElement('div');
+      row.className = 'sum-row';
+      row.innerHTML = `<span class="name">${n.label}</span><span class="pct">${pct(n.pm)}</span>`;
+      el.appendChild(row);
+    });
+    const div = document.createElement('div');
+    div.className = 'sum-divider';
+    el.appendChild(div);
+
+    const slack = 1 - total;
+    const slackColor = Math.abs(slack) > 0.05 ? '#f85149' : (Math.abs(slack) > 0.02 ? '#f0883e' : '#3fb950');
+    const totRow = document.createElement('div');
+    totRow.className = 'sum-total';
+    totRow.innerHTML = `<span>Sum</span><span style="font-family:monospace;color:${slackColor}">${pct(total)}</span>`;
+    el.appendChild(totRow);
+
+    const note = document.createElement('div');
+    note.className = 'sum-note';
+    const slackSign = slack >= 0 ? '+' : '';
+    const slackMsg = slack >= 0
+      ? `${slackSign}${(slack*100).toFixed(1)}pp slack — gap or arb opportunity`
+      : `${(slack*100).toFixed(1)}pp — prices sum above 100%`;
+    note.textContent = slackMsg;
+    el.appendChild(note);
+  }
+  buildSumPanel();
+
+  // ─── Node detail panel ────────────────────────────────────────────────────────
+
+  function showDetail(nodeId) {
+    const n = nodeMap[nodeId];
+    document.getElementById('detail-empty').style.display = 'none';
+    const dc = document.getElementById('detail-content');
+    dc.style.display = 'block';
+
+    document.getElementById('d-name').textContent = n.label;
+    document.getElementById('d-pm').textContent = pct(n.pm);
+
+    const bayesEl = document.getElementById('d-bayes');
+    const divEl   = document.getElementById('d-div');
+    const parEl   = document.getElementById('d-parent');
+    const condTbl = document.getElementById('d-cond-table');
+    const condBody= document.getElementById('d-cond-body');
+    const noteEl  = document.getElementById('d-bayes-note');
+
+    if (n.bayes !== null) {
+      bayesEl.textContent = pct(n.bayes);
+      const diff = n.pm - n.bayes;
+      divEl.textContent = (n.div * 100).toFixed(1) + 'pp ' + (diff > 0 ? '(PM above)' : '(Bayes above)');
+      divEl.className = 'val ' + (n.div >= 0.08 ? 'hi' : n.div >= 0.02 ? 'mid' : 'ok');
+      parEl.textContent = nodeMap[n.primary].label;
+
+      condBody.innerHTML = '';
+      // Primary row
+      const tr0 = document.createElement('tr');
+      tr0.className = 'primary-row';
+      tr0.innerHTML = `<td>${nodeMap[n.primary].label}</td><td>${pct(n.pY)}</td><td>${pct(n.pN)}</td>`;
+      condBody.appendChild(tr0);
+      // Extra edges to this node
+      EXTRA_EDGES.forEach(e => {
+        if (e.target === nodeId) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${nodeMap[e.source].label}</td><td>${pct(e.pY)}</td><td>${pct(e.pN)}</td>`;
+          condBody.appendChild(tr);
+        }
+      });
+      condTbl.style.display = 'table';
+
+      const bayesFormula = `P = ${pct(n.pY)}×${pct(nodeMap[n.primary].pm)} + ${pct(n.pN)}×${pct(1-nodeMap[n.primary].pm)} = ${pct(n.bayes)}`;
+      noteEl.textContent = `LToTP: ${bayesFormula}`;
+    } else {
+      bayesEl.textContent = 'Root node';
+      divEl.textContent = '—';
+      divEl.className = 'val';
+      parEl.textContent = '—';
+      condBody.innerHTML = '';
+      condTbl.style.display = 'none';
+      noteEl.textContent = 'No parent — PM price used as-is.';
+    }
+  }
+
+  cy.on('tap', 'node', e => { showDetail(e.target.id()); });
+
+  // ─── Poll PM button ────────────────────────────────────────────────────────────
+
+  document.getElementById('poll-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('poll-btn');
+    const statusEl = document.getElementById('poll-status');
+    btn.disabled = true;
+    statusEl.className = '';
+    statusEl.textContent = 'Fetching…';
+
+    const ids = NODES.map(n => n.pmId).join(',');
+    const url = `https://gamma-api.polymarket.com/markets?id=${ids}&limit=50`;
+
+    try {
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      let updated = 0;
+      data.forEach(m => {
+        const node = NODES.find(n => n.pmId === String(m.id));
+        if (node && m.lastTradePrice != null) {
+          node.pm = parseFloat(m.lastTradePrice);
+          updated++;
+        }
+      });
+      recompute();
+      refreshGraph();
+      statusEl.className = 'ok';
+      statusEl.textContent = `Updated ${updated}/${NODES.length} at ${new Date().toLocaleTimeString()}`;
+    } catch (err) {
+      statusEl.className = 'error';
+      // TypeError = network/CORS failure (no Access-Control-Allow-Origin from gamma-api.polymarket.com)
+      if (err instanceof TypeError || err.message.includes('CORS')) {
+        statusEl.textContent = 'Live poll unavailable (CORS). Prices from May 14, 2026.';
+      } else {
+        statusEl.textContent = `Error: ${err.message}. Prices from May 14, 2026.`;
+      }
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // ─── Refresh graph after price update ─────────────────────────────────────────
+
+  function refreshGraph() {
+    NODES.forEach(n => {
+      cy.$('#' + n.id).data('label', nodeLabel(n)).data('color', divColor(n.div));
+    });
+    buildRanking();
+    buildSumPanel();
+  }
+  </script>
+</body>
+</html>

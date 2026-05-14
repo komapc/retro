@@ -41,10 +41,11 @@ jobs:
           cp oracle-test.html _site/oracle-test.html
           # Copy duel report if it exists
           if [ -f duel.html ]; then cp duel.html _site/duel.html; fi
-          # Copy BayesOracle pages
+          # Copy BayesOracle pages and subdirectories
           if [ -d bayesoracle ]; then
             mkdir -p _site/bayesoracle
             cp bayesoracle/*.html _site/bayesoracle/ 2>/dev/null || true
+            cp -r bayesoracle/pm_analysis _site/bayesoracle/ 2>/dev/null || true
           fi
 
       - name: Setup Pages
