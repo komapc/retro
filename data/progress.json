@@ -1039,8 +1039,8 @@
     "F05:toi": {
       "event_id": "F05",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 5,
       "error": null
     },
     "F05:ynet": {
@@ -5554,7 +5554,7 @@
     "G03:toi": {
       "event_id": "G03",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -10076,7 +10076,7 @@
     "F04:bloomberg": {
       "event_id": "F04",
       "source_id": "bloomberg",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -10748,8 +10748,8 @@
     "F05:bloomberg": {
       "event_id": "F05",
       "source_id": "bloomberg",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "G02:bloomberg": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T11:41:37.128647"
+  "last_updated": "2026-05-14T11:45:52.267206"
 }
