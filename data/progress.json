@@ -997,7 +997,7 @@
     "G06:toi": {
       "event_id": "G06",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -1830,7 +1830,7 @@
     "F04:toi": {
       "event_id": "F04",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -10125,7 +10125,7 @@
     "F05:ft": {
       "event_id": "F05",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -10223,7 +10223,7 @@
     "G02:ft": {
       "event_id": "G02",
       "source_id": "ft",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -10769,7 +10769,7 @@
     "G05:bloomberg": {
       "event_id": "G05",
       "source_id": "bloomberg",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T09:24:23.169778"
+  "last_updated": "2026-05-14T09:36:06.996945"
 }
