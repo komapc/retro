@@ -374,8 +374,8 @@
     "B13:toi": {
       "event_id": "B13",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 4,
       "error": null
     },
     "B13:ynet": {
@@ -1774,8 +1774,8 @@
     "B12:toi": {
       "event_id": "B12",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 10,
       "error": null
     },
     "B12:walla": {
@@ -3622,8 +3622,8 @@
     "C02:toi": {
       "event_id": "C02",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 10,
       "error": null
     },
     "C02:walla": {
@@ -8809,7 +8809,7 @@
     "C01:ft": {
       "event_id": "C01",
       "source_id": "ft",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T08:29:42.323164"
+  "last_updated": "2026-05-14T08:34:51.315411"
 }
