@@ -7,6 +7,7 @@ on:
       - factum_atlas.html
       - oracle-test.html
       - duel.html
+      - bayesoracle/**
 
   # Allow manual trigger from GitHub UI
   workflow_dispatch:
@@ -40,6 +41,11 @@ jobs:
           cp oracle-test.html _site/oracle-test.html
           # Copy duel report if it exists
           if [ -f duel.html ]; then cp duel.html _site/duel.html; fi
+          # Copy BayesOracle pages
+          if [ -d bayesoracle ]; then
+            mkdir -p _site/bayesoracle
+            cp bayesoracle/*.html _site/bayesoracle/ 2>/dev/null || true
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
