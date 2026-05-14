@@ -1438,8 +1438,8 @@
     "B01:toi": {
       "event_id": "B01",
       "source_id": "toi",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "B01:walla": {
@@ -2894,7 +2894,7 @@
     "A16:toi": {
       "event_id": "A16",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -2978,7 +2978,7 @@
     "A17:toi": {
       "event_id": "A17",
       "source_id": "toi",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -8053,7 +8053,7 @@
     "A16:ft": {
       "event_id": "A16",
       "source_id": "ft",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -8200,8 +8200,8 @@
     "A19:ft": {
       "event_id": "A19",
       "source_id": "ft",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 2,
       "error": null
     },
     "A19:guardian": {
@@ -8242,7 +8242,7 @@
     "B01:ft": {
       "event_id": "B01",
       "source_id": "ft",
-      "status": "pending",
+      "status": "no_predictions",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T07:54:46.765458"
+  "last_updated": "2026-05-14T07:55:37.490314"
 }
