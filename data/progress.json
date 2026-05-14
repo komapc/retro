@@ -619,7 +619,7 @@
     "D02:toi": {
       "event_id": "D02",
       "source_id": "toi",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11098,7 +11098,7 @@
     "D05:axios": {
       "event_id": "D05",
       "source_id": "axios",
-      "status": "no_predictions",
+      "status": "pending",
       "prediction_count": 0,
       "error": null
     },
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-14T12:28:14.395138"
+  "last_updated": "2026-05-14T12:50:39.434896"
 }
