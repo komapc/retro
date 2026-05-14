@@ -2,46 +2,83 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BayesOracle — Example Event DAG</title>
+<title>BayesOracle — Interactive Event DAG</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; height: 100vh; display: flex; flex-direction: column; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #12131f; color: #eee; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-  header { padding: 10px 20px; background: #16213e; border-bottom: 1px solid #0f3460; display: flex; align-items: center; gap: 16px; }
-  header h1 { font-size: 17px; font-weight: 600; color: #e2b96f; }
-  header p  { font-size: 12px; color: #888; }
+header { padding: 9px 18px; background: #16213e; border-bottom: 1px solid #0f3460; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+header h1 { font-size: 16px; font-weight: 600; color: #e2b96f; }
+header p  { font-size: 11px; color: #778; margin-top: 2px; }
+#reset-all { background: #1e3050; border: 1px solid #3a5070; color: #9ab; font-size: 11px; padding: 5px 12px; border-radius: 5px; cursor: pointer; }
+#reset-all:hover { background: #2a4060; color: #bcd; }
 
-  #main { display: flex; flex: 1; overflow: hidden; }
-  #cy   { flex: 1; }
+#main { display: flex; flex: 1; overflow: hidden; }
+#cy   { flex: 1; }
 
-  #legend {
-    width: 215px; background: #16213e; border-left: 1px solid #0f3460;
-    padding: 14px; overflow-y: auto; font-size: 12px; flex-shrink: 0;
-  }
-  #legend h2 { font-size: 12px; font-weight: 600; color: #e2b96f; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+/* ── Sidebar ── */
+#sidebar {
+  width: 220px; background: #16213e; border-left: 1px solid #0f3460;
+  display: flex; flex-direction: column; font-size: 11.5px; flex-shrink: 0;
+}
+#sidebar-inner { padding: 13px; overflow-y: auto; flex: 1; }
+.s-head { font-size: 11px; font-weight: 600; color: #e2b96f; margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.06em; }
+.legend-row { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; color: #aaa; }
+.swatch { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
 
-  #panel {
-    position: absolute; bottom: 16px; left: 16px;
-    background: #0f1a30; border: 1px solid #2a4070; border-radius: 8px;
-    padding: 12px 15px; font-size: 12px; min-width: 260px; max-width: 340px;
-    display: none; z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  }
-  #panel h3 { font-size: 13px; margin-bottom: 8px; color: #e2b96f; line-height: 1.3; }
-  #panel .row { display: flex; justify-content: space-between; margin-top: 5px; gap: 8px; }
-  #panel .lbl { color: #778; flex-shrink: 0; }
-  #panel .val { color: #dde; font-weight: 600; text-align: right; }
-  #panel .divider { border: none; border-top: 1px solid #1e3050; margin: 8px 0; }
-  #panel .cond-title { color: #e2b96f; font-size: 11px; margin-top: 6px; margin-bottom: 2px; }
-  #panel .cond-row { display: flex; justify-content: space-between; font-size: 11px; margin-top: 3px; }
-  #panel .cond-lbl { color: #667; }
-  #panel .cond-val { color: #acd; }
+.s-sep { border: none; border-top: 1px solid #1e3050; margin: 11px 0; }
 
-  .hint { position: absolute; bottom: 16px; right: 230px; font-size: 10px; color: #444; pointer-events: none; }
+.corr-table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+.corr-table td { padding: 2px 0; color: #889; }
+.corr-table td:last-child { text-align: right; font-weight: 600; }
+
+/* ── Click panel ── */
+#panel {
+  position: absolute; bottom: 16px; left: 16px;
+  background: #0d1628; border: 1px solid #2a4070; border-radius: 9px;
+  padding: 14px 16px; width: 300px;
+  display: none; z-index: 20; box-shadow: 0 6px 30px rgba(0,0,0,0.6);
+}
+#panel-title { font-size: 13.5px; font-weight: 600; color: #e2b96f; margin-bottom: 10px; line-height: 1.3; }
+.p-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; gap: 6px; }
+.p-lbl { color: #778; font-size: 11px; flex-shrink: 0; }
+.p-val { color: #dde; font-size: 11px; font-weight: 600; }
+.p-val.up   { color: #6dba82; }
+.p-val.down { color: #d87070; }
+.p-divider  { border: none; border-top: 1px solid #1e3050; margin: 9px 0; }
+
+/* slider */
+#slider-row { margin-top: 10px; }
+#slider-row label { font-size: 11px; color: #9ab; display: block; margin-bottom: 5px; }
+#pslider {
+  width: 100%; height: 4px; -webkit-appearance: none; appearance: none;
+  background: #2a4060; border-radius: 2px; outline: none; cursor: pointer;
+}
+#pslider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: #5b9bd5; cursor: pointer; border: 2px solid #9ccbf0;
+}
+#pslider-pct { font-size: 13px; font-weight: 700; color: #fff; text-align: center; margin-top: 6px; }
+
+.btn-row { display: flex; gap: 8px; margin-top: 10px; }
+.btn { flex: 1; padding: 5px 0; border-radius: 5px; font-size: 11px; cursor: pointer; border: 1px solid; }
+#btn-lock   { background: #1a2e50; border-color: #3a5090; color: #9ab; }
+#btn-lock.active { background: #2a3a10; border-color: #6a9030; color: #ade060; }
+#btn-reset  { background: #1a2010; border-color: #3a4020; color: #8a9070; }
+#btn-reset:hover { background: #252f18; }
+
+/* cond block */
+#cond-block { display: none; }
+#cond-block .cond-head { font-size: 10px; color: #e2b96f; margin-bottom: 4px; margin-top: 2px; }
+.cond-row   { display: flex; justify-content: space-between; font-size: 10.5px; padding: 1px 0; }
+.cond-lbl   { color: #667; }
+.cond-val   { color: #8abbe0; font-weight: 600; }
+
+/* hint */
+.hint { position: absolute; bottom: 14px; right: 230px; font-size: 10px; color: #333; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -49,163 +86,339 @@
 <header>
   <div>
     <h1>BayesOracle — Israeli Politics DAG</h1>
-    <p>Click a node · scroll to zoom · drag to pan</p>
+    <p>Click any node → adjust its probability → see the cascade · scroll to zoom · drag to pan</p>
   </div>
+  <button id="reset-all">↺ Reset all</button>
 </header>
 
 <div id="main">
   <div id="cy"></div>
 
-  <div id="legend">
-    <h2>Layers</h2>
-    <div class="legend-row"><div class="swatch" style="background:#5b9bd5"></div><span>Exogenous (roots)</span></div>
-    <div class="legend-row"><div class="swatch" style="background:#f4a460"></div><span>Near-term domestic</span></div>
-    <div class="legend-row"><div class="swatch" style="background:#e06080"></div><span>Key event (A)</span></div>
-    <div class="legend-row"><div class="swatch" style="background:#a78bc0"></div><span>Coalition formation</span></div>
-    <div class="legend-row"><div class="swatch" style="background:#5aaa72"></div><span>Government</span></div>
-    <div class="legend-row"><div class="swatch" style="background:#7a8a9a"></div><span>Downstream outcomes</span></div>
+  <div id="sidebar">
+    <div id="sidebar-inner">
+      <div class="s-head">Layers</div>
+      <div class="legend-row"><div class="swatch" style="background:#5b9bd5"></div>Exogenous (roots)</div>
+      <div class="legend-row"><div class="swatch" style="background:#f4a460"></div>Near-term domestic</div>
+      <div class="legend-row"><div class="swatch" style="background:#e06080"></div>Key event (A)</div>
+      <div class="legend-row"><div class="swatch" style="background:#a78bc0"></div>Coalition formation</div>
+      <div class="legend-row"><div class="swatch" style="background:#5aaa72"></div>Government</div>
+      <div class="legend-row"><div class="swatch" style="background:#7a8a9a"></div>Downstream outcomes</div>
 
-    <h2 style="margin-top:14px">Edge labels</h2>
-    <div style="font-size:11px;color:#888;line-height:1.5">
-      <b style="color:#9ab">if ✓: XX%</b> — P(child | parent happens)<br>
-      <b style="color:#a98">if ✗: XX%</b> — P(child | parent does NOT happen)
+      <hr class="s-sep">
+      <div class="s-head">Edge labels</div>
+      <div style="color:#889;line-height:1.6">
+        <span style="color:#6aabdf">✓ XX%</span> P(child | parent ✓)<br>
+        <span style="color:#c09060">✗ XX%</span> P(child | parent ✗)
+      </div>
+
+      <hr class="s-sep">
+      <div class="s-head">Correlations (ρ)</div>
+      <table class="corr-table">
+        <tr><td>Convicted ↔ Collapse</td><td style="color:#f4a460">+0.70</td></tr>
+        <tr><td>Sick ↔ Dead</td>         <td style="color:#f4a460">+0.60</td></tr>
+        <tr><td>Gaza ↔ Approval</td>     <td style="color:#f4a460">+0.50</td></tr>
+        <tr><td>Opp unified ↔ A</td>     <td style="color:#5b9bd5">−0.60</td></tr>
+        <tr><td>Iran nuc ↔ War</td>      <td style="color:#e06080">+0.80</td></tr>
+        <tr><td>Trump ↔ War</td>         <td style="color:#f4a460">+0.50</td></tr>
+      </table>
+
+      <hr class="s-sep">
+      <div class="s-head">How it works</div>
+      <div style="color:#667;line-height:1.6;font-size:10.5px">
+        Probabilities propagate via the <b style="color:#889">law of total probability</b>.
+        Dragging a slider re-calculates all descendants in real time using a log-odds model.
+        🔒 locks a node so its children still update from it, but it won't be overwritten by its own parents.
+      </div>
     </div>
-
-    <h2 style="margin-top:14px">Correlations (ρ)</h2>
-    <table style="width:100%;border-collapse:collapse;font-size:11px">
-      <tr style="color:#667"><th style="text-align:left;padding-bottom:3px">Pair</th><th style="text-align:right">ρ</th></tr>
-      <tr><td style="padding:2px 0">Convicted ↔ Collapse</td><td style="text-align:right;color:#f4a460">+0.70</td></tr>
-      <tr><td style="padding:2px 0">Sick ↔ Dead</td>         <td style="text-align:right;color:#f4a460">+0.60</td></tr>
-      <tr><td style="padding:2px 0">Gaza ends ↔ Approval</td><td style="text-align:right;color:#f4a460">+0.50</td></tr>
-      <tr><td style="padding:2px 0">Opp unified ↔ A</td>     <td style="text-align:right;color:#5b9bd5">−0.60</td></tr>
-      <tr><td style="padding:2px 0">Iran nuc ↔ War</td>      <td style="text-align:right;color:#e06080">+0.80</td></tr>
-      <tr><td style="padding:2px 0">Trump ↔ War</td>         <td style="text-align:right;color:#f4a460">+0.50</td></tr>
-    </table>
   </div>
 </div>
 
+<!-- Click / edit panel -->
 <div id="panel">
-  <h3 id="pname"></h3>
-  <div class="row"><span class="lbl">Layer</span><span class="val" id="player"></span></div>
-  <div class="row"><span class="lbl">P(event)</span><span class="val" id="pprob"></span></div>
-  <div class="row"><span class="lbl">95% CI</span><span class="val" id="pci"></span></div>
-  <hr class="divider">
-  <div id="pcond-block">
-    <div class="cond-title">Conditional on parents</div>
-    <div id="pcond-rows"></div>
+  <div id="panel-title"></div>
+
+  <div class="p-row">
+    <span class="p-lbl">Current P</span>
+    <span class="p-val" id="p-cur"></span>
   </div>
-  <hr class="divider" id="pcond-divider">
-  <div class="row"><span class="lbl">Parents</span> <span class="val" id="pparents"></span></div>
-  <div class="row"><span class="lbl">Children</span><span class="val" id="pchildren"></span></div>
+  <div class="p-row">
+    <span class="p-lbl">Prior P</span>
+    <span class="p-val" id="p-prior"></span>
+  </div>
+  <div class="p-row">
+    <span class="p-lbl">Change</span>
+    <span class="p-val" id="p-delta"></span>
+  </div>
+
+  <div id="slider-row">
+    <label>Drag to override probability:</label>
+    <input type="range" id="pslider" min="1" max="99" step="1">
+    <div id="pslider-pct"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" id="btn-lock">🔒 Lock</button>
+    <button class="btn" id="btn-reset">↺ Reset node</button>
+  </div>
+
+  <hr class="p-divider">
+
+  <div id="cond-block">
+    <div class="cond-head">Conditional on parents</div>
+    <div id="cond-rows"></div>
+    <hr class="p-divider">
+  </div>
+
+  <div class="p-row"><span class="p-lbl">Parents</span> <span class="p-val" id="p-parents" style="font-size:10px;text-align:right"></span></div>
+  <div class="p-row"><span class="p-lbl">Children</span><span class="p-val" id="p-children" style="font-size:10px;text-align:right"></span></div>
 </div>
 
-<div class="hint">BayesOracle · mock probabilities for illustration</div>
+<div class="hint">BayesOracle · probabilistic cascade demo</div>
 
 <script>
 cytoscape.use(cytoscapeDagre);
 
-const LAYER_COLORS = {
-  0: { bg: '#1e3a5f', border: '#5b9bd5', text: '#9ccbf0' },
-  1: { bg: '#3d2a0f', border: '#f4a460', text: '#f4c890' },
-  2: { bg: '#4a1020', border: '#e06080', text: '#f08090' },
-  3: { bg: '#2d1a40', border: '#a78bc0', text: '#c8b0e0' },
-  4: { bg: '#0f2d1a', border: '#5aaa72', text: '#90d0a0' },
-  5: { bg: '#252525', border: '#7a8a9a', text: '#aabbc0' },
+/* ─── Layer colour palette ─────────────────────────────────────── */
+const LC = {
+  0: { bg:[30,58,95],  border:'#5b9bd5', text:'#9ccbf0' },
+  1: { bg:[61,42,15],  border:'#f4a460', text:'#f4c890' },
+  2: { bg:[74,16,32],  border:'#e06080', text:'#f08090' },
+  3: { bg:[45,26,64],  border:'#a78bc0', text:'#c8b0e0' },
+  4: { bg:[15,45,26],  border:'#5aaa72', text:'#90d0a0' },
+  5: { bg:[37,37,37],  border:'#7a8a9a', text:'#aabbc0' },
 };
+const LAYER_NAMES = ['Exogenous','Near-term','Key event','Coalition','Government','Outcome'];
 
-const LAYER_NAMES = ['Exogenous', 'Near-term', 'Key event', 'Coalition', 'Government', 'Outcome'];
+function rgbHex(r,g,b){ return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''); }
+function blendBg(base, delta) {
+  // delta > 0 → green tint; < 0 → red tint
+  const t = Math.min(1, Math.abs(delta) * 4);
+  const target = delta > 0 ? [10,50,22] : [60,12,12];
+  return rgbHex(base[0]*(1-t)+target[0]*t, base[1]*(1-t)+target[1]*t, base[2]*(1-t)+target[2]*t);
+}
 
-// Each node: id, short label (line1), sublabel (line2 = description), layer, p, ci
-// label shown on graph = line1 + "\n" + pct + "\n" + line2
-const nodes = [
-  // Layer 0 — Exogenous
-  { id: 'GAZA',     line1: '🔫 Gaza ceasefire',       line2: 'holds by end of year',  layer: 0, p: 0.55, ci: [0.40, 0.70] },
-  { id: 'IRAN_NUC', line1: '☢️ Iran: nuclear',         line2: 'threshold reached',     layer: 0, p: 0.35, ci: [0.20, 0.52] },
-  { id: 'TRUMP',    line1: '🇺🇸 Trump in office',      line2: 'through 2027',          layer: 0, p: 0.96, ci: [0.91, 0.99] },
-  { id: 'VERDICT',  line1: '⚖️ Verdict delivered',    line2: 'in Bibi\'s trial',      layer: 0, p: 0.70, ci: [0.55, 0.82] },
-  { id: 'OPP',      line1: '🗳️ Opposition unified',   line2: 'Gantz + Lapid bloc',    layer: 0, p: 0.45, ci: [0.30, 0.60] },
+/* ─── Node definitions ─────────────────────────────────────────── */
+const NODES = [
+  // id, line1 (emoji+name), line2 (detail), layer, realistic P, 95% CI
+  { id:'GAZA',     l1:'🔫 Gaza ceasefire',      l2:'holds by year-end',      layer:0, p:0.52, ci:[0.38,0.66] },
+  { id:'IRAN_NUC', l1:'☢️ Iran: nuclear',        l2:'threshold reached 2027', layer:0, p:0.32, ci:[0.18,0.48] },
+  { id:'TRUMP',    l1:'🇺🇸 Trump in office',     l2:'through end of 2027',    layer:0, p:0.96, ci:[0.91,0.99] },
+  { id:'VERDICT',  l1:'⚖️ Trial verdict',        l2:'delivered in Bibi case', layer:0, p:0.68, ci:[0.54,0.80] },
+  { id:'OPP',      l1:'🗳️ Opposition unified',  l2:'Gantz + Lapid bloc',     layer:0, p:0.42, ci:[0.28,0.57] },
 
-  // Layer 1 — Near-term domestic
-  { id: 'APPROVAL',  line1: '📊 Bibi approval',        line2: 'improves',              layer: 1, p: 0.40, ci: [0.28, 0.54] },
-  { id: 'SICK',      line1: '🏥 Bibi is sick',         line2: 'health crisis',         layer: 1, p: 0.25, ci: [0.15, 0.38] },
-  { id: 'DEAD',      line1: '💀 Bibi dies',            line2: 'in office',             layer: 1, p: 0.08, ci: [0.03, 0.16] },
-  { id: 'CONVICTED', line1: '🔒 Bibi convicted',       line2: 'guilty verdict',        layer: 1, p: 0.62, ci: [0.48, 0.75] },
-  { id: 'COLLAPSE',  line1: '🏛️ Coalition collapses',  line2: 'current government',    layer: 1, p: 0.58, ci: [0.44, 0.71] },
-  { id: 'ELECTIONS', line1: '📅 Early elections',      line2: 'called & held',         layer: 1, p: 0.55, ci: [0.40, 0.68] },
+  { id:'APPROVAL', l1:'📊 Bibi approval',        l2:'improves significantly', layer:1, p:0.38, ci:[0.26,0.52] },
+  { id:'SICK',     l1:'🏥 Bibi sick',            l2:'serious health crisis',  layer:1, p:0.22, ci:[0.13,0.34] },
+  { id:'DEAD',     l1:'💀 Bibi dies',            l2:'in office before 2027',  layer:1, p:0.07, ci:[0.03,0.14] },
+  { id:'CONVICTED',l1:'🔒 Bibi convicted',       l2:'guilty verdict',         layer:1, p:0.60, ci:[0.46,0.73] },
+  { id:'COLLAPSE', l1:'🏛️ Coalition collapses',  l2:'current government',     layer:1, p:0.56, ci:[0.42,0.70] },
+  { id:'ELECTIONS',l1:'📅 Early elections',      l2:'called and held',        layer:1, p:0.52, ci:[0.38,0.66] },
 
-  // Layer 2 — Key
-  { id: 'A', line1: '⭐ Likud wins most', line2: 'seats in elections', layer: 2, p: 0.48, ci: [0.36, 0.61] },
+  { id:'A',        l1:'⭐ Likud wins most',      l2:'seats in elections',     layer:2, p:0.46, ci:[0.34,0.59] },
 
-  // Layer 3 — Coalition
-  { id: 'TRIES',    line1: '🤝 Bibi tries',           line2: 'to form coalition',     layer: 3, p: 0.44, ci: [0.32, 0.57] },
-  { id: 'HAREDI',   line1: '🕍 Haredi parties',       line2: 'join coalition',        layer: 3, p: 0.72, ci: [0.58, 0.83] },
-  { id: 'FARRIGHT', line1: '🦅 Ben Gvir / Smotrich',  line2: 'join coalition',        layer: 3, p: 0.55, ci: [0.40, 0.69] },
-  { id: 'COAL_OK',  line1: '✅ Coalition formed',     line2: 'negotiations succeed',  layer: 3, p: 0.38, ci: [0.26, 0.51] },
+  { id:'TRIES',    l1:'🤝 Bibi tries',           l2:'to form coalition',      layer:3, p:0.43, ci:[0.31,0.56] },
+  { id:'HAREDI',   l1:'🕍 Haredi parties',       l2:'join coalition',         layer:3, p:0.71, ci:[0.57,0.83] },
+  { id:'FARRIGHT', l1:'🦅 Ben Gvir / Smotrich',  l2:'join coalition',         layer:3, p:0.54, ci:[0.39,0.68] },
+  { id:'COAL_OK',  l1:'✅ Coalition formed',     l2:'negotiations succeed',   layer:3, p:0.36, ci:[0.24,0.50] },
 
-  // Layer 4 — Government
-  { id: 'PM', line1: '👑 Bibi is PM', line2: 'by end of year', layer: 4, p: 0.36, ci: [0.24, 0.49] },
+  { id:'PM',       l1:'👑 Bibi is PM',           l2:'by end of year',         layer:4, p:0.34, ci:[0.22,0.47] },
 
-  // Layer 5 — Downstream
-  { id: 'WAR_IRAN', line1: '💥 War with Iran',        line2: 'breaks out 2027',       layer: 5, p: 0.22, ci: [0.12, 0.34] },
-  { id: 'JUDICIAL', line1: '⚖️ Judicial overhaul',   line2: 'resumes',               layer: 5, p: 0.30, ci: [0.19, 0.43] },
-  { id: 'SAUDI',    line1: '🤝 Saudi normalization',  line2: 'deal signed',           layer: 5, p: 0.28, ci: [0.16, 0.42] },
-  { id: 'DRAFT',    line1: '📋 Haredi draft',         line2: 'law resolved',          layer: 5, p: 0.25, ci: [0.14, 0.38] },
+  { id:'WAR_IRAN', l1:'💥 War with Iran',        l2:'breaks out 2027',        layer:5, p:0.19, ci:[0.10,0.31] },
+  { id:'JUDICIAL', l1:'⚖️ Judicial overhaul',   l2:'resumes',                layer:5, p:0.27, ci:[0.16,0.40] },
+  { id:'SAUDI',    l1:'🤝 Saudi normalization',  l2:'deal signed',            layer:5, p:0.24, ci:[0.13,0.37] },
+  { id:'DRAFT',    l1:'📋 Haredi draft law',     l2:'resolved',               layer:5, p:0.22, ci:[0.12,0.34] },
 ];
 
-// Edges with conditional probabilities: [source, target, P(target|source=true), P(target|source=false)]
-const edges = [
-  ['GAZA',      'APPROVAL',  0.65, 0.22],
-  ['VERDICT',   'CONVICTED', 0.75, 0.05],
-  ['VERDICT',   'COLLAPSE',  0.60, 0.42],
-  ['SICK',      'DEAD',      0.30, 0.04],
-  ['APPROVAL',  'A',         0.62, 0.36],
-  ['DEAD',      'A',         0.28, 0.50],
-  ['CONVICTED', 'A',         0.38, 0.58],
-  ['COLLAPSE',  'ELECTIONS', 0.90, 0.18],
-  ['ELECTIONS', 'A',         0.48, 0.30],
-  ['TRUMP',     'A',         0.54, 0.30],
-  ['OPP',       'A',         0.34, 0.58],
-  ['A',         'TRIES',     0.95, 0.08],
-  ['A',         'HAREDI',    0.78, 0.50],
-  ['A',         'FARRIGHT',  0.62, 0.35],
-  ['TRIES',     'COAL_OK',   0.52, 0.10],
-  ['HAREDI',    'COAL_OK',   0.62, 0.25],
-  ['FARRIGHT',  'COAL_OK',   0.58, 0.22],
-  ['COAL_OK',   'PM',        0.92, 0.05],
-  ['PM',        'WAR_IRAN',  0.32, 0.14],
-  ['PM',        'JUDICIAL',  0.78, 0.08],
-  ['PM',        'SAUDI',     0.42, 0.16],
-  ['PM',        'DRAFT',     0.48, 0.10],
-  ['IRAN_NUC',  'WAR_IRAN',  0.52, 0.10],
-  ['TRUMP',     'WAR_IRAN',  0.38, 0.12],
-  ['TRUMP',     'SAUDI',     0.52, 0.14],
+/* ─── Edge definitions: [source, target, P(target|src=1), P(target|src=0)] ─ */
+const EDGES = [
+  ['GAZA',      'APPROVAL',   0.65, 0.22],
+  ['VERDICT',   'CONVICTED',  0.78, 0.04],
+  ['VERDICT',   'COLLAPSE',   0.62, 0.42],
+  ['SICK',      'DEAD',       0.28, 0.03],
+  ['APPROVAL',  'A',          0.62, 0.36],
+  ['DEAD',      'A',          0.24, 0.48],
+  ['CONVICTED', 'A',          0.36, 0.56],
+  ['COLLAPSE',  'ELECTIONS',  0.90, 0.16],
+  ['ELECTIONS', 'A',          0.46, 0.28],
+  ['TRUMP',     'A',          0.52, 0.28],
+  ['OPP',       'A',          0.32, 0.58],
+  ['A',         'TRIES',      0.95, 0.07],
+  ['A',         'HAREDI',     0.76, 0.52],
+  ['A',         'FARRIGHT',   0.64, 0.34],
+  ['TRIES',     'COAL_OK',    0.54, 0.08],
+  ['HAREDI',    'COAL_OK',    0.60, 0.22],
+  ['FARRIGHT',  'COAL_OK',    0.56, 0.20],
+  ['COAL_OK',   'PM',         0.93, 0.04],
+  ['PM',        'WAR_IRAN',   0.34, 0.11],
+  ['PM',        'JUDICIAL',   0.76, 0.07],
+  ['PM',        'SAUDI',      0.44, 0.14],
+  ['PM',        'DRAFT',      0.50, 0.09],
+  ['IRAN_NUC',  'WAR_IRAN',   0.54, 0.09],
+  ['TRUMP',     'WAR_IRAN',   0.36, 0.10],
+  ['TRUMP',     'SAUDI',      0.54, 0.12],
 ];
 
-// Build lookup: target → [ {source, pYes, pNo} ]
+/* ─── Probability state ─────────────────────────────────────────── */
+const priorP   = Object.fromEntries(NODES.map(n => [n.id, n.p]));
+const currentP = { ...priorP };
+const locked   = new Set();
+
+// Indexes
+const parentIdx = {};   // target → [{source, pYes, pNo}]
+const childIdx  = {};   // source → [target]
 const condByTarget = {};
-edges.forEach(([s, t, pY, pN]) => {
-  if (!condByTarget[t]) condByTarget[t] = [];
-  condByTarget[t].push({ source: s, pYes: pY, pNo: pN });
+
+EDGES.forEach(([s, t, pY, pN]) => {
+  (parentIdx[t] = parentIdx[t]||[]).push({ source:s, pYes:pY, pNo:pN });
+  (childIdx[s]  = childIdx[s] ||[]).push(t);
+  (condByTarget[t] = condByTarget[t]||[]).push({ source:s, pYes:pY, pNo:pN });
 });
 
-const cyNodes = nodes.map(n => {
-  const c = LAYER_COLORS[n.layer];
-  const pct = (n.p * 100).toFixed(0) + '%';
-  const label = `${n.line1}\n${pct}  ·  ${n.line2}`;
-  return {
-    data: {
-      id: n.id, label, line1: n.line1, line2: n.line2,
-      layer: n.layer, p: n.p, ci: n.ci,
-      bgColor: c.bg, borderColor: c.border, textColor: c.text
+// Topological order (by layer, then stable)
+const TOPO = [...NODES].sort((a,b) => a.layer - b.layer).map(n => n.id);
+
+/* ─── Math helpers ──────────────────────────────────────────────── */
+function logit(p) { p = Math.max(0.001, Math.min(0.999, p)); return Math.log(p/(1-p)); }
+function sigmoid(x) { return 1/(1+Math.exp(-x)); }
+
+// Recompute P(nodeId) from current parents using log-odds model
+function computeP(id) {
+  const parents = parentIdx[id];
+  if (!parents || locked.has(id)) return currentP[id];
+  let lo = logit(priorP[id]);
+  for (const { source, pYes, pNo } of parents) {
+    const beta = logit(pYes) - logit(pNo);
+    lo += beta * (currentP[source] - priorP[source]);
+  }
+  return Math.max(0.01, Math.min(0.99, sigmoid(lo)));
+}
+
+// Propagate from changedId downward through all descendants
+function propagate(changedId) {
+  // BFS over descendants in topological order
+  const affected = [];
+  const seen = new Set([changedId]);
+  const q = [changedId];
+  while (q.length) {
+    const id = q.shift();
+    for (const child of (childIdx[id]||[])) {
+      if (!seen.has(child)) { seen.add(child); q.push(child); affected.push(child); }
     }
-  };
-});
+  }
+  // Sort by topo order to ensure parents computed before children
+  affected.sort((a,b) => TOPO.indexOf(a) - TOPO.indexOf(b));
+  for (const id of affected) {
+    currentP[id] = computeP(id);
+  }
+  // Refresh visuals for everything touched
+  for (const id of [changedId, ...affected]) refreshNode(id);
+  if (selectedId) refreshPanel(selectedId);
+}
 
-const cyEdges = edges.map(([s, t, pY, pN], i) => ({
+/* ─── Visual refresh ────────────────────────────────────────────── */
+function nodeLabel(id) {
+  const n = NODES.find(x => x.id === id);
+  const p = currentP[id], pr = priorP[id];
+  const delta = p - pr;
+  let dStr = '';
+  if (Math.abs(delta) >= 0.005) {
+    dStr = (delta > 0 ? ' ▲' : ' ▼') + Math.abs(delta*100).toFixed(0) + '%';
+  }
+  const lock = locked.has(id) ? ' 🔒' : '';
+  return `${n.l1}\n${(p*100).toFixed(0)}%${dStr}${lock}\n${n.l2}`;
+}
+
+function refreshNode(id) {
+  const el = cy.getElementById(id);
+  if (!el.length) return;
+  const n = NODES.find(x => x.id === id);
+  const delta = currentP[id] - priorP[id];
+  const isLocked = locked.has(id);
+  const layer = n.layer;
+
+  el.data('label', nodeLabel(id));
+  el.data('bgColor', blendBg(LC[layer].bg, delta));
+  el.data('borderColor',
+    isLocked ? '#e2c040' :
+    delta >  0.04 ? '#5aaa72' :
+    delta < -0.04 ? '#d06060' :
+    LC[layer].border
+  );
+
+  const bw = isLocked ? 3.5 : (id==='A'||id==='PM' ? 3 : 2);
+  el.style({
+    'border-width': bw,
+    'border-style': isLocked ? 'double' : 'solid',
+  });
+}
+
+function refreshAll() { NODES.forEach(n => refreshNode(n.id)); }
+
+/* ─── Panel ─────────────────────────────────────────────────────── */
+let selectedId = null;
+
+function refreshPanel(id) {
+  if (!id) return;
+  const n    = NODES.find(x => x.id === id);
+  const p    = currentP[id];
+  const pr   = priorP[id];
+  const delta = p - pr;
+
+  document.getElementById('panel-title').textContent = n.l1 + ' — ' + n.l2;
+  document.getElementById('p-cur').textContent   = (p*100).toFixed(1) + '%';
+  document.getElementById('p-prior').textContent = (pr*100).toFixed(1) + '%';
+
+  const dEl = document.getElementById('p-delta');
+  if (Math.abs(delta) < 0.002) {
+    dEl.textContent = '—'; dEl.className = 'p-val';
+  } else {
+    dEl.textContent = (delta > 0 ? '▲ +' : '▼ ') + (delta*100).toFixed(1) + '%';
+    dEl.className   = 'p-val ' + (delta > 0 ? 'up' : 'down');
+  }
+
+  document.getElementById('pslider').value = Math.round(p*100);
+  document.getElementById('pslider-pct').textContent = Math.round(p*100) + '%';
+
+  // Lock button state
+  const btnLock = document.getElementById('btn-lock');
+  if (locked.has(id)) { btnLock.textContent='🔓 Unlock'; btnLock.classList.add('active'); }
+  else                { btnLock.textContent='🔒 Lock';   btnLock.classList.remove('active'); }
+
+  // Conditional rows
+  const parents = condByTarget[id] || [];
+  const condBlock = document.getElementById('cond-block');
+  if (parents.length) {
+    document.getElementById('cond-rows').innerHTML = parents.map(r => {
+      const srcName = NODES.find(x=>x.id===r.source)?.l1 || r.source;
+      const nowP = currentP[r.source];
+      const implied = r.pYes * nowP + r.pNo * (1 - nowP);
+      return `<div class="cond-row"><span class="cond-lbl">${srcName.replace(/^\S+\s/,'')} ✓</span><span class="cond-val">${(r.pYes*100).toFixed(0)}%</span></div>
+              <div class="cond-row"><span class="cond-lbl">${srcName.replace(/^\S+\s/,'')} ✗</span><span class="cond-val">${(r.pNo*100).toFixed(0)}%</span></div>
+              <div class="cond-row" style="margin-bottom:4px"><span class="cond-lbl" style="color:#446">→ LToTP implied</span><span class="cond-val" style="color:#7aad9a">${(implied*100).toFixed(0)}%</span></div>`;
+    }).join('');
+    condBlock.style.display = 'block';
+  } else {
+    condBlock.style.display = 'none';
+  }
+
+  const parents2  = cy.getElementById(id).incomers('node').map(x=>x.data('id')).join(', ') || '—';
+  const children2 = cy.getElementById(id).outgoers('node').map(x=>x.data('id')).join(', ') || '—';
+  document.getElementById('p-parents').textContent  = parents2;
+  document.getElementById('p-children').textContent = children2;
+}
+
+/* ─── Build Cytoscape ───────────────────────────────────────────── */
+const cyNodes = NODES.map(n => ({
   data: {
-    id: `e${i}`, source: s, target: t,
-    pYes: pY, pNo: pN,
-    label: `✓ ${(pY*100).toFixed(0)}%  ✗ ${(pN*100).toFixed(0)}%`,
+    id: n.id, label: nodeLabel(n.id),
+    l1: n.l1, l2: n.l2, layer: n.layer,
+    bgColor: blendBg(LC[n.layer].bg, 0), borderColor: LC[n.layer].border, textColor: LC[n.layer].text,
+  }
+}));
+
+const cyEdges = EDGES.map(([s,t,pY,pN],i) => ({
+  data: {
+    id:`e${i}`, source:s, target:t, pYes:pY, pNo:pN,
+    label: `✓${(pY*100).toFixed(0)}%  ✗${(pN*100).toFixed(0)}%`,
   }
 }));
 
@@ -216,136 +429,89 @@ const cy = cytoscape({
     {
       selector: 'node',
       style: {
-        'shape': 'round-rectangle',
-        'width': 155,
-        'height': 58,
+        shape: 'round-rectangle', width: 158, height: 62,
         'background-color': 'data(bgColor)',
         'border-color': 'data(borderColor)',
         'border-width': 2,
-        'color': 'data(textColor)',
+        color: 'data(textColor)',
         'font-size': 10.5,
-        'text-valign': 'center',
-        'text-halign': 'center',
-        'label': 'data(label)',
-        'text-wrap': 'wrap',
-        'text-max-width': 148,
-        'line-height': 1.35,
-        'padding': 5,
+        'text-valign': 'center', 'text-halign': 'center',
+        label: 'data(label)',
+        'text-wrap': 'wrap', 'text-max-width': 148,
+        'line-height': 1.35, padding: 5,
       }
     },
-    {
-      selector: 'node#A',
-      style: {
-        'width': 165, 'height': 66,
-        'border-width': 3,
-        'font-size': 11.5,
-        'font-weight': 'bold',
-      }
-    },
-    {
-      selector: 'node#PM',
-      style: { 'border-width': 3, 'font-size': 11, 'font-weight': 'bold' }
-    },
-    {
-      selector: 'node:selected',
-      style: { 'border-width': 4, 'border-color': '#ffffff', 'border-opacity': 0.9 }
-    },
+    { selector: 'node#A',  style: { width:170, height:68, 'border-width':3, 'font-size':11, 'font-weight':'bold' } },
+    { selector: 'node#PM', style: { 'border-width':3, 'font-size':11, 'font-weight':'bold' } },
+    { selector: 'node:selected', style: { 'border-width':4, 'border-color':'#fff', 'border-style':'solid' } },
     {
       selector: 'edge',
       style: {
-        'width': 1.5,
-        'line-color': '#2a3d55',
-        'target-arrow-color': '#3a5070',
-        'target-arrow-shape': 'triangle',
-        'curve-style': 'bezier',
-        'arrow-scale': 1.1,
-        'label': 'data(label)',
-        'font-size': 9,
-        'color': '#556677',
-        'text-background-color': '#1a1a2e',
-        'text-background-opacity': 0.85,
-        'text-background-padding': '2px',
-        'text-rotation': 'autorotate',
-        'text-margin-y': -8,
+        width: 1.5, 'line-color':'#2a3d55', 'target-arrow-color':'#3a5070',
+        'target-arrow-shape':'triangle', 'curve-style':'bezier', 'arrow-scale':1.1,
+        label:'data(label)', 'font-size':9, color:'#4a6070',
+        'text-background-color':'#12131f', 'text-background-opacity':0.9, 'text-background-padding':'2px',
+        'text-rotation':'autorotate', 'text-margin-y':-7,
       }
     },
-    {
-      selector: 'edge.highlighted',
-      style: {
-        'line-color': '#5080b0',
-        'target-arrow-color': '#6090c0',
-        'width': 2.5,
-        'color': '#99bbdd',
-      }
-    },
+    { selector: 'edge.hi', style: { 'line-color':'#4a7aaa', 'target-arrow-color':'#5a8abb', width:2.5, color:'#8aaccc' } },
   ],
-  layout: {
-    name: 'dagre',
-    rankDir: 'TB',
-    nodeSep: 50,
-    rankSep: 90,
-    padding: 30,
-    animate: false,
-  }
+  layout: { name:'dagre', rankDir:'TB', nodeSep:50, rankSep:90, padding:30, animate:false },
 });
 
-// Node click → show panel
-cy.on('tap', 'node', function(evt) {
-  const n = evt.target;
-  const d = n.data();
+/* ─── Interactions ──────────────────────────────────────────────── */
+cy.on('tap', 'node', evt => {
+  const id = evt.target.data('id');
+  selectedId = id;
 
-  cy.edges().removeClass('highlighted');
-  n.connectedEdges().addClass('highlighted');
+  cy.edges().removeClass('hi');
+  evt.target.connectedEdges().addClass('hi');
 
-  const parents  = n.incomers('node').map(x => x.data('id')).join(', ') || '—';
-  const children = n.outgoers('node').map(x => x.data('id')).join(', ') || '—';
-
-  document.getElementById('pname').textContent  = d.line1 + (d.line2 ? ' — ' + d.line2 : '');
-  document.getElementById('player').textContent = `${d.layer} — ${LAYER_NAMES[d.layer]}`;
-  document.getElementById('pprob').textContent  = (d.p * 100).toFixed(0) + '%';
-  document.getElementById('pci').textContent    = `[${(d.ci[0]*100).toFixed(0)}%, ${(d.ci[1]*100).toFixed(0)}%]`;
-  document.getElementById('pparents').textContent  = parents;
-  document.getElementById('pchildren').textContent = children;
-
-  // Conditional rows
-  const condBlock = document.getElementById('pcond-block');
-  const condDivider = document.getElementById('pcond-divider');
-  const rows = condByTarget[d.id];
-  if (rows && rows.length) {
-    const container = document.getElementById('pcond-rows');
-    container.innerHTML = rows.map(r =>
-      `<div class="cond-row">
-        <span class="cond-lbl">if ${r.source} ✓</span>
-        <span class="cond-val">${(r.pYes*100).toFixed(0)}%</span>
-      </div>
-      <div class="cond-row">
-        <span class="cond-lbl">if ${r.source} ✗</span>
-        <span class="cond-val">${(r.pNo*100).toFixed(0)}%</span>
-      </div>`
-    ).join('<div style="height:4px"></div>');
-    condBlock.style.display = 'block';
-    condDivider.style.display = 'block';
-  } else {
-    condBlock.style.display = 'none';
-    condDivider.style.display = 'none';
-  }
-
+  refreshPanel(id);
   document.getElementById('panel').style.display = 'block';
 });
 
-cy.on('tap', function(evt) {
+cy.on('tap', evt => {
   if (evt.target === cy) {
     document.getElementById('panel').style.display = 'none';
-    cy.edges().removeClass('highlighted');
+    cy.edges().removeClass('hi');
+    selectedId = null;
   }
 });
 
-// Fit then zoom in slightly
-cy.ready(() => {
-  cy.fit(undefined, 40);
-  cy.zoom(cy.zoom() * 1.35);
-  cy.center();
+document.getElementById('pslider').addEventListener('input', function() {
+  if (!selectedId) return;
+  const val = parseInt(this.value) / 100;
+  document.getElementById('pslider-pct').textContent = this.value + '%';
+  currentP[selectedId] = val;
+  propagate(selectedId);
 });
+
+document.getElementById('btn-lock').addEventListener('click', () => {
+  if (!selectedId) return;
+  if (locked.has(selectedId)) locked.delete(selectedId);
+  else locked.add(selectedId);
+  refreshNode(selectedId);
+  refreshPanel(selectedId);
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (!selectedId) return;
+  locked.delete(selectedId);
+  currentP[selectedId] = priorP[selectedId];
+  propagate(selectedId);
+  refreshPanel(selectedId);
+});
+
+document.getElementById('reset-all').addEventListener('click', () => {
+  locked.clear();
+  NODES.forEach(n => { currentP[n.id] = priorP[n.id]; });
+  refreshAll();
+  if (selectedId) refreshPanel(selectedId);
+});
+
+// Initial fit + zoom
+cy.ready(() => { cy.fit(undefined, 40); cy.zoom(cy.zoom() * 1.35); cy.center(); });
 </script>
 </body>
 </html>
