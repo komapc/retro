@@ -4231,8 +4231,8 @@
     "D05:reuters": {
       "event_id": "D05",
       "source_id": "reuters",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "D05:toi": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-15T18:12:24.103923"
+  "last_updated": "2026-05-15T18:20:40.613814"
 }
