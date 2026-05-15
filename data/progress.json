@@ -5631,8 +5631,8 @@
     "G04:reuters": {
       "event_id": "G04",
       "source_id": "reuters",
-      "status": "pending",
-      "prediction_count": 0,
+      "status": "done",
+      "prediction_count": 1,
       "error": null
     },
     "G04:toi": {
@@ -11271,5 +11271,5 @@
       "error": null
     }
   },
-  "last_updated": "2026-05-15T20:15:06.698558"
+  "last_updated": "2026-05-15T20:23:20.463871"
 }
