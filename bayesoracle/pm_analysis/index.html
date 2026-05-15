@@ -258,46 +258,46 @@
     // Layer 1 — Near-term political
     // ELECTIONS primary parent: CEASEFIRE_X (ceasefire collapse most destabilizing)
     { id:'ELECTIONS', label:'Early Elections',   pmId:'1280208', pm:0.590, layer:1,
-      primary:'CEASEFIRE_X', pY:0.72, pN:0.52, slug:'israeli-parliament-dissolved-by-june-30-228' },
+      primary:'CEASEFIRE_X', pY:0.78, pN:0.52, slug:'israeli-parliament-dissolved-by-june-30-228' },
     // BIBI_OUT primary parent: ELECTIONS (elections are the main removal mechanism)
     { id:'BIBI_OUT',  label:'Bibi Not PM 2027', pmId:'567688',  pm:0.420, layer:1,
-      primary:'ELECTIONS', pY:0.54, pN:0.28, slug:'netanyahu-out-before-2027-684-719-226-657' },
+      primary:'ELECTIONS', pY:0.68, pN:0.18, slug:'netanyahu-out-before-2027-684-719-226-657' },
 
     // Layer 2 — PM race (all share primary parent BIBI_OUT)
-    { id:'BIBI_PM',      label:'Bibi PM',      pmId:'682705', pm:0.410,  layer:2, primary:'BIBI_OUT', pY:0.05, pN:0.65, slug:'will-benjamin-netanyahu-be-the-next-prime-minister-of-israel' },
-    { id:'BENNETT_PM',   label:'Bennett PM',   pmId:'682706', pm:0.340,  layer:2, primary:'BIBI_OUT', pY:0.45, pN:0.25, slug:'will-naftali-bennett-be-the-next-prime-minister-of-israel' },
-    { id:'EIZENKOT_PM',  label:'Eizenkot PM',  pmId:'682708', pm:0.133,  layer:2, primary:'BIBI_OUT', pY:0.20, pN:0.08, slug:'will-gadi-eizenkot-be-the-next-prime-minister-of-israel' },
-    { id:'LIEBERMAN_PM', label:'Lieberman PM', pmId:'682710', pm:0.065,  layer:2, primary:'BIBI_OUT', pY:0.10, pN:0.04, slug:'will-avigdor-lieberman-be-the-next-prime-minister-of-israel' },
-    { id:'LAPID_PM',     label:'Lapid PM',     pmId:'682707', pm:0.009,  layer:2, primary:'BIBI_OUT', pY:0.015, pN:0.005, slug:'will-yair-lapid-be-the-next-prime-minister-of-israel' },
+    { id:'BIBI_PM',      label:'Bibi PM',      pmId:'682705', pm:0.410,  layer:2, primary:'BIBI_OUT', pY:0.08, pN:0.68, slug:'will-benjamin-netanyahu-be-the-next-prime-minister-of-israel' },
+    { id:'BENNETT_PM',   label:'Bennett PM',   pmId:'682706', pm:0.340,  layer:2, primary:'BIBI_OUT', pY:0.68, pN:0.18, slug:'will-naftali-bennett-be-the-next-prime-minister-of-israel' },
+    { id:'EIZENKOT_PM',  label:'Eizenkot PM',  pmId:'682708', pm:0.133,  layer:2, primary:'BIBI_OUT', pY:0.24, pN:0.08, slug:'will-gadi-eizenkot-be-the-next-prime-minister-of-israel' },
+    { id:'LIEBERMAN_PM', label:'Lieberman PM', pmId:'682710', pm:0.065,  layer:2, primary:'BIBI_OUT', pY:0.14, pN:0.02, slug:'will-avigdor-lieberman-be-the-next-prime-minister-of-israel' },
+    { id:'LAPID_PM',     label:'Lapid PM',     pmId:'682707', pm:0.009,  layer:2, primary:'BIBI_OUT', pY:0.18, pN:0.01, slug:'will-yair-lapid-be-the-next-prime-minister-of-israel' },
 
     // Layer 3 — Policy outcomes (primary parent: BIBI_PM)
-    { id:'ANNEX_WB',     label:'W.Bank Annex',   pmId:'665515', pm:0.110, layer:3, primary:'BIBI_PM', pY:0.22, pN:0.04, slug:'will-israel-annex-west-bank-territory-before-2027' },
-    { id:'ANNEX_GAZA',   label:'Gaza Annex',     pmId:'636921', pm:0.044, layer:3, primary:'BIBI_PM', pY:0.12, pN:0.01, slug:'will-israel-annex-gaza-territory-by-2026' },
-    { id:'US_GAZA',      label:'US Gaza Admin',  pmId:'665485', pm:0.150, layer:3, primary:'BIBI_PM', pY:0.30, pN:0.08, slug:'us-forces-in-gaza-before-2027' },
-    { id:'TURKEY_CLASH', label:'IL-Turkey Clash',pmId:'665484', pm:0.180, layer:3, primary:'BIBI_PM', pY:0.35, pN:0.10, slug:'israel-x-turkey-military-clash-before-2027' },
+    { id:'ANNEX_WB',     label:'W.Bank Annex',   pmId:'665515', pm:0.110, layer:3, primary:'BIBI_PM', pY:0.28, pN:0.04, slug:'will-israel-annex-west-bank-territory-before-2027' },
+    { id:'ANNEX_GAZA',   label:'Gaza Annex',     pmId:'636921', pm:0.044, layer:3, primary:'BIBI_PM', pY:0.12, pN:0.02, slug:'will-israel-annex-gaza-territory-by-2026' },
+    { id:'US_GAZA',      label:'US Gaza Admin',  pmId:'665485', pm:0.150, layer:3, primary:'BIBI_PM', pY:0.08, pN:0.18, slug:'us-forces-in-gaza-before-2027' },
+    { id:'TURKEY_CLASH', label:'IL-Turkey Clash',pmId:'665484', pm:0.180, layer:3, primary:'BIBI_PM', pY:0.28, pN:0.12, slug:'israel-x-turkey-military-clash-before-2027' },
 
     // Layer 4 — Downstream outcomes
-    { id:'SAUDI_NORM',    label:'Saudi Norm.',     pmId:'665218',  pm:0.170, layer:4, primary:'BIBI_PM',     pY:0.30, pN:0.08, slug:'israel-and-saudi-arabia-normalize-relations-before-2027' },
-    { id:'SAUDI_ACCORDS', label:'Saudi Accords',   pmId:'665474',  pm:0.120, layer:4, primary:'BIBI_PM',     pY:0.22, pN:0.05, slug:'will-saudi-arabia-join-the-abraham-accords-before-2027' },
-    { id:'LEBANON_NORM',  label:'Lebanon Norm.',   pmId:'665414',  pm:0.220, layer:4, primary:'BIBI_PM',     pY:0.36, pN:0.11, slug:'israel-and-lebanon-normalize-relations-before-2027' },
-    { id:'SYRIA_NORM',    label:'Syria Norm.',     pmId:'677273',  pm:0.120, layer:4, primary:'BIBI_PM',     pY:0.12, pN:0.12, slug:'israel-and-syria-normalize-relations-by-december-31-2026-166' },
-    { id:'STRIKE_5',      label:'Strike on Iran',  pmId:'678748',  pm:0.375, layer:4, primary:'IRAN_NUKE',   pY:0.80, pN:0.28, slug:'will-israel-strike-5-countries-in-november-2025' },
-    { id:'PAHLAVI',       label:'Pahlavi Returns', pmId:'1115288', pm:0.070, layer:4, primary:'IRAN_REGIME', pY:0.50, pN:0.03, slug:'us-recognizes-reza-pahlavi-as-leader-of-iran-in2026' },
-    { id:'US_DECLARE',    label:'US Declares War', pmId:'1170144', pm:0.080, layer:4, primary:'US_WAR_IRAN', pY:0.65, pN:0.02, slug:'will-the-us-officially-declare-war-on-iran-by-december-31-2026-746' },
+    { id:'SAUDI_NORM',    label:'Saudi Norm.',     pmId:'665218',  pm:0.170, layer:4, primary:'BIBI_PM',     pY:0.28, pN:0.12, slug:'israel-and-saudi-arabia-normalize-relations-before-2027' },
+    { id:'SAUDI_ACCORDS', label:'Saudi Accords',   pmId:'665474',  pm:0.120, layer:4, primary:'BIBI_PM',     pY:0.22, pN:0.08, slug:'will-saudi-arabia-join-the-abraham-accords-before-2027' },
+    { id:'LEBANON_NORM',  label:'Lebanon Norm.',   pmId:'665414',  pm:0.220, layer:4, primary:'BIBI_PM',     pY:0.38, pN:0.12, slug:'israel-and-lebanon-normalize-relations-before-2027' },
+    { id:'SYRIA_NORM',    label:'Syria Norm.',     pmId:'677273',  pm:0.120, layer:4, primary:'BIBI_PM',     pY:0.22, pN:0.08, slug:'israel-and-syria-normalize-relations-by-december-31-2026-166' },
+    { id:'STRIKE_5',      label:'Strike on Iran',  pmId:'678748',  pm:0.375, layer:4, primary:'IRAN_NUKE',   pY:0.72, pN:0.28, slug:'will-israel-strike-5-countries-in-november-2025' },
+    { id:'PAHLAVI',       label:'Pahlavi Returns', pmId:'1115288', pm:0.070, layer:4, primary:'IRAN_REGIME', pY:0.42, pN:0.02, slug:'us-recognizes-reza-pahlavi-as-leader-of-iran-in2026' },
+    { id:'US_DECLARE',    label:'US Declares War', pmId:'1170144', pm:0.080, layer:4, primary:'US_WAR_IRAN', pY:0.28, pN:0.02, slug:'will-the-us-officially-declare-war-on-iran-by-december-31-2026-746' },
   ];
 
   // Secondary edges (displayed as dashed; not used for BayesOracle computation)
   const EXTRA_EDGES = [
-    { source:'IRAN_DEAL',   target:'ELECTIONS',  pY:0.45, pN:0.67 },
-    { source:'TRUMP_IL',    target:'ELECTIONS',  pY:0.50, pN:0.67 },
-    { source:'CEASEFIRE_X', target:'BIBI_OUT',   pY:0.56, pN:0.35 },
-    { source:'TRUMP_IL',    target:'BIBI_OUT',   pY:0.28, pN:0.52 },
-    { source:'TRUMP_IL',    target:'BIBI_PM',    pY:0.52, pN:0.32 },
-    { source:'TRUMP_IL',    target:'STRIKE_5',   pY:0.50, pN:0.28 },
-    { source:'IRAN_DEAL',   target:'STRIKE_5',   pY:0.15, pN:0.50 },
-    { source:'BIBI_PM',     target:'STRIKE_5',   pY:0.45, pN:0.30 },
-    { source:'US_WAR_IRAN', target:'PAHLAVI',    pY:0.20, pN:0.04 },
-    { source:'TRUMP_IL',    target:'US_DECLARE', pY:0.15, pN:0.05 },
+    { source:'IRAN_DEAL',   target:'ELECTIONS',  pY:0.72, pN:0.48 },
+    { source:'TRUMP_IL',    target:'ELECTIONS',  pY:0.72, pN:0.52 },
+    { source:'CEASEFIRE_X', target:'BIBI_OUT',   pY:0.68, pN:0.32 },
+    { source:'TRUMP_IL',    target:'BIBI_OUT',   pY:0.52, pN:0.36 },
+    { source:'TRUMP_IL',    target:'BIBI_PM',    pY:0.52, pN:0.34 },
+    { source:'TRUMP_IL',    target:'STRIKE_5',   pY:0.52, pN:0.28 },
+    { source:'IRAN_DEAL',   target:'STRIKE_5',   pY:0.24, pN:0.48 },
+    { source:'BIBI_PM',     target:'STRIKE_5',   pY:0.52, pN:0.28 },
+    { source:'US_WAR_IRAN', target:'PAHLAVI',    pY:0.42, pN:0.02 },
+    { source:'TRUMP_IL',    target:'US_DECLARE', pY:0.15, pN:0.04 },
   ];
 
   // ─── Preset layout positions ──────────────────────────────────────────────────
