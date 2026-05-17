@@ -248,45 +248,45 @@
 
   const NODES = [
     // Layer 0 — Exogenous roots
-    { id:'IRAN_DEAL',     label:'Iran Deal',          pmId:'665325',  pm:0.560, layer:0, slug:'us-iran-nuclear-deal-before-2027' },
-    { id:'CEASEFIRE_X',   label:'Ceasefire Breaks',   pmId:'1090489', pm:0.160, layer:0, slug:'israel-x-hamas-ceasefire-cancelled-by-june-30' },
+    { id:'IRAN_DEAL',     label:'Iran Deal',          pmId:'665325',  pm:0.575, layer:0, slug:'us-iran-nuclear-deal-before-2027' },
+    { id:'CEASEFIRE_X',   label:'Ceasefire Breaks',   pmId:'1090489', pm:0.140, layer:0, slug:'israel-x-hamas-ceasefire-cancelled-by-june-30' },
     { id:'TRUMP_IL',      label:'Trump Backs IL',      pmId:'665260',  pm:0.470, layer:0, slug:'will-donald-trump-visit-israel-in-2026' },
-    { id:'US_WAR_IRAN',   label:'US-Iran War',         pmId:'665374',  pm:0.270, layer:0, slug:'will-the-us-invade-iran-before-2027' },
-    { id:'IRAN_REGIME',   label:'Iran Regime Falls',   pmId:'663583',  pm:0.180, layer:0, slug:'will-the-iranian-regime-fall-by-the-end-of-2026' },
-    { id:'IRAN_NUKE',     label:'Iran Nuclear Thresh', pmId:'665521',  pm:0.090, layer:0, slug:'iran-nuclear-test-before-2027' },
+    { id:'US_WAR_IRAN',   label:'US-Iran War',         pmId:'665374',  pm:0.295, layer:0, slug:'will-the-us-invade-iran-before-2027' },
+    { id:'IRAN_REGIME',   label:'Iran Regime Falls',   pmId:'663583',  pm:0.165, layer:0, slug:'will-the-iranian-regime-fall-by-the-end-of-2026' },
+    { id:'IRAN_NUKE',     label:'Iran Nuclear Thresh', pmId:'665521',  pm:0.085, layer:0, slug:'iran-nuclear-test-before-2027' },
 
     // Layer 1 — Near-term political
     // ELECTIONS primary parent: CEASEFIRE_X (ceasefire collapse most destabilizing)
-    { id:'ELECTIONS', label:'Early Elections',   pmId:'1280208', pm:0.590, layer:1,
+    { id:'ELECTIONS', label:'Early Elections',   pmId:'1280208', pm:0.470, layer:1,
       primary:'CEASEFIRE_X', pY:0.875, pN:0.316, slug:'israeli-parliament-dissolved-by-june-30-228' },
     // BIBI_OUT primary parent: ELECTIONS (elections are the main removal mechanism)
-    { id:'BIBI_OUT',  label:'Bibi Not PM 2027', pmId:'567688',  pm:0.420, layer:1,
+    { id:'BIBI_OUT',  label:'Bibi Not PM 2027', pmId:'567688',  pm:0.435, layer:1,
       primary:'ELECTIONS', pY:0.659, pN:0.202, slug:'netanyahu-out-before-2027-684-719-226-657' },
 
     // Layer 2 — PM race (all share primary parent BIBI_OUT)
-    { id:'BIBI_PM',      label:'Bibi PM',      pmId:'682705', pm:0.410,  layer:2, primary:'BIBI_OUT', pY:0.111, pN:0.67,  slug:'will-benjamin-netanyahu-be-the-next-prime-minister-of-israel' },
-    { id:'BENNETT_PM',   label:'Bennett PM',   pmId:'682706', pm:0.340,  layer:2, primary:'BIBI_OUT', pY:0.606, pN:0.175, slug:'will-naftali-bennett-be-the-next-prime-minister-of-israel' },
-    { id:'EIZENKOT_PM',  label:'Eizenkot PM',  pmId:'682708', pm:0.133,  layer:2, primary:'BIBI_OUT', pY:0.173, pN:0.111, slug:'will-gadi-eizenkot-be-the-next-prime-minister-of-israel' },
-    { id:'LIEBERMAN_PM', label:'Lieberman PM', pmId:'682710', pm:0.065,  layer:2, primary:'BIBI_OUT', pY:0.131, pN:0.019, slug:'will-avigdor-lieberman-be-the-next-prime-minister-of-israel' },
+    { id:'BIBI_PM',      label:'Bibi PM',      pmId:'682705', pm:0.395,  layer:2, primary:'BIBI_OUT', pY:0.111, pN:0.67,  slug:'will-benjamin-netanyahu-be-the-next-prime-minister-of-israel' },
+    { id:'BENNETT_PM',   label:'Bennett PM',   pmId:'682706', pm:0.400,  layer:2, primary:'BIBI_OUT', pY:0.606, pN:0.175, slug:'will-naftali-bennett-be-the-next-prime-minister-of-israel' },
+    { id:'EIZENKOT_PM',  label:'Eizenkot PM',  pmId:'682708', pm:0.119,  layer:2, primary:'BIBI_OUT', pY:0.173, pN:0.111, slug:'will-gadi-eizenkot-be-the-next-prime-minister-of-israel' },
+    { id:'LIEBERMAN_PM', label:'Lieberman PM', pmId:'682710', pm:0.039,  layer:2, primary:'BIBI_OUT', pY:0.131, pN:0.019, slug:'will-avigdor-lieberman-be-the-next-prime-minister-of-israel' },
     { id:'LAPID_PM',     label:'Lapid PM',     pmId:'682707', pm:0.009,  layer:2, primary:'BIBI_OUT', pY:0.153, pN:0.01,  slug:'will-yair-lapid-be-the-next-prime-minister-of-israel' },
 
     // Layer 3 — Policy outcomes (primary parent: BIBI_PM)
-    { id:'ANNEX_WB',     label:'W.Bank Annex',   pmId:'665515', pm:0.110, layer:3, primary:'BIBI_PM', pY:0.305, pN:0.03,  slug:'will-israel-annex-west-bank-territory-before-2027' },
-    { id:'ANNEX_GAZA',   label:'Gaza Annex',     pmId:'636921', pm:0.044, layer:3, primary:'BIBI_PM', pY:0.135, pN:0.016, slug:'will-israel-annex-gaza-territory-by-2026' },
-    { id:'US_GAZA',      label:'US Gaza Admin',  pmId:'665485', pm:0.150, layer:3, primary:'BIBI_PM', pY:0.393, pN:0.099, slug:'us-forces-in-gaza-before-2027' },
-    { id:'TURKEY_CLASH', label:'IL-Turkey Clash',pmId:'665484', pm:0.180, layer:3, primary:'BIBI_PM', pY:0.27,  pN:0.126, slug:'israel-x-turkey-military-clash-before-2027' },
+    { id:'ANNEX_WB',     label:'W.Bank Annex',   pmId:'665515', pm:0.120, layer:3, primary:'BIBI_PM', pY:0.305, pN:0.03,  slug:'will-israel-annex-west-bank-territory-before-2027' },
+    { id:'ANNEX_GAZA',   label:'Gaza Annex',     pmId:'636921', pm:0.029, layer:3, primary:'BIBI_PM', pY:0.135, pN:0.016, slug:'will-israel-annex-gaza-territory-by-2026' },
+    { id:'US_GAZA',      label:'US Gaza Admin',  pmId:'665485', pm:0.130, layer:3, primary:'BIBI_PM', pY:0.393, pN:0.099, slug:'us-forces-in-gaza-before-2027' },
+    { id:'TURKEY_CLASH', label:'IL-Turkey Clash',pmId:'665484', pm:0.195, layer:3, primary:'BIBI_PM', pY:0.27,  pN:0.126, slug:'israel-x-turkey-military-clash-before-2027' },
 
     // Layer 4 — Downstream outcomes
-    { id:'SAUDI_NORM',    label:'Saudi Norm.',     pmId:'665218',  pm:0.170, layer:4, primary:'BIBI_PM',     pY:0.283, pN:0.122, slug:'israel-and-saudi-arabia-normalize-relations-before-2027' },
-    { id:'SAUDI_ACCORDS', label:'Saudi Accords',   pmId:'665474',  pm:0.120, layer:4, primary:'BIBI_PM',     pY:0.252, pN:0.078, slug:'will-saudi-arabia-join-the-abraham-accords-before-2027' },
-    { id:'LEBANON_NORM',  label:'Lebanon Norm.',   pmId:'665414',  pm:0.220, layer:4, primary:'BIBI_PM',     pY:0.258, pN:0.211, slug:'israel-and-lebanon-normalize-relations-before-2027' },
-    { id:'SYRIA_NORM',    label:'Syria Norm.',     pmId:'677273',  pm:0.120, layer:4, primary:'BIBI_PM',     pY:0.259, pN:0.068, slug:'israel-and-syria-normalize-relations-by-december-31-2026-166' },
-    { id:'STRIKE_5',      label:'Strike on Iran',  pmId:'678748',  pm:0.375, layer:4, primary:'IRAN_NUKE',   pY:0.428, pN:0.294, slug:'will-israel-strike-5-countries-in-november-2025' },
-    { id:'PAHLAVI',       label:'Pahlavi Returns', pmId:'1115288', pm:0.070, layer:4, primary:'IRAN_REGIME', pY:0.506, pN:0.013, slug:'us-recognizes-reza-pahlavi-as-leader-of-iran-in2026' },
-    { id:'US_DECLARE',    label:'US Declares War', pmId:'1170144', pm:0.080, layer:4, primary:'US_WAR_IRAN', pY:0.274, pN:0.022, slug:'will-the-us-officially-declare-war-on-iran-by-december-31-2026-746' },
+    { id:'SAUDI_NORM',    label:'Saudi Norm.',     pmId:'665218',  pm:0.175, layer:4, primary:'BIBI_PM',     pY:0.283, pN:0.122, slug:'israel-and-saudi-arabia-normalize-relations-before-2027' },
+    { id:'SAUDI_ACCORDS', label:'Saudi Accords',   pmId:'665474',  pm:0.115, layer:4, primary:'BIBI_PM',     pY:0.252, pN:0.078, slug:'will-saudi-arabia-join-the-abraham-accords-before-2027' },
+    { id:'LEBANON_NORM',  label:'Lebanon Norm.',   pmId:'665414',  pm:0.185, layer:4, primary:'BIBI_PM',     pY:0.258, pN:0.211, slug:'israel-and-lebanon-normalize-relations-before-2027' },
+    { id:'SYRIA_NORM',    label:'Syria Norm.',     pmId:'677273',  pm:0.105, layer:4, primary:'BIBI_PM',     pY:0.259, pN:0.068, slug:'israel-and-syria-normalize-relations-by-december-31-2026-166' },
+    { id:'STRIKE_5',      label:'Strike on Iran',  pmId:'678748',  pm:0.396, layer:4, primary:'IRAN_NUKE',   pY:0.428, pN:0.294, slug:'will-israel-strike-5-countries-in-november-2025' },
+    { id:'PAHLAVI',       label:'Pahlavi Returns', pmId:'1115288', pm:0.085, layer:4, primary:'IRAN_REGIME', pY:0.506, pN:0.013, slug:'us-recognizes-reza-pahlavi-as-leader-of-iran-in2026' },
+    { id:'US_DECLARE',    label:'US Declares War', pmId:'1170144', pm:0.075, layer:4, primary:'US_WAR_IRAN', pY:0.274, pN:0.022, slug:'will-the-us-officially-declare-war-on-iran-by-december-31-2026-746' },
   ];
 
-  // Secondary edges (displayed as dashed; not used for BayesOracle computation)
+  // Secondary edges (displayed as dashed; included in multi-parent BayesOracle blend at half weight)
   const EXTRA_EDGES = [
     { source:'IRAN_DEAL',   target:'ELECTIONS',  pY:0.424, pN:0.629 },
     { source:'TRUMP_IL',    target:'ELECTIONS',  pY:0.699, pN:0.478 },
@@ -341,20 +341,45 @@
     US_DECLARE:    { x:1010, y: 680 },
   };
 
-  // ─── BayesOracle: Law of Total Probability (single primary parent) ────────────
+  // ─── BayesOracle: Law of Total Probability (primary + secondary parents) ────────
 
   const nodeMap = Object.fromEntries(NODES.map(n => [n.id, n]));
 
+  // Index secondary edges by target for fast lookup
+  const secondaryByTarget = {};
+  EXTRA_EDGES.forEach(e => {
+    if (!secondaryByTarget[e.target]) secondaryByTarget[e.target] = [];
+    secondaryByTarget[e.target].push(e);
+  });
+
   function computeBayes(n) {
     if (!n.primary) return null;
-    const pParent = nodeMap[n.primary].pm;
-    return n.pY * pParent + n.pN * (1 - pParent);
+
+    // Primary parent contribution (weight 1.0)
+    const pPrim = nodeMap[n.primary].bayes ?? nodeMap[n.primary].pm;
+    const pFromPrim = n.pY * pPrim + n.pN * (1 - pPrim);
+
+    // Secondary parent contributions (weight 0.5 each)
+    const secs = secondaryByTarget[n.id] || [];
+    let weightedSum = 1.0 * pFromPrim;
+    let totalWeight = 1.0;
+    secs.forEach(e => {
+      const pSrc = nodeMap[e.source].bayes ?? nodeMap[e.source].pm;
+      weightedSum += 0.5 * (e.pY * pSrc + e.pN * (1 - pSrc));
+      totalWeight += 0.5;
+    });
+
+    return weightedSum / totalWeight;
   }
 
   function recompute() {
-    NODES.forEach(n => {
-      n.bayes = computeBayes(n);
-      n.div = (n.bayes !== null) ? Math.abs(n.pm - n.bayes) : null;
+    // Propagate in topological order (layer 0 → 4) so parents are ready
+    const byLayer = [0,1,2,3,4].map(l => NODES.filter(n => n.layer === l));
+    byLayer.forEach(layer => {
+      layer.forEach(n => {
+        n.bayes = computeBayes(n);
+        n.div = (n.bayes !== null) ? Math.abs(n.pm - n.bayes) : null;
+      });
     });
   }
   recompute();
@@ -590,26 +615,28 @@
       const diff = n.pm - n.bayes;
       divEl.textContent = (n.div * 100).toFixed(1) + 'pp ' + (diff > 0 ? '(PM above)' : '(Bayes above)');
       divEl.className = 'val ' + (n.div >= 0.08 ? 'hi' : n.div >= 0.02 ? 'mid' : 'ok');
-      parEl.textContent = nodeMap[n.primary].label;
+      const secs = secondaryByTarget[nodeId] || [];
+      parEl.textContent = nodeMap[n.primary].label + (secs.length ? ` + ${secs.length} secondary` : '');
 
       condBody.innerHTML = '';
       // Primary row
       const tr0 = document.createElement('tr');
       tr0.className = 'primary-row';
-      tr0.innerHTML = `<td>${nodeMap[n.primary].label}</td><td>${pct(n.pY)}</td><td>${pct(n.pN)}</td>`;
+      tr0.innerHTML = `<td>${nodeMap[n.primary].label} <em style="color:#58a6ff">(w=1.0)</em></td><td>${pct(n.pY)}</td><td>${pct(n.pN)}</td>`;
       condBody.appendChild(tr0);
-      // Extra edges to this node
-      EXTRA_EDGES.forEach(e => {
-        if (e.target === nodeId) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${nodeMap[e.source].label}</td><td>${pct(e.pY)}</td><td>${pct(e.pN)}</td>`;
-          condBody.appendChild(tr);
-        }
+      // Secondary rows
+      secs.forEach(e => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${nodeMap[e.source].label} <em style="color:#8b949e">(w=0.5)</em></td><td>${pct(e.pY)}</td><td>${pct(e.pN)}</td>`;
+        condBody.appendChild(tr);
       });
       condTbl.style.display = 'table';
 
-      const bayesFormula = `P = ${pct(n.pY)}×${pct(nodeMap[n.primary].pm)} + ${pct(n.pN)}×${pct(1-nodeMap[n.primary].pm)} = ${pct(n.bayes)}`;
-      noteEl.textContent = `LToTP: ${bayesFormula}`;
+      const pPrim = nodeMap[n.primary].bayes ?? nodeMap[n.primary].pm;
+      const pFromPrim = n.pY * pPrim + n.pN * (1 - pPrim);
+      let formula = `primary: ${pct(n.pY)}×${pct(pPrim)} + ${pct(n.pN)}×${pct(1-pPrim)} = ${pct(pFromPrim)}`;
+      if (secs.length) formula += ` | blended with ${secs.length} secondary → ${pct(n.bayes)}`;
+      noteEl.textContent = `LToTP: ${formula}`;
     } else {
       bayesEl.textContent = 'Root node';
       divEl.textContent = '—';
