@@ -3,15 +3,16 @@ Multi-provider news search with fallback chain.
 Python equivalent of daatan's webSearch.ts utility.
 
 Fallback order:
-  1. DataForSEO Google News         DATAFORSEO_API_KEY
+  1. GDELT Doc API                  (free, no key — primary; news-only, reliable dates)
   2. SerpAPI (serpapi.com)          SERPAPI_API_KEY
   3. Serper.dev /news endpoint      SERPER_API_KEY
   4. Brave News Search              BRAVE_API_KEY
   5. BrightData SERP API            BRIGHTDATA_API_KEY
   6. Nimbleway SERP API             NIMBLEWAY_API_KEY
   7. ScrapingBee Google Search      SCRAPINGBEE_API_KEY
-  8. GDELT Doc API                  (free, no key — news-only, reliable dates)
-  9. DuckDuckGo Lite                (free, no key)
+  8. Newsdata.io                    NEWSDATA_API_KEY
+  9. DataForSEO Google News         DATAFORSEO_API_KEY  (last-resort paid fallback)
+ 10. DuckDuckGo Lite                (free, no key)
 
 All keys are loaded from the environment first, then from AWS Secrets Manager
 (openclaw/* namespace) as a fallback. See _secret().
@@ -734,7 +735,7 @@ def search_articles(
 
     Tries providers in order, skipping any without a configured key or with
     an exhausted quota flag set for this process lifetime:
-      DataForSEO → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → Newsdata.io → GDELT → DDG
+      GDELT → SerpAPI → Serper.dev → Brave → BrightData → Nimbleway → ScrapingBee → Newsdata.io → DataForSEO → DDG
 
     DDG is tried last; if AWS IPs are blocked by DDG/Yahoo it fails and is logged.
 
@@ -751,17 +752,16 @@ def search_articles(
     _provider_local.name = "none"
     _provider_local.chain = []
 
-    # 1. DataForSEO (first — structured JSON, no scraping)
-    if DATAFORSEO_API_KEY and not _DATAFORSEO_QUOTA_EXHAUSTED:
-        _provider_local.chain.append("dataforseo")
-        try:
-            results = _search_dataforseo(query, limit, date_from, date_to)
-            if results:
-                _provider_local.name = "dataforseo"
-                return results
-            logger.warning("DataForSEO returned 0 results for: %s", query[:60])
-        except Exception as e:
-            logger.warning("DataForSEO failed: %s", e)
+    # 1. GDELT (free, no key) — primary provider; news-only, reliable dates, no snippets
+    _provider_local.chain.append("gdelt")
+    try:
+        results = _search_gdelt(query, limit, date_from, date_to)
+        if results:
+            _provider_local.name = "gdelt"
+            return results
+        logger.warning("GDELT returned 0 results for: %s", query[:60])
+    except Exception as e:
+        logger.warning("GDELT failed: %s", e)
 
     # 2. SerpAPI
     if SERPAPI_API_KEY and not _SERPAPI_QUOTA_EXHAUSTED:
@@ -847,16 +847,17 @@ def search_articles(
         except Exception as e:
             logger.warning("Newsdata.io failed: %s", e)
 
-    # 9. GDELT (free, no key) — news-only, reliable historical dates, no snippets
-    _provider_local.chain.append("gdelt")
-    try:
-        results = _search_gdelt(query, limit, date_from, date_to)
-        if results:
-            _provider_local.name = "gdelt"
-            return results
-        logger.warning("GDELT returned 0 results for: %s", query[:60])
-    except Exception as e:
-        logger.warning("GDELT failed: %s", e)
+    # 9. DataForSEO (paid — last-resort fallback only)
+    if DATAFORSEO_API_KEY and not _DATAFORSEO_QUOTA_EXHAUSTED:
+        _provider_local.chain.append("dataforseo")
+        try:
+            results = _search_dataforseo(query, limit, date_from, date_to)
+            if results:
+                _provider_local.name = "dataforseo"
+                return results
+            logger.warning("DataForSEO returned 0 results for: %s", query[:60])
+        except Exception as e:
+            logger.warning("DataForSEO failed: %s", e)
 
     # 10. DuckDuckGo (free, no key)
     _provider_local.chain.append("ddg")
